@@ -18,10 +18,10 @@ namespace TEEmployee.Models
             var selfAssessments = _selfAssessmentRepository.GetAll();
             return selfAssessments;
         }
-        public SelfAssessment GetSelfAssessment(int id)
-        {
-            return _selfAssessmentRepository.Get(id);
-        }
+        //public SelfAssessment GetSelfAssessment(int id)
+        //{
+        //    return _selfAssessmentRepository.Get(id);
+        //}
         public void Dispose()
         {
             _selfAssessmentRepository.Dispose();

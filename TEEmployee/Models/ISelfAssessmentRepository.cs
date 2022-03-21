@@ -9,7 +9,7 @@ namespace TEEmployee.Models
     public interface ISelfAssessmentRepository
     {
 
-        SelfAssessment Get(int Id);
+        //SelfAssessment Get(int Id);
         List<SelfAssessment> GetAll();      
         void Dispose();
     }
