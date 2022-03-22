@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Assessment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>SelfAssessmentsStore</h2>
+
+<div ng-controller="IndexCtrl">
+
+    <table class="table">
+        <tr>
+            <th>ID</th>
+            <th>CategoryId</th>
+            <th>Content</th>
+        </tr>
+
+        <tr ng-repeat="item in SelfAssessments">
+            <td ng-bind="item.Id"></td>
+            <td ng-bind="item.CategoryId"></td>
+            <td ng-bind="item.Content"></td>
+            <td>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                    <label class="form-check-label" for="inlineRadio1">Good</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                    <label class="form-check-label" for="inlineRadio2">Goood</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
+                    <label class="form-check-label" for="inlineRadio3">Goooood</label>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+
+</div>
+
+
+
+@section Scripts {
+    <script src="~/Scripts/WebApp/Assessment/IndexCtrl.js"></script>
+}
