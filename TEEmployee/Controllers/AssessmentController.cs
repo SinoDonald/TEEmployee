@@ -20,12 +20,26 @@ namespace TEEmployee.Controllers
         {
             return View();
         }
+        public ActionResult Self()
+        {
+            return View();
+        }
+        public ActionResult Manage()
+        {
+            return View();
+        }
 
         // Web api---
         [HttpPost]
         public JsonResult GetAllSelfAssessments()
         {
             var ret = _service.GetAllSelfAssessments();
+            return Json(ret);
+        }
+        [HttpPost]
+        public JsonResult GetManageAssessments()
+        {
+            var ret = _service.GetManageAssessments();
             return Json(ret);
         }
 

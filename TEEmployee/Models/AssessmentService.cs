@@ -7,16 +7,21 @@ namespace TEEmployee.Models
 {
     public class AssessmentService
     {
-        private ISelfAssessmentRepository _selfAssessmentRepository;
+        private ISelfAssessmentRepository _assessmentRepository;
 
         public AssessmentService()
         {
-            _selfAssessmentRepository = new SelfAssessmentTxtRepository();
-        }        
+            _assessmentRepository = new SelfAssessmentTxtRepository();
+        }
         public List<SelfAssessment> GetAllSelfAssessments()
         {
-            var selfAssessments = _selfAssessmentRepository.GetAll();
+            var selfAssessments = _assessmentRepository.GetAll();
             return selfAssessments;
+        }
+        public List<SelfAssessment> GetManageAssessments()
+        {
+            var manageAssessments = _assessmentRepository.GetAll();
+            return manageAssessments;
         }
         //public SelfAssessment GetSelfAssessment(int id)
         //{
@@ -24,7 +29,7 @@ namespace TEEmployee.Models
         //}
         public void Dispose()
         {
-            _selfAssessmentRepository.Dispose();
+            _assessmentRepository.Dispose();
         }
     }
 }

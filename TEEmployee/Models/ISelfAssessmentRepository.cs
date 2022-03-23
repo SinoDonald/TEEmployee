@@ -10,7 +10,7 @@ namespace TEEmployee.Models
     {
 
         //SelfAssessment Get(int Id);
-        List<SelfAssessment> GetAll();      
+        List<SelfAssessment> GetAll();
         void Dispose();
     }
 }
