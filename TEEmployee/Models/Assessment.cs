@@ -5,7 +5,7 @@ using System.Web;
 
 namespace TEEmployee.Models
 {
-    public class SelfAssessment
+    public class Assessment
     {
         public int Id { get; set; }
         public int CategoryId { get; set; }

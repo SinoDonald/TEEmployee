@@ -7,19 +7,20 @@ namespace TEEmployee.Models
 {
     public class AssessmentService
     {
-        private ISelfAssessmentRepository _assessmentRepository;
+        private IAssessmentRepository _assessmentRepository;
 
         public AssessmentService()
         {
             _assessmentRepository = new SelfAssessmentTxtRepository();
         }
-        public List<SelfAssessment> GetAllSelfAssessments()
+        public List<Assessment> GetAllSelfAssessments()
         {
             var selfAssessments = _assessmentRepository.GetAll();
             return selfAssessments;
         }
-        public List<SelfAssessment> GetManageAssessments()
+        public List<Assessment> GetManageAssessments()
         {
+            _assessmentRepository = new ManageAssessmentTxtRepository();
             var manageAssessments = _assessmentRepository.GetAll();
             return manageAssessments;
         }
