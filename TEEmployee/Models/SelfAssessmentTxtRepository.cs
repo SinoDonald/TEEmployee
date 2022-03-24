@@ -6,7 +6,7 @@ using System.Web;
 
 namespace TEEmployee.Models
 {
-    public class SelfAssessmentTxtRepository : ISelfAssessmentRepository
+    public class SelfAssessmentTxtRepository : IAssessmentRepository
     {
         private string _appData = "";
 
@@ -15,11 +15,11 @@ namespace TEEmployee.Models
             _appData = HttpContext.Current.Server.MapPath("~/App_Data/SelfAssessments.txt");
         }
 
-        public SelfAssessment Get(int Id)
+        public Assessment Get(int Id)
         {
             string fn = Path.Combine(_appData, Id.ToString() + ".txt");
             string[] fileText = File.ReadAllLines(fn);
-            SelfAssessment selfAssessment = new SelfAssessment();
+            Assessment selfAssessment = new Assessment();
 
             selfAssessment.Id = Convert.ToInt32(fileText[0]);
             selfAssessment.CategoryId = Convert.ToInt32(fileText[1]);
@@ -27,15 +27,15 @@ namespace TEEmployee.Models
             return selfAssessment;
         }
 
-        public List<SelfAssessment> GetAll()
+        public List<Assessment> GetAll()
         {
             string[] lines = System.IO.File.ReadAllLines(_appData);
-            List<SelfAssessment> selfAssessments = new List<SelfAssessment>();
+            List<Assessment> selfAssessments = new List<Assessment>();
 
             foreach (var item in lines)
             {
                 string[] subs = item.Split('\t');                            
-                SelfAssessment selfAssessment = new SelfAssessment();
+                Assessment selfAssessment = new Assessment();
 
                 selfAssessment.Id = Convert.ToInt32(subs[0]);
                 selfAssessment.CategoryId = Convert.ToInt32(subs[1]);

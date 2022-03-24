@@ -21,4 +21,5 @@ app.controller('ManageCtrl', ['$scope', '$window', 'appService', '$rootScope', f
         .catch(function (ret) {
             alert('Error');
         });
+
 }]);

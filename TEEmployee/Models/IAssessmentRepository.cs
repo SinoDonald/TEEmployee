@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace TEEmployee.Models
 {
-    public interface ISelfAssessmentRepository
+    public interface IAssessmentRepository
     {
 
         //SelfAssessment Get(int Id);
-        List<SelfAssessment> GetAll();
+        List<Assessment> GetAll();
         void Dispose();
     }
 }

@@ -22,5 +22,4 @@ app.controller('IndexCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
             alert('Error');
         });
 
-
 }]);

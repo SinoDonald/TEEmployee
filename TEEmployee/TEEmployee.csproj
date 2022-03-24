@@ -129,8 +129,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AssessmentService.cs" />
-    <Compile Include="Models\ISelfAssessmentRepository.cs" />
-    <Compile Include="Models\SelfAssessment.cs" />
+    <Compile Include="Models\IAssessmentRepository.cs" />
+    <Compile Include="Models\Assessment.cs" />
+    <Compile Include="Models\ManageAssessmentTxtRepository.cs" />
     <Compile Include="Models\SelfAssessmentTxtRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
