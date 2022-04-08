@@ -131,7 +131,10 @@
     <Compile Include="Models\AssessmentService.cs" />
     <Compile Include="Models\IAssessmentRepository.cs" />
     <Compile Include="Models\Assessment.cs" />
+    <Compile Include="Models\IResponseRepository.cs" />
     <Compile Include="Models\ManageAssessmentTxtRepository.cs" />
+    <Compile Include="Models\Response.cs" />
+    <Compile Include="Models\ResponseTxtRepository.cs" />
     <Compile Include="Models\SelfAssessmentTxtRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -157,6 +160,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\css\starstyles.css" />
+    <Content Include="Content\css\table.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -221,7 +225,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\IndexS.cshtml" />
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
     <Content Include="Scripts\umd\popper-utils.min.js.map" />
@@ -236,10 +240,10 @@
     <Content Include="Views\Assessment\Self.cshtml" />
     <Content Include="Views\Assessment\Manage.cshtml" />
     <Content Include="Views\Shared\_LayoutStar.cshtml" />
-    <Content Include="Views\Home\IndexSS.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="App_Data\Response\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

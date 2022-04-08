@@ -6,14 +6,33 @@ app.run(['$http', '$window', function ($http, $window) {
 }]);
 
 app.service('appService', ['$http', function ($http) {
+
     this.GetAllSelfAssessments = function (o) {
         return $http.post('Assessment/GetAllSelfAssessments', o);
+    };
+
+    this.CreateResponse = function (o) {
+        return $http.post('Assessment/CreateResponse', o);
     };
 }]);
 
 app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
 
     $scope.SelfAssessments = [];
+
+    $scope.response = {
+        "Id": 7596,
+        "choices": []
+    }
+
+    $scope.CreateResponse = function () {
+        appService.CreateResponse($scope.response)
+            .then(function (ret) {
+                $window.location.href = '/Home';
+            });
+    }
+
+
     appService.GetAllSelfAssessments({})
         .then(function (ret) {
             $scope.SelfAssessments = ret.data;

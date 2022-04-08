@@ -6,8 +6,8 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     <base href="@Url.Content("~/")" />
     <link rel="stylesheet" href="~/Content/bootstrap.css">
-    <link rel="stylesheet" href="~/Content/Site.css">
-    <script src="~/Scripts/modernizr-2.8.3.js"></script>    
+    @*<link rel="stylesheet" href="~/Content/Site.css">*@
+    <script src="~/Scripts/modernizr-2.8.3.js"></script>
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="~/Content/assets/favicon.ico" />
     <!-- Bootstrap Icons-->
@@ -19,8 +19,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css" rel="stylesheet" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="~/Content/css/starstyles.css" rel="stylesheet" />
+    @RenderSection("Styles", required: false)
 </head>
-<body>
+<body id="page-top">
 
     @*<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
             <a class="navbar-brand" href="#">Reflection</a>
@@ -58,13 +59,14 @@
                     <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
                     <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">@User.Identity.Name</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
 
-    <div class="container body-content">
+    <div class="newcontainer body-content">
         @RenderBody()
         <hr />
         <footer>

@@ -43,6 +43,14 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        [HttpPost]
+        public bool CreateResponse(Response response)
+        {
+            bool ret = _service.UpdateResponse(response);
+            return ret;
+        }
+
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();
