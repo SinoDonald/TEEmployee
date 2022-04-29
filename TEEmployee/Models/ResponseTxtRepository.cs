@@ -9,7 +9,7 @@ namespace TEEmployee.Models
     public class ResponseTxtRepository : IResponseRepository
     {
         private string _appData = "";
-
+        
         public ResponseTxtRepository()
         {
             _appData = HttpContext.Current.Server.MapPath("~/App_Data/Response");
@@ -24,7 +24,7 @@ namespace TEEmployee.Models
         {
             string fn = Path.Combine(_appData, response.Id.ToString() + ".txt");
             
-            bool ret = false;
+            bool ret;
             try
             {
                 System.IO.File.WriteAllLines(fn, response.choices);

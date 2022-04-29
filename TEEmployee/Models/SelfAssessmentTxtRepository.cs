@@ -12,12 +12,13 @@ namespace TEEmployee.Models
 
         public SelfAssessmentTxtRepository()
         {
-            _appData = HttpContext.Current.Server.MapPath("~/App_Data/SelfAssessments.txt");
+            //_appData = HttpContext.Current.Server.MapPath("~/App_Data/SelfAssessments.txt");
+            _appData = HttpContext.Current.Server.MapPath("~/App_Data");
         }
 
         public Assessment Get(int Id)
         {
-            string fn = Path.Combine(_appData, Id.ToString() + ".txt");
+            string fn = Path.Combine(_appData, Id.ToString() + "SelfAssessments.txt");
             string[] fileText = File.ReadAllLines(fn);
             Assessment selfAssessment = new Assessment();
 
@@ -29,7 +30,8 @@ namespace TEEmployee.Models
 
         public List<Assessment> GetAll()
         {
-            string[] lines = System.IO.File.ReadAllLines(_appData);
+            string fn = Path.Combine(_appData, "SelfAssessments.txt");
+            string[] lines = System.IO.File.ReadAllLines(fn);
             List<Assessment> selfAssessments = new List<Assessment>();
 
             foreach (var item in lines)
@@ -90,5 +92,85 @@ namespace TEEmployee.Models
             return;
         }
 
+        public bool Update(List<Assessment> assessments, string user)
+        {
+            //string fn = Path.Combine(_appData, $"Response/{assessments.First().UserId}.txt");
+            string fn = Path.Combine(_appData, $"Response/{user}.txt");
+
+            bool ret = false;
+            try
+            {
+                List<string> responses = new List<string>();
+
+                foreach (var item in assessments)
+                {
+                    responses.Add($"{item.Id}/{item.CategoryId}/{item.Content}/{item.Choice}");
+                }
+
+                System.IO.File.WriteAllLines(fn, responses);
+                ret = true;
+            }
+            catch (Exception)
+            {
+                ret = false;
+            }
+            return ret;
+        }
+
+
+        public List<Assessment> GetResponse(string user)
+        {
+            string fn = Path.Combine(_appData, $"Response/{user}.txt");
+
+           
+            string[] lines = System.IO.File.ReadAllLines(fn);
+            List<Assessment> selfResponse = new List<Assessment>();
+
+            foreach (var item in lines)
+            {
+                string[] subs = item.Split('/');
+                Assessment selfAssessment = new Assessment();
+
+                selfAssessment.Id = Convert.ToInt32(subs[0]);
+                selfAssessment.CategoryId = Convert.ToInt32(subs[1]);
+                selfAssessment.Content = subs[2];
+                selfAssessment.Choice = subs[3];
+                selfResponse.Add(selfAssessment);
+            }
+
+            selfResponse = selfResponse.OrderBy(a => a.CategoryId).ThenBy(a => a.Id).ToList();
+
+            return selfResponse;
+        }
+
+        public List<Assessment> GetAllResponses()
+        {
+            string fn = Path.Combine(_appData, "Response");
+
+            var responseList = System.IO.Directory.GetFiles(fn, "*.txt").OrderBy(p =>
+           System.IO.Path.GetFileName(p)).ToList();
+
+            List<Assessment> allResponses = new List<Assessment>();
+
+            foreach (var response in responseList)
+            {
+
+                string[] lines = System.IO.File.ReadAllLines(response);
+                
+                foreach (var item in lines)
+                {
+                    string[] subs = item.Split('/');
+                    Assessment selfAssessment = new Assessment();
+
+                    selfAssessment.Id = Convert.ToInt32(subs[0]);
+                    selfAssessment.CategoryId = Convert.ToInt32(subs[1]);
+                    selfAssessment.Content = subs[2];
+                    selfAssessment.Choice = subs[3];
+                    allResponses.Add(selfAssessment);
+                }
+
+            }
+            return allResponses;
+        }
     }
 }

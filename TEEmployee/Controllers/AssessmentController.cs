@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TEEmployee.Filters;
 using TEEmployee.Models;
 
 namespace TEEmployee.Controllers
 {
+    [MyAuthorize]
     public class AssessmentController : Controller
     {
         private AssessmentService _service;
@@ -28,13 +30,18 @@ namespace TEEmployee.Controllers
         {
             return View();
         }
+        public ActionResult SelfChart()
+        {
+            return View();
+        }
+
 
         // Web api---
         [HttpPost]
         public JsonResult GetAllSelfAssessments()
         {
             var ret = _service.GetAllSelfAssessments();
-            return Json(ret);
+            return Json(ret);            
         }
         [HttpPost]
         public JsonResult GetManageAssessments()
@@ -43,11 +50,33 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        //[HttpPost]
+        //public bool CreateResponse(Response response)
+        //{
+        //    bool ret = _service.UpdateResponse(response);
+        //    return ret;
+        //}
+
         [HttpPost]
-        public bool CreateResponse(Response response)
+        public bool CreateResponse(List<Assessment> assessments)
         {
-            bool ret = _service.UpdateResponse(response);
+            bool ret = _service.UpdateResponse(assessments, Session["empno"].ToString());
             return ret;
+            
+        }
+
+        [HttpPost]
+        public JsonResult GetResponse()
+        {
+            var ret = _service.GetSelfAssessmentResponse(Session["empno"].ToString());
+            return Json(ret);            
+        }
+
+        [HttpPost]
+        public JsonResult GetAllResponses()
+        {
+            var ret = _service.GetAllSelfAssessmentResponses();
+            return Json(ret);
         }
 
 

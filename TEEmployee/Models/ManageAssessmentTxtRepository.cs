@@ -51,5 +51,25 @@ namespace TEEmployee.Models
         {
             return;
         }
+
+        public bool Update(List<Assessment> assessments)
+        {
+            return true;
+        }
+
+        public bool Update(List<Assessment> assessments, string user)
+        {
+            return true;
+        }
+
+        public List<Assessment> GetResponse(string user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Assessment> GetAllResponses()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

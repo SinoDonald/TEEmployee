@@ -125,6 +125,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AssessmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Filters\MyAuthorizeAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -211,6 +212,8 @@
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
     <Content Include="Scripts\Webapp\Assessment\ManageCtrl.js" />
+    <Content Include="Scripts\Webapp\Assessment\SelfChart.js" />
+    <Content Include="Scripts\Webapp\Assessment\SelfChartCtrl.js" />
     <Content Include="Scripts\Webapp\Assessment\SelfCtrl.js" />
     <Content Include="Scripts\Webapp\Assessment\IndexCtrl.js" />
     <Content Include="Web.config" />
@@ -241,6 +244,7 @@
     <Content Include="Views\Assessment\Manage.cshtml" />
     <Content Include="Views\Shared\_LayoutStar.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Assessment\SelfChart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Response\" />

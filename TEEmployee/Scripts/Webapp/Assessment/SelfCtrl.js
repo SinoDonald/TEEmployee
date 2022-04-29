@@ -14,19 +14,25 @@ app.service('appService', ['$http', function ($http) {
     this.CreateResponse = function (o) {
         return $http.post('Assessment/CreateResponse', o);
     };
+
+    this.GetResponse = function (o) {
+        return $http.post('Assessment/GetResponse', o);
+    };
 }]);
 
 app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
 
     $scope.SelfAssessments = [];
 
-    $scope.response = {
-        "Id": 7596,
-        "choices": []
-    }
+    //$scope.response = {
+    //    "Id": 7596,
+    //    "choices": []
+    //}
+
+    $scope.Response = [];
 
     $scope.CreateResponse = function () {
-        appService.CreateResponse($scope.response)
+        appService.CreateResponse($scope.SelfAssessments)
             .then(function (ret) {
                 $window.location.href = '/Home';
             });
@@ -36,8 +42,31 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', fun
     appService.GetAllSelfAssessments({})
         .then(function (ret) {
             $scope.SelfAssessments = ret.data;
+            $scope.SelfAssessments[0].UserId = 7596
         })
         .catch(function (ret) {
             alert('Error');
         });
+
+
+    appService.GetResponse({})
+        .then(function (ret) {
+            $scope.SelfAssessments.forEach(function (item) {
+
+                ret.data.forEach(function (item2){
+
+                    if (item.Id == item2.Id) {
+                        item.Choice = item2.Choice;
+                    }
+
+                });
+
+            });
+
+
+        })
+        .catch(function (ret) {
+            alert('Error');
+        });
+
 }]);

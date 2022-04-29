@@ -1,16 +1,20 @@
 ﻿@{
     ViewBag.Title = "Assessment";
     //Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutStar.cshtml";
 }
 
 <h2>Assessments</h2>
 
 <div ng-controller="IndexCtrl">
 
-    <table class="table">
-    </table>
-    <a class="btn btn-primary" href="~/Assessment/Self">員工自評表</a>
-    <a class="btn btn-danger" href="~/Assessment/Manage">主管評分表</a>
+    <div style="margin-top : 100px; margin-left: 200px">
+        <h3>Hi @Session["empno"]</h3>
+        <a class="btn btn-primary" href="~/Assessment/Self">員工自評表</a>
+        <a class="btn btn-danger" href="~/Assessment/Manage">主管評分表</a>
+        <a class="btn btn-success" href="~/Assessment/SelfChart">自評統計</a>
+    </div>
+    
 </div>
 
 @section Scripts {
