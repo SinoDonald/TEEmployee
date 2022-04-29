@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 namespace TEEmployee.Models
 {
     interface IResponseRepository
-    {
-        
+    {        
         void Dispose();
         Response Get(int Id);       
         bool Update(Response response);
