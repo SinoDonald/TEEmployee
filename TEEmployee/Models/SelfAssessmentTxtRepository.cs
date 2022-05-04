@@ -120,25 +120,33 @@ namespace TEEmployee.Models
 
         public List<Assessment> GetResponse(string user)
         {
-            string fn = Path.Combine(_appData, $"Response/{user}.txt");
-
-           
-            string[] lines = System.IO.File.ReadAllLines(fn);
             List<Assessment> selfResponse = new List<Assessment>();
-
-            foreach (var item in lines)
+            try
             {
-                string[] subs = item.Split('/');
-                Assessment selfAssessment = new Assessment();
+                string fn = Path.Combine(_appData, $"Response/{user}.txt");
+                string[] lines = System.IO.File.ReadAllLines(fn);
+                foreach (var item in lines)
+                {
+                    string[] subs = item.Split('/');
+                    Assessment selfAssessment = new Assessment();
 
-                selfAssessment.Id = Convert.ToInt32(subs[0]);
-                selfAssessment.CategoryId = Convert.ToInt32(subs[1]);
-                selfAssessment.Content = subs[2];
-                selfAssessment.Choice = subs[3];
-                selfResponse.Add(selfAssessment);
+                    selfAssessment.Id = Convert.ToInt32(subs[0]);
+                    selfAssessment.CategoryId = Convert.ToInt32(subs[1]);
+                    selfAssessment.Content = subs[2];
+                    selfAssessment.Choice = subs[3];
+                    selfResponse.Add(selfAssessment);
+                }
+
+                selfResponse = selfResponse.OrderBy(a => a.CategoryId).ThenBy(a => a.Id).ToList();
             }
+            catch(System.IO.FileNotFoundException)
+            {
 
-            selfResponse = selfResponse.OrderBy(a => a.CategoryId).ThenBy(a => a.Id).ToList();
+            }
+            catch
+            {
+
+            }
 
             return selfResponse;
         }

@@ -24,7 +24,6 @@ namespace TEEmployee.Filters
 
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
-
             base.OnAuthorization(filterContext); 
 
             if (filterContext.Result is HttpUnauthorizedResult)
@@ -49,9 +48,7 @@ namespace TEEmployee.Filters
                 filterContext.HttpContext.Session["empno"] = loginUser;
                 //filterContext.HttpContext.Session["empname"] = ret.UserName;
                 //filterContext.HttpContext.Session["role"] = ret.Role;
-
             }
-
         }
     }
 }

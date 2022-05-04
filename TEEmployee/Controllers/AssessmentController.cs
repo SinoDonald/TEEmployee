@@ -43,10 +43,12 @@ namespace TEEmployee.Controllers
             var ret = _service.GetAllSelfAssessments();
             return Json(ret);            
         }
+
         [HttpPost]
-        public JsonResult GetManageAssessments()
+        public JsonResult GetAllManageAssessments()
         {
-            var ret = _service.GetManageAssessments();
+            _service = new AssessmentService("manage");
+            var ret = _service.GetAllManageAssessments();
             return Json(ret);
         }
 
@@ -61,8 +63,15 @@ namespace TEEmployee.Controllers
         public bool CreateResponse(List<Assessment> assessments)
         {
             bool ret = _service.UpdateResponse(assessments, Session["empno"].ToString());
+            return ret;            
+        }
+
+        [HttpPost]
+        public bool CreateManageResponse(List<Assessment> assessments)
+        {
+            _service = new AssessmentService("manage");
+            bool ret = _service.UpdateManageResponse(assessments, Session["empno"].ToString());
             return ret;
-            
         }
 
         [HttpPost]
@@ -73,12 +82,19 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetManageResponse()
+        {
+            _service = new AssessmentService("manage");
+            var ret = _service.GetManageAssessmentResponse(Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
         public JsonResult GetAllResponses()
         {
             var ret = _service.GetAllSelfAssessmentResponses();
             return Json(ret);
         }
-
 
         protected override void Dispose(bool disposing)
         {

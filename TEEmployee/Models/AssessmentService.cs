@@ -15,6 +15,10 @@ namespace TEEmployee.Models
             _assessmentRepository = new SelfAssessmentTxtRepository();
             //_responseRepository = new ResponseTxtRepository();
         }
+        public AssessmentService(string manage)
+        {
+            _assessmentRepository = new ManageAssessmentTxtRepository();
+        }
 
         public List<Assessment> GetAllSelfAssessments()
         {
@@ -22,9 +26,9 @@ namespace TEEmployee.Models
             return selfAssessments;
         }
 
-        public List<Assessment> GetManageAssessments()
+        public List<Assessment> GetAllManageAssessments()
         {
-            _assessmentRepository = new ManageAssessmentTxtRepository();
+            //_assessmentRepository = new ManageAssessmentTxtRepository();
             var manageAssessments = _assessmentRepository.GetAll();
             return manageAssessments;
         }
@@ -40,7 +44,12 @@ namespace TEEmployee.Models
         //}
 
         public bool UpdateResponse(List<Assessment> assessments, string user)
-        {            
+        {
+            return _assessmentRepository.Update(assessments, user);
+        }
+        public bool UpdateManageResponse(List<Assessment> assessments, string user)
+        {
+            //_assessmentRepository = new ManageAssessmentTxtRepository();
             return _assessmentRepository.Update(assessments, user);
         }
 
@@ -50,12 +59,18 @@ namespace TEEmployee.Models
             return selfAssessmentResponse;
         }
 
+        public List<Assessment> GetManageAssessmentResponse(string user)
+        {
+            //_assessmentRepository = new ManageAssessmentTxtRepository();
+            var manageAssessmentResponse = _assessmentRepository.GetResponse(user);
+            return manageAssessmentResponse;
+        }
+
         public List<Assessment> GetAllSelfAssessmentResponses()
         {
             var allSelfAssessmentResponse = _assessmentRepository.GetAllResponses();
             return allSelfAssessmentResponse;
         }
-
 
         public void Dispose()
         {

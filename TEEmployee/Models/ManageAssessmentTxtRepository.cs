@@ -55,7 +55,7 @@ namespace TEEmployee.Models
 
         public bool Update(List<Assessment> assessments, string user)
         {
-            string fn = Path.Combine(_appData, $"Response/{user}.txt");
+            string fn = Path.Combine(_appData, $"ManageResponse/{user}.txt");
             bool ret = false;
             try
             {
@@ -78,51 +78,58 @@ namespace TEEmployee.Models
 
         public List<Assessment> GetResponse(string user)
         {
-            string fn = Path.Combine(_appData, $"Response/{user}.txt");
-            string[] lines = System.IO.File.ReadAllLines(fn);
-            List<Assessment> selfResponse = new List<Assessment>();
+            List<Assessment> manageResponse = new List<Assessment>();
 
-            foreach (var item in lines)
+            try
             {
-                string[] subs = item.Split('/');
-                Assessment selfAssessment = new Assessment();
+                string fn = Path.Combine(_appData, $"ManageResponse/{user}.txt");
+                string[] lines = System.IO.File.ReadAllLines(fn);
+                foreach (var item in lines)
+                {
+                    string[] subs = item.Split('/');
+                    Assessment manageAssessment = new Assessment();
 
-                selfAssessment.Id = Convert.ToInt32(subs[0]);
-                selfAssessment.CategoryId = Convert.ToInt32(subs[1]);
-                selfAssessment.Content = subs[2];
-                selfAssessment.Choice = subs[3];
-                selfResponse.Add(selfAssessment);
+                    manageAssessment.Id = Convert.ToInt32(subs[0]);
+                    manageAssessment.CategoryId = Convert.ToInt32(subs[1]);
+                    manageAssessment.Content = subs[2];
+                    manageAssessment.Choice = subs[3];
+                    manageResponse.Add(manageAssessment);
+                }
+                manageResponse = manageResponse.OrderBy(a => a.CategoryId).ThenBy(a => a.Id).ToList();
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+
+            }
+            catch
+            {
+
             }
 
-            selfResponse = selfResponse.OrderBy(a => a.CategoryId).ThenBy(a => a.Id).ToList();
-
-            return selfResponse;
+            return manageResponse;
         }
 
         public List<Assessment> GetAllResponses()
         {
-            string fn = Path.Combine(_appData, "Response");
+            string fn = Path.Combine(_appData, "ManageResponse");
             var responseList = System.IO.Directory.GetFiles(fn, "*.txt").OrderBy(p => System.IO.Path.GetFileName(p)).ToList();
 
             List<Assessment> allResponses = new List<Assessment>();
 
             foreach (var response in responseList)
             {
-
                 string[] lines = System.IO.File.ReadAllLines(response);
-
                 foreach (var item in lines)
                 {
                     string[] subs = item.Split('/');
-                    Assessment selfAssessment = new Assessment();
+                    Assessment manageAssessment = new Assessment();
 
-                    selfAssessment.Id = Convert.ToInt32(subs[0]);
-                    selfAssessment.CategoryId = Convert.ToInt32(subs[1]);
-                    selfAssessment.Content = subs[2];
-                    selfAssessment.Choice = subs[3];
-                    allResponses.Add(selfAssessment);
+                    manageAssessment.Id = Convert.ToInt32(subs[0]);
+                    manageAssessment.CategoryId = Convert.ToInt32(subs[1]);
+                    manageAssessment.Content = subs[2];
+                    manageAssessment.Choice = subs[3];
+                    allResponses.Add(manageAssessment);
                 }
-
             }
             return allResponses;
         }

@@ -6,38 +6,38 @@ app.run(['$http', '$window', function ($http, $window) {
 }]);
 
 app.service('appService', ['$http', function ($http) {
-    this.GetManageAssessments = function (o) {
-        return $http.post('Assessment/GetManageAssessments', o);
+    this.GetAllManageAssessments = function (o) {
+        return $http.post('Assessment/GetAllManageAssessments', o);
     };
 
-    this.CreateResponse = function (o) {
-        return $http.post('Assessment/CreateResponse', o);
+    this.CreateManageResponse = function (o) {
+        return $http.post('Assessment/CreateManageResponse', o);
     };
 
-    this.GetResponse = function (o) {
-        return $http.post('Assessment/GetResponse', o);
+    this.GetManageResponse = function (o) {
+        return $http.post('Assessment/GetManageResponse', o);
     };
 }]);
 
 app.controller('ManageCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
 
-    $scope.ManageAssessments = {};
+    $scope.ManageAssessments = [];
 
     //$scope.response = {
     //    "Id": 7291,
     //    "choices": []
     //}
 
-    $scope.Response = [];
+    $scope.ManageResponse = [];
 
-    $scope.CreateResponse = function () {
-        appService.CreateResponse($scope.ManageAssessments)
+    $scope.CreateManageResponse = function () {
+        appService.CreateManageResponse($scope.ManageAssessments)
             .then(function (ret) {
                 $window.location.href = '/Home';
             });
     }
 
-    appService.GetManageAssessments({})
+    appService.GetAllManageAssessments({})
         .then(function (ret) {
             $scope.ManageAssessments = ret.data;
             $scope.ManageAssessments[0].UserId = 7291
@@ -46,7 +46,7 @@ app.controller('ManageCtrl', ['$scope', '$window', 'appService', '$rootScope', f
             alert('Error');
         });
 
-    appService.GetResponse({})
+    appService.GetManageResponse({})
         .then(function (ret) {
             $scope.ManageAssessments.forEach(function (item) {
 
