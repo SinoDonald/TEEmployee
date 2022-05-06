@@ -42,7 +42,7 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', fun
     appService.GetAllSelfAssessments({})
         .then(function (ret) {
             $scope.SelfAssessments = ret.data;
-            $scope.SelfAssessments[0].UserId = 7596
+            //$scope.SelfAssessments[0].UserId = 7596
         })
         .catch(function (ret) {
             alert('Error');
@@ -57,6 +57,7 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', fun
 
                     if (item.Id == item2.Id) {
                         item.Choice = item2.Choice;
+                        return
                     }
 
                 });

@@ -6,13 +6,61 @@
 
 <h2>Assessments</h2>
 
-<div ng-controller="IndexCtrl">
+<div ng-controller="IndexCtrl" class="container">
 
-    <div style="margin-top : 100px; margin-left: 200px">
+    <div style="margin-top : 100px">
         <h3>Hi @Session["empno"]</h3>
-        <a class="btn btn-primary" href="~/Assessment/Self">員工自評表</a>
+        @*<a class="btn btn-primary" href="~/Assessment/Self">員工自評表</a>
         <a class="btn btn-danger" href="~/Assessment/Manage">主管評分表</a>
-        <a class="btn btn-success" href="~/Assessment/SelfChart">自評統計</a>
+        <a class="btn btn-success" href="~/Assessment/SelfChart">自評統計</a>*@
+    <div class="card-deck">
+        <div class="card text-center">
+            <a href="~/Assessment/Self">
+                <img class="card-img-top" src="~/Content/assets/img/crocodile.png" alt="Card image cap">
+                <h5 class="card-title">自評考核表</h5>
+                <div class="card-body">
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content</p>
+                </div>
+            </a>
+        </div>
+        <div class="card text-center">
+            <a href="~/Assessment/Manage">
+                <img class="card-img-top" src="~/Content/assets/img/tiger.png" alt="Card image cap">
+                <h5 class="card-title">給予主管建議評估表</h5>
+                <div class="card-body">
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content</p>
+                </div>
+            </a>
+        </div>
+        <div class="card text-center">
+            <a href="~/Assessment/SelfChart">
+                <img class="card-img-top" src="~/Content/assets/img/panda-bear.png" alt="Card image cap">
+                <h5 class="card-title">查看員工自評考核表</h5>
+                <div class="card-body">
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content</p>
+                </div>
+            </a>
+        </div>
+        <div class="card text-center">
+            <a href="~/Assessment/Self">
+                <img class="card-img-top" src="~/Content/assets/img/panda-bear.png" alt="Card image cap">
+                <h5 class="card-title">Special title treatment</h5>
+                <div class="card-body">
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content</p>
+                </div>
+            </a>
+        </div>
+        <div class="card text-center">
+            <a href="~/Assessment/Self">
+                <img class="card-img-top" src="~/Content/assets/img/panda-bear.png" alt="Card image cap">
+                <h5 class="card-title">Special title treatment</h5>
+                <div class="card-body">
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    
     </div>
     
 </div>

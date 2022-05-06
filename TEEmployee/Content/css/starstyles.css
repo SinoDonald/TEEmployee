@@ -4508,7 +4508,7 @@ textarea.form-control-lg {
 .navbar-dark .navbar-text a:focus {
   color: #fff;
 }
-
+/*
 .card {
   position: relative;
   display: flex;
@@ -4665,7 +4665,7 @@ textarea.form-control-lg {
     border-bottom-left-radius: 0;
   }
 }
-
+*/
 .accordion-button {
   position: relative;
   display: flex;
