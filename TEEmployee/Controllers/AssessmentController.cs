@@ -34,6 +34,26 @@ namespace TEEmployee.Controllers
         {
             return View();
         }
+        public ActionResult Employee()
+        {
+            return View();
+        }
+        public ActionResult EmpList()
+        {
+            return PartialView();
+        }
+        public ActionResult AssessEmp()
+        {
+            return PartialView();
+        }
+        public ActionResult Compare()
+        {
+            return PartialView();
+        }
+        public ActionResult Review()
+        {            
+            return PartialView();
+        }
 
 
         // Web api---
@@ -74,12 +94,31 @@ namespace TEEmployee.Controllers
             return ret;
         }
 
+
+        //[HttpPost]
+        //public JsonResult GetResponse()
+        //{
+        //    var ret = _service.GetSelfAssessmentResponse(Session["empno"].ToString());
+        //    return Json(ret);
+        //}
+
+        //[HttpPost]
+        //public JsonResult GetResponse(string UserId)
+        //{
+        //    if (UserId == null) UserId = Session["empno"].ToString();
+        //    var ret = _service.GetSelfAssessmentResponse(UserId);
+        //    return Json(ret);
+        //}
+
         [HttpPost]
-        public JsonResult GetResponse()
+        public JsonResult GetResponse(User employee)
         {
-            var ret = _service.GetSelfAssessmentResponse(Session["empno"].ToString());
-            return Json(ret);            
+            if (employee.UserId is null)
+                employee.UserId = Session["empno"].ToString();            
+            var ret = _service.GetSelfAssessmentResponse(employee.UserId);
+            return Json(ret);
         }
+
 
         [HttpPost]
         public JsonResult GetManageResponse()
@@ -93,6 +132,48 @@ namespace TEEmployee.Controllers
         public JsonResult GetAllResponses()
         {
             var ret = _service.GetAllSelfAssessmentResponses();
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllCategorySelfAssessmentCharts()
+        {
+            var ret = _service.GetAllCategorySelfAssessmentCharts();
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllEmployees()
+        {
+            var ret = _service.GetAllEmployees();
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public bool CreateMResponse(List<Assessment> assessments, User employee)
+        {
+            bool ret = _service.UpdateMResponse(assessments, employee.UserId, Session["empno"].ToString());
+            return ret;
+        }
+
+        [HttpPost]
+        public JsonResult GetMResponse(User employee)
+        {            
+            var ret = _service.GetSelfAssessmentMResponse(employee.UserId, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult GetMixResponse(User employee)
+        {
+            var ret = _service.GetSelfAssessmentMixResponse(employee.UserId, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult CreateMixResponse(List<MixResponse> mixResponses, User employee)
+        {
+            var ret = _service.UpdateSelfAssessmentMixResponse(mixResponses, employee.UserId, Session["empno"].ToString());
             return Json(ret);
         }
 

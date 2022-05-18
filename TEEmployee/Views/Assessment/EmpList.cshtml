@@ -1,0 +1,23 @@
+﻿
+
+<div ng-controller="EmpListCtrl">
+    
+    <h2>Hey Boss !! <input type="text" ng-model="search.UserName" placeholder="Enter your search"></h2>
+
+    <div class="card-deck employee">
+        <div class="card" ng-repeat="emp in Employees | filter: search:strict">
+            <img class="card-img-top" src="~/Content/assets/img/man.png" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">{{emp.UserName}}</h5>
+                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                <button ng-click="Review(emp)">Click</button>
+                <a ui-sref="Review">Click</a>
+                <a href="~/#/Review">Call Second Page</a>
+                <a href="/#/Review">Call Second Page</a>
+                <a href="#/Review">Call Second Page</a>
+            </div>
+        </div>
+    </div>
+</div>
+

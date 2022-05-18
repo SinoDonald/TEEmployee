@@ -19,7 +19,7 @@ app.controller('IndexCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
             $scope.SelfAssessments = ret.data;
         })
         .catch(function (ret) {
-            alert('Error');
+                alert('Error');
         });
 
 }]);

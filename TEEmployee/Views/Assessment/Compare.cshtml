@@ -1,0 +1,48 @@
+﻿<div ng-controller="CompareCtrl" class="container">
+
+    <a ui-sref="Review">Review</a>
+    <a ui-sref="AssessEmp">AssessEmp</a>
+    <a ui-sref="EmpList">EmpList</a>
+
+    <table class="table table-striped table-borderless table-hover">
+
+        <thead class="thead-dark">
+            <tr>
+                <th>Content</th>
+                <th>Employee</th>
+                <th>Manager</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr ng-repeat="item in Response">
+
+                @*category name*@
+                <td ng-if="item.Id == 0" ng-bind="item.Content" colspan="3" class="table-warning"></td>
+                @*content and choice*@
+                <td ng-if="item.Content != '自評摘要' && item.Id != 0" ng-bind="item.Content"></td>
+                <td ng-if="item.Content != '自評摘要' && item.Id != 0" ng-bind="item.Choice"></td>
+                <td ng-if="item.Content != '自評摘要' && item.Id != 0" ng-bind="item.ManagerChoice"></td>
+
+                <td ng-if="item.Content=='自評摘要'" colspan="3">
+                    <div class="form-group">
+                        <label for="employeeText">自評摘要</label>
+                        <p ng-bind="item.Choice" id="employeeText"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="managerText">主管回饋</label>
+                        <textarea class="form-control" ng-model="item.ManagerChoice" id="managerText" rows="3"></textarea>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" ng-click="CreateMixResponse()" class="btn btn-warning" />
+        </div>
+    </div>
+
+</div>
+

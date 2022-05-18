@@ -1,6 +1,6 @@
 ﻿var app = angular.module('app', []);
 
-var ResponseData = [];
+var optionName = ['Good','Gooood','Goooood'];
 
 
 app.run(['$http', '$window', function ($http, $window) {
@@ -18,55 +18,67 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Assessment/GetAllResponses', o);
     };
 
+    this.GetAllCategorySelfAssessmentCharts = function (o) {
+        return $http.post('Assessment/GetAllCategorySelfAssessmentCharts', o);
+    };
+
 }]);
 
 app.controller('SelfChartCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
 
 
-    appService.GetAllSelfAssessments({})
-        .then(function (assessments) {
-
-            appService.GetAllResponses({})
-                .then(function (responses) {
-                    
-                    assessments.data.forEach(function (assessment) {
-
-                        var dataCollect = {}
-                        var OptionOneCount = 0
-                        var OptionTwoCount = 0
-                        var OptionThrCount = 0
-
-                        responses.data.forEach(function (response) {
-
-                            if (assessment.Id != response.Id)
-                                return
-
-                            if (response.Choice == 'option1')
-                                OptionOneCount++
-                            else if (response.Choice == 'option2')
-                                OptionTwoCount++
-                            else if (response.Choice == 'option3')
-                                OptionThrCount++
-                        })
-
-                        dataCollect.OptionOneCount = OptionOneCount
-                        dataCollect.OptionTwoCount = OptionTwoCount
-                        dataCollect.OptionThrCount = OptionThrCount
-                        dataCollect.CategoryId = assessment.CategoryId
-                        dataCollect.Content = assessment.Content
-
-                        ResponseData.push(dataCollect)
-
-                    })
-                    CreateChart();
-                })
-                .catch(function (ret) {
-                    alert('Error');
-                });
+    appService.GetAllCategorySelfAssessmentCharts({})
+        .then(function (ret) {
+            CreateChart(ret.data, optionName);
         })
-        .catch(function (ret) {
-            alert('Error');
-        });
+        //.catch(function (ret) {
+        //    alert('Error');
+        //});
+
+    //appService.GetAllSelfAssessments({})
+    //    .then(function (assessments) {
+
+    //        appService.GetAllResponses({})
+    //            .then(function (responses) {
+                    
+    //                assessments.data.forEach(function (assessment) {
+
+    //                    var dataCollect = {}
+    //                    var OptionOneCount = 0
+    //                    var OptionTwoCount = 0
+    //                    var OptionThrCount = 0
+
+    //                    responses.data.forEach(function (response) {
+
+    //                        if (assessment.Id != response.Id)
+    //                            return
+
+    //                        if (response.Choice == 'option1')
+    //                            OptionOneCount++
+    //                        else if (response.Choice == 'option2')
+    //                            OptionTwoCount++
+    //                        else if (response.Choice == 'option3')
+    //                            OptionThrCount++
+    //                    })
+
+    //                    dataCollect.OptionOneCount = OptionOneCount
+    //                    dataCollect.OptionTwoCount = OptionTwoCount
+    //                    dataCollect.OptionThrCount = OptionThrCount
+    //                    dataCollect.CategoryId = assessment.CategoryId
+    //                    dataCollect.Content = assessment.Content
+
+    //                    ResponseData.push(dataCollect)
+
+    //                })
+    //                CreateChart();
+    //            })
+    //            .catch(function (ret) {
+    //                alert('Error');
+    //            });
+    //    })
+    //    .catch(function (ret) {
+    //        alert('Error');
+    //    });
 
 
     

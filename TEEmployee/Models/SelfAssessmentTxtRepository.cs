@@ -94,7 +94,6 @@ namespace TEEmployee.Models
 
         public bool Update(List<Assessment> assessments, string user)
         {
-            //string fn = Path.Combine(_appData, $"Response/{assessments.First().UserId}.txt");
             string fn = Path.Combine(_appData, $"Response/{user}.txt");
 
             bool ret = false;
@@ -180,5 +179,63 @@ namespace TEEmployee.Models
             }
             return allResponses;
         }
+
+        public bool UpdateMResponse(List<Assessment> assessments, string empId, string userId)
+        {
+            string fn = Path.Combine(_appData, $"Response/MResponse/{empId}_{userId}.txt");
+
+            bool ret = false;
+            try
+            {
+                List<string> responses = new List<string>();
+
+                foreach (var item in assessments)
+                {
+                    responses.Add($"{item.Id}/{item.CategoryId}/{item.Content}/{item.Choice}");
+                }
+
+                System.IO.File.WriteAllLines(fn, responses);
+                ret = true;
+            }
+            catch (Exception)
+            {
+                ret = false;
+            }
+            return ret;
+        }      
+
+        public List<Assessment> GetMResponse(string empId, string userId)
+        {
+            List<Assessment> selfResponse = new List<Assessment>();
+            try
+            {
+                string fn = Path.Combine(_appData, $"Response/MResponse/{empId}_{userId}.txt");
+                string[] lines = System.IO.File.ReadAllLines(fn);
+                foreach (var item in lines)
+                {
+                    string[] subs = item.Split('/');
+                    Assessment selfAssessment = new Assessment();
+
+                    selfAssessment.Id = Convert.ToInt32(subs[0]);
+                    selfAssessment.CategoryId = Convert.ToInt32(subs[1]);
+                    selfAssessment.Content = subs[2];
+                    selfAssessment.Choice = subs[3];
+                    selfResponse.Add(selfAssessment);
+                }
+
+                selfResponse = selfResponse.OrderBy(a => a.CategoryId).ThenBy(a => a.Id).ToList();
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+
+            }
+            catch
+            {
+
+            }
+
+            return selfResponse;
+        }
+
     }
 }

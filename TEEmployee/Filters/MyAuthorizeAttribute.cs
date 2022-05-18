@@ -4,15 +4,16 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using TEEmployee.Models;
 
 namespace TEEmployee.Filters
 {
     public class MyAuthorizeAttribute : AuthorizeAttribute
     {
-        //private UserRepository _userRepository;
+        private UserTxtRepository _userRepository;
         public MyAuthorizeAttribute()
         {
-            //_userRepository = new UserRepository();
+            _userRepository = new UserTxtRepository();
         }
 
         protected override bool AuthorizeCore(HttpContextBase httpContext)
@@ -42,12 +43,25 @@ namespace TEEmployee.Filters
 
             if (filterContext.HttpContext.Session["empno"] == null)
             {
-                //var ret = _userRepository.Get(loginUser);
+                loginUser = "8888";
+                var ret = _userRepository.Get(loginUser);
 
-                //Get Userinfo
-                filterContext.HttpContext.Session["empno"] = loginUser;
-                //filterContext.HttpContext.Session["empname"] = ret.UserName;
-                //filterContext.HttpContext.Session["role"] = ret.Role;
+                if(ret != null) {
+                    
+                    //Get Userinfo
+                    filterContext.HttpContext.Session["empno"] = loginUser;
+                    filterContext.HttpContext.Session["empname"] = ret.UserName;
+                    filterContext.HttpContext.Session["role"] = ret.Role;
+                }
+                else
+                {
+                    filterContext.HttpContext.Response.Redirect("~/Home/Unauthorized/"
+                        //+filterContext.HttpContext.User.Identity.Name
+                    );
+                    filterContext.Result = new EmptyResult();
+                    return;
+                }
+                
             }
         }
     }

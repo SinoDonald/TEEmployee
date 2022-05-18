@@ -29,6 +29,7 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', fun
     //    "choices": []
     //}
 
+    
     $scope.Response = [];
 
     $scope.CreateResponse = function () {
