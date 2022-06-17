@@ -20,6 +20,7 @@ namespace TEEmployee.Models
         public AssessmentService(string manage)
         {
             _assessmentRepository = new ManageAssessmentTxtRepository();
+            _userRepository = new UserTxtRepository();
         }
 
         public List<Assessment> GetAllSelfAssessments()

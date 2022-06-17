@@ -40,7 +40,7 @@ app.controller('ManageCtrl', ['$scope', '$window', 'appService', '$rootScope', f
     appService.GetAllManageAssessments({})
         .then(function (ret) {
             $scope.ManageAssessments = ret.data;
-            $scope.ManageAssessments[0].UserId = 7291
+            //$scope.ManageAssessments[0].UserId = 7291
         })
         .catch(function (ret) {
             alert('Error');
@@ -54,6 +54,7 @@ app.controller('ManageCtrl', ['$scope', '$window', 'appService', '$rootScope', f
 
                     if (item.Id == item2.Id) {
                         item.Choice = item2.Choice;
+                        return
                     }
                 });
             });

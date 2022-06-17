@@ -28,6 +28,7 @@ namespace TEEmployee.Controllers
         }
         public ActionResult Manage()
         {
+            //_service = new AssessmentService("manage");
             return View();
         }
         public ActionResult SelfChart()
