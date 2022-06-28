@@ -1,3 +1,8 @@
 ﻿.employee .card{
     max-width:20%;
 }
+
+.assesstext {
+    margin-bottom: 1em;
+    border-bottom: 1px solid black;
+}
