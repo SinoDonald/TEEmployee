@@ -123,9 +123,9 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult GetResponseByYear(User employee, string year)
         {
-            if (employee.UserId is null)
-                employee.UserId = Session["empno"].ToString();
-            var ret = _service.GetSelfAssessmentResponse(employee.UserId, year);
+            if (employee.empno is null)
+                employee.empno = Session["empno"].ToString();
+            var ret = _service.GetSelfAssessmentResponse(employee.empno, year);
             return Json(ret);
         }
 
