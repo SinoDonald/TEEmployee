@@ -114,9 +114,9 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult GetResponse(User employee)
         {
-            if (employee.UserId is null)
-                employee.UserId = Session["empno"].ToString();            
-            var ret = _service.GetSelfAssessmentResponse(employee.UserId);
+            if (employee.empno is null)
+                employee.empno = Session["empno"].ToString();            
+            var ret = _service.GetSelfAssessmentResponse(employee.empno);
             return Json(ret);
         }
 
@@ -153,28 +153,28 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public bool CreateMResponse(List<Assessment> assessments, User employee)
         {
-            bool ret = _service.UpdateMResponse(assessments, employee.UserId, Session["empno"].ToString());
+            bool ret = _service.UpdateMResponse(assessments, employee.empno, Session["empno"].ToString());
             return ret;
         }
 
         [HttpPost]
         public JsonResult GetMResponse(User employee)
         {            
-            var ret = _service.GetSelfAssessmentMResponse(employee.UserId, Session["empno"].ToString());
+            var ret = _service.GetSelfAssessmentMResponse(employee.empno, Session["empno"].ToString());
             return Json(ret);
         }
 
         [HttpPost]
         public JsonResult GetMixResponse(User employee)
         {
-            var ret = _service.GetSelfAssessmentMixResponse(employee.UserId, Session["empno"].ToString());
+            var ret = _service.GetSelfAssessmentMixResponse(employee.empno, Session["empno"].ToString());
             return Json(ret);
         }
 
         [HttpPost]
         public JsonResult CreateMixResponse(List<MixResponse> mixResponses, User employee)
         {
-            var ret = _service.UpdateSelfAssessmentMixResponse(mixResponses, employee.UserId, Session["empno"].ToString());
+            var ret = _service.UpdateSelfAssessmentMixResponse(mixResponses, employee.empno, Session["empno"].ToString());
             return Json(ret);
         }
 

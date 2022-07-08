@@ -14,7 +14,8 @@ namespace TEEmployee.Models
         public AssessmentService()
         {
             _assessmentRepository = new SelfAssessmentTxtRepository();
-            _userRepository = new UserTxtRepository();
+            //_userRepository = new UserTxtRepository();
+            _userRepository = new UserRepository();
             //_responseRepository = new ResponseTxtRepository();
         }
         public AssessmentService(string manage)
@@ -123,7 +124,8 @@ namespace TEEmployee.Models
 
         public List<User> GetAllEmployees()
         {
-            var allEmployees = _userRepository.GetAll().Where(employee => employee.Role == "3").ToList();
+            //var allEmployees = _userRepository.GetAll().Where(employee => employee.Role == "3").ToList();
+            var allEmployees = _userRepository.GetAll();
             return allEmployees;
         }
 

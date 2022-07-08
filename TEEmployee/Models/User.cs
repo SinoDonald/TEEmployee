@@ -7,8 +7,12 @@ namespace TEEmployee.Models
 {
     public class User
     {
-        public string UserId { get; set; }
-        public string UserName { get; set; }
-        public string Role { get; set; }
+        //public string UserId { get; set; }
+        //public string UserName { get; set; }
+        //public string Role { get; set; }
+
+        public string empno { get; set; }
+        public string name { get; set; }
+
     }
 }

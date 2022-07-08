@@ -10,10 +10,11 @@ namespace TEEmployee.Filters
 {
     public class MyAuthorizeAttribute : AuthorizeAttribute
     {
-        private UserTxtRepository _userRepository;
+        private IUserRepository _userRepository;
         public MyAuthorizeAttribute()
         {
-            _userRepository = new UserTxtRepository();
+            //_userRepository = new UserTxtRepository();
+            _userRepository = new UserRepository();
         }
 
         protected override bool AuthorizeCore(HttpContextBase httpContext)
@@ -50,8 +51,8 @@ namespace TEEmployee.Filters
                     
                     //Get Userinfo
                     filterContext.HttpContext.Session["empno"] = loginUser;
-                    filterContext.HttpContext.Session["empname"] = ret.UserName;
-                    filterContext.HttpContext.Session["role"] = ret.Role;
+                    filterContext.HttpContext.Session["empname"] = ret.name;
+                    //filterContext.HttpContext.Session["role"] = ret.Role;
                 }
                 else
                 {

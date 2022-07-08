@@ -28,9 +28,9 @@ namespace TEEmployee.Models
 
                 if (subs[0] == userId)
                 {
-                    ret.UserId = subs[0];
-                    ret.UserName = subs[1];
-                    ret.Role = subs[2];
+                    ret.empno = subs[0];
+                    ret.name = subs[1];
+                    //ret.Role = subs[2];
                     return ret;
                 }                
             }
@@ -47,10 +47,11 @@ namespace TEEmployee.Models
             foreach (var item in lines)
             {
                 string[] subs = item.Split('/');
-                users.Add(new User() { UserId = subs[0], UserName = subs[1], Role = subs[2] });
+                //users.Add(new User() { UserId = subs[0], UserName = subs[1], Role = subs[2] });
+                users.Add(new User() { empno = subs[0], name = subs[1] });
             }
 
-            users = users.OrderBy(a => a.UserId).ToList();
+            users = users.OrderBy(a => a.empno).ToList();
 
             return users;
         }
