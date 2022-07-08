@@ -81,9 +81,9 @@ namespace TEEmployee.Controllers
         //}
 
         [HttpPost]
-        public bool CreateResponse(List<Assessment> assessments)
+        public bool CreateResponse(List<Assessment> assessments, string state, string year)
         {
-            bool ret = _service.UpdateResponse(assessments, Session["empno"].ToString());
+            bool ret = _service.UpdateResponse(assessments, Session["empno"].ToString(), state, year);
             return ret;            
         }
 
@@ -119,6 +119,16 @@ namespace TEEmployee.Controllers
             var ret = _service.GetSelfAssessmentResponse(employee.empno);
             return Json(ret);
         }
+
+        [HttpPost]
+        public JsonResult GetResponseByYear(User employee, string year)
+        {
+            if (employee.UserId is null)
+                employee.UserId = Session["empno"].ToString();
+            var ret = _service.GetSelfAssessmentResponse(employee.UserId, year);
+            return Json(ret);
+        }
+
 
 
         [HttpPost]
@@ -175,6 +185,13 @@ namespace TEEmployee.Controllers
         public JsonResult CreateMixResponse(List<MixResponse> mixResponses, User employee)
         {
             var ret = _service.UpdateSelfAssessmentMixResponse(mixResponses, employee.empno, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult GetYearList()
+        {
+            var ret = _service.GetYearList(Session["empno"].ToString());
             return Json(ret);
         }
 

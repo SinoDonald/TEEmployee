@@ -13,68 +13,79 @@
 
 <div ng-controller="SelfCtrl" class="container" style="margin-top: 100px">
 
-    <table class="table table-striped table-borderless table-hover">
-        @*<table class="table table-striped custom-table">*@
-        <thead class="thead-dark">
-            <tr>
-                @*<th>ID</th>
-                <th>CategoryId</th>*@
-                <th>Content</th>
-                <th>Choice</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="item in SelfAssessments">
+    <form name="yearForm">
+        <label for="repeatSelect"> Select year: </label>
+        <select name="repeatSelect" id="repeatSelect" ng-model="data.model" class="custom-select custom-select-lg mb-3" ng-change="GetResponseByYear(data.model)">
+            <option ng-repeat="option in data.availableOptions" value="{{option.id}}">{{option.name}}</option>
+        </select>
+    </form>
 
-                @*<td ng-bind="item.Id"></td>
-        <td ng-bind="item.CategoryId"></td>*@
+    
 
-                <!--category-->
-                <td ng-if="item.Id == 0" ng-bind="item.Content" colspan="2" class="table-warning"></td>
-                <!--content-->
-                <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Id != 38" ng-bind="item.Content"></td>
-                <!--custom content-->
-                <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Id == 38">
-                    <input type="text" ng-model="item.Content" placeholder="自訂問題">
-                </td>
-                <!--option-->
-                <td ng-if="item.Content != '自評摘要' && item.Id != 0">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1" value="option1">
-                        <label class="form-check-label" for="inlineRadio1">優良</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio2" value="option2">
-                        <label class="form-check-label" for="inlineRadio2">普通</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio3" value="option3">
-                        <label class="form-check-label" for="inlineRadio3">尚可</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio4" value="option4">
-                        <label class="form-check-label" for="inlineRadio4">待加強</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio5" value="option5">
-                        <label class="form-check-label" for="inlineRadio5">N/A</label>
-                    </div>
-                </td>
-                <!--textarea-->
-                <td ng-if="item.Content=='自評摘要'" colspan="2" @*style="width:80%"*@>
-                    @*<input class="form-control form-control-lg" type="text" ng-model="item.Choice" placeholder="自評摘要">*@
-                    <div class="form-group">
-                        <label for="exampleFormControlTextarea1">自評摘要</label>
-                        <textarea class="form-control assesstext" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <form name="optionForm">
+        <table class="table table-striped table-borderless table-hover">
+            @*<table class="table table-striped custom-table">*@
+            <thead class="thead-dark">
+                <tr>
+                    @*<th>ID</th>
+                    <th>CategoryId</th>*@
+                    <th>Content</th>
+                    <th>Choice</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in SelfAssessments">
 
-    <div class="form-group">
+                    @*<td ng-bind="item.Id"></td>
+                    <td ng-bind="item.CategoryId"></td>*@
+
+                    <!--category-->
+                    <td ng-if="item.Id == 0" ng-bind="item.Content" colspan="2" class="table-warning"></td>
+                    <!--content-->
+                    <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Id != 38" ng-bind="item.Content"></td>
+                    <!--custom content-->
+                    <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Id == 38">
+                        <input type="text" ng-model="item.Content" placeholder="自訂問題">
+                    </td>
+                    <!--option-->
+                    <td ng-if="item.Content != '自評摘要' && item.Id != 0">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1" value="option1" required>
+                            <label class="form-check-label" for="inlineRadio1">優良</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio2" value="option2">
+                            <label class="form-check-label" for="inlineRadio2">普通</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio3" value="option3">
+                            <label class="form-check-label" for="inlineRadio3">尚可</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio4" value="option4">
+                            <label class="form-check-label" for="inlineRadio4">待加強</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio5" value="option5">
+                            <label class="form-check-label" for="inlineRadio5">N/A</label>
+                        </div>
+                    </td>
+                    <!--textarea-->
+                    <td ng-if="item.Content=='自評摘要'" colspan="2" @*style="width:80%"*@>
+                        @*<input class="form-control form-control-lg" type="text" ng-model="item.Choice" placeholder="自評摘要">*@
+                        <div class="form-group">
+                            <label for="exampleFormControlTextarea1">自評摘要</label>
+                            <textarea class="form-control assesstext" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    <div class="form-group" ng-if="state!='submit'">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Save" ng-click="CreateResponse()" class="btn btn-warning" />
+            <input type="submit" value="Save" ng-click="CreateResponse('save')" class="btn btn-warning" />
+            <input type="submit" value="Submit" ng-disabled="optionForm.$invalid" ng-click="CreateResponse('submit')" class="btn btn-warning" />
         </div>
     </div>
 

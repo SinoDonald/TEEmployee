@@ -147,6 +147,7 @@
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserRepository.cs" />
     <Compile Include="Models\UserTxtRepository.cs" />
+    <Compile Include="Models\Utilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

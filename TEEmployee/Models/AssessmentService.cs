@@ -46,26 +46,47 @@ namespace TEEmployee.Models
         //{
         //    return _selfAssessmentRepository.Get(id);
         //}
-
-        public bool UpdateResponse(List<Assessment> assessments, string user)
+        
+        
+        public bool UpdateResponse(List<Assessment> assessments, string user, string state, string year)
         {
-            return _assessmentRepository.Update(assessments, user);
+            //return _assessmentRepository.Update(assessments, user);
+            return (_assessmentRepository as SelfAssessmentTxtRepository).Update(assessments, user, state, year);
         }
+
         public bool UpdateManageResponse(List<Assessment> assessments, string user)
         {
             //_assessmentRepository = new ManageAssessmentTxtRepository();
             return _assessmentRepository.Update(assessments, user);
         }
         public bool UpdateMResponse(List<Assessment> assessments, string empId, string user)
-        {
+        { 
             return (_assessmentRepository as SelfAssessmentTxtRepository).UpdateMResponse(assessments, empId, user);
         }
 
-        public List<Assessment> GetSelfAssessmentResponse(string user)
-        {            
-            var selfAssessmentResponse = _assessmentRepository.GetResponse(user);
-            return selfAssessmentResponse;
-        }        
+        //public List<Assessment> GetSelfAssessmentResponse(string user)
+        //{            
+        //    var selfAssessmentResponse = _assessmentRepository.GetResponse(user);
+        //    return selfAssessmentResponse;
+        //}
+
+        //with state
+        public SelfAssessResponse GetSelfAssessmentResponse(string user, string year = "")
+        {
+            if (String.IsNullOrEmpty(year))
+                year = Utilities.DayStr();
+
+            string state = "submit";
+            var selfAssessmentResponse = (_assessmentRepository as SelfAssessmentTxtRepository).GetResponse(user, state, year);
+
+            if (selfAssessmentResponse.Count == 0)
+            {
+                state = "save";
+                selfAssessmentResponse = (_assessmentRepository as SelfAssessmentTxtRepository).GetResponse(user, state, year);
+            }
+
+            return new SelfAssessResponse() { Responses = selfAssessmentResponse, State = state };
+        }
 
         public List<Assessment> GetSelfAssessmentMResponse(string empId, string user)
         {
@@ -177,7 +198,13 @@ namespace TEEmployee.Models
             return (_assessmentRepository as SelfAssessmentTxtRepository).UpdateMResponse(assessments, empId, user);
         }
 
-        
+        public List<string> GetYearList(string user)
+        {            
+            var assessYearList = (_assessmentRepository as SelfAssessmentTxtRepository).GetYearList(user);                      
+            return assessYearList;
+        }
+
+
 
         public void Dispose()
         {
@@ -185,4 +212,12 @@ namespace TEEmployee.Models
             //_responseRepository.Dispose();
         }
     }
+
+    public class SelfAssessResponse
+    {
+        public string State { get; set; }
+        public List<Assessment> Responses { get; set; }
+    }
+
+
 }

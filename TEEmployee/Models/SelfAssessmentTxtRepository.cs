@@ -116,6 +116,32 @@ namespace TEEmployee.Models
             return ret;
         }
 
+        public bool Update(List<Assessment> assessments, string user, string state, string year)
+        {
+            string fn = Path.Combine(_appData, $"Response/{year}/{state}/{user}.txt");
+
+            bool ret = false;
+            try
+            {
+                List<string> responses = new List<string>();
+
+                foreach (var item in assessments)
+                {
+                    responses.Add($"{item.Id}/{item.CategoryId}/{item.Content}/{item.Choice}");
+                }
+
+                (new FileInfo(fn)).Directory.Create();
+                System.IO.File.WriteAllLines(fn, responses);
+                ret = true;
+            }
+            catch (Exception)
+            {
+                ret = false;
+            }
+            return ret;
+        }
+
+
 
         public List<Assessment> GetResponse(string user)
         {
@@ -149,6 +175,46 @@ namespace TEEmployee.Models
 
             return selfResponse;
         }
+
+        public List<Assessment> GetResponse(string user, string state, string year)
+        {
+            List<Assessment> selfResponse = new List<Assessment>();
+            
+            try
+            {
+                string fn = Path.Combine(_appData, $"Response/{year}/{state}/{user}.txt");
+                string[] lines = System.IO.File.ReadAllLines(fn);
+                foreach (var item in lines)
+                {
+                    string[] subs = item.Split('/');
+                    Assessment selfAssessment = new Assessment();
+
+                    selfAssessment.Id = Convert.ToInt32(subs[0]);
+                    selfAssessment.CategoryId = Convert.ToInt32(subs[1]);
+                    selfAssessment.Content = subs[2];
+                    selfAssessment.Choice = subs[3];
+                    selfResponse.Add(selfAssessment);
+                }
+
+                selfResponse = selfResponse.OrderBy(a => a.CategoryId).ThenBy(a => a.Id).ToList();
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+
+            return selfResponse;
+        }
+
+
 
         public List<Assessment> GetAllResponses()
         {
@@ -237,5 +303,33 @@ namespace TEEmployee.Models
             return selfResponse;
         }
 
+
+        public List<string> GetYearList(string userId)
+        {
+            List<string> years = new List<string>();
+
+            string dn = Path.Combine(_appData, "Response");  
+            var dirs = System.IO.Directory.GetDirectories(dn);
+
+            foreach (var dir in dirs)
+            {
+                if(File.Exists(Path.Combine(dn, $"{dir}/submit/{userId}.txt")))
+                {
+                    years.Add((new DirectoryInfo(dir)).Name);
+                }
+                else if (File.Exists(Path.Combine(dn, $"{dir}/save/{userId}.txt")))
+                {
+                    years.Add((new DirectoryInfo(dir)).Name);
+                }
+            }
+
+            if (!years.Contains(Utilities.DayStr()))
+            {
+                years.Add(Utilities.DayStr());
+            }
+
+            return years.OrderByDescending(a => a).ToList();
+        }
+        
     }
 }
