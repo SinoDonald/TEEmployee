@@ -89,6 +89,14 @@
         </div>
     </div>
 
+    <ul>
+        <li ng-repeat="item in Feedbacks">
+            <h3 ng-bind="item.Name"></h3>
+            <p ng-bind="item.Text"></p>
+        </li>
+    </ul>
+
+
 </div>
 
 @section Scripts {

@@ -232,6 +232,7 @@
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
     <Content Include="Scripts\Webapp\Assessment\EmployeeCtrl.js" />
+    <Content Include="Scripts\Webapp\Assessment\FeedbackCtrl.js" />
     <Content Include="Scripts\Webapp\Assessment\ManageCtrl.js" />
     <Content Include="Scripts\Webapp\Assessment\SelfChart.js" />
     <Content Include="Scripts\Webapp\Assessment\SelfChartCtrl.js" />
@@ -272,6 +273,9 @@
     <Content Include="Views\Assessment\EmpList.cshtml" />
     <Content Include="Views\Assessment\AssessEmp.cshtml" />
     <Content Include="Views\Home\Unauthorized.cshtml" />
+    <Content Include="Views\Assessment\Feedback.cshtml" />
+    <Content Include="Views\Assessment\EmployeeList.cshtml" />
+    <Content Include="Views\Assessment\AssessEmployee.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Response\" />

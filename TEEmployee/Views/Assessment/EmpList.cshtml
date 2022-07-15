@@ -1,21 +1,104 @@
 ﻿
 
 <div ng-controller="EmpListCtrl">
-    
-    <h2>Hey Boss !! <input type="text" ng-model="search.UserName" placeholder="Enter your search"></h2>
 
-    <div class="card-deck employee">
+    <h2>Hey Boss !! <input type="text" ng-model="search.Employee.name" placeholder="Enter your search"></h2>
+
+    <form name="myForm">
+
+        <div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" ng-model="search.State" name="inlineRadioOptions" id="inlineRadio1" value="" checked>
+                <label class="form-check-label" for="inlineRadio1">All</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" ng-model="search.State" name="inlineRadioOptions" id="inlineRadio2" value="unfinished">
+                <label class="form-check-label" for="inlineRadio2">Unfinished</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" ng-model="search.State" name="inlineRadioOptions" id="inlineRadio3" value="submit">
+                <label class="form-check-label" for="inlineRadio3">Submit</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" ng-model="search.State" name="inlineRadioOptions" id="inlineRadio4" value="complete">
+                <label class="form-check-label" for="inlineRadio4">Complete</label>
+            </div>
+        </div>
+    
+    </form>
+
+
+
+
+    @*<div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-secondary active">
+                <input type="radio" ng-model="search.State" name="options" id="option1" value="" autocomplete="off"> All
+            </label>
+            <label class="btn btn-secondary">
+                <input type="radio" ng-model="search.State" name="options" id="option2" value="unfinished" autocomplete="off"> Unfinished
+            </label>
+            <label class="btn btn-secondary">
+                <input type="radio" ng-model="search.State" name="options" id="option3" value="submit" autocomplete="off"> Submit
+            </label>
+            <label class="btn btn-secondary">
+                <input type="radio" ng-model="search.State" name="options" id="option3" value="finished" autocomplete="off"> Finished
+            </label>
+        </div>*@
+
+    <!--<form name="myForm">
+
+        <div class="btn-group-vertical">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" ng-model="choices.SelectedPerson" name="inlineRadioOptions" id="inlineRadio1" value="option1" required>
+                <label class="form-check-label" for="inlineRadio1">優良</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" ng-model="choices.SelectedPerson" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                <label class="form-check-label" for="inlineRadio2">普通</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" ng-model="choices.SelectedPerson" name="inlineRadioOptions" id="inlineRadio3" value="option3">
+                <label class="form-check-label" for="inlineRadio3">尚可</label>
+            </div>
+        </div>-->
+    @*<p>Favorite Beatle</p>
+        <div class="btn-group-vertical" data-toggle="buttons">
+            <label class="btn btn-primary active" ng-repeat="person in people">
+                <input type="radio" name="options" id="option1" autocomplete="off" ng-model="choices.SelectedPerson" value="{{person.name}}" required> {{person.name}}
+            </label>
+        </div>*@
+
+    <!--<p><tt>myForm.$invalid: {{myForm.$invalid}}</tt></p>
+
+        You chose: <strong>{{choices.SelectedPerson}}</strong>
+
+        <button ng-disabled="myForm.$invalid">Submit</button>
+    </form>-->
+    @*<div class="card-deck employee card-columns">
+            <div class="card" ng-repeat="emp in Employees | filter: search:strict">
+                <img class="card-img-top" src="~/Content/assets/img/man.png" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{emp.name}}</h5>
+                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    <button ng-click="Review(emp)">Click</button>
+                    <a ui-sref="Review">Click</a>
+                    <a href="~/#/Review">Call Second Page</a>
+                    <a href="/#/Review">Call Second Page</a>
+                    <a href="#/Review">Call Second Page</a>
+                </div>
+            </div>
+        </div>*@
+
+    <div class="card-columns">
         <div class="card" ng-repeat="emp in Employees | filter: search:strict">
-            <img class="card-img-top" src="~/Content/assets/img/man.png" alt="Card image cap">
+            @*<img class="card-img-top" src="~/Content/assets/img/man.png" alt="Card image cap">*@
             <div class="card-body">
-                <h5 class="card-title">{{emp.UserName}}</h5>
-                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <h5 class="card-title">{{emp.Employee.name}}</h5>
+                <p class="card-text">{{emp.State}}</p>
                 <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
                 <button ng-click="Review(emp)">Click</button>
                 <a ui-sref="Review">Click</a>
-                <a href="~/#/Review">Call Second Page</a>
-                <a href="/#/Review">Call Second Page</a>
-                <a href="#/Review">Call Second Page</a>
             </div>
         </div>
     </div>

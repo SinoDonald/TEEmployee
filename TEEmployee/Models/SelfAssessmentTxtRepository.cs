@@ -116,30 +116,30 @@ namespace TEEmployee.Models
             return ret;
         }
 
-        public bool Update(List<Assessment> assessments, string user, string state, string year)
-        {
-            string fn = Path.Combine(_appData, $"Response/{year}/{state}/{user}.txt");
+        //public bool Update(List<Assessment> assessments, string user, string state, string year)
+        //{
+        //    string fn = Path.Combine(_appData, $"Response/{year}/{state}/{user}.txt");
 
-            bool ret = false;
-            try
-            {
-                List<string> responses = new List<string>();
+        //    bool ret = false;
+        //    try
+        //    {
+        //        List<string> responses = new List<string>();
 
-                foreach (var item in assessments)
-                {
-                    responses.Add($"{item.Id}/{item.CategoryId}/{item.Content}/{item.Choice}");
-                }
+        //        foreach (var item in assessments)
+        //        {
+        //            responses.Add($"{item.Id}/{item.CategoryId}/{item.Content}/{item.Choice}");
+        //        }
 
-                (new FileInfo(fn)).Directory.Create();
-                System.IO.File.WriteAllLines(fn, responses);
-                ret = true;
-            }
-            catch (Exception)
-            {
-                ret = false;
-            }
-            return ret;
-        }
+        //        (new FileInfo(fn)).Directory.Create();
+        //        System.IO.File.WriteAllLines(fn, responses);
+        //        ret = true;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        ret = false;
+        //    }
+        //    return ret;
+        //}
 
 
 
@@ -213,6 +213,64 @@ namespace TEEmployee.Models
 
             return selfResponse;
         }
+
+        // 0713
+        public List<Assessment> GetResponse(string user, string year)
+        {
+            List<Assessment> selfResponse = new List<Assessment>();
+
+            try
+            {
+                string fn = Path.Combine(_appData, $"Response/{year}/{user}.txt");
+                string[] lines = System.IO.File.ReadAllLines(fn);
+                
+                for(int i = 1; i != lines.Length; i++) 
+                {
+                    string[] subs = lines[i].Split('/');
+
+                    Assessment selfAssessment = new Assessment();
+
+                    selfAssessment.Id = Convert.ToInt32(subs[0]);
+                    selfAssessment.CategoryId = Convert.ToInt32(subs[1]);
+                    selfAssessment.Content = subs[2];
+                    selfAssessment.Choice = subs[3];
+                    selfResponse.Add(selfAssessment);
+                }
+
+                selfResponse = selfResponse.OrderBy(a => a.CategoryId).ThenBy(a => a.Id).ToList();
+            }
+            catch
+            {
+
+            }
+
+            return selfResponse;
+        }
+
+        public string GetStateOfResponse(string user, string year)
+        {
+            List<Assessment> selfResponse = new List<Assessment>();
+            string state = "";
+
+            try
+            {
+                string fn = Path.Combine(_appData, $"Response/{year}/{user}.txt");
+
+                string line = File.ReadLines(fn).FirstOrDefault();
+
+                if (line != "")                
+                    state = line.Split(';')[0];                
+
+            }
+            catch
+            {
+
+            }
+
+            return state;
+        }
+
+
 
 
 
@@ -304,23 +362,47 @@ namespace TEEmployee.Models
         }
 
 
+        //public List<string> GetYearList(string userId)
+        //{
+        //    List<string> years = new List<string>();
+
+        //    string dn = Path.Combine(_appData, "Response");  
+        //    var dirs = System.IO.Directory.GetDirectories(dn);
+
+        //    foreach (var dir in dirs)
+        //    {
+        //        if(File.Exists(Path.Combine(dn, $"{dir}/submit/{userId}.txt")))
+        //        {
+        //            years.Add((new DirectoryInfo(dir)).Name);
+        //        }
+        //        else if (File.Exists(Path.Combine(dn, $"{dir}/save/{userId}.txt")))
+        //        {
+        //            years.Add((new DirectoryInfo(dir)).Name);
+        //        }
+        //    }
+
+        //    if (!years.Contains(Utilities.DayStr()))
+        //    {
+        //        years.Add(Utilities.DayStr());
+        //    }
+
+        //    return years.OrderByDescending(a => a).ToList();
+        //}
+
+        // 0713
         public List<string> GetYearList(string userId)
         {
             List<string> years = new List<string>();
 
-            string dn = Path.Combine(_appData, "Response");  
+            string dn = Path.Combine(_appData, "Response");
             var dirs = System.IO.Directory.GetDirectories(dn);
 
             foreach (var dir in dirs)
             {
-                if(File.Exists(Path.Combine(dn, $"{dir}/submit/{userId}.txt")))
+                if (File.Exists(Path.Combine(dn, $"{dir}/{userId}.txt")))
                 {
                     years.Add((new DirectoryInfo(dir)).Name);
-                }
-                else if (File.Exists(Path.Combine(dn, $"{dir}/save/{userId}.txt")))
-                {
-                    years.Add((new DirectoryInfo(dir)).Name);
-                }
+                }               
             }
 
             if (!years.Contains(Utilities.DayStr()))
@@ -330,6 +412,147 @@ namespace TEEmployee.Models
 
             return years.OrderByDescending(a => a).ToList();
         }
-        
+
+        // update the state in the first line
+        public bool Update(List<Assessment> assessments, string user, string state, string year, DateTime time)
+        {
+            string fn = Path.Combine(_appData, $"Response/{year}/{user}.txt");
+
+            bool ret = false;
+            try
+            {
+
+                List<string> responses = new List<string>();
+
+                responses.Add($"{state};{time}");
+
+                foreach (var item in assessments)
+                {
+                    responses.Add($"{item.Id}/{item.CategoryId}/{item.Content}/{item.Choice}");
+                }
+
+                (new FileInfo(fn)).Directory.Create();
+                System.IO.File.WriteAllLines(fn, responses);
+                ret = true;
+
+            }
+            catch (Exception)
+            {
+                ret = false;
+            }
+            return ret;
+        }
+
+        // 0715: Get feedback with state for manager
+        public (string, string) GetFeedback(string empno, string manno, string name)
+        {
+
+            (string, string) feedback = ("", "");
+
+            try
+            {
+                string fn = Path.Combine(_appData, $"Feedback/{Utilities.DayStr()}/{empno}.txt");
+
+                foreach (var line in File.ReadLines(fn))
+                {
+                    if (line.Contains($"{name}\t{manno}"))
+                    {
+                        string[] subs = line.Split('\t');
+                        feedback = (subs[2], subs[3]);
+                        break;
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            return feedback;
+        }
+
+        // 0715 Get all "submit" feedbacks
+        public List<(string, string)> GetAllFeedbacks(string empno, string year)
+        {
+            List<(string, string)> feedbacks = new List<(string, string)>();
+            
+            try
+            {
+                string fn = Path.Combine(_appData, $"Feedback/{year}/{empno}.txt");
+                string[] lines = System.IO.File.ReadAllLines(fn);
+
+                foreach(var item in lines)
+                {
+                    string[] subs = item.Split('\t');
+
+                    if (subs[2] == "submit")
+                        feedbacks.Add((subs[0], subs[3]));
+                }
+            }
+            catch
+            {
+
+            }
+
+            return feedbacks;
+        }
+
+
+
+
+        public bool UpdateFeedback(string feedback, string state, string empno, string manno, string name)
+        {
+            string fn = Path.Combine(_appData, $"Feedback/{Utilities.DayStr()}/{empno}.txt");
+
+            bool ret = false;
+            try
+            {
+                string feedbackText = $"{name}\t{manno}\t{state}\t{feedback}";
+
+                if (!File.Exists(fn))
+                {
+                    // create the file directory if not exist
+                    (new FileInfo(fn)).Directory.Create();
+                    System.IO.File.WriteAllLines(fn, new string[] { feedbackText });
+                }
+                else
+                {
+                    var lines = File.ReadAllLines(fn);
+                    bool isExist = false;
+
+
+                    for (int i = 0; i != lines.Length; i++)
+                    {
+                        if (lines[i].Contains($"{name}\t{manno}"))
+                        {
+                            lines[i] = feedbackText;
+                            isExist = true;
+                        }
+                    }
+
+                    if (!isExist)
+                        lines.Append(feedbackText);
+
+                    System.IO.File.WriteAllLines(fn, lines);
+
+                }
+                
+                ret = true;
+            }
+            catch (Exception)
+            {
+                ret = false;
+            }
+            return ret;
+        }
+
+
+
+
+
+
+
+
     }
 }

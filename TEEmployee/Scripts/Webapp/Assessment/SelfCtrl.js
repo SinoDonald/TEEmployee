@@ -27,6 +27,11 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Assessment/GetYearList', o);
     };
 
+    this.GetAllFeedbacks = function (o) {
+        return $http.post('Assessment/GetAllFeedbacks', o);
+    };
+
+    
 }]);
 
 app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
@@ -97,8 +102,16 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', fun
                 //    });
 
                 //});
-                if (ret.data.Responses.length !== 0)
+                if (ret.data.Responses.length !== 0) {
+
                     $scope.SelfAssessments = ret.data.Responses
+
+                    appService.GetAllFeedbacks({ year: year })
+                        .then(function (ret) {
+                            $scope.Feedbacks = ret.data;
+                        });
+                }
+                    
                 else {
                     appService.GetAllSelfAssessments({})
                         .then(function (ret) {
@@ -119,6 +132,9 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', fun
 
 
     $scope.GetResponseByYear();
+
+    
+
 
 
     //appService.GetAllSelfAssessments({})

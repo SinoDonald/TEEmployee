@@ -1,0 +1,44 @@
+﻿
+<div ng-controller="EmployeeListCtrl">
+
+    <h2>Hey ! Boss !! <input type="text" ng-model="search.Employee.name" placeholder="Enter your search"></h2>
+
+    <form name="myForm">
+
+        <div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" ng-model="search.State" name="inlineRadioOptions" id="inlineRadio1" value="" checked>
+                <label class="form-check-label" for="inlineRadio1">All</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" ng-model="search.State" name="inlineRadioOptions" id="inlineRadio2" value="unfinished">
+                <label class="form-check-label" for="inlineRadio2">Unfinished</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" ng-model="search.State" name="inlineRadioOptions" id="inlineRadio3" value="submit">
+                <label class="form-check-label" for="inlineRadio3">Submit</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" ng-model="search.State" name="inlineRadioOptions" id="inlineRadio4" value="complete">
+                <label class="form-check-label" for="inlineRadio4">Complete</label>
+            </div>
+        </div>
+
+    </form>
+
+
+
+    <div class="card-columns">
+        <div class="card" ng-repeat="emp in Employees | filter: search:strict">
+            @*<img class="card-img-top" src="~/Content/assets/img/man.png" alt="Card image cap">*@
+            <div class="card-body">
+                <h5 class="card-title">{{emp.Employee.name}}</h5>
+                <p class="card-text">{{emp.State}}</p>
+                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                <button ng-if="emp.State == 'submit' || emp.State == 'complete' " ng-click="Review(emp)">Click</button>
+                <a ui-sref="Review">Click</a>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -37,6 +37,10 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Assessment/GetAllEmployees', o);
     };
 
+    this.GetAllEmployeesWithState = function (o) {
+        return $http.post('Assessment/GetAllEmployeesWithState', o);
+    };
+
     this.GetResponse = function (o) {
         return $http.post('Assessment/GetResponse', o);
     };
@@ -93,13 +97,34 @@ app.controller('EmpListCtrl', ['$scope', '$location', 'appService', '$rootScope'
 
     $scope.Employees = [];
 
-    appService.GetAllEmployees({})
+    $scope.people = [{
+        name: "John"
+    }, {
+        name: "Paul"
+    }, {
+        name: "George"
+    }, {
+        name: "Ringo"
+    }];
+
+    $scope.choices = {};
+
+    //appService.GetAllEmployees({})
+    //    .then(function (ret) {
+    //        $scope.Employees = ret.data;
+    //    })
+    //    .catch(function (ret) {
+    //        alert('Error');
+    //    });
+
+    appService.GetAllEmployeesWithState({})
         .then(function (ret) {
             $scope.Employees = ret.data;
         })
         .catch(function (ret) {
             alert('Error');
         });
+
 
     $scope.Review = function (data) {
         /*myFactory.set(data);*/

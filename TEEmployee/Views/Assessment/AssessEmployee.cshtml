@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "Review";
+}
+
+<h2>Review</h2>
+
+
+<div ng-controller="AssessEmployeeCtrl" class="container" style="margin-top: 100px">
+
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                @*<a class="nav-item nav-link" ui-sref="AssessEmp">AssessEmp</a>
+                    <a class="nav-item nav-link" ui-sref="Compare">Compare</a>*@
+                <a class="nav-item nav-link" ui-sref="EmployeeList">Employee List</a>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <table class="table table-striped table-borderless table-hover">
+
+        <thead class="thead-dark">
+            <tr>
+                <th>Content</th>
+                <th>Choice</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr ng-repeat="item in Responses">
+
+                @*category name*@
+                <td ng-if="item.Id == 0" ng-bind="item.Content" colspan="2" class="table-warning"></td>
+                @*content and choice*@
+                <td ng-if="item.Content != '自評摘要' && item.Id != 0" ng-bind="item.Content"></td>
+
+                <td ng-if="item.Content != '自評摘要' && item.Id != 0" ng-bind="item.Choice"></td>
+
+                <td ng-if="item.Content=='自評摘要'" colspan="2">
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">自評摘要</label>
+                        <p ng-bind="item.Choice"></p>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <!--textarea-->
+    <form name="textForm">
+        <div>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">意見回饋</label>
+                <textarea class="form-control assesstext" ng-model="feedback" id="exampleFormControlTextarea1" rows="3" required></textarea>
+            </div>
+        </div>
+    </form>
+
+    <div class="form-group" ng-if="state!='submit'">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" ng-click="UpdateFeedback('save')" class="btn btn-warning" />
+            <input type="submit" value="Submit" ng-disabled="textForm.$invalid" ng-click="UpdateFeedback('submit')" class="btn btn-warning" />
+        </div>
+    </div>
+    
+
+
+
+</div>

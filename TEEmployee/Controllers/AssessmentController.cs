@@ -55,6 +55,18 @@ namespace TEEmployee.Controllers
         {            
             return PartialView();
         }
+        public ActionResult Feedback()
+        {
+            return View();
+        }
+        public ActionResult EmployeeList()
+        {
+            return PartialView();
+        }
+        public ActionResult AssessEmployee()
+        {
+            return PartialView();
+        }
 
 
         // Web api---
@@ -122,7 +134,7 @@ namespace TEEmployee.Controllers
 
         [HttpPost]
         public JsonResult GetResponseByYear(User employee, string year)
-        {
+        {            
             if (employee.empno is null)
                 employee.empno = Session["empno"].ToString();
             var ret = _service.GetSelfAssessmentResponse(employee.empno, year);
@@ -161,6 +173,14 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllEmployeesWithState()
+        {
+            var ret = _service.GetAllEmployeesWithState(Session["empno"].ToString(), Session["empname"].ToString());
+            return Json(ret);
+        }
+
+
+        [HttpPost]
         public bool CreateMResponse(List<Assessment> assessments, User employee)
         {
             bool ret = _service.UpdateMResponse(assessments, employee.empno, Session["empno"].ToString());
@@ -193,6 +213,28 @@ namespace TEEmployee.Controllers
         {
             var ret = _service.GetYearList(Session["empno"].ToString());
             return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult GetFeedback(string empno)
+        {
+            var ret = _service.GetFeedback(empno, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllFeedbacks(string year)
+        {
+            var ret = _service.GetAllFeedbacks(Session["empno"].ToString(), year);
+            return Json(ret);
+        }
+
+
+        [HttpPost]
+        public bool UpdateFeedback(string feedback, string state, string empno)
+        {
+            bool ret = _service.UpdateFeedback(feedback, state, empno, Session["empno"].ToString());
+            return ret;
         }
 
         protected override void Dispose(bool disposing)

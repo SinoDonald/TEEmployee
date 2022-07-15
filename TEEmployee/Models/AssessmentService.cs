@@ -51,7 +51,8 @@ namespace TEEmployee.Models
         public bool UpdateResponse(List<Assessment> assessments, string user, string state, string year)
         {
             //return _assessmentRepository.Update(assessments, user);
-            return (_assessmentRepository as SelfAssessmentTxtRepository).Update(assessments, user, state, year);
+            //return (_assessmentRepository as SelfAssessmentTxtRepository).Update(assessments, user, state, year);
+            return (_assessmentRepository as SelfAssessmentTxtRepository).Update(assessments, user, state, year, DateTime.Now);
         }
 
         public bool UpdateManageResponse(List<Assessment> assessments, string user)
@@ -64,6 +65,41 @@ namespace TEEmployee.Models
             return (_assessmentRepository as SelfAssessmentTxtRepository).UpdateMResponse(assessments, empId, user);
         }
 
+
+        public Feedback GetFeedback(string empno, string manno)
+        {
+            var name = _userRepository.Get(manno).name;
+            var res = (_assessmentRepository as SelfAssessmentTxtRepository).GetFeedback(empno, manno, name);
+
+            return new Feedback() { State = res.Item1, Text = res.Item2 };
+        }
+
+        public List<Feedback> GetAllFeedbacks(string user, string year)
+        {
+            
+            if (String.IsNullOrEmpty(year))
+                year = Utilities.DayStr();
+
+            List<Feedback> feedbacks = new List<Feedback>();
+
+            var res = (_assessmentRepository as SelfAssessmentTxtRepository).GetAllFeedbacks(user, year);
+
+            foreach (var item in res)
+                feedbacks.Add(new Feedback() { Name = item.Item1, Text = item.Item2 });
+            
+            return feedbacks;
+        }
+
+
+
+        public bool UpdateFeedback(string feedback, string state, string empno, string manno)
+        {
+            var name = _userRepository.Get(manno).name;
+            return (_assessmentRepository as SelfAssessmentTxtRepository).UpdateFeedback(feedback, state, empno, manno, name);
+        }
+
+        
+
         //public List<Assessment> GetSelfAssessmentResponse(string user)
         //{            
         //    var selfAssessmentResponse = _assessmentRepository.GetResponse(user);
@@ -71,22 +107,34 @@ namespace TEEmployee.Models
         //}
 
         //with state
+        //public SelfAssessResponse GetSelfAssessmentResponse(string user, string year = "")
+        //{
+        //    if (String.IsNullOrEmpty(year))
+        //        year = Utilities.DayStr();
+
+        //    string state = "submit";
+        //    var selfAssessmentResponse = (_assessmentRepository as SelfAssessmentTxtRepository).GetResponse(user, state, year);
+
+        //    if (selfAssessmentResponse.Count == 0)
+        //    {
+        //        state = "save";
+        //        selfAssessmentResponse = (_assessmentRepository as SelfAssessmentTxtRepository).GetResponse(user, state, year);
+        //    }
+
+        //    return new SelfAssessResponse() { Responses = selfAssessmentResponse, State = state };
+        //}
+
         public SelfAssessResponse GetSelfAssessmentResponse(string user, string year = "")
         {
             if (String.IsNullOrEmpty(year))
                 year = Utilities.DayStr();
 
-            string state = "submit";
-            var selfAssessmentResponse = (_assessmentRepository as SelfAssessmentTxtRepository).GetResponse(user, state, year);
-
-            if (selfAssessmentResponse.Count == 0)
-            {
-                state = "save";
-                selfAssessmentResponse = (_assessmentRepository as SelfAssessmentTxtRepository).GetResponse(user, state, year);
-            }
+            string state = (_assessmentRepository as SelfAssessmentTxtRepository).GetStateOfResponse(user, year);
+            var selfAssessmentResponse = (_assessmentRepository as SelfAssessmentTxtRepository).GetResponse(user, year);
 
             return new SelfAssessResponse() { Responses = selfAssessmentResponse, State = state };
         }
+
 
         public List<Assessment> GetSelfAssessmentMResponse(string empId, string user)
         {
@@ -149,6 +197,41 @@ namespace TEEmployee.Models
             var allEmployees = _userRepository.GetAll();
             return allEmployees;
         }
+
+        // 0713
+        public List<EmployeesWithState> GetAllEmployeesWithState(string manno, string name)
+        {
+            //var allEmployees = _userRepository.GetAll().Where(employee => employee.Role == "3").ToList();
+
+            List<EmployeesWithState> employeesWithStates = new List<EmployeesWithState>();
+
+            var allEmployees = _userRepository.GetAll();
+
+            foreach (var item in allEmployees)
+            {
+                string state = "unfinished";
+
+                var empState = (_assessmentRepository as SelfAssessmentTxtRepository).GetStateOfResponse(item.empno, Utilities.DayStr());
+                var manState = (_assessmentRepository as SelfAssessmentTxtRepository).GetFeedback(item.empno, manno, name);
+
+
+                if (empState == "submit")
+                    state = "submit";
+
+                if (manState.Item1 == "submit")
+                    state = "complete";
+
+                employeesWithStates.Add(new EmployeesWithState()
+                {
+                    Employee = item,
+                    State = state
+                });
+            }
+            
+            return employeesWithStates;
+        }
+
+
 
         public List<MixResponse> GetSelfAssessmentMixResponse(string empId, string user)
         {
@@ -219,5 +302,17 @@ namespace TEEmployee.Models
         public List<Assessment> Responses { get; set; }
     }
 
+    public class EmployeesWithState
+    {
+        public User Employee { get; set; }
+        public string State { get; set; }
+    }
+
+    public class Feedback
+    {
+        public string Name { get; set; }
+        public string Text { get; set; }
+        public string State { get; set; }
+    }
 
 }
