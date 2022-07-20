@@ -13,6 +13,6 @@ namespace TEEmployee.Models
 
         public string empno { get; set; }
         public string name { get; set; }
-
+        public string dutyName { get; set; }
     }
 }

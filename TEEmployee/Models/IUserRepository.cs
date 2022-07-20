@@ -13,6 +13,7 @@ namespace TEEmployee.Models
         //bool Insert(User user);
         //bool Update(User user);
         //bool Delete(int UserId);
+        List<User> GetManagers();
         void Dispose();
     }
 }
