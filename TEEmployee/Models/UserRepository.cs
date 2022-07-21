@@ -35,14 +35,6 @@ namespace TEEmployee.Models
 
             return ret;
         }
-        public List<User> GetManagers()
-        {
-            List<User> ret;
-            string sql = @"select * from user where duty != 'NULL' order by dutyName";
-            ret = conn.Query<User>(sql).ToList();
-
-            return ret;
-        }
         public User Get(string id)
         {
             User ret;
