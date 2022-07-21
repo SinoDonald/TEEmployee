@@ -10,6 +10,7 @@
         <tbody>
             <tr ng-repeat="item in ManageAssessments">
                 <td ng-if="item.Id == 0" ng-bind="item.Content" colspan="2" class="table-warning"></td>
+                Content
                 <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Id != 44" ng-bind="item.Content"></td>
                 <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Id == 44">
                     <input type="text" ng-model="item.Content" placeholder="自訂問題">
