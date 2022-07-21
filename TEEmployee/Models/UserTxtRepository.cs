@@ -55,11 +55,7 @@ namespace TEEmployee.Models
 
             return users;
         }
-        public List<User> GetManagers()
-        {
-            List<User> users = new List<User>();
-            return users;
-        }
+
         public void Dispose()
         {
             return;
