@@ -28,7 +28,6 @@ namespace TEEmployee.Controllers
         }
         public ActionResult Manage()
         {
-            //_service = new AssessmentService("manage");
             return View();
         }
         public ActionResult ManagerSuggest()
@@ -173,6 +172,13 @@ namespace TEEmployee.Controllers
         public JsonResult GetAllEmployees()
         {
             var ret = _service.GetAllEmployees();
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult GetManagers()
+        {
+            var ret = _service.GetManagers();
             return Json(ret);
         }
 
