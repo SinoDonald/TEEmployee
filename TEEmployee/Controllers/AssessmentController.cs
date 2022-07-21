@@ -30,6 +30,10 @@ namespace TEEmployee.Controllers
         {
             return View();
         }
+        public ActionResult ManagerSuggest()
+        {
+            return View();
+        }
         public ActionResult SelfChart()
         {
             return View();

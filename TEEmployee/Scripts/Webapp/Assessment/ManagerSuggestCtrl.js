@@ -6,9 +6,6 @@ app.run(['$http', '$window', function ($http, $window) {
 }]);
 
 app.service('appService', ['$http', function ($http) {
-    this.GetManagers = function (o) {
-        return $http.post('Assessment/GetManagers', o);
-    };
 
     this.GetAllManageAssessments = function (o) {
         return $http.post('Assessment/GetAllManageAssessments', o);
@@ -23,7 +20,7 @@ app.service('appService', ['$http', function ($http) {
     };
 }]);
 
-app.controller('ManageCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
+app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
 
     $scope.ManageAssessments = [];
 
@@ -35,14 +32,6 @@ app.controller('ManageCtrl', ['$scope', '$window', 'appService', '$rootScope', f
                 $window.location.href = '/Home';
             });
     }
-
-    appService.GetManagers({})
-        .then(function (ret) {
-            $scope.GetManagers = ret.data;
-        })
-        .catch(function (ret) {
-            alert('Error');
-        });
 
     appService.GetAllManageAssessments({})
         .then(function (ret) {
