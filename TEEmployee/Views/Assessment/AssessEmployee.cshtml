@@ -39,16 +39,23 @@
                 @*category name*@
                 <td ng-if="item.Id == 0" ng-bind="item.Content" colspan="2" class="table-warning"></td>
                 @*content and choice*@
-                <td ng-if="item.Content != '自評摘要' && item.Id != 0" ng-bind="item.Content"></td>
+                <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Content != '意見回饋'" ng-bind="item.Content"></td>
 
-                <td ng-if="item.Content != '自評摘要' && item.Id != 0" ng-bind="item.Choice"></td>
+                <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Content != '意見回饋'" ng-bind="item.Choice"></td>
 
-                <td ng-if="item.Content=='自評摘要'" colspan="2">
+                <td ng-if="item.Content =='自評摘要'" colspan="2">
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1">自評摘要</label>
                         <p ng-bind="item.Choice"></p>
                     </div>
                 </td>
+                <td ng-if="item.Content =='意見回饋'" colspan="2"> 
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">意見回饋</label>
+                        <textarea class="form-control assesstext" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    </div>
+                </td>
+
             </tr>
         </tbody>
     </table>
@@ -58,7 +65,7 @@
     <form name="textForm">
         <div>
             <div class="form-group">
-                <label for="exampleFormControlTextarea1">意見回饋</label>
+                <label for="exampleFormControlTextarea1">整體意見回饋【必填】</label>
                 <textarea class="form-control assesstext" ng-model="feedback" id="exampleFormControlTextarea1" rows="3" required></textarea>
             </div>
         </div>

@@ -30,7 +30,8 @@ namespace TEEmployee.Models
         {
             List<User> ret;
 
-            string sql = @"select * from user order by empno";
+            //string sql = @"select * from user order by empno";
+            string sql = @"SELECT * FROM user AS u LEFT JOIN userExtra AS e ON u.empno = e.empno";
             ret = conn.Query<User>(sql).ToList();
 
             return ret;
@@ -47,7 +48,8 @@ namespace TEEmployee.Models
         {
             User ret;
 
-            string sql = @"select * from user where empno=@id";
+            //string sql = @"select * from user where empno=@id";
+            string sql = @"SELECT * FROM user AS u LEFT JOIN userExtra AS e ON u.empno = e.empno WHERE u.empno=@id";
             ret = conn.Query<User>(sql, new { id }).SingleOrDefault();
 
             return ret;

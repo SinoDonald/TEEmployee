@@ -37,18 +37,18 @@
                 <tr ng-repeat="item in SelfAssessments">
 
                     @*<td ng-bind="item.Id"></td>
-                    <td ng-bind="item.CategoryId"></td>*@
+        <td ng-bind="item.CategoryId"></td>*@
 
                     <!--category-->
                     <td ng-if="item.Id == 0" ng-bind="item.Content" colspan="2" class="table-warning"></td>
                     <!--content-->
-                    <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Id != 38" ng-bind="item.Content"></td>
+                    <td ng-if="item.Content != '自評摘要' && item.Content != '意見回饋' && item.Id != 0 && item.Id != 38" ng-bind="item.Content"></td>
                     <!--custom content-->
-                    <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Id == 38">
+                    <td ng-if="item.Content != '自評摘要' && item.Content != '意見回饋' && item.Id != 0 && item.Id == 38">
                         <input type="text" ng-model="item.Content" placeholder="自訂問題">
                     </td>
                     <!--option-->
-                    <td ng-if="item.Content != '自評摘要' && item.Id != 0">
+                    <td ng-if="item.Content != '自評摘要' && item.Content != '意見回饋' && item.Id != 0">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1" value="option1" required>
                             <label class="form-check-label" for="inlineRadio1">優良</label>
@@ -78,6 +78,11 @@
                             <textarea class="form-control assesstext" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>
                         </div>
                     </td>
+                    <!--feedback-->
+                    <td ng-if="item.Content=='意見回饋'" colspan="2">
+                        <h3 ng-bind="item.Name"></h3>
+                        <p ng-bind="item.Choice"></p>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -89,6 +94,7 @@
         </div>
     </div>
 
+    <h2>總評</h2>
     <ul>
         <li ng-repeat="item in Feedbacks">
             <h3 ng-bind="item.Name"></h3>

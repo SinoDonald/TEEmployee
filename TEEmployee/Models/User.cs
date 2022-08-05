@@ -14,5 +14,13 @@ namespace TEEmployee.Models
         public string empno { get; set; }
         public string name { get; set; }
         public string dutyName { get; set; }
+        public bool department_manager { get; set; }
+        public string group { get; set; }
+        public bool group_manager { get; set; }
+        public string group_one { get; set; }
+        public bool group_one_manager { get; set; }
+        public string group_two { get; set; }
+        public bool group_two_manager { get; set; }
+        public string project_manager { get; set; }
     }
 }

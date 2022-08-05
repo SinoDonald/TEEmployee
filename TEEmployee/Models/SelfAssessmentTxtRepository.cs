@@ -444,10 +444,14 @@ namespace TEEmployee.Models
         }
 
         // 0715: Get feedback with state for manager
-        public (string, string) GetFeedback(string empno, string manno, string name)
+        // 0729: Feedback for all categories
+               
+
+        public (string, List<string>) GetFeedback(string empno, string manno, string name)
         {
 
-            (string, string) feedback = ("", "");
+            string state = "";
+            List<string> feedbacks = new List<string>();
 
             try
             {
@@ -458,7 +462,12 @@ namespace TEEmployee.Models
                     if (line.Contains($"{name}\t{manno}"))
                     {
                         string[] subs = line.Split('\t');
-                        feedback = (subs[2], subs[3]);
+
+                        state = subs[2];
+
+                        for (int i = 3; i < subs.Length; i++)
+                            feedbacks.Add(subs[i]);
+
                         break;
                     }
                 }
@@ -469,13 +478,43 @@ namespace TEEmployee.Models
 
             }
 
-            return feedback;
+            return (state, feedbacks);
         }
 
+        //public (string, string) GetFeedback(string empno, string manno, string name)
+        //{
+
+        //    (string, string) feedback = ("", "");
+
+        //    try
+        //    {
+        //        string fn = Path.Combine(_appData, $"Feedback/{Utilities.DayStr()}/{empno}.txt");
+
+        //        foreach (var line in File.ReadLines(fn))
+        //        {
+        //            if (line.Contains($"{name}\t{manno}"))
+        //            {
+        //                string[] subs = line.Split('\t');
+        //                feedback = (subs[2], subs[3]);
+        //                break;
+        //            }
+        //        }
+
+        //    }
+        //    catch
+        //    {
+
+        //    }
+
+        //    return feedback;
+        //}
+
+
         // 0715 Get all "submit" feedbacks
-        public List<(string, string)> GetAllFeedbacks(string empno, string year)
+        // 0729 Get all categories feedbacks
+        public List<(string, List<string>)> GetAllFeedbacks(string empno, string year)
         {
-            List<(string, string)> feedbacks = new List<(string, string)>();
+            List<(string, List<string>)> nameWithFeedbacks = new List<(string, List<string>)>();
             
             try
             {
@@ -487,7 +526,16 @@ namespace TEEmployee.Models
                     string[] subs = item.Split('\t');
 
                     if (subs[2] == "submit")
-                        feedbacks.Add((subs[0], subs[3]));
+                    {
+                        string name = subs[0];
+                        List<string> feedbacks = new List<string>();
+
+                        for (int i = 3; i < subs.Length; i++)
+                            feedbacks.Add(subs[i]);
+
+                        nameWithFeedbacks.Add((name, feedbacks));
+                    }
+                       
                 }
             }
             catch
@@ -495,20 +543,48 @@ namespace TEEmployee.Models
 
             }
 
-            return feedbacks;
+            return nameWithFeedbacks;
         }
 
+        //public List<(string, string)> GetAllFeedbacks(string empno, string year)
+        //{
+        //    List<(string, string)> feedbacks = new List<(string, string)>();
+
+        //    try
+        //    {
+        //        string fn = Path.Combine(_appData, $"Feedback/{year}/{empno}.txt");
+        //        string[] lines = System.IO.File.ReadAllLines(fn);
+
+        //        foreach (var item in lines)
+        //        {
+        //            string[] subs = item.Split('\t');
+
+        //            if (subs[2] == "submit")
+        //                feedbacks.Add((subs[0], subs[3]));
+        //        }
+        //    }
+        //    catch
+        //    {
+
+        //    }
+
+        //    return feedbacks;
+        //}
 
 
+        // 0729:  Feedback for all category
 
-        public bool UpdateFeedback(string feedback, string state, string empno, string manno, string name)
+        public bool UpdateFeedback(List<string> feedbacks, string state, string empno, string manno, string name)
         {
             string fn = Path.Combine(_appData, $"Feedback/{Utilities.DayStr()}/{empno}.txt");
 
             bool ret = false;
             try
             {
-                string feedbackText = $"{name}\t{manno}\t{state}\t{feedback}";
+                string feedbackText = $"{name}\t{manno}\t{state}";
+
+                foreach (var s in feedbacks)
+                    feedbackText += $"\t{s}";                
 
                 if (!File.Exists(fn))
                 {
@@ -518,11 +594,11 @@ namespace TEEmployee.Models
                 }
                 else
                 {
-                    var lines = File.ReadAllLines(fn);
+                    var lines = File.ReadAllLines(fn).ToList();
                     bool isExist = false;
 
 
-                    for (int i = 0; i != lines.Length; i++)
+                    for (int i = 0; i != lines.Count; i++)
                     {
                         if (lines[i].Contains($"{name}\t{manno}"))
                         {
@@ -532,7 +608,7 @@ namespace TEEmployee.Models
                     }
 
                     if (!isExist)
-                        lines.Append(feedbackText);
+                        lines.Add(feedbackText);
 
                     System.IO.File.WriteAllLines(fn, lines);
 
@@ -547,6 +623,51 @@ namespace TEEmployee.Models
             return ret;
         }
 
+        //public bool UpdateFeedback(string feedback, string state, string empno, string manno, string name)
+        //{
+        //    string fn = Path.Combine(_appData, $"Feedback/{Utilities.DayStr()}/{empno}.txt");
+
+        //    bool ret = false;
+        //    try
+        //    {
+        //        string feedbackText = $"{name}\t{manno}\t{state}\t{feedback}";
+
+        //        if (!File.Exists(fn))
+        //        {
+        //            // create the file directory if not exist
+        //            (new FileInfo(fn)).Directory.Create();
+        //            System.IO.File.WriteAllLines(fn, new string[] { feedbackText });
+        //        }
+        //        else
+        //        {
+        //            var lines = File.ReadAllLines(fn).ToList();
+        //            bool isExist = false;
+
+
+        //            for (int i = 0; i != lines.Count; i++)
+        //            {
+        //                if (lines[i].Contains($"{name}\t{manno}"))
+        //                {
+        //                    lines[i] = feedbackText;
+        //                    isExist = true;
+        //                }
+        //            }
+
+        //            if (!isExist)
+        //                lines.Add(feedbackText);
+
+        //            System.IO.File.WriteAllLines(fn, lines);
+
+        //        }
+
+        //        ret = true;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        ret = false;
+        //    }
+        //    return ret;
+        //}
 
 
 

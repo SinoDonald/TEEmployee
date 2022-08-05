@@ -32,6 +32,10 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Assessment/GetAllEmployeesWithState', o);
     };
 
+    this.GetAllEmployeesWithStateByRole = function (o) {
+        return $http.post('Assessment/GetAllEmployeesWithStateByRole', o);
+    };
+
     this.GetResponse = function (o) {
         return $http.post('Assessment/GetResponse', o);
     };
@@ -116,13 +120,22 @@ app.controller('EmployeeListCtrl', ['$scope', '$location', 'appService', '$rootS
     //        alert('Error');
     //    });
 
-    appService.GetAllEmployeesWithState({})
+    //appService.GetAllEmployeesWithState({})
+    //    .then(function (ret) {
+    //        $scope.Employees = ret.data;
+    //    })
+    //    .catch(function (ret) {
+    //        alert('Error');
+    //    });
+
+    appService.GetAllEmployeesWithStateByRole({})
         .then(function (ret) {
             $scope.Employees = ret.data;
         })
         .catch(function (ret) {
             alert('Error');
         });
+
 
 
     $scope.Review = function (data) {
@@ -157,8 +170,18 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
         appService.GetResponseByYear({ year: year, empno: myFactory.get().EmployeeInfo.Employee.empno })
             .then(function (ret) {
                 //$scope.state = ret.data.State;                
-                $scope.Responses = ret.data.Responses               
+                              
 
+                for (var i = 0; i < ret.data.Responses.length; i++) {
+
+                    if (ret.data.Responses[i].Content == '自評摘要') {
+                        ret.data.Responses.splice(i + 1, 0, { CategoryId: ret.data.Responses[i].CategoryId, Content: '意見回饋' });
+                    }
+
+                    
+                }
+
+                $scope.Responses = ret.data.Responses 
             })
             .catch(function (ret) {
                 alert('Error');
@@ -169,17 +192,41 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
     $scope.GetResponseByYear();
 
     $scope.UpdateFeedback = function (state) {
-        appService.UpdateFeedback({ feedback: $scope.feedback, state: state, empno: myFactory.get().EmployeeInfo.Employee.empno })
+
+        var feedbacks = [];
+
+        for (var i = 0; i < $scope.Responses.length; i++) {
+
+            if ($scope.Responses[i].Content === '意見回饋') {
+                feedbacks.push($scope.Responses[i].Choice);
+            }
+        }
+
+        feedbacks.push($scope.feedback);
+
+        appService.UpdateFeedback({ feedbacks: feedbacks, state: state, empno: myFactory.get().EmployeeInfo.Employee.empno })
             .then(function (ret) {
-                $window.location.href = '/Home';
+                $window.location.href = 'Home';
             });
     }
 
     appService.GetFeedback({ empno: myFactory.get().EmployeeInfo.Employee.empno })
         .then(function (ret) {
             //$scope.state = ret.data.State;                
-            $scope.feedback = ret.data.Text
+            //$scope.feedback = ret.data.Text
             $scope.state = ret.data.State
+
+            var count = 0;
+
+            for (var i = 0; i < $scope.Responses.length; i++) {
+
+                if ($scope.Responses[i].Content === '意見回饋') {
+                    $scope.Responses[i].Choice = ret.data.Text[count];
+                    count++;
+                }
+            }
+
+            $scope.feedback = ret.data.Text[count];
 
         })
         .catch(function (ret) {

@@ -44,7 +44,8 @@ namespace TEEmployee.Filters
 
             if (filterContext.HttpContext.Session["empno"] == null)
             {
-                
+                //loginUser = "6112";
+                //loginUser = "5526";
                 var ret = _userRepository.Get(loginUser);
 
                 if(ret != null) {
@@ -52,6 +53,9 @@ namespace TEEmployee.Filters
                     //Get Userinfo
                     filterContext.HttpContext.Session["empno"] = loginUser;
                     filterContext.HttpContext.Session["empname"] = ret.name;
+                    filterContext.HttpContext.Session["group"] = ret.group;
+                    filterContext.HttpContext.Session["group_one"] = ret.group_one;
+                    filterContext.HttpContext.Session["group_two"] = ret.group_two;
                     //filterContext.HttpContext.Session["role"] = ret.Role;
                 }
                 else

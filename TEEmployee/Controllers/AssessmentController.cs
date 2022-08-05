@@ -182,10 +182,17 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        //[HttpPost]
+        //public JsonResult GetAllEmployeesWithState()
+        //{
+        //    var ret = _service.GetAllEmployeesWithState(Session["empno"].ToString(), Session["empname"].ToString());
+        //    return Json(ret);
+        //}
+
         [HttpPost]
-        public JsonResult GetAllEmployeesWithState()
+        public JsonResult GetAllEmployeesWithStateByRole()
         {
-            var ret = _service.GetAllEmployeesWithState(Session["empno"].ToString(), Session["empname"].ToString());
+            var ret = _service.GetAllEmployeesWithStateByRole(Session["empno"].ToString());
             return Json(ret);
         }
 
@@ -239,11 +246,10 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
-
         [HttpPost]
-        public bool UpdateFeedback(string feedback, string state, string empno)
+        public bool UpdateFeedback(List<string> feedbacks, string state, string empno)
         {
-            bool ret = _service.UpdateFeedback(feedback, state, empno, Session["empno"].ToString());
+           bool ret = _service.UpdateFeedback(feedbacks, state, empno, Session["empno"].ToString());
             return ret;
         }
 

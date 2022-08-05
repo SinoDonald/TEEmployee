@@ -82,7 +82,7 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', fun
     $scope.CreateResponse = function (state) {
         appService.CreateResponse({ assessments: $scope.SelfAssessments, state: state, year: $scope.data.model })
             .then(function (ret) {
-                $window.location.href = '/Home';
+                $window.location.href = 'Home';
             });
     }
 
@@ -102,16 +102,57 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', fun
                 //    });
 
                 //});
+
+                // 
                 if (ret.data.Responses.length !== 0) {
+
+                    var feedbacksByCategory = [];
+
+                    var category_count = Math.max(...ret.data.Responses.map(o => Number(o.CategoryId)))
 
                     $scope.SelfAssessments = ret.data.Responses
 
                     appService.GetAllFeedbacks({ year: year })
-                        .then(function (ret) {
-                            $scope.Feedbacks = ret.data;
+                        .then(function (ret2) {
+
+                            for (var i = 0; i < (category_count) + 1; i++) {
+
+                                var feedback = [];
+
+                                for (var j = 0; j < ret2.data.length; j++) {                                                  
+
+                                    if (ret2.data[j].Text[i] !== '') {
+                                        feedback.push({ Name: ret2.data[j].Name, Text: ret2.data[j].Text[i] });
+                                    }
+                                }
+                                feedbacksByCategory.push(feedback);
+                            }
+
+                            var count = 0;
+
+                            for (var k = 0; k < ret.data.Responses.length; k++) {
+
+                                
+
+                                if (ret.data.Responses[k].Content === '自評摘要') {
+
+                                    feedbacksByCategory[count].forEach(function (item) {
+                                        ret.data.Responses.splice(k + 1, 0, { CategoryId: ret.data.Responses[k].CategoryId, Content: '意見回饋', Choice: item.Text, Name: item.Name });
+                                    });
+
+                                    count++;
+                                }
+                            }
+
+                            $scope.Responses = ret.data.Responses 
+
+                            $scope.Feedbacks = feedbacksByCategory[count];
                         });
+                                        
+
                 }
-                    
+
+                // load empty form if no record in database
                 else {
                     appService.GetAllSelfAssessments({})
                         .then(function (ret) {
