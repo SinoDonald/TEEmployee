@@ -31,10 +31,10 @@ namespace TEEmployee.Models
             return selfAssessments;
         }
 
-        public List<Assessment> GetAllManageAssessments()
+        public List<Assessment> GetAllManageAssessments(User manager, string user)
         {
             //_assessmentRepository = new ManageAssessmentTxtRepository();
-            var manageAssessments = _assessmentRepository.GetAll();
+            var manageAssessments = _assessmentRepository.GetResponse(manager.empno, user);
             return manageAssessments;
         }
 
@@ -56,10 +56,10 @@ namespace TEEmployee.Models
             return (_assessmentRepository as SelfAssessmentTxtRepository).Update(assessments, user, state, year, DateTime.Now);
         }
 
-        public bool UpdateManageResponse(List<Assessment> assessments, string user)
+        public bool UpdateManageResponse(List<Assessment> assessments, User manager, string user)
         {
             //_assessmentRepository = new ManageAssessmentTxtRepository();
-            return _assessmentRepository.Update(assessments, user);
+            return _assessmentRepository.Update(assessments, manager.empno, user);
         }
         public bool UpdateMResponse(List<Assessment> assessments, string empId, string user)
         { 
@@ -155,10 +155,10 @@ namespace TEEmployee.Models
             var selfAssessmentMResponse = (_assessmentRepository as SelfAssessmentTxtRepository).GetMResponse(empId, user);
             return selfAssessmentMResponse;
         }
-        public List<Assessment> GetManageAssessmentResponse(string user)
+        public List<Assessment> GetManageAssessmentResponse(string manager, string user)
         {
             //_assessmentRepository = new ManageAssessmentTxtRepository();
-            var manageAssessmentResponse = _assessmentRepository.GetResponse(user);
+            var manageAssessmentResponse = _assessmentRepository.GetResponse(manager, user);
             return manageAssessmentResponse;
         }
 

@@ -52,10 +52,13 @@ namespace TEEmployee.Models
         {
             return;
         }
-
         public bool Update(List<Assessment> assessments, string user)
         {
-            string fn = Path.Combine(_appData, $"ManageResponse/{user}.txt");
+            throw new NotImplementedException();
+        }
+        public bool Update(List<Assessment> assessments, string manager, string user)
+        {
+            string fn = Path.Combine(_appData, $"ManageResponse/{manager}/{user}.txt");
             bool ret = false;
             try
             {
@@ -75,14 +78,29 @@ namespace TEEmployee.Models
             }
             return ret;
         }
+        public List<Assessment> GetResponse(string manager)
+        {
+            List<Assessment> manageResponse = new List<Assessment>();
 
-        public List<Assessment> GetResponse(string user)
+            return manageResponse;
+        }
+
+        public List<Assessment> GetResponse(string manager, string user)
         {
             List<Assessment> manageResponse = new List<Assessment>();
 
             try
             {
-                string fn = Path.Combine(_appData, $"ManageResponse/{user}.txt");
+                string dirPath = Path.Combine(_appData, $"ManageResponse/{manager}");
+                if (Directory.Exists(dirPath) == false)
+                {
+                    Directory.CreateDirectory(dirPath);
+                }
+                string fn = Path.Combine(_appData, $"ManageResponse/{manager}/{user}.txt");
+                if (!File.Exists(fn))
+                {
+                    fn = Path.Combine(_appData, $"ManageResponse/ManageAssessments.txt");
+                }
                 string[] lines = System.IO.File.ReadAllLines(fn);
                 foreach (var item in lines)
                 {

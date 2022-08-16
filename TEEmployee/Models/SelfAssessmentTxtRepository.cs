@@ -623,6 +623,11 @@ namespace TEEmployee.Models
             return ret;
         }
 
+        public bool Update(List<Assessment> assessments, string empno, string user)
+        {
+            throw new NotImplementedException();
+        }
+
         //public bool UpdateFeedback(string feedback, string state, string empno, string manno, string name)
         //{
         //    string fn = Path.Combine(_appData, $"Feedback/{Utilities.DayStr()}/{empno}.txt");

@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewBag.Title = "ManagerSuggest";
     Layout = "~/Views/Shared/_LayoutStar.cshtml";
 }
@@ -49,8 +50,8 @@
 
     <div class="form-group" ng-if="state!='sent'">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Save" ng-click="CreateResponse('save')" class="btn btn-warning" />
-            <input type="submit" value="Sent" ng-disabled="optionForm.$invalid" ng-click="CreateResponse('sent')" class="btn btn-warning" />
+            <input type="submit" value="Save" ng-click="CreateManageResponse('save')" class="btn btn-warning" />
+            <input type="submit" value="Sent" ng-disabled="optionForm.$invalid" ng-click="CreateManageResponse('sent')" class="btn btn-warning" />
         </div>
     </div>
 

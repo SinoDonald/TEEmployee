@@ -12,7 +12,9 @@ namespace TEEmployee.Models
         //SelfAssessment Get(int Id);
         List<Assessment> GetAll();
         bool Update(List<Assessment> assessments, string user);
+        bool Update(List<Assessment> assessments, string empno, string user);
         List<Assessment> GetResponse(string user);
+        List<Assessment> GetResponse(string manager, string user);
         List<Assessment> GetAllResponses();
         void Dispose();
     }

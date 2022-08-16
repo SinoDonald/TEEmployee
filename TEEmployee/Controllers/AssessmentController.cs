@@ -30,10 +30,15 @@ namespace TEEmployee.Controllers
         {
             return View();
         }
+        public ActionResult ManagerOption()
+        {
+            return PartialView();
+        }
         public ActionResult ManagerSuggest()
         {
-            return View();
+            return PartialView();
         }
+
         public ActionResult SelfChart()
         {
             return View();
@@ -71,7 +76,6 @@ namespace TEEmployee.Controllers
             return PartialView();
         }
 
-
         // Web api---
         [HttpPost]
         public JsonResult GetAllSelfAssessments()
@@ -81,10 +85,20 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAllManageAssessments()
+        public JsonResult Test(User user)
+        {
+            User ret = new User();
+            ret.empno = user.empno;
+            ret.name = user.name;
+            ret.dutyName = user.dutyName;
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllManageAssessments(User manager)
         {
             _service = new AssessmentService("manage");
-            var ret = _service.GetAllManageAssessments();
+            var ret = _service.GetAllManageAssessments(manager, Session["empno"].ToString());
             return Json(ret);
         }
 
@@ -103,10 +117,10 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
-        public bool CreateManageResponse(List<Assessment> assessments)
+        public bool CreateManageResponse(List<Assessment> assessments, User manager)
         {
             _service = new AssessmentService("manage");
-            bool ret = _service.UpdateManageResponse(assessments, Session["empno"].ToString());
+            bool ret = _service.UpdateManageResponse(assessments, manager, Session["empno"].ToString());
             return ret;
         }
 
@@ -144,13 +158,11 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
-
-
         [HttpPost]
-        public JsonResult GetManageResponse()
+        public JsonResult GetManageResponse(User manager)
         {
             _service = new AssessmentService("manage");
-            var ret = _service.GetManageAssessmentResponse(Session["empno"].ToString());
+            var ret = _service.GetManageAssessmentResponse(manager.empno, Session["empno"].ToString());
             return Json(ret);
         }
 

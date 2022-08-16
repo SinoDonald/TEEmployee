@@ -10,17 +10,14 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         .state('AssessEmployee', {
             url: '/AssessEmployee',
             templateUrl: 'Assessment/AssessEmployee'
-        })       
+        })
 
 });
-
-
 
 app.run(['$http', '$window', function ($http, $window) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
     $http.defaults.headers.common['__RequestVerificationToken'] = $('input[name=__RequestVerificationToken]').val();
 }]);
-
 
 app.service('appService', ['$http', function ($http) {
 
@@ -72,11 +69,9 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Assessment/GetFeedback', o);
     };
 
-
 }]);
 
 app.factory('myFactory', function () {
-
     var savedData = {}
     //function set(data, data2) {
     //    savedData.employee = data;
@@ -91,14 +86,12 @@ app.factory('myFactory', function () {
         return savedData;
     }
 
-
     return {
         set: set,
         get: get,
     }
 
 });
-
 
 app.controller('FeedbackCtrl', ['$scope', '$location', 'appService', '$rootScope', 'myFactory', function ($scope, $location, appService, $rootScope, myFactory) {
 
@@ -109,24 +102,6 @@ app.controller('FeedbackCtrl', ['$scope', '$location', 'appService', '$rootScope
 app.controller('EmployeeListCtrl', ['$scope', '$location', 'appService', '$rootScope', 'myFactory', function ($scope, $location, appService, $rootScope, myFactory) {
 
     $scope.Employees = [];
-    
-    
-
-    //appService.GetAllEmployees({})
-    //    .then(function (ret) {
-    //        $scope.Employees = ret.data;
-    //    })
-    //    .catch(function (ret) {
-    //        alert('Error');
-    //    });
-
-    //appService.GetAllEmployeesWithState({})
-    //    .then(function (ret) {
-    //        $scope.Employees = ret.data;
-    //    })
-    //    .catch(function (ret) {
-    //        alert('Error');
-    //    });
 
     appService.GetAllEmployeesWithStateByRole({})
         .then(function (ret) {
@@ -136,49 +111,23 @@ app.controller('EmployeeListCtrl', ['$scope', '$location', 'appService', '$rootS
             alert('Error');
         });
 
-
-
     $scope.Review = function (data) {
-        /*myFactory.set(data);*/
         $location.path('/AssessEmployee');
         myFactory.set(data)
-        //appService.GetMixResponse(data)
-        //    .then(function (ret) {
-
-        //        myFactory.set(data, ret.data)
-        //        $location.path('/Review');
-        //    })
-        //    .catch(function (ret) {
-        //        alert('Error');
-        //    });
-
-
-        //$window.location.href = '/Assessment/Review'
-        //$window.location.path = '/Review'
-
     }
-
 
 }]);
 
-
-
 app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', function ($scope, $window, appService, $rootScope, myFactory) {
-
 
     $scope.GetResponseByYear = function (year) {
         appService.GetResponseByYear({ year: year, empno: myFactory.get().EmployeeInfo.Employee.empno })
             .then(function (ret) {
-                //$scope.state = ret.data.State;                
-                              
-
+                //$scope.state = ret.data.State;
                 for (var i = 0; i < ret.data.Responses.length; i++) {
-
                     if (ret.data.Responses[i].Content == '自評摘要') {
                         ret.data.Responses.splice(i + 1, 0, { CategoryId: ret.data.Responses[i].CategoryId, Content: '意見回饋' });
                     }
-
-                    
                 }
 
                 $scope.Responses = ret.data.Responses 
@@ -186,17 +135,13 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
             .catch(function (ret) {
                 alert('Error');
             });
-
     }
 
     $scope.GetResponseByYear();
 
     $scope.UpdateFeedback = function (state) {
-
         var feedbacks = [];
-
         for (var i = 0; i < $scope.Responses.length; i++) {
-
             if ($scope.Responses[i].Content === '意見回饋') {
                 feedbacks.push($scope.Responses[i].Choice);
             }
@@ -219,7 +164,6 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
             var count = 0;
 
             for (var i = 0; i < $scope.Responses.length; i++) {
-
                 if ($scope.Responses[i].Content === '意見回饋') {
                     $scope.Responses[i].Choice = ret.data.Text[count];
                     count++;
@@ -233,19 +177,15 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
             alert('Error');
         });
 
-
     //$scope.Response = {}
 
     //$scope.Employee = myFactory.get();
 
     //$scope.Response = myFactory.get().mixResponse;
 
-
     //appService.GetResponse($scope.Employee)
     //    .then(function (ret) {
-
     //        $scope.Response = ret.data;
-
     //    })
     //    .catch(function (ret) {
     //        alert('Error');
@@ -253,15 +193,11 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
 
     //appService.GetResponse($scope.Employee.UserId)
     //    .then(function (ret) {
-
     //        $scope.Response = ret.data;
-
     //    })
     //    .catch(function (ret) {
     //        alert('Error');
     //    });
-
-
 
 }]);
 
