@@ -623,7 +623,7 @@ namespace TEEmployee.Models
             return ret;
         }
 
-        public bool Update(List<Assessment> assessments, string empno, string user)
+        public bool Update(List<Assessment> assessments, string state, string empno, string user)
         {
             throw new NotImplementedException();
         }

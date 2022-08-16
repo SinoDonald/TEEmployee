@@ -117,13 +117,12 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
-        public bool CreateManageResponse(List<Assessment> assessments, User manager)
+        public bool CreateManageResponse(List<Assessment> assessments, string state, User manager)
         {
             _service = new AssessmentService("manage");
-            bool ret = _service.UpdateManageResponse(assessments, manager, Session["empno"].ToString());
+            bool ret = _service.UpdateManageResponse(assessments, state, manager, Session["empno"].ToString());
             return ret;
         }
-
 
         //[HttpPost]
         //public JsonResult GetResponse()

@@ -31,11 +31,13 @@ namespace TEEmployee.Models
             return selfAssessments;
         }
 
-        public List<Assessment> GetAllManageAssessments(User manager, string user)
+        public SelfAssessResponse GetAllManageAssessments(User manager, string user)
         {
-            //_assessmentRepository = new ManageAssessmentTxtRepository();
+            string state = (_assessmentRepository as ManageAssessmentTxtRepository).GetStateOfResponse(manager.empno, user);
             var manageAssessments = _assessmentRepository.GetResponse(manager.empno, user);
-            return manageAssessments;
+            //return manageAssessments;
+
+            return new SelfAssessResponse() { Responses = manageAssessments, State = state };
         }
 
         //public bool UpdateResponse(Response response)
@@ -56,10 +58,9 @@ namespace TEEmployee.Models
             return (_assessmentRepository as SelfAssessmentTxtRepository).Update(assessments, user, state, year, DateTime.Now);
         }
 
-        public bool UpdateManageResponse(List<Assessment> assessments, User manager, string user)
+        public bool UpdateManageResponse(List<Assessment> assessments, string state, User manager, string user)
         {
-            //_assessmentRepository = new ManageAssessmentTxtRepository();
-            return _assessmentRepository.Update(assessments, manager.empno, user);
+            return _assessmentRepository.Update(assessments, state, manager.empno, user);
         }
         public bool UpdateMResponse(List<Assessment> assessments, string empId, string user)
         { 
@@ -155,11 +156,12 @@ namespace TEEmployee.Models
             var selfAssessmentMResponse = (_assessmentRepository as SelfAssessmentTxtRepository).GetMResponse(empId, user);
             return selfAssessmentMResponse;
         }
-        public List<Assessment> GetManageAssessmentResponse(string manager, string user)
+        public SelfAssessResponse GetManageAssessmentResponse(string manager, string user)
         {
-            //_assessmentRepository = new ManageAssessmentTxtRepository();
+            string state = (_assessmentRepository as ManageAssessmentTxtRepository).GetStateOfResponse(manager, user);
             var manageAssessmentResponse = _assessmentRepository.GetResponse(manager, user);
-            return manageAssessmentResponse;
+
+            return new SelfAssessResponse() { Responses = manageAssessmentResponse, State = state };
         }
 
         public List<Assessment> GetAllSelfAssessmentResponses()
@@ -213,7 +215,7 @@ namespace TEEmployee.Models
         }
         public List<User> GetManagers()
         {
-            var allManagers = _userRepository.GetManagers();
+            var allManagers = _userRepository.GetManagers().OrderBy(x => x.empno).ToList();
             return allManagers;
         }
 

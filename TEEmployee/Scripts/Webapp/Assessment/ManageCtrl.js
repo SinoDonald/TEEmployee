@@ -80,24 +80,27 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
 
     $scope.ManageAssessments = [];
 
-    $scope.ManageResponse = [];
-
     $scope.manager = myFactory.get().manager; // 選擇要評分的主管
 
     appService.GetAllManageAssessments({ manager: $scope.manager })
         .then(function (ret) {
-            $scope.ManageAssessments = ret.data;
+            $scope.ManageAssessments = ret.data.Responses;
+            $scope.state = ret.data.State;
         })
         .catch(function (ret) {
             alert('Error');
         });
 
-    $scope.CreateManageResponse = function () {
-        appService.CreateManageResponse({ assessments: $scope.ManageAssessments, manager: $scope.manager })
+    $scope.CreateManageResponse = function (data) {
+        appService.CreateManageResponse({ assessments: $scope.ManageAssessments, state: data, manager: $scope.manager })
             .then(function (ret) {
                 alert('儲存完成');
                 $window.location.href = '/Assessment/Manage#!/ManagerOption';
             });
+    }
+
+    $scope.SuperLink = function () {
+        $window.location.href = '/Assessment/Manage#!/ManagerOption';
     }
 
 }]);

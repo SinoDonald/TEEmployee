@@ -45,7 +45,7 @@ namespace TEEmployee.Filters
             if (filterContext.HttpContext.Session["empno"] == null)
             {
                 //loginUser = "6112";
-                loginUser = "5526";
+                //loginUser = "5526";
                 var ret = _userRepository.Get(loginUser);
 
                 if(ret != null) {

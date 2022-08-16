@@ -52,31 +52,22 @@ namespace TEEmployee.Models
         {
             return;
         }
-        public bool Update(List<Assessment> assessments, string user)
+        public string GetStateOfResponse(string manager, string user)
         {
-            throw new NotImplementedException();
-        }
-        public bool Update(List<Assessment> assessments, string manager, string user)
-        {
-            string fn = Path.Combine(_appData, $"ManageResponse/{manager}/{user}.txt");
-            bool ret = false;
+            string state = "";
             try
             {
-                List<string> responses = new List<string>();
-
-                foreach (var item in assessments)
-                {
-                    responses.Add($"{item.Id}/{item.CategoryId}/{item.Content}/{item.Choice}");
-                }
-
-                System.IO.File.WriteAllLines(fn, responses);
-                ret = true;
+                string fn = Path.Combine(_appData, $"ManageResponse/{manager}/{user}.txt");
+                string line = File.ReadLines(fn).FirstOrDefault();
+                if (line != "")
+                    state = line.Split(';')[0];
             }
-            catch (Exception)
+            catch
             {
-                ret = false;
+
             }
-            return ret;
+
+            return state;
         }
         public List<Assessment> GetResponse(string manager)
         {
@@ -104,14 +95,21 @@ namespace TEEmployee.Models
                 string[] lines = System.IO.File.ReadAllLines(fn);
                 foreach (var item in lines)
                 {
-                    string[] subs = item.Split('/');
-                    Assessment manageAssessment = new Assessment();
+                    try
+                    {
+                        string[] subs = item.Split('/');
+                        Assessment manageAssessment = new Assessment();
 
-                    manageAssessment.Id = Convert.ToInt32(subs[0]);
-                    manageAssessment.CategoryId = Convert.ToInt32(subs[1]);
-                    manageAssessment.Content = subs[2];
-                    manageAssessment.Choice = subs[3];
-                    manageResponse.Add(manageAssessment);
+                        manageAssessment.Id = Convert.ToInt32(subs[0]);
+                        manageAssessment.CategoryId = Convert.ToInt32(subs[1]);
+                        manageAssessment.Content = subs[2];
+                        manageAssessment.Choice = subs[3];
+                        manageResponse.Add(manageAssessment);
+                    }
+                    catch
+                    {
+
+                    }
                 }
                 manageResponse = manageResponse.OrderBy(a => a.CategoryId).ThenBy(a => a.Id).ToList();
             }
@@ -150,6 +148,35 @@ namespace TEEmployee.Models
                 }
             }
             return allResponses;
+        }
+        public bool Update(List<Assessment> assessments, string state, string manager, string user)
+        {
+            string fn = Path.Combine(_appData, $"ManageResponse/{manager}/{user}.txt");
+            bool ret = false;
+            try
+            {
+                List<string> responses = new List<string>();
+
+                responses.Add($"{state};{DateTime.Now}");
+
+                foreach (var item in assessments)
+                {
+                    responses.Add($"{item.Id}/{item.CategoryId}/{item.Content}/{item.Choice}");
+                }
+
+                (new FileInfo(fn)).Directory.Create();
+                System.IO.File.WriteAllLines(fn, responses);
+                ret = true;
+            }
+            catch (Exception)
+            {
+                ret = false;
+            }
+            return ret;
+        }
+        public bool Update(List<Assessment> assessments, string user)
+        {
+            throw new NotImplementedException();
         }
     }
 }
