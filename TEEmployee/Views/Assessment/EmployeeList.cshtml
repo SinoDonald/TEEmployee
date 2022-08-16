@@ -3,7 +3,7 @@
 
     <h2>Hey ! Boss !! <input type="text" ng-model="search.Employee.name" placeholder="Enter your search"></h2>
 
-    @*<form name="myForm">
+    <form name="myForm">
 
         <div>
             <div class="form-check form-check-inline">
@@ -24,9 +24,9 @@
             </div>
         </div>
 
-    </form>*@
+    </form>
 
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    @*<div class="btn-group btn-group-toggle" data-toggle="buttons">
             <label class="btn btn-secondary active">
                 <input type="radio" ng-model="search.State" name="options" id="option1" value="" autocomplete="off"> All
             </label>
@@ -39,7 +39,7 @@
             <label class="btn btn-secondary">
                 <input type="radio" ng-model="search.State" name="options" id="option3" value="finished" autocomplete="off"> Finished
             </label>
-    </div>
+    </div>*@
 
     <div class="card-columns">
         <div class="card" ng-repeat="emp in Employees | filter: search:strict">
