@@ -14,7 +14,6 @@ namespace TEEmployee.Models
         {
             _appData = HttpContext.Current.Server.MapPath("~/App_Data");
         }
-
         public Assessment Get(int Id)
         {
             string fn = Path.Combine(_appData, Id.ToString() + "ManageAssessments.txt");
@@ -26,7 +25,6 @@ namespace TEEmployee.Models
             selfAssessment.Content = fileText[2];
             return selfAssessment;
         }
-
         public List<Assessment> GetAll()
         {
             string fn = Path.Combine(_appData, "ManageAssessments.txt");
@@ -48,16 +46,39 @@ namespace TEEmployee.Models
 
             return manageAssessments;
         }
-        public void Dispose()
+        public List<string> GetManageYearList(string userId)
         {
-            return;
+            List<string> years = new List<string>();
+
+            string dn = Path.Combine(_appData, "ManageResponse");
+            var dirs = System.IO.Directory.GetDirectories(dn);
+
+            // 讀取有資料的年份
+            foreach (var dir in dirs)
+            {
+                if (Directory.Exists(Path.Combine(dn, $"{dir}")))
+                {
+                    years.Add((new DirectoryInfo(dir)).Name);
+                }
+            }
+            // 沒有舊有資料則新增當年度的資料夾
+            if (!years.Contains(Utilities.DayStr()))
+            {
+                years.Add(Utilities.DayStr());
+            }
+
+            return years.OrderByDescending(a => a).ToList();
         }
-        public string GetStateOfResponse(string manager, string user)
+        public string GetStateOfResponse(string year, string manager, string user)
         {
+            if (String.IsNullOrEmpty(year))
+            {
+                year = Utilities.DayStr();
+            }
             string state = "";
             try
             {
-                string fn = Path.Combine(_appData, $"ManageResponse/{manager}/{user}.txt");
+                string fn = Path.Combine(_appData, $"ManageResponse/{year}/{manager}/{user}.txt");
                 string line = File.ReadLines(fn).FirstOrDefault();
                 if (line != "")
                     state = line.Split(';')[0];
@@ -75,19 +96,21 @@ namespace TEEmployee.Models
 
             return manageResponse;
         }
-
-        public List<Assessment> GetResponse(string manager, string user)
+        public List<Assessment> GetResponse(string year, string manager, string user)
         {
+            if (String.IsNullOrEmpty(year))
+            {
+                year = Utilities.DayStr();
+            }
             List<Assessment> manageResponse = new List<Assessment>();
-
             try
             {
-                string dirPath = Path.Combine(_appData, $"ManageResponse/{manager}");
+                string dirPath = Path.Combine(_appData, $"ManageResponse/{year}/{manager}");
                 if (Directory.Exists(dirPath) == false)
                 {
                     Directory.CreateDirectory(dirPath);
                 }
-                string fn = Path.Combine(_appData, $"ManageResponse/{manager}/{user}.txt");
+                string fn = Path.Combine(_appData, $"ManageResponse/{year}/{manager}/{user}.txt");
                 if (!File.Exists(fn))
                 {
                     fn = Path.Combine(_appData, $"ManageResponse/ManageAssessments.txt");
@@ -124,7 +147,6 @@ namespace TEEmployee.Models
 
             return manageResponse;
         }
-
         public List<Assessment> GetAllResponses()
         {
             string fn = Path.Combine(_appData, "ManageResponse");
@@ -149,9 +171,9 @@ namespace TEEmployee.Models
             }
             return allResponses;
         }
-        public bool Update(List<Assessment> assessments, string state, string manager, string user)
+        public bool Update(List<Assessment> assessments, string state, string year, string manager, string user)
         {
-            string fn = Path.Combine(_appData, $"ManageResponse/{manager}/{user}.txt");
+            string fn = Path.Combine(_appData, $"ManageResponse/{year}/{manager}/{user}.txt");
             bool ret = false;
             try
             {
@@ -177,6 +199,10 @@ namespace TEEmployee.Models
         public bool Update(List<Assessment> assessments, string user)
         {
             throw new NotImplementedException();
+        }
+        public void Dispose()
+        {
+            return;
         }
     }
 }

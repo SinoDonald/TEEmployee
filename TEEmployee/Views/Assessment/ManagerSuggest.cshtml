@@ -4,7 +4,7 @@
     //Layout = "~/Views/Shared/_LayoutStar.cshtml";
 }
 
-<h2>ManagerSuggest</h2>
+<h2>給予主管建議評估表</h2>
 
 <div ng-controller="ManagerSuggestCtrl" class="container" style="margin-top: 100px">
 
@@ -21,12 +21,12 @@
                 <tr ng-repeat="item in ManageAssessments">
                     <td ng-if="item.Id == 0" ng-bind="item.Content" colspan="2" class="table-warning"></td>
                     Content
-                    <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Id != 44" ng-bind="item.Content"></td>
-                    <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Id == 44">
+                    <td ng-if="item.Content != '建議' && item.Id != 0 && item.Id != 44" ng-bind="item.Content"></td>
+                    <td ng-if="item.Content != '建議' && item.Id != 0 && item.Id == 44">
                         <input type="text" ng-model="item.Content" placeholder="自訂問題">
                     </td>
-                    <td ng-if="item.Content != '自評摘要' && item.Id != 0">
-                        <<div class="form-check form-check-inline">
+                    <td ng-if="item.Content != '建議' && item.Id != 0">
+                        <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1" value="option1" required>
                             <label class="form-check-label" for="inlineRadio1">優良</label>
                         </div>
@@ -47,9 +47,9 @@
                             <label class="form-check-label" for="inlineRadio5">N/A</label>
                         </div>
                     </td>
-                    <td ng-if="item.Content=='自評摘要'" colspan="2" style="width:80%">
+                    <td ng-if="item.Content=='建議'" colspan="2" style="width:80%">
                         <div class="form-group">
-                            <label for="exampleFormControlTextarea1">自評摘要</label>
+                            <label for="exampleFormControlTextarea1">建議</label>
                             <textarea class="form-control" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>
                         </div>
                     </td>
@@ -66,7 +66,7 @@
     </div>
     <div class="form-group" ng-if="state=='sent'">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="回上頁" ng-click="SuperLink()" class="btn btn-warning" />
+            <input type="submit" value="回上頁" ng-click="ToManage()" class="btn btn-warning" />
         </div>
     </div>
 

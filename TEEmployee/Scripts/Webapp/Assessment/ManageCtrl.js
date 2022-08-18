@@ -21,6 +21,10 @@ app.run(['$http', '$window', function ($http, $window) {
 
 app.service('appService', ['$http', function ($http) {
 
+    this.GetManageYearList = function (o) {
+        return $http.post('Assessment/GetManageYearList', o);
+    };
+
     this.GetManagers = function (o) {
         return $http.post('Assessment/GetManagers', o);
     };
@@ -28,6 +32,10 @@ app.service('appService', ['$http', function ($http) {
     this.GetAllManageAssessments = function (o) {
         return $http.post('Assessment/GetAllManageAssessments', o);
     };
+
+    //this.GetManageResponseByYear = function (o) {
+    //    return $http.post('Assessment/GetManageResponseByYear', o);
+    //};
 
     this.CreateManageResponse = function (o) {
         return $http.post('Assessment/CreateManageResponse', o);
@@ -82,7 +90,28 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
 
     $scope.manager = myFactory.get().manager; // 選擇要評分的主管
 
-    appService.GetAllManageAssessments({ manager: $scope.manager })
+    $scope.data = {
+        model: null,
+        availableOptions: [
+            //{ id: '2022H1', name: '2022H1' },
+            //{ id: '2022H2', name: '2022H2' }
+        ]
+    };
+
+    $scope.myFunction = function (daystring) {
+        alert(daystring);
+    }
+
+    // 取得所有的問卷年份
+    appService.GetManageYearList({}).then(function (ret) {
+        $scope.years = ret;
+        ret.data.forEach(function (item) {
+            $scope.data.availableOptions.push({ id: item, name: item })
+        });
+        $scope.data.model = $scope.data.availableOptions[0].name;
+    });
+
+    appService.GetAllManageAssessments({ year: $scope.data.model, manager: $scope.manager })
         .then(function (ret) {
             $scope.ManageAssessments = ret.data.Responses;
             $scope.state = ret.data.State;
@@ -92,15 +121,16 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
         });
 
     $scope.CreateManageResponse = function (data) {
-        appService.CreateManageResponse({ assessments: $scope.ManageAssessments, state: data, manager: $scope.manager })
+        appService.CreateManageResponse({ assessments: $scope.ManageAssessments, state: data, year: $scope.data.model, manager: $scope.manager })
             .then(function (ret) {
-                alert('儲存完成');
-                $window.location.href = '/Assessment/Manage#!/ManagerOption';
+                alert('完成');
+                $window.location.href = '/Assessment/Manage';
+                //$window.location.href = 'Home';
             });
     }
 
-    $scope.SuperLink = function () {
-        $window.location.href = '/Assessment/Manage#!/ManagerOption';
+    $scope.ToManage = function () {
+        $window.location.href = '/Assessment/Manage';
     }
 
 }]);

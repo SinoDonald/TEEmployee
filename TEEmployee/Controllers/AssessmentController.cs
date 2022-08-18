@@ -85,20 +85,10 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
-        public JsonResult Test(User user)
-        {
-            User ret = new User();
-            ret.empno = user.empno;
-            ret.name = user.name;
-            ret.dutyName = user.dutyName;
-            return Json(ret);
-        }
-
-        [HttpPost]
-        public JsonResult GetAllManageAssessments(User manager)
+        public JsonResult GetAllManageAssessments(string year, User manager)
         {
             _service = new AssessmentService("manage");
-            var ret = _service.GetAllManageAssessments(manager, Session["empno"].ToString());
+            var ret = _service.GetAllManageAssessments(year, manager, Session["empno"].ToString());
             return Json(ret);
         }
 
@@ -117,10 +107,10 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
-        public bool CreateManageResponse(List<Assessment> assessments, string state, User manager)
+        public bool CreateManageResponse(List<Assessment> assessments, string state, string year, User manager)
         {
             _service = new AssessmentService("manage");
-            bool ret = _service.UpdateManageResponse(assessments, state, manager, Session["empno"].ToString());
+            bool ret = _service.UpdateManageResponse(assessments, state, year, manager, Session["empno"].ToString());
             return ret;
         }
 
@@ -149,6 +139,14 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetManageResponse(string year, User manager)
+        {
+            _service = new AssessmentService("manage");
+            var ret = _service.GetManageAssessmentResponse(year, manager.empno, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
         public JsonResult GetResponseByYear(User employee, string year)
         {            
             if (employee.empno is null)
@@ -158,10 +156,14 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetManageResponse(User manager)
+        public JsonResult GetManageResponseByYear(string year, User manager, string user)
         {
             _service = new AssessmentService("manage");
-            var ret = _service.GetManageAssessmentResponse(manager.empno, Session["empno"].ToString());
+            if (manager.empno is null)
+            {
+                manager.empno = Session["empno"].ToString();
+            }
+            var ret = _service.GetManageAssessmentResponse(year, manager.empno, user);
             return Json(ret);
         }
 
@@ -240,6 +242,14 @@ namespace TEEmployee.Controllers
         public JsonResult GetYearList()
         {
             var ret = _service.GetYearList(Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult GetManageYearList()
+        {
+            _service = new AssessmentService("manage");
+            var ret = _service.GetManageYearList(Session["empno"].ToString());
             return Json(ret);
         }
 
