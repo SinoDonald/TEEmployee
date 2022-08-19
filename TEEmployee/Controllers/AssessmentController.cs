@@ -156,18 +156,6 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetManageResponseByYear(string year, User manager, string user)
-        {
-            _service = new AssessmentService("manage");
-            if (manager.empno is null)
-            {
-                manager.empno = Session["empno"].ToString();
-            }
-            var ret = _service.GetManageAssessmentResponse(year, manager.empno, user);
-            return Json(ret);
-        }
-
-        [HttpPost]
         public JsonResult GetAllResponses()
         {
             var ret = _service.GetAllSelfAssessmentResponses();

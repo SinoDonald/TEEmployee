@@ -4,13 +4,13 @@
     //Layout = "~/Views/Shared/_LayoutStar.cshtml";
 }
 
-<h2>給予主管建議評估表</h2>
+<h2><a href="javascript:history.back()">給予主管建議評估表</a></h2>
 
 <div ng-controller="ManagerSuggestCtrl" class="container" style="margin-top: 100px">
 
     <form name="yearForm">
         <label for="repeatSelect"> Select year: </label>
-        <select name="repeatSelect" id="repeatSelect" ng-model="data.model" class="custom-select custom-select-lg mb-3" ng-change="GetResponseByYear(data.model)">
+        <select name="repeatSelect" id="repeatSelect" ng-model="data.model" class="custom-select custom-select-lg mb-3" ng-change="GetAllManageAssessments(data.model)">
             <option ng-repeat="option in data.availableOptions" value="{{option.id}}">{{option.name}}</option>
         </select>
     </form>

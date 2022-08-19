@@ -34,7 +34,6 @@ namespace TEEmployee.Models
         {
             string state = (_assessmentRepository as ManageAssessmentTxtRepository).GetStateOfResponse(year, manager.empno, user);
             var manageAssessments = _assessmentRepository.GetResponse(year, manager.empno, user);
-            //return manageAssessments;
 
             return new SelfAssessResponse() { Responses = manageAssessments, State = state };
         }
@@ -47,8 +46,7 @@ namespace TEEmployee.Models
         //public SelfAssessment GetSelfAssessment(int id)
         //{
         //    return _selfAssessmentRepository.Get(id);
-        //}
-        
+        //}        
         
         public bool UpdateResponse(List<Assessment> assessments, string user, string state, string year)
         {
@@ -91,7 +89,6 @@ namespace TEEmployee.Models
 
             return feedbacks;
         }
-
 
         // 0729:  Feedback for all category
         public bool UpdateFeedback(List<string> feedbacks, string state, string empno, string manno)

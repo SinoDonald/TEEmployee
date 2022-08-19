@@ -21,22 +21,22 @@ app.run(['$http', '$window', function ($http, $window) {
 
 app.service('appService', ['$http', function ($http) {
 
-    this.GetManageYearList = function (o) {
-        return $http.post('Assessment/GetManageYearList', o);
-    };
-
+    // 取得所有要評核的主管
     this.GetManagers = function (o) {
         return $http.post('Assessment/GetManagers', o);
     };
 
+    // 取得所有的問卷年份
+    this.GetManageYearList = function (o) {
+        return $http.post('Assessment/GetManageYearList', o);
+    };
+
+     // 選擇年份顯示問卷結果
     this.GetAllManageAssessments = function (o) {
         return $http.post('Assessment/GetAllManageAssessments', o);
     };
 
-    //this.GetManageResponseByYear = function (o) {
-    //    return $http.post('Assessment/GetManageResponseByYear', o);
-    //};
-
+    // 儲存檔案或寄送
     this.CreateManageResponse = function (o) {
         return $http.post('Assessment/CreateManageResponse', o);
     };
@@ -44,6 +44,7 @@ app.service('appService', ['$http', function ($http) {
 }]);
 
 app.factory('myFactory', function () {
+
     var savedData = {}
 
     function set(data) {
@@ -69,6 +70,7 @@ app.controller('ManageCtrl', ['$scope', '$location', 'appService', '$rootScope',
 
 app.controller('ManagerOptionCtrl', ['$scope', '$location', 'appService', '$rootScope', 'myFactory', function ($scope, $location, appService, $rootScope, myFactory) {
 
+    // 取得所有要評核的主管
     appService.GetManagers({})
         .then(function (ret) {
             $scope.GetManagers = ret.data;
@@ -77,6 +79,7 @@ app.controller('ManagerOptionCtrl', ['$scope', '$location', 'appService', '$root
             alert('Error');
         });
 
+    // 顯示要評分的主管問卷
     $scope.ManagerSuggest = function (data) {
         $location.path('/ManagerSuggest');
         myFactory.set(data)
@@ -98,10 +101,6 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
         ]
     };
 
-    $scope.myFunction = function (daystring) {
-        alert(daystring);
-    }
-
     // 取得所有的問卷年份
     appService.GetManageYearList({}).then(function (ret) {
         $scope.years = ret;
@@ -111,26 +110,36 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
         $scope.data.model = $scope.data.availableOptions[0].name;
     });
 
-    appService.GetAllManageAssessments({ year: $scope.data.model, manager: $scope.manager })
-        .then(function (ret) {
-            $scope.ManageAssessments = ret.data.Responses;
-            $scope.state = ret.data.State;
-        })
-        .catch(function (ret) {
-            alert('Error');
-        });
+    // 選擇年份顯示問卷結果
+    $scope.GetAllManageAssessments = function (year) {
+        appService.GetAllManageAssessments({ year: $scope.data.model, manager: $scope.manager })
+            .then(function (ret) {
+                $scope.ManageAssessments = ret.data.Responses;
+                $scope.state = ret.data.State;
+            })
+            .catch(function (ret) {
+                alert('Error');
+            });
+    }
+    $scope.GetAllManageAssessments();
 
+    // 儲存檔案或寄送
     $scope.CreateManageResponse = function (data) {
         appService.CreateManageResponse({ assessments: $scope.ManageAssessments, state: data, year: $scope.data.model, manager: $scope.manager })
             .then(function (ret) {
-                alert('完成');
-                $window.location.href = '/Assessment/Manage';
-                //$window.location.href = 'Home';
+                if (data == 'save') {
+                    alert('已儲存');
+                }
+                else {
+                    alert('已寄出');
+                }
+                $window.location.href = 'Assessment/Manage';
             });
     }
 
+    // 回上頁
     $scope.ToManage = function () {
-        $window.location.href = '/Assessment/Manage';
+        $window.location.href = 'Assessment/Manage';
     }
 
 }]);
