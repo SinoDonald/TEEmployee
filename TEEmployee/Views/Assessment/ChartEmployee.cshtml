@@ -1,0 +1,69 @@
+﻿
+@{
+    ViewBag.Title = "ChartEmployee";
+}
+
+@section Styles {
+    <style>
+        body {
+            /*background-color: linen;*/
+        }
+
+        header {
+            margin-top: 100px;
+        }
+
+        .container {
+            display: flex;
+        }
+
+            .container div {
+                flex: 1;
+                margin: 0 20px;
+            }
+    </style>
+}
+
+<header>
+    <h2>ChartEmployee</h2>
+</header>
+
+
+<div ng-controller="ChartEmployeeCtrl">
+
+
+    <div class="container">
+        <div>
+            <label for="SelectYear"> Select the Year: </label>
+            <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" aria-label="Select the Year">
+                <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+            </select>
+        </div>
+        <div>
+            <label for="SelectGroup"> Select the Group: </label>
+            <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
+                <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
+            </select>
+        </div>
+        <div>
+            <label for="SelectCategory"> Select the Category: </label>
+            <select class="form-select" id="SelectCategory" name="SelectCategory" ng-model="selectedCategory" ng-change="DrawChart()" aria-label="Select the Category">
+                <option ng-repeat="category in categories" value="{{category.id}}">{{category.name}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="painting">
+
+    </div>
+
+</div>
+
+
+
+@section scripts {
+    <script src="~/Scripts/WebApp/Assessment/ChartEmployeeCtrl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/Scripts/WebApp/Assessment/CustomChart.js"></script>
+    @*<script src="~/Scripts/WebApp/Assessment/SelfChart.js"></script>*@
+}

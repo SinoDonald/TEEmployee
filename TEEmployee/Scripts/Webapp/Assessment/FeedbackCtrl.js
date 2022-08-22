@@ -103,6 +103,22 @@ app.controller('EmployeeListCtrl', ['$scope', '$location', 'appService', '$rootS
 
     $scope.Employees = [];
 
+    //appService.GetAllEmployees({})
+    //    .then(function (ret) {
+    //        $scope.Employees = ret.data;
+    //    })
+    //    .catch(function (ret) {
+    //        alert('Error');
+    //    });
+    
+    //appService.GetAllEmployeesWithState({})
+    //    .then(function (ret) {
+    //        $scope.Employees = ret.data;
+    //    })
+    //    .catch(function (ret) {
+    //        alert('Error');
+    //    });
+
     appService.GetAllEmployeesWithStateByRole({})
         .then(function (ret) {
             $scope.Employees = ret.data;
@@ -114,18 +130,40 @@ app.controller('EmployeeListCtrl', ['$scope', '$location', 'appService', '$rootS
     $scope.Review = function (data) {
         $location.path('/AssessEmployee');
         myFactory.set(data)
+
+    /*myFactory.set(data);*/
+           //appService.GetMixResponse(data)
+           //    .then(function (ret) {
+           //        myFactory.set(data, ret.data)
+           //        $location.path('/Review');
+           //    })
+           //    .catch(function (ret) {
+           //        alert('Error');
+           //    });
+           //$window.location.href = '/Assessment/Review'
+           //$window.location.path = '/Review'
+
     }
 
 }]);
 
 app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', function ($scope, $window, appService, $rootScope, myFactory) {
 
+    const optionText = ['優良', '普通', '尚可', '待加強', 'N/A'];
+
     $scope.GetResponseByYear = function (year) {
         appService.GetResponseByYear({ year: year, empno: myFactory.get().EmployeeInfo.Employee.empno })
             .then(function (ret) {
+
+                
+                for (let m = 0; m !== ret.data.Responses.length; m++) {
+                    if (ret.data.Responses[m].Choice.includes('option'))
+                        ret.data.Responses[m].Choice = optionText[Number(ret.data.Responses[m].Choice.slice(6)) - 1];
+                }                
+
                 //$scope.state = ret.data.State;
                 for (var i = 0; i < ret.data.Responses.length; i++) {
-                    if (ret.data.Responses[i].Content == '自評摘要') {
+                    if (ret.data.Responses[i].Content === '自評摘要') {
                         ret.data.Responses.splice(i + 1, 0, { CategoryId: ret.data.Responses[i].CategoryId, Content: '意見回饋' });
                     }
                 }
@@ -135,6 +173,30 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
             .catch(function (ret) {
                 alert('Error');
             });
+
+
+        appService.GetFeedback({ empno: myFactory.get().EmployeeInfo.Employee.empno })
+            .then(function (ret) {
+                //$scope.state = ret.data.State;                
+                //$scope.feedback = ret.data.Text
+                $scope.state = ret.data.State
+
+                var count = 0;
+
+                for (var i = 0; i < $scope.Responses.length; i++) {
+                    if ($scope.Responses[i].Content === '意見回饋') {
+                        $scope.Responses[i].Choice = ret.data.Text[count];
+                        count++;
+                    }
+                }
+
+                $scope.feedback = ret.data.Text[count];
+
+            })
+            .catch(function (ret) {
+                alert('Error');
+            });
+
     }
 
     $scope.GetResponseByYear();
@@ -155,27 +217,7 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
             });
     }
 
-    appService.GetFeedback({ empno: myFactory.get().EmployeeInfo.Employee.empno })
-        .then(function (ret) {
-            //$scope.state = ret.data.State;                
-            //$scope.feedback = ret.data.Text
-            $scope.state = ret.data.State
-
-            var count = 0;
-
-            for (var i = 0; i < $scope.Responses.length; i++) {
-                if ($scope.Responses[i].Content === '意見回饋') {
-                    $scope.Responses[i].Choice = ret.data.Text[count];
-                    count++;
-                }
-            }
-
-            $scope.feedback = ret.data.Text[count];
-
-        })
-        .catch(function (ret) {
-            alert('Error');
-        });
+    
 
     //$scope.Response = {}
 

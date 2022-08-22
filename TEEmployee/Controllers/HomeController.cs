@@ -4,10 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Filters;
+using TEEmployee.Models;
 
 namespace TEEmployee.Controllers
 {
-    [MyAuthorize]
+    
     public class HomeController : Controller
     {
         public ActionResult Index()
@@ -32,6 +33,13 @@ namespace TEEmployee.Controllers
         public ActionResult Unauthorized()
         {           
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult Index(User user)
+        {
+            Session["empno"] = user.empno;
+            return RedirectToAction("Index");
         }
     }
 }

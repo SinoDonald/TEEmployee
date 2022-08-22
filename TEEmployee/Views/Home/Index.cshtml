@@ -1,6 +1,11 @@
-﻿@{
+﻿
+@model TEEmployee.Models.User
+
+@{
     ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_LayoutStar - Copy.cshtml";
 }
+
 <!-- Masthead-->
 <header class="masthead">
     <div class="container px-4 px-lg-5 h-100">
@@ -8,6 +13,19 @@
             <div class="col-lg-8 align-self-end">
                 <h1 class="text-white font-weight-bold">員工職涯規劃溝通與紀錄平台</h1>
                 <hr class="divider" />
+
+                @using (Html.BeginForm())
+                {
+                    <div class="form-group">                       
+                        @Html.EditorFor(model => model.empno, new { htmlAttributes = new { @class = "form-control" ,@placeholder = "Enter Employee Number" } })                       
+                        <input type="submit" value="Save" class="btn btn-default" style="color: white" /> 
+                    </div>
+                }
+                @*<form method="post" action="~/Home/SwitchEmployeeNumber">
+                    <input type="text" class="form-control" id="id" name="id" placeholder="Employee number" value="@Model.empno">
+                    <button type="submit" class="btn btn-primary">Switch</button>
+                </form>*@
+
             </div>
             <div class="col-lg-8 align-self-baseline">
                 <p class="text-white-75 mb-5">Start Bootstrap can help you build better websites using the Bootstrap framework! Just download a theme and start customizing, no strings attached!</p>
@@ -75,15 +93,42 @@
                     </div>
                 </a>
             </div>
+            <div class="col-lg-4 col-sm-6">
+                <a class="portfolio-box" href="" )">
+                    <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/coast.jpg" alt="..." />
+                    <div class="portfolio-box-caption p-3">
+                        <div class="project-category text-white-50">How Do You Turn This On?</div>
+                        <div class="project-name">Undefined</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-4 col-sm-6">
+                <a class="portfolio-box" href="" )">
+                    <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/food.jpg" alt="..." />
+                    <div class="portfolio-box-caption p-3">
+                        <div class="project-category text-white-50">How Do You Turn This On?</div>
+                        <div class="project-name">NaN</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-4 col-sm-6">
+                <a class="portfolio-box" href="@Url.Action("ChartMenu", "Assessment")">
+                    <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/yellowsky.jpg" alt="..." />
+                    <div class="portfolio-box-caption p-3">
+                        <div class="project-category text-white-50">How Do You Turn This On?</div>
+                        <div class="project-name">null</div>
+                    </div>
+                </a>
+            </div>
             @*<div class="col-lg-4 col-sm-6">
-            <a class="portfolio-box" href="~/Content/assets/img/portfolio/fullsize/6.jpg" title="Project Name">
-                <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/6.jpg" alt="..." />
-                <div class="portfolio-box-caption">
-                    <div class="project-category text-white-50">Category</div>
-                    <div class="project-name">Project Name</div>
-                </div>
-            </a>
-        </div>*@
+                    <a class="portfolio-box" href="~/Content/assets/img/portfolio/fullsize/6.jpg" title="Project Name">
+                        <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/6.jpg" alt="..." />
+                        <div class="portfolio-box-caption">
+                            <div class="project-category text-white-50">Category</div>
+                            <div class="project-name">Project Name</div>
+                        </div>
+                    </a>
+                </div>*@
         </div>
     </div>
 </div>

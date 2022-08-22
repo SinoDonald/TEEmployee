@@ -39,6 +39,9 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', fun
     $scope.SelfAssessments = [];
     $scope.state;
 
+    const optionText = ['優良', '普通', '尚可', '待加強', 'N/A'];
+
+
     //$scope.response = {
     //    "Id": 7596,
     //    "choices": []
@@ -90,6 +93,9 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', fun
         appService.GetResponseByYear({ year: year })
             .then(function (ret) {
                 $scope.state = ret.data.State;
+
+               
+
                 //$scope.SelfAssessments.forEach(function (item) {
 
                 //    ret.data.Responses.forEach(function (item2) {
@@ -106,11 +112,19 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', fun
                 // 
                 if (ret.data.Responses.length !== 0) {
 
+                    if ($scope.state === "submit") {
+                        for (let m = 0; m !== ret.data.Responses.length; m++) {
+                            if (ret.data.Responses[m].Choice.includes('option'))
+                                ret.data.Responses[m].Choice = optionText[Number(ret.data.Responses[m].Choice.slice(6)) - 1];
+                        }
+                    }
+
+
                     var feedbacksByCategory = [];
 
                     var category_count = Math.max(...ret.data.Responses.map(o => Number(o.CategoryId)))
 
-                    $scope.SelfAssessments = ret.data.Responses
+                    //$scope.SelfAssessments = ret.data.Responses
 
                     appService.GetAllFeedbacks({ year: year })
                         .then(function (ret2) {
@@ -144,7 +158,9 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', fun
                                 }
                             }
 
-                            $scope.Responses = ret.data.Responses 
+                            //$scope.Responses = ret.data.Responses 
+                            $scope.SelfAssessments = ret.data.Responses
+
 
                             $scope.Feedbacks = feedbacksByCategory[count];
                         });

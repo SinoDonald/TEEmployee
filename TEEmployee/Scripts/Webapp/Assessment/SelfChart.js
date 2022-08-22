@@ -21,7 +21,7 @@ function CreateChart(chartData, optionsName) {
 
         chartData.forEach(function (item) {
 
-            if (item.CategoryId == i + 1) {
+            if (item.CategoryId === i + 1) {
 
                 item.Charts.forEach(function (item2){
 

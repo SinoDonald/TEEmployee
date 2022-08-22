@@ -17,7 +17,7 @@
         <div class="card text-center text-white bg-dark">
             <a href="~/Assessment/Self">
                 <img class="card-img-top" src="~/Content/assets/img/crocodile.png" alt="Card image cap">
-                <h5 class="card-title">自評考核表</h5>
+                <h5 class="card-title">自評評估表</h5>
             </a>
             @*@{
                 if (true)
@@ -48,27 +48,28 @@
                 </div>
             </a>
         </div>
-        <div class="card text-center">
-            <a href="~/Assessment/SelfChart">
-                <img class="card-img-top" src="~/Content/assets/img/panda-bear.png" alt="Card image cap">
-                <h5 class="card-title">統計圖表</h5>
-                <div class="card-body">
-                    <p class="card-text">With supporting text below as a natural lead-in to additional content</p>
-                </div>
-            </a>
-        </div>
-        <div class="card text-center">
-            <a href="~/Assessment/Feedback">
-                <img class="card-img-top" src="~/Content/assets/img/rabbit.png" alt="Card image cap">
-                <h5 class="card-title">主管評員工</h5>
-                <div class="card-body">
-                    <p class="card-text">With supporting text below as a natural lead-in to additional content</p>
-                </div>
-            </a>
-        </div>
-        @*@if (Session["role"].ToString() == "2")
-        {*@
+        @if (Session["role"] is object)
+        {
             <div class="card text-center">
+                <a href="~/Assessment/ChartMenu">
+                    <img class="card-img-top" src="~/Content/assets/img/panda-bear.png" alt="Card image cap">
+                    <h5 class="card-title">統計圖表</h5>
+                    <div class="card-body">
+                        <p class="card-text">With supporting text below as a natural lead-in to additional content</p>
+                    </div>
+                </a>
+            </div>
+            <div class="card text-center">
+                <a href="~/Assessment/Feedback">
+                    <img class="card-img-top" src="~/Content/assets/img/rabbit.png" alt="Card image cap">
+                    <h5 class="card-title">主管給予員工建議</h5>
+                    <div class="card-body">
+                        <p class="card-text">With supporting text below as a natural lead-in to additional content</p>
+                    </div>
+                </a>
+            </div>
+
+            @*<div class="card text-center">
                 <a href="~/Assessment/Self">
                     <img class="card-img-top" src="~/Content/assets/img/panda-bear.png" alt="Card image cap">
                     <h5 class="card-title">Special title treatment</h5>
@@ -76,12 +77,13 @@
                         <p class="card-text">With supporting text below as a natural lead-in to additional content</p>
                     </div>
                 </a>
-            </div>
+            </div>*@
 
-        @*}*@
+        }
 
 
     </div>
+
     
     </div>
     

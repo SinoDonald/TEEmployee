@@ -39,23 +39,45 @@ namespace TEEmployee.Filters
             string loginUser = filterContext.HttpContext.User.Identity.Name;
             Match m = Regex.Match(loginUser, @"\\{0,1}(\d{4})@{0,1}");      
             if (m.Success)
-                loginUser = m.Groups[1].ToString(); 
+                loginUser = m.Groups[1].ToString();
             //-------------------------------------------------------
 
-            if (filterContext.HttpContext.Session["empno"] == null)
+            //if (filterContext.HttpContext.Session["empno"] == null)
+            if (true)
             {
                 //loginUser = "6112";
                 //loginUser = "5526";
-                var ret = _userRepository.Get(loginUser);
+                loginUser = "4125";
+                //var ret = _userRepository.Get(loginUser);
+
+                User ret;
+
+                if (filterContext.HttpContext.Session["empno"] == null)
+                {
+                    ret = _userRepository.Get(loginUser);
+                }
+                else
+                {
+                    ret = _userRepository.Get(filterContext.HttpContext.Session["empno"].ToString());
+                }
 
                 if(ret != null) {
-                    
+
                     //Get Userinfo
-                    filterContext.HttpContext.Session["empno"] = loginUser;
+                    //filterContext.HttpContext.Session["empno"] = loginUser;
+                    filterContext.HttpContext.Session["empno"] = ret.empno;
                     filterContext.HttpContext.Session["empname"] = ret.name;
                     filterContext.HttpContext.Session["group"] = ret.group;
                     filterContext.HttpContext.Session["group_one"] = ret.group_one;
                     filterContext.HttpContext.Session["group_two"] = ret.group_two;
+
+                    filterContext.HttpContext.Session["role"] = null;
+
+                    if (ret.department_manager || ret.group_manager || ret.group_one_manager || ret.group_two_manager)
+                    {
+                        filterContext.HttpContext.Session["role"] = "Manager";
+                    }
+
                     //filterContext.HttpContext.Session["role"] = ret.Role;
                 }
                 else

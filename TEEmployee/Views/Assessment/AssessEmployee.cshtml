@@ -14,7 +14,7 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 @*<a class="nav-item nav-link" ui-sref="AssessEmp">AssessEmp</a>
-                    <a class="nav-item nav-link" ui-sref="Compare">Compare</a>*@
+        <a class="nav-item nav-link" ui-sref="Compare">Compare</a>*@
                 <a class="nav-item nav-link" ui-sref="EmployeeList">Employee List</a>
             </div>
         </div>
@@ -35,9 +35,9 @@
                 @*category name*@
                 <td ng-if="item.Id == 0" ng-bind="item.Content" colspan="2" class="table-warning"></td>
                 @*content and choice*@
-                <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Content != '意見回饋'" ng-bind="item.Content"></td>
+                <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Content != '意見回饋' && item.Content != '自我總評'" ng-bind="item.Content"></td>
 
-                <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Content != '意見回饋'" ng-bind="item.Choice"></td>
+                <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Content != '意見回饋' && item.Content != '自我總評'" ng-bind="item.Choice"></td>
 
                 <td ng-if="item.Content =='自評摘要'" colspan="2">
                     <div class="form-group">
@@ -45,7 +45,13 @@
                         <p ng-bind="item.Choice"></p>
                     </div>
                 </td>
-                <td ng-if="item.Content =='意見回饋'" colspan="2"> 
+                <td ng-if="item.Content =='自我總評'" colspan="2">
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">自我總評</label>
+                        <p ng-bind="item.Choice"></p>
+                    </div>
+                </td>
+                <td ng-if="item.Content =='意見回饋'" colspan="2">
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1">意見回饋</label>
                         <textarea class="form-control assesstext" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>

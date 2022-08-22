@@ -261,26 +261,7 @@ namespace TEEmployee.Models
 
             List<EmployeesWithState> employeesWithStates = new List<EmployeesWithState>();
 
-            var allEmployees = _userRepository.GetAll();
-            List<User> filtered_employees = new List<User>();
-
-            var a = allEmployees.Where(p => p.group == user.group);
-
-
-            if (user.department_manager == true)
-                filtered_employees.AddRange(allEmployees.ToList());
-
-            if (user.group_manager == true)
-                filtered_employees.AddRange(allEmployees.Where(p => p.group == user.group).ToList());
-
-            if (user.group_one_manager == true)
-                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_one).ToList());
-
-            if (user.group_two_manager == true)
-                filtered_employees.AddRange(allEmployees.Where(p => p.group_two == user.group_two).ToList());
-
-            filtered_employees = filtered_employees.Distinct().ToList();
-
+            List<User> filtered_employees = FilterEmployeeByRole(user);
 
             foreach (var item in filtered_employees)
             {
@@ -306,7 +287,27 @@ namespace TEEmployee.Models
             return employeesWithStates;
         }
 
-        
+        List<User> FilterEmployeeByRole(User user)
+        {
+            var allEmployees = _userRepository.GetAll();
+            List<User> filtered_employees = new List<User>();
+
+            if (user.department_manager == true)
+                filtered_employees.AddRange(allEmployees);
+
+            if (user.group_manager == true)
+                filtered_employees.AddRange(allEmployees.Where(p => p.group == user.group).ToList());
+
+            if (user.group_one_manager == true)
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_one).ToList());
+
+            if (user.group_two_manager == true)
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_two == user.group_two).ToList());
+
+            filtered_employees = filtered_employees.Distinct().ToList();
+
+            return filtered_employees;
+        }
 
 
 
@@ -370,6 +371,62 @@ namespace TEEmployee.Models
             return assessYearList;
         }
 
+        // chart
+
+        public List<string> GetChartYearList(bool isManagerResponse)
+        {
+            var assessYearList = (_assessmentRepository as SelfAssessmentTxtRepository).GetChartYearList(isManagerResponse);
+            return assessYearList;
+        }
+
+        public List<string> GetChartGroupList(string manno)
+        {
+            List<string> groups = new List<string>();
+            User user = _userRepository.Get(manno);
+
+            if (user.department_manager)
+            {
+                var allEmployees = _userRepository.GetAll();
+                groups.AddRange(allEmployees.Select(x => x.group).ToList());
+                groups.AddRange(allEmployees.Select(x => x.group_one).ToList());
+                groups.AddRange(allEmployees.Select(x => x.group_two).ToList());
+                groups = groups.Where(x => !String.IsNullOrEmpty(x)).Distinct().ToList();                
+            }
+            else
+            {
+                if (user.group_manager) groups.Add(user.group);
+                if (user.group_one_manager) groups.Add(user.group_one);
+                if (user.group_two_manager) groups.Add(user.group_two);
+            }
+                
+            return groups;
+        }
+        
+
+
+        public List<ChartEmployeeData> GetChartEmployeeData(string manno, string year)
+        {
+            User user = _userRepository.Get(manno);
+            List<User> filteredEmployees = FilterEmployeeByRole(user);
+            List<ChartEmployeeData> chartEmployeeData = new List<ChartEmployeeData>();
+
+            foreach (var employee in filteredEmployees)
+            {
+                string state = (_assessmentRepository as SelfAssessmentTxtRepository).GetStateOfResponse(employee.empno, year);
+
+                if(state == "submit")
+                {
+                    var selfAssessmentResponse = (_assessmentRepository as SelfAssessmentTxtRepository).GetResponse(employee.empno, year);
+                    selfAssessmentResponse = selfAssessmentResponse.Where(x => x.Choice.Contains("option")).ToList();
+                    chartEmployeeData.Add(new ChartEmployeeData() { Employee = employee, Responses = selfAssessmentResponse });
+                }                
+            }
+                        
+            return chartEmployeeData;
+        }
+
+
+
 
         public void Dispose()
         {
@@ -397,6 +454,11 @@ namespace TEEmployee.Models
         public string State { get; set; }
     }
 
+    public class ChartEmployeeData
+    {
+        public User Employee { get; set; }
+        public List<Assessment> Responses { get; set; }
+    }
 
 
 }
