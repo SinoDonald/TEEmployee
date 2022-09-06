@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "List";
+}
+
+@section Styles {
+    <style>
+        header {
+            margin-top: 100px;
+        }
+
+        .month-select {
+            display: flex;
+        }
+
+            .month-select div {
+                flex: 1;
+                margin: 0 20px;
+            }
+
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+}
+
+
+
+<div ng-controller="ListCtrl" class="container">
+
+    <header>
+        <h2>@ViewBag.Title</h2>
+    </header>
+
+
+    <div class="month-select">
+        <div>
+            <label for="SelectYear">Select Year: </label>
+            <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" aria-label="Select Year">
+                <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+            </select>
+        </div>
+        <div>
+            <label for="SelectMonth">Select Month: </label>
+            <select class="form-select" id="SelectYear" name="SelectMonth" ng-model="selectedMonth" aria-label="Select Year" autocomplete="off">
+                <option ng-repeat="month in months" value="{{month}}">{{month}}</option>
+            </select>
+        </div>
+        <div class="center">
+            <button type="button" class="btn btn-warning" ng-click="GetAllMonthlyRecord()">Search</button>
+        </div>
+    </div>
+
+
+
+    <table class="table">
+        <tr>
+            <th>empno</th>
+            <th>mmyy</th>
+            <th>Link</th>
+        </tr>
+        <tr ng-repeat="item in data">
+            <td ng-bind="item.empno"></td>
+            <td ng-bind="item.yymm"></td>
+            <td>
+                <a ng-href="~/Tasklog/Details/{{item.guid}}">Details</a>
+            </td>
+        </tr>
+
+    </table>
+
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/WebApp/Tasklog/TasklogCtrl.js"></script>
+}

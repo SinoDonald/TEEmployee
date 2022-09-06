@@ -373,9 +373,10 @@ namespace TEEmployee.Models
 
         // chart
 
-        public List<string> GetChartYearList(bool isManagerResponse)
+        // 0825 used for both service
+        public List<string> GetChartYearList()
         {
-            var assessYearList = (_assessmentRepository as SelfAssessmentTxtRepository).GetChartYearList(isManagerResponse);
+            var assessYearList = _assessmentRepository.GetChartYearList();
             return assessYearList;
         }
 
@@ -425,12 +426,108 @@ namespace TEEmployee.Models
             return chartEmployeeData;
         }
 
+        //public List<string> GetChartManagerList(string manno, string year)
+        //{
+        //    User user = _userRepository.Get(manno);
+        //    List<string> names = new List<string>();
 
+        //    if (String.IsNullOrEmpty(year))
+        //        year = Utilities.DayStr();
+
+        //    if (user.department_manager)
+        //    {
+        //        names = (_assessmentRepository as ManageAssessmentTxtRepository).GetChartManagers(year).ToList();
+        //        names.Remove(user.name);
+        //        names.Insert(0, user.name);
+        //    }
+                
+        //    else
+        //        names.Add(user.name);
+
+        //    return names;
+        //}
+
+        public ChartManagerData GetChartManagerData(string manno, string year)
+        {
+            User user = _userRepository.Get(manno);
+            List<User> managers = new List<User>();
+            List<ChartManagerResponse> chartManagerResponses = new List<ChartManagerResponse>();
+
+            // Get chart manager list of the year 
+
+            List<string> empnos = new List<string>();
+
+            if (String.IsNullOrEmpty(year))
+                year = Utilities.DayStr();
+
+            empnos = (_assessmentRepository as ManageAssessmentTxtRepository).GetChartManagers(year).ToList();
+
+            if (user.department_manager)
+            {
+                empnos.Remove(user.empno);
+                empnos.Insert(0, user.empno);
+            }
+            else if (empnos.Contains(user.empno))
+                empnos = new List<string>() { user.empno };
+
+            // Get Manager Assessment 
+
+            var managerAssessments = _assessmentRepository.GetAll();
+            int numOfCategory = managerAssessments.Where(x => x.Id == 0).Count();
+            int numOfQuestion = managerAssessments.Count() - numOfCategory * 2;
+            managerAssessments = managerAssessments.Where(x => x.Id != 0 && x.Content != "建議").ToList();
+
+            // Collect user data and chart data
+
+            foreach (var empno in empnos)
+            {
+                User manager = _userRepository.Get(empno);
+                managers.Add(manager);
+
+                var allResponses = (_assessmentRepository as ManageAssessmentTxtRepository).GetAllManagerAssessmentResponses(empno, year);
+                //if (allResponses.Count == 0) break;
+
+                // Create empty list
+                List<List<int>> Votes = new List<List<int>>();
+                List<List<string>> Responses = new List<List<string>>();
+
+                for(int i = 0; i != numOfQuestion; i++)
+                    Votes.Add(Enumerable.Repeat(0, 4).ToList());
+
+                for (int i = 0; i != numOfCategory; i++)
+                    Responses.Add(new List<string>());
+                
+                // Collect chart data
+
+                foreach(var item in allResponses)
+                {
+                    if (item.Id == 0)
+                        continue;
+                
+                    if (item.Id > numOfQuestion)
+                    {
+                        if(!String.IsNullOrEmpty(item.Choice))
+                        Responses[item.CategoryId - 1].Add(item.Choice);
+                    }
+                    else
+                    {
+                        int idx = Int32.Parse(item.Choice.Substring(6)) - 1;
+                        Votes[item.Id - 1][idx] += 1;
+                    }
+                }
+
+                chartManagerResponses.Add(new ChartManagerResponse() { Manager = manager, Responses = Responses, Votes = Votes });
+
+            }
+
+            return new ChartManagerData() { ChartManagerResponses = chartManagerResponses, ManagerAssessments = managerAssessments };
+        }
 
 
         public void Dispose()
         {
             _assessmentRepository.Dispose();
+            _userRepository.Dispose();
             //_responseRepository.Dispose();
         }
     }
@@ -460,5 +557,17 @@ namespace TEEmployee.Models
         public List<Assessment> Responses { get; set; }
     }
 
+    public class ChartManagerResponse
+    {
+        public User Manager { get; set; }        
+        public List<List<int>> Votes { get; set; }
+        public List<List<string>> Responses { get; set; }
+    }
+
+    public class ChartManagerData
+    {        
+        public List<Assessment> ManagerAssessments { get; set; }
+        public List<ChartManagerResponse> ChartManagerResponses { get; set; }        
+    }
 
 }

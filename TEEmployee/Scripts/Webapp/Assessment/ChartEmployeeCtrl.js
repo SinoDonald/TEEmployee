@@ -7,7 +7,7 @@ app.run(['$http', '$window', function ($http, $window) {
 
 app.service('appService', ['$http', function ($http) {
 
-    this.GetChartDataByGroupAndYear = (o) => {
+    this.GetChartEmployeeData = (o) => {
         return $http.post('Assessment/GetChartEmployeeData', o);
     };
     this.GetChartYearList = (o) => {
@@ -19,26 +19,69 @@ app.service('appService', ['$http', function ($http) {
 
 }]);
 
-app.controller('ChartEmployeeCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
+app.controller('ChartEmployeeCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
 
-    appService.GetChartYearList({isManagerResponse: false}).then((ret) => {
+    //appService.GetChartYearList({isManagerResponse: false}).then((ret) => {
+
+    //    $scope.years = ret.data;
+    //    $scope.selectedYear = $scope.years[0];
+
+    //    appService.GetChartDataByGroupAndYear({ year: $scope.selectedYear }).then((ret) => {
+
+    //        $scope.data = ret.data;
+
+    //    });
+
+    //});
+
+    //appService.GetChartGroupList({}).then((ret) => {
+
+    //    $scope.groups = ret.data;
+    //    $scope.selectedGroup = $scope.groups[0];
+
+    //});
+
+    //appService.GetChartYearList({ isManagerResponse: false }).then((ret) => {
+
+    //    $scope.years = ret.data;
+    //    $scope.selectedYear = $scope.years[0];
+
+    //    appService.GetChartDataByGroupAndYear({ year: $scope.selectedYear }).then((ret) => {
+
+    //        $scope.data = ret.data;
+
+    //    });
+
+    //});
+
+    //appService.GetChartGroupList({}).then((ret) => {
+
+    //    $scope.groups = ret.data;
+    //    $scope.selectedGroup = $scope.groups[0];
+
+    //});
+
+    let promiseA = appService.GetChartYearList({ isManagerResponse: false }).then((ret) => {
 
         $scope.years = ret.data;
         $scope.selectedYear = $scope.years[0];
 
-        appService.GetChartDataByGroupAndYear({ year: $scope.selectedYear }).then((ret) => {
-
-            $scope.data = ret.data;
-
-        });
-
+        return appService.GetChartEmployeeData({ year: $scope.selectedYear });        
     });
 
-    appService.GetChartGroupList({}).then((ret) => {
 
-        $scope.groups = ret.data;
+    let promiseB = appService.GetChartGroupList({});
+
+    
+    $q.all([promiseA, promiseB]).then((ret) => {
+
+        $scope.data = ret[0].data;
+        $scope.groups = ret[1].data;
+        // or pass these data in promiseA and B, return empty promise from then() 
+
         $scope.selectedGroup = $scope.groups[0];
-
+        $scope.FilterDataByGroup($scope.selectedGroup);
+        $scope.DrawChart();
     });
 
 
@@ -67,6 +110,17 @@ app.controller('ChartEmployeeCtrl', ['$scope', '$window', 'appService', '$rootSc
     }
 
     $scope.DrawChart = () => DrawEmployeeBarChart(fdata, $scope.selectedCategory);
+
+    $scope.GetChartData = () => {
+
+        appService.GetChartEmployeeData({ year: $scope.selectedYear }).then((ret) => {
+
+            $scope.data = ret.data;
+            $scope.FilterDataByGroup($scope.selectedGroup);
+            $scope.DrawChart();
+        })
+
+    }
 
 
 }]);

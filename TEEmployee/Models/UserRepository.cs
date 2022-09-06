@@ -22,7 +22,9 @@ namespace TEEmployee.Models
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            conn.Close();
+            conn.Dispose();
+            return;
         }
                
        
@@ -54,5 +56,6 @@ namespace TEEmployee.Models
 
             return ret;
         }
+
     }
 }

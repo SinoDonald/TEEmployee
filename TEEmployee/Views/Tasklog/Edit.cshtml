@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewBag.Title = "Edit";
+}
+
+@section Styles {
+    <style>
+        header {
+            margin-top: 100px;
+        }
+
+        .month-select {
+            display: flex;
+        }
+
+            .month-select div {
+                flex: 1;
+                margin: 0 20px;
+            }
+
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+}
+
+<div ng-controller="EditCtrl" class="container">
+
+    <header>
+        <h2>@ViewBag.Title</h2>
+    </header>
+    <div class="month-select">
+        <div>
+            <label for="SelectYear">Select Year: </label>
+            <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" aria-label="Select Year">
+                <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+            </select>
+        </div>
+        <div>
+            <label for="SelectMonth">Select Month: </label>
+            <select class="form-select" id="SelectYear" name="SelectMonth" ng-model="selectedMonth" aria-label="Select Year">
+                <option ng-repeat="month in months" value="{{month}}">{{month}}</option>
+            </select>
+        </div>
+        <div class="center">
+            <button type="button" class="btn btn-warning" ng-click="GetTasklogData()">Search</button>           
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>計畫編號</th>
+                <th>工作項目</th>
+                <th>工作時數</th>
+                <th>[+][-]</th>
+                <th>詳細工作內容</th>
+                <th>(預計)完成日期</th>
+                <th>備註</th>
+            </tr>
+        </thead>
+
+        <tbody ng-repeat="project in projects">
+            <tr ng-repeat="log in project.logs">
+                <td rowspan="{{project.logs.length}}" ng-if="$index === 0">
+                    <input type="text" ng-model="project.projno">
+                </td>
+                <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.itemno"></td>
+                <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.workHour"></td>
+                <td>
+                    <input type="button" value="+" name="addRow" ng-click="addLogRow($parent.$index, $index)">
+                    <input type="button" value="-" name="removeRow" ng-click="removeLogRow($parent.$index, $index)">
+                </td>
+                <td><input type="text" ng-model="log.content"></td>
+                <td><input type="text" ng-model="log.endDate"></td>
+                <td><input type="text" ng-model="log.note"></td>
+        </tbody>
+    </table>
+
+    <div>
+        <input type="button" value="+" name="addRow" ng-click="addProjRow()">
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" ng-click="UpdateTasklogData()" class="btn btn-warning" />
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/WebApp/Tasklog/TasklogCtrl.js"></script>
+}
+
+
+@*version one*@
+
+@*<tr ng-repeat="item in rowList">
+        <td><input type="text" ng-model="item.projno"></td>
+        <td></td>
+        <td></td>
+        <td>
+            <input type="button" value="+" name="addRow" ng-click="addProjRow($index, item.projno)">
+            <input type="button" value="-" name="addRow" ng-click="removeProjRow($index)">
+        </td>
+        <td><input type="text" ng-model="item.a"></td>
+        <td><input type="text" ng-model="item.b"></td>
+        <td><input type="text" ng-model="item.c"></td>
+    </tr>*@

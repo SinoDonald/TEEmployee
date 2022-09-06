@@ -47,7 +47,7 @@ namespace TEEmployee.Filters
             {
                 //loginUser = "6112";
                 //loginUser = "5526";
-                loginUser = "4125";
+                //loginUser = "4125";
                 //var ret = _userRepository.Get(loginUser);
 
                 User ret;

@@ -1,0 +1,109 @@
+﻿
+@{
+    ViewBag.Title = "ChartManager";
+}
+
+@section Styles {
+    <style>
+        body {
+            /*background-color: linen;*/
+        }
+
+        header {
+            margin-top: 100px;
+        }
+
+        .chartmenu {
+            display: flex;
+            margin-bottom: 100px;
+        }
+
+        .chartmenu div {
+            flex: 1;
+            margin: 0 20px;
+        }
+
+        .clicked-mode {
+            opacity: 1.0;
+        }
+
+        .unclicked-mode {
+           opacity: 0.3;
+        }
+
+        .list-group-item {
+            margin-bottom: 0;
+        }
+    </style>
+}
+
+<header>
+    <h2>ChartManager</h2>
+</header>
+
+
+<div ng-controller="ChartManagerCtrl">
+
+
+    <div class="container">
+        <div class="chartmenu">
+            <div>
+                <label for="SelectYear"> Select the Year: </label>
+                <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" ng-change="GetChartData()" aria-label="Select the Year">
+                    <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+                </select>
+            </div>
+            <div>
+                <label for="SelectManager"> Select the Manager: </label>
+                <select class="form-select manager" id="SelectManager" name="SelectManager" ng-model="selectedManager" ng-change="DrawChart()" aria-label="Select the Manager">
+                    <option ng-repeat="manager in managers" value="{{manager}}">{{manager}}</option>
+                </select>
+            </div>
+            <div>
+                <label for="SelectCategory"> Select the Category: </label>
+                <select class="form-select" id="SelectCategory" name="SelectCategory" ng-model="selectedCategory" ng-change="DrawChart()" aria-label="Select the Category">
+                    <option ng-repeat="category in categories" value="{{category.id}}">{{category.name}}</option>
+                </select>
+            </div>
+            @*<div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" ng-click="order = 'Left'" class="btn btn-outline-info">
+                <img src="~/Content/assets/img/barchart.png" alt="Card image cap">
+            </button>
+            <button type="button" ng-click="order = 'Middle'" class="btn btn-outline-info">
+                <img src="~/Content/assets/img/comment.png" alt="Card image cap">
+            </button>
+            <button type="button" ng-click="order = 'Right'" class="btn btn-outline-info">
+                <img src="~/Content/assets/img/radar.png" alt="Card image cap">
+            </button>
+        </div>*@
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <div ng-click="SwitchMode($event, 'bar')">
+                    <img src="~/Content/assets/img/barchart.png" alt="Card image cap">
+                </div>
+                <div ng-click="SwitchMode($event, 'comment')" style="opacity: 0.2">
+                    <img src="~/Content/assets/img/comment.png" alt="Card image cap">
+                </div>
+                <div ng-click="SwitchMode($event, 'radar')" style="opacity: 0.2">
+                    <img src="~/Content/assets/img/radar.png" alt="Card image cap">
+                </div>
+            </div>
+        </div>
+
+
+        <div id="painting">
+
+        </div>
+    
+    
+    </div>
+
+</div>
+
+
+
+@section scripts {
+    <script src="~/Scripts/WebApp/Assessment/ChartManagerCtrl.js"></script>
+    <script src="~/Scripts/chart.js"></script>
+    @*<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>*@
+    <script src="~/Scripts/WebApp/Assessment/CustomChart.js"></script>   
+}

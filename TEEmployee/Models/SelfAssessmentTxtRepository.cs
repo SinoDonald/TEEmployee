@@ -413,12 +413,13 @@ namespace TEEmployee.Models
             return years.OrderByDescending(a => a).ToList();
         }
 
-        // 0818
-        // Get Year Directories by type (employee or manager)
-        public List<string> GetChartYearList(bool isManagerResponse)
+        // 0818: Get Year Directories by type (employee or manager)
+        // 0825: Manager part move to ManagerRepository
+        public List<string> GetChartYearList()
         {
             List<string> years = new List<string>();
-            string dn = Path.Combine(_appData, isManagerResponse ? "ManageResponse" : "Response");
+            //string dn = Path.Combine(_appData, isManagerResponse ? "ManageResponse" : "Response");
+            string dn = Path.Combine(_appData, "Response");
             var dirs = System.IO.Directory.GetDirectories(dn);
 
             foreach (var dir in dirs)

@@ -35,7 +35,7 @@
     <div class="container">
         <div>
             <label for="SelectYear"> Select the Year: </label>
-            <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" aria-label="Select the Year">
+            <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" ng-change="GetChartData()" aria-label="Select the Year">
                 <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
             </select>
         </div>
