@@ -15,6 +15,7 @@ namespace TEEmployee.Models
         List<Assessment> GetResponse(string user);
         List<Assessment> GetResponse(string year, string manager, string user);
         List<Assessment> GetAllResponses();
+        List<string> GetChartYearList();
         void Dispose();
     }
 }

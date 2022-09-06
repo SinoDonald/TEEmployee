@@ -83,6 +83,10 @@ namespace TEEmployee.Controllers
         {
             return View();
         }
+        public ActionResult ChartManager()
+        {
+            return View();
+        }
 
         // Web api---
         [HttpPost]
@@ -282,7 +286,9 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult GetChartYearList(bool isManagerResponse)
         {
-            var ret = _service.GetChartYearList(isManagerResponse);
+            if (isManagerResponse)
+                _service = new AssessmentService("manage");
+            var ret = _service.GetChartYearList();
             return Json(ret);
         }
 
@@ -292,14 +298,30 @@ namespace TEEmployee.Controllers
             var ret = _service.GetChartGroupList(Session["empno"].ToString());
             return Json(ret);
         }
-
+        
         [HttpPost]
         public JsonResult GetChartEmployeeData(string year)
         {
             var ret = _service.GetChartEmployeeData(Session["empno"].ToString(), year);
             return Json(ret);
         }
-                
+
+        // manager chart
+
+        //[HttpPost]
+        //public JsonResult GetChartManagerList(string year)
+        //{
+        //    var ret = _service.GetChartManagerList(Session["empno"].ToString(), year);
+        //    return Json(ret);
+        //}
+
+        public JsonResult GetChartManagerData(string year)
+        {
+            _service = new AssessmentService("manage");
+            var ret = _service.GetChartManagerData(Session["empno"].ToString(), year);
+            return Json(ret);
+        }
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

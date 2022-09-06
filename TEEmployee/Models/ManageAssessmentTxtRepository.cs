@@ -26,14 +26,14 @@ namespace TEEmployee.Models
             return selfAssessment;
         }
         public List<Assessment> GetAll()
-        {
-            string fn = Path.Combine(_appData, "ManageAssessments.txt");
+        {           
+            string fn = Path.Combine(_appData, "ManageResponse/ManageAssessments.txt");
             string[] lines = System.IO.File.ReadAllLines(fn);
             List<Assessment> manageAssessments = new List<Assessment>();
 
             foreach (var item in lines)
             {
-                string[] subs = item.Split('\t');
+                string[] subs = item.Split('/');
                 Assessment manageAssessment = new Assessment();
 
                 manageAssessment.Id = Convert.ToInt32(subs[0]);
@@ -218,6 +218,75 @@ namespace TEEmployee.Models
         {
             throw new NotImplementedException();
         }
+
+        // chart
+
+        public List<string> GetChartYearList()
+        {
+            List<string> years = new List<string>();
+            string dn = Path.Combine(_appData, "ManageResponse");
+            var dirs = System.IO.Directory.GetDirectories(dn);
+
+            foreach (var dir in dirs)
+                years.Add((new DirectoryInfo(dir)).Name);
+
+            return years.OrderByDescending(x => x).ToList();
+        }
+
+        // 0826
+        public List<Assessment> GetAllManagerAssessmentResponses(string manno, string year)
+        {
+            
+            List<Assessment> allResponses = new List<Assessment>();
+
+            string dir = Path.Combine(_appData, $"ManageResponse/{year}/{manno}");
+            var fnList = System.IO.Directory.GetFiles(dir, "*.txt").OrderBy(x => System.IO.Path.GetFileName(x)).ToList();
+                     
+            foreach (var fn in fnList)
+            {                
+
+                var lines = File.ReadAllLines(fn);
+
+                if (lines.FirstOrDefault().Split(';').FirstOrDefault() != "sent")
+                    continue;
+
+                List<Assessment> responses = new List<Assessment>();
+
+                for (int i = 1; i != lines.Length; i++)
+                {                    
+                    string[] subs = lines[i].Split('/');
+
+                    Assessment manageAssessment = new Assessment();
+
+                    manageAssessment.Id = Convert.ToInt32(subs[0]);
+                    manageAssessment.CategoryId = Convert.ToInt32(subs[1]);
+                    manageAssessment.Content = subs[2];
+                    manageAssessment.Choice = subs[3];
+
+                    allResponses.Add(manageAssessment);                    
+                }
+
+            }
+
+            return allResponses;
+        }
+
+        // 0826
+        // Get target managers id through directory names 
+        public List<string> GetChartManagers(string year)
+        {
+            List<string> managers = new List<string>();
+            string dn = Path.Combine(_appData, $"ManageResponse/{year}");
+            var dirs = System.IO.Directory.GetDirectories(dn);
+
+            foreach (var dir in dirs)
+                managers.Add((new DirectoryInfo(dir)).Name);
+            
+            // empno
+            return managers.OrderByDescending(x => x).ToList();            
+        }
+
+
         public void Dispose()
         {
             return;
