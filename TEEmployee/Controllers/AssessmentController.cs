@@ -191,6 +191,13 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        [HttpPost]
+        public JsonResult GetScorePeople()
+        {
+            var ret = _service.GetScorePeople();
+            return Json(ret);
+        }
+
         //[HttpPost]
         //public JsonResult GetAllEmployeesWithState()
         //{

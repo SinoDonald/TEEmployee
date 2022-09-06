@@ -46,6 +46,24 @@ namespace TEEmployee.Models
 
             return manageAssessments;
         }
+        public List<User> GetScorePeople()
+        {
+            IUserRepository _userRepository = new UserRepository();
+            List<User> users = new List<User>();
+            string fn = Path.Combine(_appData, "ManageResponse", "ScorePeople.txt");
+            string[] lines = System.IO.File.ReadAllLines(fn);
+            foreach(string line in lines)
+            {
+                User user = _userRepository.Get(line);
+                if(user != null)
+                {
+                    users.Add(user);
+                }
+            }
+            users = users.OrderBy(x => x.empno).ToList();
+
+            return users;
+        }
         public List<string> GetManageYearList(string userId)
         {
             List<string> years = new List<string>();

@@ -22,8 +22,8 @@ app.run(['$http', '$window', function ($http, $window) {
 app.service('appService', ['$http', function ($http) {
 
     // 取得所有要評核的主管
-    this.GetManagers = function (o) {
-        return $http.post('Assessment/GetManagers', o);
+    this.GetScorePeople = function (o) {
+        return $http.post('Assessment/GetScorePeople', o);
     };
 
     // 取得所有的問卷年份
@@ -71,9 +71,9 @@ app.controller('ManageCtrl', ['$scope', '$location', 'appService', '$rootScope',
 app.controller('ManagerOptionCtrl', ['$scope', '$location', 'appService', '$rootScope', 'myFactory', function ($scope, $location, appService, $rootScope, myFactory) {
 
     // 取得所有要評核的主管
-    appService.GetManagers({})
+    appService.GetScorePeople({})
         .then(function (ret) {
-            $scope.GetManagers = ret.data;
+            $scope.GetScorePeople = ret.data;
         })
         .catch(function (ret) {
             alert('Error');

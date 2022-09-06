@@ -219,6 +219,12 @@ namespace TEEmployee.Models
             var allManagers = _userRepository.GetManagers().OrderBy(x => x.empno).ToList();
             return allManagers;
         }
+        public List<User> GetScorePeople()
+        {
+            _assessmentRepository = new ManageAssessmentTxtRepository();
+            List<User> scorePeople = (_assessmentRepository as ManageAssessmentTxtRepository).GetScorePeople();
+            return scorePeople;
+        }
 
         // 0713 
         //public List<EmployeesWithState> GetAllEmployeesWithState(string manno, string name)
@@ -249,7 +255,7 @@ namespace TEEmployee.Models
         //            State = state
         //        });
         //    }
-            
+
         //    return employeesWithStates;
         //}
 
