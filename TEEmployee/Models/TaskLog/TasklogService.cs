@@ -10,11 +10,12 @@ namespace TEEmployee.Models.TaskLog
         private IProjectItemRepository _projectItemRepository;
         private IMonthlyRecordRepository _monthlyRecordRepository;
         private IProjectTaskRepository _projectTaskRepository;
-
+        private IUserRepository _userRepository;
 
         public TasklogService() : this(true)
         {
             _projectTaskRepository = new ProjectTaskRepository();
+            _userRepository = new UserRepository();
         }
         public TasklogService(bool isDB)
         {
@@ -58,9 +59,9 @@ namespace TEEmployee.Models.TaskLog
             return ret;
         }
         
-        // Get record base on the role
+      
         public List<MonthlyRecord> GetAllMonthlyRecord(string empno, string yymm)
-        {
+        {            
             List<MonthlyRecord> monthlyRecords;
 
             var ret = _monthlyRecordRepository.GetAll();
@@ -68,6 +69,31 @@ namespace TEEmployee.Models.TaskLog
 
             return monthlyRecords;
         }
+
+        // Get record base on the role
+        public List<MonthlyRecordData> GetAllMonthlyRecordData(string empno, string yymm)
+        {
+            List<MonthlyRecordData> monthlyRecordData = new List<MonthlyRecordData>();
+
+            User user = _userRepository.Get(empno);
+            List<User> users = FilterEmployeeByRole(user);                       
+
+            var ret = _monthlyRecordRepository.GetAll();
+            ret = ret.Where(x => x.yymm == yymm).ToList();
+
+            foreach (var employee in users)
+            {
+                var record = ret.Where(x => x.empno == employee.empno).FirstOrDefault();
+
+                if(record != null)
+                {
+                    monthlyRecordData.Add(new MonthlyRecordData() { MonthlyRecord = record, User = employee });
+                }
+            }
+
+            return monthlyRecordData;
+        }
+
 
         //----------------------------------------------------------
 
@@ -182,6 +208,34 @@ namespace TEEmployee.Models.TaskLog
         }
 
 
+        List<User> FilterEmployeeByRole(User user)
+        {
+            var allEmployees = _userRepository.GetAll();
+            List<User> filtered_employees = new List<User>();
+
+            if (user.department_manager == true)
+                filtered_employees.AddRange(allEmployees);
+
+            if (user.group_manager == true)
+                filtered_employees.AddRange(allEmployees.Where(p => p.group == user.group).ToList());
+
+            // group one and group two can watch each other
+
+            if (!String.IsNullOrEmpty(user.group_one))
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_one).ToList());
+
+            if (!String.IsNullOrEmpty(user.group_two))
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_two == user.group_two).ToList());
+
+            if (!String.IsNullOrEmpty(user.group_three))
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_three == user.group_three).ToList());
+
+            filtered_employees = filtered_employees.Distinct().ToList();
+
+            return filtered_employees;
+        }
+
+
 
         //--------------------------------------------------------------------------
 
@@ -190,7 +244,11 @@ namespace TEEmployee.Models.TaskLog
             _projectItemRepository.Dispose();
             _monthlyRecordRepository.Dispose();
             if (_projectTaskRepository != null)
+            {
+                _userRepository.Dispose();
                 _projectTaskRepository.Dispose();
+            }
+                
         }
 
         public class TasklogData
@@ -198,6 +256,13 @@ namespace TEEmployee.Models.TaskLog
             public List<ProjectItem> ProjectItems { get; set; }
             public List<ProjectTask> ProjectTasks { get; set; }
         }
+
+        public class MonthlyRecordData
+        {
+            public MonthlyRecord MonthlyRecord { get; set; }
+            public User User { get; set; }
+        }
+
 
     }
 }

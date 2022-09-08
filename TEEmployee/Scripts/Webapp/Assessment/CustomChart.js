@@ -228,6 +228,8 @@ function DrawManagerBarChart(data, selectedManager, selectedCategory) {
 
     }
 
+    painting.className = '';
+
 }
 
 
@@ -258,7 +260,7 @@ function ShowComment(data, selectedManager, selectedCategory) {
 
     ul.className = 'list-group';
     painting.appendChild(ul);
-
+    painting.className = '';
 }
 
 function DrawManagerRadarChart(data, selectedManager, categories) {
@@ -348,12 +350,21 @@ function DrawManagerRadarChart(data, selectedManager, categories) {
                     r: {
                         beginAtZero: true
                     }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: names[i]
+                    }
                 }
             },
         };
 
         chartSet.push(new Chart(document.getElementById('myChart' + i), config));
-
+        
     }
-
+    painting.className = 'radar';
 }

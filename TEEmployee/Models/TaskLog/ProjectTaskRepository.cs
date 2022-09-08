@@ -71,7 +71,7 @@ namespace TEEmployee.Models.TaskLog
         {
             int ret;
 
-            string sql = @"UPDATE ProjectTask SET content=@content, endDate=@endDate, note=@note WHERE id=@id";
+            string sql = @"UPDATE ProjectTask SET projno=@projno, content=@content, endDate=@endDate, note=@note WHERE id=@id";
 
             ret = _conn.Execute(sql, projectTask);
 

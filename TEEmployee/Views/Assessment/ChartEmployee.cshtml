@@ -13,11 +13,11 @@
             margin-top: 100px;
         }
 
-        .container {
+        .chartmenu {
             display: flex;
         }
 
-            .container div {
+            .chartmenu div {
                 flex: 1;
                 margin: 0 20px;
             }
@@ -33,29 +33,33 @@
 
 
     <div class="container">
-        <div>
-            <label for="SelectYear"> Select the Year: </label>
-            <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" ng-change="GetChartData()" aria-label="Select the Year">
-                <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
-            </select>
+        <div class="chartmenu">
+            <div>
+                <label for="SelectYear"> Select the Year: </label>
+                <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" ng-change="GetChartData()" aria-label="Select the Year">
+                    <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+                </select>
+            </div>
+            <div>
+                <label for="SelectGroup"> Select the Group: </label>
+                <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
+                    <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
+                </select>
+            </div>
+            <div>
+                <label for="SelectCategory"> Select the Category: </label>
+                <select class="form-select" id="SelectCategory" name="SelectCategory" ng-model="selectedCategory" ng-change="DrawChart()" aria-label="Select the Category">
+                    <option ng-repeat="category in categories" value="{{category.id}}">{{category.name}}</option>
+                </select>
+            </div>
         </div>
-        <div>
-            <label for="SelectGroup"> Select the Group: </label>
-            <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
-                <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
-            </select>
-        </div>
-        <div>
-            <label for="SelectCategory"> Select the Category: </label>
-            <select class="form-select" id="SelectCategory" name="SelectCategory" ng-model="selectedCategory" ng-change="DrawChart()" aria-label="Select the Category">
-                <option ng-repeat="category in categories" value="{{category.id}}">{{category.name}}</option>
-            </select>
+
+        <div id="painting">
+
         </div>
     </div>
 
-    <div id="painting">
-
-    </div>
+    
 
 </div>
 

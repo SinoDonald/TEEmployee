@@ -310,6 +310,9 @@ namespace TEEmployee.Models
             if (user.group_two_manager == true)
                 filtered_employees.AddRange(allEmployees.Where(p => p.group_two == user.group_two).ToList());
 
+            if (user.group_three_manager == true)
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_three == user.group_three).ToList());
+
             filtered_employees = filtered_employees.Distinct().ToList();
 
             return filtered_employees;
@@ -397,6 +400,7 @@ namespace TEEmployee.Models
                 groups.AddRange(allEmployees.Select(x => x.group).ToList());
                 groups.AddRange(allEmployees.Select(x => x.group_one).ToList());
                 groups.AddRange(allEmployees.Select(x => x.group_two).ToList());
+                groups.AddRange(allEmployees.Select(x => x.group_three).ToList());
                 groups = groups.Where(x => !String.IsNullOrEmpty(x)).Distinct().ToList();                
             }
             else
@@ -404,6 +408,7 @@ namespace TEEmployee.Models
                 if (user.group_manager) groups.Add(user.group);
                 if (user.group_one_manager) groups.Add(user.group_one);
                 if (user.group_two_manager) groups.Add(user.group_two);
+                if (user.group_three_manager) groups.Add(user.group_three);
             }
                 
             return groups;
@@ -461,7 +466,7 @@ namespace TEEmployee.Models
 
             // Get chart manager list of the year 
 
-            List<string> empnos = new List<string>();
+            List<string> empnos;
 
             if (String.IsNullOrEmpty(year))
                 year = Utilities.DayStr();
@@ -475,7 +480,8 @@ namespace TEEmployee.Models
             }
             else if (empnos.Contains(user.empno))
                 empnos = new List<string>() { user.empno };
-
+            else
+                empnos = new List<string>();
             // Get Manager Assessment 
 
             var managerAssessments = _assessmentRepository.GetAll();

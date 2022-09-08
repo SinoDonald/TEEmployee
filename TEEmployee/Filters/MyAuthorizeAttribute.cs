@@ -71,10 +71,11 @@ namespace TEEmployee.Filters
                     filterContext.HttpContext.Session["group"] = ret.group;
                     filterContext.HttpContext.Session["group_one"] = ret.group_one;
                     filterContext.HttpContext.Session["group_two"] = ret.group_two;
+                    filterContext.HttpContext.Session["group_three"] = ret.group_three;
 
                     filterContext.HttpContext.Session["role"] = null;
 
-                    if (ret.department_manager || ret.group_manager || ret.group_one_manager || ret.group_two_manager)
+                    if (ret.department_manager || ret.group_manager || ret.group_one_manager || ret.group_two_manager || ret.group_three_manager)
                     {
                         filterContext.HttpContext.Session["role"] = "Manager";
                     }

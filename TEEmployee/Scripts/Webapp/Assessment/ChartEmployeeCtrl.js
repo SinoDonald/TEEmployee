@@ -101,7 +101,7 @@ app.controller('ChartEmployeeCtrl', ['$scope', '$window', 'appService', '$rootSc
         fdata = [];
 
         for (let item of $scope.data) {
-            if (item.Employee.group === selectedGroup || item.Employee.group_one === selectedGroup || item.Employee.group_two === selectedGroup) {
+            if (item.Employee.group === selectedGroup || item.Employee.group_one === selectedGroup || item.Employee.group_two === selectedGroup || item.Employee.group_three === selectedGroup) {
                 fdata.push(item);
             }
         }

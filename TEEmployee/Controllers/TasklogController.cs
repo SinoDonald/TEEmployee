@@ -51,6 +51,14 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllMonthlyRecordData(string yymm)
+        {
+            // get the record base on the role
+            var ret = _service.GetAllMonthlyRecordData(Session["empno"].ToString(), yymm);
+            return Json(ret);
+        }
+
+        [HttpPost]
         public JsonResult GetTasklogData(string empno, string yymm)
         {           
             var ret = _service.GetTasklogData(Session["empno"].ToString(), yymm);

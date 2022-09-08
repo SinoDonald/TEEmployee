@@ -7,8 +7,8 @@ app.run(['$http', '$window', function ($http, $window) {
 
 app.service('appService', ['$http', function ($http) {
 
-    this.GetAllMonthlyRecord = (o) => {
-        return $http.post('Tasklog/GetAllMonthlyRecord', o);
+    this.GetAllMonthlyRecordData = (o) => {
+        return $http.post('Tasklog/GetAllMonthlyRecordData', o);
     };  
     //this.GetProjectItem = (o) => {
     //    return $http.post('Tasklog/GetProjectItem', o);
@@ -49,21 +49,21 @@ app.controller('ListCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
     $scope.selectedYear = $scope.years[0];
     $scope.selectedMonth = $scope.months[month];
 
-
+    
     $scope.data = [];
 
-    $scope.GetAllMonthlyRecord = () => {
+    $scope.GetAllMonthlyRecordData = () => {
 
         let yymm = `${Number($scope.selectedYear) - 1911}${$scope.selectedMonth}`;
 
-        appService.GetAllMonthlyRecord({yymm: yymm}).then((ret) => {
+        appService.GetAllMonthlyRecordData({yymm: yymm}).then((ret) => {
 
             $scope.data = ret.data;
-
         })
     }   
 
-    $scope.GetAllMonthlyRecord();
+   
+    $scope.GetAllMonthlyRecordData();
 
 }]);
 
@@ -155,8 +155,14 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
     //$scope.addProjRow = (idx, projno) => {
     //    $scope.rowList.splice(idx + 1, 0, { projno: projno });
     //};
+
+    //$scope.addLogRow = (projectidx, idx) => {
+    //    $scope.projects[projectidx].logs.splice(idx + 1, 0, {} );
+    //};
+
+    // add at bottim
     $scope.addLogRow = (projectidx, idx) => {
-        $scope.projects[projectidx].logs.splice(idx + 1, 0, {} );
+        $scope.projects[projectidx].logs.splice($scope.projects[projectidx].logs.length, 0, {});
     };
 
     $scope.removeLogRow = (projectidx, idx) => {
@@ -265,7 +271,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
 
             if ($scope.projects.length === 0)
-                $scope.projects.push = { logs: [{}] };
+                $scope.projects.push({ logs: [{}] });
 
 
         });

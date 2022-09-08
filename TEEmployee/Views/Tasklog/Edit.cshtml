@@ -4,6 +4,8 @@
 }
 
 @section Styles {
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
     <style>
         header {
             margin-top: 100px;
@@ -11,6 +13,7 @@
 
         .month-select {
             display: flex;
+            margin-bottom: 50px;
         }
 
             .month-select div {
@@ -21,8 +24,13 @@
         .center {
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: end;
         }
+
+            .center button {
+                flex: 1;
+            }
+
     </style>
 }
 
@@ -45,7 +53,7 @@
             </select>
         </div>
         <div class="center">
-            <button type="button" class="btn btn-warning" ng-click="GetTasklogData()">Search</button>           
+            <button type="button" class="btn btn-outline-secondary" ng-click="GetTasklogData()">Search</button>
         </div>
     </div>
 
@@ -55,38 +63,75 @@
                 <th>計畫編號</th>
                 <th>工作項目</th>
                 <th>工作時數</th>
-                <th>[+][-]</th>
+                <th>新增</th>
                 <th>詳細工作內容</th>
-                <th>(預計)完成日期</th>
+                <th>預計完成日期</th>
                 <th>備註</th>
+                <th>刪除</th>
             </tr>
         </thead>
 
-        <tbody ng-repeat="project in projects">
+        @*ng-if create new child scope, use ng-init to define the parent index first
+            https://stackoverflow.com/questions/26658679/ng-if-causing-parent-index-to-be-set-to-index*@
+
+        <tbody ng-repeat="project in projects" ng-init="parentIndex=$index">
             <tr ng-repeat="log in project.logs">
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0">
-                    <input type="text" ng-model="project.projno">
+                    <input class="form-control" type="text" maxlength="5" size="5" ng-model="project.projno">
                 </td>
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.itemno"></td>
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.workHour"></td>
-                <td>
+
+                <td rowspan="{{project.logs.length}}" ng-if="$index === 0">
+
+                    <button type="button" class="btn btn-outline-success" name="addRow" ng-click="addLogRow(parentIndex, $index)">
+                        <span class="material-icons">add_shopping_cart</span>
+                    </button>
+                </td>
+                @*<td>
                     <input type="button" value="+" name="addRow" ng-click="addLogRow($parent.$index, $index)">
                     <input type="button" value="-" name="removeRow" ng-click="removeLogRow($parent.$index, $index)">
+                </td>*@
+
+
+                @*<td><input type="text" ng-model="log.content"></td>*@
+                <td>
+                    <textarea class="form-control" ng-model="log.content" id="exampleFormControlTextarea1" cols="50" rows="1"></textarea>
                 </td>
-                <td><input type="text" ng-model="log.content"></td>
-                <td><input type="text" ng-model="log.endDate"></td>
-                <td><input type="text" ng-model="log.note"></td>
+                <td><input class="form-control" type="text" size="10" ng-model="log.endDate"></td>
+                <td><input class="form-control" type="text" size="10" ng-model="log.note"></td>
+                <td>
+                    <button type="button" class="btn btn-outline-danger" name="removeRow" ng-click="removeLogRow($parent.$index, $index)">
+                        <span class="material-icons">delete</span>
+                    </button>
+                </td>
         </tbody>
     </table>
 
-    <div>
-        <input type="button" value="+" name="addRow" ng-click="addProjRow()">
-    </div>
+
+    @*<div>
+            <input type="button" value="+" name="addRow" ng-click="addProjRow()">
+        </div>*@
+
+    @*<button type="button" class="btn btn-outline-success" name="addRow" ng-click="addProjRow()">
+        <span>新增計畫編號</span>
+    </button>*@
     <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Save" ng-click="UpdateTasklogData()" class="btn btn-warning" />
-        </div>
+        <button type="button" class="btn btn-success" name="addRow" ng-click="addProjRow()">
+            <span>新增計畫編號</span>
+        </button>
+        <button type="button" class="btn btn-warning" name="UpdateTasklogData" ng-click="UpdateTasklogData()">
+            <span>儲存</span>
+        </button>        
     </div>
+
+
+
+    @*<div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" ng-click="UpdateTasklogData()" class="btn btn-warning" />
+            </div>
+        </div>*@
 
 </div>
 

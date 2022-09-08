@@ -11,6 +11,7 @@
 
         .month-select {
             display: flex;
+            margin-bottom: 50px;
         }
 
             .month-select div {
@@ -44,28 +45,36 @@
         </div>
         <div>
             <label for="SelectMonth">Select Month: </label>
-            <select class="form-select" id="SelectYear" name="SelectMonth" ng-model="selectedMonth" aria-label="Select Year" autocomplete="off">
+            <select class="form-select" id="SelectMonth" name="SelectMonth" ng-model="selectedMonth" aria-label="Select Month">
                 <option ng-repeat="month in months" value="{{month}}">{{month}}</option>
             </select>
         </div>
         <div class="center">
-            <button type="button" class="btn btn-warning" ng-click="GetAllMonthlyRecord()">Search</button>
+            <button type="button" class="btn btn-warning" ng-click="GetAllMonthlyRecordData()">Search</button>
         </div>
     </div>
 
-
-
     <table class="table">
         <tr>
-            <th>empno</th>
             <th>mmyy</th>
+            <th>empno</th>
+            <th>name</th>
+            <th>Group</th>
+            <th>Group 1</th>
+            <th>Group 2</th>
+            <th>Group 3</th>
             <th>Link</th>
         </tr>
         <tr ng-repeat="item in data">
-            <td ng-bind="item.empno"></td>
-            <td ng-bind="item.yymm"></td>
+            <td ng-bind="item.MonthlyRecord.yymm"></td>
+            <td ng-bind="item.MonthlyRecord.empno"></td>
+            <td ng-bind="item.User.name"></td>
+            <td ng-bind="item.User.group"></td>
+            <td ng-bind="item.User.group_one"></td>
+            <td ng-bind="item.User.group_two"></td>
+            <td ng-bind="item.User.group_three"></td>
             <td>
-                <a ng-href="~/Tasklog/Details/{{item.guid}}">Details</a>
+                <a target="_blank" ng-href="~/Tasklog/Details/{{item.MonthlyRecord.guid}}">Details</a>
             </td>
         </tr>
 

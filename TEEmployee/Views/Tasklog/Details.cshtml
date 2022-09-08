@@ -35,7 +35,7 @@
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.projno"></td>
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.itemno"></td>
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.workHour"></td>                
-                <td ng-bind="log.content"></td>
+                <td><p ng-bind="log.content"></p></td>
                 <td ng-bind="log.endDate"></td>
                 <td ng-bind="log.note"></td>
         </tbody>
