@@ -8,6 +8,8 @@ function DrawEmployeeBarChart(data, selectedCategory) {
     let names = [];
     let titles = [];
     let choices = [];
+    //let grades = ['優良', '普通', '尚可', '待加強', 'N/A'];
+    let grades = ['N/A', '待加強', '尚可', '普通', '優良'];
 
     painting.innerHTML = '';
 
@@ -42,7 +44,14 @@ function DrawEmployeeBarChart(data, selectedCategory) {
 
             // transform "option" to number
             let value = Number((data[i].Responses[startidx + j].Choice).slice(6)) * -1 + 5;
-            choices[j].push(value);            
+            choices[j].push(value);
+
+            // transform "option" to number
+            //let value = Number((data[i].Responses[startidx + j].Choice).slice(6))  -1;
+            //choices[j].push(grades[value]);            
+
+            //let value = Number((data[i].Responses[startidx + j].Choice).slice(6))  -1;
+            //choices[j].push({x:names[i], y: grades[value]});            
         }
 
     }
@@ -56,8 +65,11 @@ function DrawEmployeeBarChart(data, selectedCategory) {
 
         const chartData = {
             labels: names,
+            //xlabels: names,
+            //ylabels: grades,
             datasets: [{
                 label: titles[i],
+                /*data: choices[i],*/
                 data: choices[i],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)'
@@ -73,11 +85,28 @@ function DrawEmployeeBarChart(data, selectedCategory) {
             type: 'bar',
             data: chartData,
             options: {
-                scales: {
+                scales: {                    
                     y: {
-                        beginAtZero: true
-                    }
+                        beginAtZero: true,
+                        ticks: {
+                            // Include a dollar sign in the ticks
+                            callback: (value) => {
+                                return grades[value];
+                            }
+                        }
+                    }                     
                 },
+                //scales: {
+                //    x: {
+                //        type: 'category',
+                //        labels: names
+                //    },
+
+                //    y: {
+                //        type: 'category',
+                //        labels: ['優良', '普通', '尚可', '待加強', 'N/A']
+                //    }
+                //},
                 plugins: {
                     legend: {
                         position: 'top',

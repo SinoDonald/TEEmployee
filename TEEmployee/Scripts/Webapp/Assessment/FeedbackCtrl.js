@@ -168,14 +168,11 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
                     }
                 }
 
-                $scope.Responses = ret.data.Responses 
+                $scope.Responses = ret.data.Responses; 
+
+                return appService.GetFeedback({ empno: myFactory.get().EmployeeInfo.Employee.empno })
+                
             })
-            .catch(function (ret) {
-                alert('Error');
-            });
-
-
-        appService.GetFeedback({ empno: myFactory.get().EmployeeInfo.Employee.empno })
             .then(function (ret) {
                 //$scope.state = ret.data.State;                
                 //$scope.feedback = ret.data.Text
@@ -196,6 +193,33 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
             .catch(function (ret) {
                 alert('Error');
             });
+            //.catch(function (ret) {
+            //    alert('Error');
+            //});
+            
+
+
+        //appService.GetFeedback({ empno: myFactory.get().EmployeeInfo.Employee.empno })
+        //    .then(function (ret) {
+        //        //$scope.state = ret.data.State;                
+        //        //$scope.feedback = ret.data.Text
+        //        $scope.state = ret.data.State
+
+        //        var count = 0;
+
+        //        for (var i = 0; i < $scope.Responses.length; i++) {
+        //            if ($scope.Responses[i].Content === '意見回饋') {
+        //                $scope.Responses[i].Choice = ret.data.Text[count];
+        //                count++;
+        //            }
+        //        }
+
+        //        $scope.feedback = ret.data.Text[count];
+
+        //    })
+        //    .catch(function (ret) {
+        //        alert('Error');
+        //    });
 
     }
 
