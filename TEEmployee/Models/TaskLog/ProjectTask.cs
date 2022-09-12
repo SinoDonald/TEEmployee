@@ -14,5 +14,6 @@ namespace TEEmployee.Models.TaskLog
         public string content { get; set; }
         public string endDate { get; set; }
         public string note { get; set; }
+        public int realHour { get; set; }
     }
 }

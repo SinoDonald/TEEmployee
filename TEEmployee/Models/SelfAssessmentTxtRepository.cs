@@ -215,6 +215,7 @@ namespace TEEmployee.Models
         }
 
         // 0713
+        // 0912 unescaped break line
         public List<Assessment> GetResponse(string user, string year)
         {
             List<Assessment> selfResponse = new List<Assessment>();
@@ -231,9 +232,14 @@ namespace TEEmployee.Models
                     Assessment selfAssessment = new Assessment();
 
                     selfAssessment.Id = Convert.ToInt32(subs[0]);
-                    selfAssessment.CategoryId = Convert.ToInt32(subs[1]);
+                    selfAssessment.CategoryId = Convert.ToInt32(subs[1]);                                      
                     selfAssessment.Content = subs[2];
-                    selfAssessment.Choice = subs[3];
+
+                    //When reading back in the file, you will need to unescape each line.
+                    string unescapedValue = subs[3].Replace("\\n", "\n");
+                    selfAssessment.Choice = unescapedValue;
+                    //selfAssessment.Choice = subs[3];
+
                     selfResponse.Add(selfAssessment);
                 }
 
@@ -415,6 +421,7 @@ namespace TEEmployee.Models
 
         // 0818: Get Year Directories by type (employee or manager)
         // 0825: Manager part move to ManagerRepository
+        // 0912: escaped and unescaped break line \n
         public List<string> GetChartYearList()
         {
             List<string> years = new List<string>();
@@ -442,8 +449,14 @@ namespace TEEmployee.Models
 
                 foreach (var item in assessments)
                 {
-                    responses.Add($"{item.Id}/{item.CategoryId}/{item.Content}/{item.Choice}");
+                    // 0912: escaped break line \n
+                    string original = $"{item.Id}/{item.CategoryId}/{item.Content}/{item.Choice}";
+                    string escapedValue = original.Replace("\n", "\\n");
+                    
+                    //responses.Add($"{item.Id}/{item.CategoryId}/{item.Content}/{item.Choice}");
+                    responses.Add(escapedValue);
                 }
+
 
                 (new FileInfo(fn)).Directory.Create();
                 System.IO.File.WriteAllLines(fn, responses);
