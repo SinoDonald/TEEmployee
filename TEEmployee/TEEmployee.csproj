@@ -303,6 +303,7 @@
     <Content Include="Views\Tasklog\List.cshtml" />
     <Content Include="Views\Tasklog\Details.cshtml" />
     <Content Include="Views\Tasklog\Edit.cshtml" />
+    <Content Include="Views\Assessment\SetManager.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Response\" />

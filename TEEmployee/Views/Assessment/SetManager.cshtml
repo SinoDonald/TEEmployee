@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewBag.Title = "SetManager";
+}
+
+<h2><a href="javascript:history.back()">請選擇要評核的人員</a></h2>
+
+<div ng-controller="SetManagerCtrl" class="container" style="margin-top: 100px">
+
+    <div class="row">
+        <div class="col-sm-3" ng-repeat="item in SetScorePeople">
+            <div class="card border-primary mb-3" style="max-width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">{{item.name}} {{item.dutyName}}</h5>
+                    <p class="card-text">{{item.empno}}</p>
+                    <input type="submit" value="選擇" ng-click="ManagerSuggest(item)" class="btn btn-warning" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group" ng-if="state!='sent'">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="儲存" ng-click="CreateManageResponse('save')" class="btn btn-warning" />
+            <input type="submit" value="送出" ng-disabled="optionForm.$invalid" ng-click="CreateManageResponse('sent')" class="btn btn-warning" />
+        </div>
+    </div>
+    <div class="form-group" ng-if="state=='sent'">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="回上頁" ng-click="ToManage()" class="btn btn-warning" />
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/WebApp/Assessment/SetManagerCtrl.js"></script>
+}

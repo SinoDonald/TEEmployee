@@ -52,15 +52,33 @@ namespace TEEmployee.Models
             List<User> users = new List<User>();
             string fn = Path.Combine(_appData, "ManageResponse", "ScorePeople.txt");
             string[] lines = System.IO.File.ReadAllLines(fn);
-            foreach(string line in lines)
+
+            // 移除重複
+            List<string> saveEmpno = new List<string>();
+            foreach (string line in lines)
+            {
+                saveEmpno.Add(line);
+            }
+            saveEmpno = saveEmpno.Distinct().ToList();
+            foreach (string line in saveEmpno)
             {
                 User user = _userRepository.Get(line);
-                if(user != null)
+                if (user != null)
                 {
+                    if (user.dutyName.Equals("NULL"))
+                    {
+                        user.dutyName = "";
+                    }
+                    if (user.empno.Equals("4125"))
+                    {
+                        user.dutyName = "協理";
+                    }
                     users.Add(user);
                 }
             }
-            users = users.OrderBy(x => x.empno).ToList();
+
+            // 依員編排序
+            users = users.OrderByDescending(x => x.dutyName).ThenBy(x => x.empno).ToList();
 
             return users;
         }

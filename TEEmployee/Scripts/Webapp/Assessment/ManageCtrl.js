@@ -11,6 +11,10 @@ app.config(function ($stateProvider, $urlRouterProvider) {
             url: '/ManagerSuggest',
             templateUrl: 'Assessment/ManagerSuggest'
         })
+        .state('SetManager', {
+            url: '/SetManager',
+            templateUrl: 'Assessment/SetManager'
+        })
 
 });
 
@@ -31,7 +35,7 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Assessment/GetManageYearList', o);
     };
 
-     // 選擇年份顯示問卷結果
+    // 選擇年份顯示問卷結果
     this.GetAllManageAssessments = function (o) {
         return $http.post('Assessment/GetAllManageAssessments', o);
     };
@@ -40,6 +44,11 @@ app.service('appService', ['$http', function ($http) {
     this.CreateManageResponse = function (o) {
         return $http.post('Assessment/CreateManageResponse', o);
     };
+
+    // 取得所有員工名單
+    this.SetScorePeople = function (o) {
+        return $http.post('Assessment/SetScorePeople', o);
+    }
 
 }]);
 
@@ -83,6 +92,11 @@ app.controller('ManagerOptionCtrl', ['$scope', '$location', 'appService', '$root
     $scope.ManagerSuggest = function (data) {
         $location.path('/ManagerSuggest');
         myFactory.set(data)
+    }
+
+    // 設定要被評核的人員
+    $scope.SetManager = function () {
+        $location.path('/SetManager');
     }
 
 }]);
@@ -141,5 +155,17 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
     $scope.ToManage = function () {
         $window.location.href = 'Assessment/Manage';
     }
+
+}]);
+app.controller('SetManagerCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', function ($scope, $window, appService, $rootScope, myFactory) {
+
+    // 取得所有員工名單
+    appService.SetScorePeople({})
+        .then(function (ret) {
+            $scope.SetScorePeople = ret.data;
+        })
+        .catch(function (ret) {
+            alert('Error');
+        });
 
 }]);
