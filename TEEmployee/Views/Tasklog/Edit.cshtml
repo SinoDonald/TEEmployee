@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "編輯工作紀錄管控表";
+    ViewBag.Title = "Edit";
 }
 
 @section Styles {
@@ -41,19 +41,19 @@
     </header>
     <div class="month-select">
         <div>
-            <label for="SelectYear">請選擇年分：</label>
+            <label for="SelectYear">Select Year: </label>
             <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" aria-label="Select Year">
                 <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
             </select>
         </div>
         <div>
-            <label for="SelectMonth">請選擇月份：</label>
+            <label for="SelectMonth">Select Month: </label>
             <select class="form-select" id="SelectYear" name="SelectMonth" ng-model="selectedMonth" aria-label="Select Year">
                 <option ng-repeat="month in months" value="{{month}}">{{month}}</option>
             </select>
         </div>
         <div class="center">
-            <button type="button" class="btn btn-outline-secondary" ng-click="GetTasklogData()">查詢</button>
+            <button type="button" class="btn btn-outline-secondary" ng-click="GetTasklogData()">Search</button>
         </div>
     </div>
 
@@ -62,8 +62,7 @@
             <tr>
                 <th>計畫編號</th>
                 <th>工作項目</th>
-                <th>填報時數</th>
-                <th>實際時數</th>
+                <th>工作時數</th>
                 <th>新增</th>
                 <th>詳細工作內容</th>
                 <th>預計完成日期</th>
@@ -82,9 +81,7 @@
                 </td>
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.itemno"></td>
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.workHour"></td>
-                <td rowspan="{{project.logs.length}}" ng-if="$index === 0">
-                    <input class="form-control" type="text" maxlength="3" size="3"*@ ng-model="log.realHour">
-                </td>
+
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0">
 
                     <button type="button" class="btn btn-outline-success" name="addRow" ng-click="addLogRow(parentIndex, $index)">
@@ -92,9 +89,9 @@
                     </button>
                 </td>
                 @*<td>
-            <input type="button" value="+" name="addRow" ng-click="addLogRow($parent.$index, $index)">
-            <input type="button" value="-" name="removeRow" ng-click="removeLogRow($parent.$index, $index)">
-        </td>*@
+                    <input type="button" value="+" name="addRow" ng-click="addLogRow($parent.$index, $index)">
+                    <input type="button" value="-" name="removeRow" ng-click="removeLogRow($parent.$index, $index)">
+                </td>*@
 
 
                 @*<td><input type="text" ng-model="log.content"></td>*@
@@ -108,7 +105,7 @@
                         <span class="material-icons">delete</span>
                     </button>
                 </td>
-</tbody>
+        </tbody>
     </table>
 
 

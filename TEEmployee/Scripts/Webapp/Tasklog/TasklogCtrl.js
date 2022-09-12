@@ -92,7 +92,7 @@ app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 
                 projidx = $scope.projects.length - 1;
             }
 
-            $scope.projects[projidx].logs.push({ id: task.id, content: task.content, endDate: task.endDate, note: task.note, realHour: task.realHour });
+            $scope.projects[projidx].logs.push({ id: task.id, content: task.content, endDate: task.endDate, note: task.note });
 
         }
 
@@ -191,8 +191,8 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 if (log.content) {
 
                     projectTasks.push({
-                        id: log.id, yymm: yymm, projno: project.projno, 
-                        content: log.content, endDate: log.endDate, note: log.note, realHour: log.realHour
+                        id: log.id, yymm: yymm, projno: project.projno,
+                        content: log.content, endDate: log.endDate, note: log.note
                     });
                 }
 
@@ -214,7 +214,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 );
         }     
 
-        $window.location.href = 'Tasklog/Index';
+        $window.location.href = 'Home';
 
         //appService.UpdateProjectTask(projectTasks).then((ret) => {
         //    $window.location.href = 'Home';
@@ -244,7 +244,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                     projidx = $scope.projects.length - 1;
                 }
 
-                $scope.projects[projidx].logs.push({ id: task.id, content: task.content, endDate: task.endDate, note: task.note, realHour: task.realHour });
+                $scope.projects[projidx].logs.push({ id: task.id, content: task.content, endDate: task.endDate, note: task.note });
 
             }
 
@@ -261,18 +261,12 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 if ($scope.projects[projidx].itemno) {
                     $scope.projects[projidx].itemno += `${item.itemno}\n`;
                     $scope.projects[projidx].workHour += item.workHour;
-                    
                 }
                 else {
                     $scope.projects[projidx].itemno = `${item.itemno}\n`;
                     $scope.projects[projidx].workHour = item.workHour;
                 }
-
-                if (!$scope.projects[projidx].realHour) {
-                    $scope.projects[projidx].realHour = $scope.projects[projidx].workHour;
-                }
-
-
+                
             }
 
 

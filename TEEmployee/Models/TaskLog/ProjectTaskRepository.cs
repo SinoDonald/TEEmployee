@@ -59,8 +59,8 @@ namespace TEEmployee.Models.TaskLog
         {
             int ret;
 
-            string sql = @"INSERT INTO ProjectTask (empno, yymm, projno, content, endDate, note, realHour) 
-                        VALUES(@empno, @yymm, @projno, @content, @endDate, @note, @realHour)";
+            string sql = @"INSERT INTO ProjectTask (empno, yymm, projno, content, endDate, note) 
+                        VALUES(@empno, @yymm, @projno, @content, @endDate, @note)";
 
             ret = _conn.Execute(sql, projectTask);
 
@@ -71,7 +71,7 @@ namespace TEEmployee.Models.TaskLog
         {
             int ret;
 
-            string sql = @"UPDATE ProjectTask SET projno=@projno, content=@content, endDate=@endDate, note=@note, realHour=@realHour WHERE id=@id";
+            string sql = @"UPDATE ProjectTask SET projno=@projno, content=@content, endDate=@endDate, note=@note WHERE id=@id";
 
             ret = _conn.Execute(sql, projectTask);
 
