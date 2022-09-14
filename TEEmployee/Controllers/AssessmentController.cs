@@ -209,29 +209,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult SetScorePeople()
         {
-            List<User> users = new List<User>();
-            int index = 0;
-            int i = 0;
-            foreach (User user in _service.GetAllEmployees())
-            {
-                if (user != null)
-                {
-                    if (user.dutyName.Equals("NULL"))
-                    {
-                        user.dutyName = "";
-                    }
-                    if (user.empno.Equals("4125"))
-                    {
-                        user.dutyName = "協理";
-                        index = i;
-                    }
-                    users.Add(user);
-                }
-                i++;
-            }
-            // 依員編排序
-            users = users.OrderByDescending(x => x.dutyName).ThenBy(x => x.empno).ToList();
-            return Json(users);
+            var ret = _service.SetScorePeople();
+            return Json(ret);
         }
 
         //[HttpPost]

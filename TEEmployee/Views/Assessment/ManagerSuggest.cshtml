@@ -4,7 +4,7 @@
     //Layout = "~/Views/Shared/_LayoutStar.cshtml";
 }
 
-<h2><a href="javascript:history.back()">給予主管建議評估表</a></h2>
+<h4><a href="javascript:history.back()">給予主管建議評估表</a></h4>
 
 <div ng-controller="ManagerSuggestCtrl" class="container" style="margin-top: 100px">
 
@@ -63,7 +63,7 @@
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" ng-if="state!='sent'" value="儲存" ng-click="CreateManageResponse('save')" class="btn btn-warning" />
             <input type="submit" ng-if="state!='sent'" value="送出" ng-disabled="optionForm.$invalid" ng-click="CreateManageResponse('sent')" class="btn btn-warning" />
-            <input type="submit" value="回上頁" ng-click="ToManage()" class="btn btn-warning" />
+            <input type="submit" value="回列表" ng-click="ToManage()" class="btn btn-warning" />
         </div>
     </div>
 

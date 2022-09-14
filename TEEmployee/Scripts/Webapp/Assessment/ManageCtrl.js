@@ -146,14 +146,14 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
                 }
                 else {
                     alert('已寄出');
+                    $window.location.href = 'Assessment/Manage';
                 }
-                $window.location.href = 'Assessment/Manage';
             });
     }
 
-    // 回上頁
+    // 回列表
     $scope.ToManage = function () {
-        $window.location.href = 'Assessment/Manage';
+        $window.location.href = 'Assessment/Index';
     }
 
 }]);
