@@ -88,11 +88,11 @@ app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 
             let projidx = $scope.projects.findIndex(x => x.projno === task.projno);
 
             if (projidx < 0) {
-                $scope.projects.push({ logs: [], projno: task.projno });
+                $scope.projects.push({ logs: [], projno: task.projno, realHour: task.realHour });
                 projidx = $scope.projects.length - 1;
             }
 
-            $scope.projects[projidx].logs.push({ id: task.id, content: task.content, endDate: task.endDate, note: task.note, realHour: task.realHour });
+            $scope.projects[projidx].logs.push({ id: task.id, content: task.content, endDate: task.endDate, note: task.note });
 
         }
 
@@ -107,19 +107,34 @@ app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 
             }
 
             if ($scope.projects[projidx].itemno) {
-                $scope.projects[projidx].itemno += `${item.itemno}\n`;
+                $scope.projects[projidx].itemno += `${item.itemno} `;
                 $scope.projects[projidx].workHour += item.workHour;
+                $scope.projects[projidx].overtime += item.overtime;
             }
             else {
-                $scope.projects[projidx].itemno = `${item.itemno}\n`;
+                $scope.projects[projidx].itemno = `${item.itemno} `;
                 $scope.projects[projidx].workHour = item.workHour;
+                $scope.projects[projidx].overtime = item.overtime;
+            }
+
+            //if ($scope.projects[projidx].workHour > 0 || $scope.projects[projidx].overtime > 0)
+            //    $scope.projects[projidx].hourStr = $scope.projects[projidx].workHour.toString() + ' + ' + $scope.projects[projidx].overtime.toString();
+
+        }
+
+        for (let i = 0; i < $scope.projects.length; i++) {
+
+            if ($scope.projects[i].workHour || $scope.projects[i].overtime) {
+
+                $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();
+                               
             }
 
         }
 
 
-        if ($scope.projects.length === 0)
-            $scope.projects.push = { logs: [{}] };
+        //if ($scope.projects.length === 0)
+        //    $scope.projects.push = { logs: [{}] };
 
     })
 
@@ -191,8 +206,8 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 if (log.content) {
 
                     projectTasks.push({
-                        id: log.id, yymm: yymm, projno: project.projno, 
-                        content: log.content, endDate: log.endDate, note: log.note, realHour: log.realHour
+                        id: log.id, yymm: yymm, projno: project.projno, realHour: project.realHour, 
+                        content: log.content, endDate: log.endDate, note: log.note
                     });
                 }
 
@@ -240,11 +255,11 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 let projidx = $scope.projects.findIndex(x => x.projno === task.projno);
 
                 if (projidx < 0) {
-                    $scope.projects.push({ logs: [], projno: task.projno });
+                    $scope.projects.push({ logs: [], projno: task.projno, realHour: task.realHour });
                     projidx = $scope.projects.length - 1;
                 }
 
-                $scope.projects[projidx].logs.push({ id: task.id, content: task.content, endDate: task.endDate, note: task.note, realHour: task.realHour });
+                $scope.projects[projidx].logs.push({ id: task.id, content: task.content, endDate: task.endDate, note: task.note });
 
             }
 
@@ -259,21 +274,50 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 }
 
                 if ($scope.projects[projidx].itemno) {
-                    $scope.projects[projidx].itemno += `${item.itemno}\n`;
+                    $scope.projects[projidx].itemno += `${item.itemno} `;
                     $scope.projects[projidx].workHour += item.workHour;
-                    
+                    $scope.projects[projidx].overtime += item.overtime;
                 }
                 else {
-                    $scope.projects[projidx].itemno = `${item.itemno}\n`;
+                    $scope.projects[projidx].itemno = `${item.itemno} `;
                     $scope.projects[projidx].workHour = item.workHour;
+                    $scope.projects[projidx].overtime = item.overtime;
                 }
 
-                if (!$scope.projects[projidx].realHour) {
-                    $scope.projects[projidx].realHour = $scope.projects[projidx].workHour;
-                }
+                //if ($scope.projects[projidx].workHour > 0 || $scope.projects[projidx].overtime > 0)
+                //    $scope.projects[projidx].hourStr = $scope.projects[projidx].workHour.toString() + ' + ' + $scope.projects[projidx].overtime.toString();
+                
 
+                //if (!$scope.projects[projidx].realHour) {
+                //    $scope.projects[projidx].realHour = $scope.projects[projidx].workHour + $scope.projects[projidx].overtime;
+                //}
 
             }
+
+            for (let i = 0; i < $scope.projects.length; i++) {
+
+                if ($scope.projects[i].workHour || $scope.projects[i].overtime) {
+
+                    $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();
+
+                    if (!$scope.projects[i].realHour) {
+                        $scope.projects[i].realHour = $scope.projects[i].workHour + $scope.projects[i].overtime;
+                    }
+
+                }
+                
+            }
+
+
+             //if ($scope.projects[projidx].workHour > 0 || $scope.projects[projidx].overtime > 0)
+                //    $scope.projects[projidx].hourStr = $scope.projects[projidx].workHour.toString() + ' + ' + $scope.projects[projidx].overtime.toString();
+
+
+                //if (!$scope.projects[projidx].realHour) {
+                //    $scope.projects[projidx].realHour = $scope.projects[projidx].workHour + $scope.projects[projidx].overtime;
+                //}
+
+
 
 
             if ($scope.projects.length === 0)

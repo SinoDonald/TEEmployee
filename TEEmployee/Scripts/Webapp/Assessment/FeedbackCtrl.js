@@ -151,6 +151,8 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
 
     const optionText = ['優良', '普通', '尚可', '待加強', 'N/A'];
 
+    $scope.name = myFactory.get().EmployeeInfo.Employee.name;
+
     $scope.GetResponseByYear = function (year) {
         appService.GetResponseByYear({ year: year, empno: myFactory.get().EmployeeInfo.Employee.empno })
             .then(function (ret) {

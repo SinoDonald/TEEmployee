@@ -1,55 +1,66 @@
 ﻿
 <div ng-controller="EmployeeListCtrl">
 
-    <h2>Hey ! Boss !! <input type="text" ng-model="search.Employee.name" placeholder="Enter your search"></h2>
+    <div class="form-group d-flex justify-content-between">
+        <div class="mb-3">
+            <input type="text" ng-model="search.Employee.name" placeholder="搜尋姓名">
+        </div>
+        <div>
+            <a class="btn btn-outline-primary btn-lg mr-2" href="Assessment" role="button">返回</a>
+        </div>
+    </div>
+    
 
     <form name="myForm">
 
-        <div>
+        <div class="mb-3">
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" ng-model="search.State" name="inlineRadioOptions" id="inlineRadio1" value="" checked>
-                <label class="form-check-label" for="inlineRadio1">All</label>
+                <label class="form-check-label" for="inlineRadio1">全部</label>
             </div>
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" ng-model="search.State" name="inlineRadioOptions" id="inlineRadio2" value="unfinished">
-                <label class="form-check-label" for="inlineRadio2">Unfinished</label>
+                <label class="form-check-label" for="inlineRadio2">未完成</label>
             </div>
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" ng-model="search.State" name="inlineRadioOptions" id="inlineRadio3" value="submit">
-                <label class="form-check-label" for="inlineRadio3">Submit</label>
+                <label class="form-check-label" for="inlineRadio3">已填寫</label>
             </div>
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" ng-model="search.State" name="inlineRadioOptions" id="inlineRadio4" value="complete">
-                <label class="form-check-label" for="inlineRadio4">Complete</label>
+                <label class="form-check-label" for="inlineRadio4">已回饋</label>
             </div>
         </div>
 
     </form>
 
     @*<div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-secondary active">
-                <input type="radio" ng-model="search.State" name="options" id="option1" value="" autocomplete="off"> All
-            </label>
-            <label class="btn btn-secondary">
-                <input type="radio" ng-model="search.State" name="options" id="option2" value="unfinished" autocomplete="off"> Unfinished
-            </label>
-            <label class="btn btn-secondary">
-                <input type="radio" ng-model="search.State" name="options" id="option3" value="submit" autocomplete="off"> Submit
-            </label>
-            <label class="btn btn-secondary">
-                <input type="radio" ng-model="search.State" name="options" id="option3" value="finished" autocomplete="off"> Finished
-            </label>
-    </div>*@
+                <label class="btn btn-secondary active">
+                    <input type="radio" ng-model="search.State" name="options" id="option1" value="" autocomplete="off"> All
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" ng-model="search.State" name="options" id="option2" value="unfinished" autocomplete="off"> Unfinished
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" ng-model="search.State" name="options" id="option3" value="submit" autocomplete="off"> Submit
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" ng-model="search.State" name="options" id="option3" value="finished" autocomplete="off"> Finished
+                </label>
+        </div>*@
 
-    <div class="card-columns">    
+    <div class="card-columns">
         <div class="card" ng-repeat="emp in Employees | filter: search:strict">
             @*<img class="card-img-top" src="~/Content/assets/img/man.png" alt="Card image cap">*@
             <div class="card-body">
                 <h5 class="card-title">{{emp.Employee.name}}</h5>
-                <p class="card-text">{{emp.State}}</p>
-                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                <button ng-if="emp.State == 'submit' || emp.State == 'complete' " ng-click="Review(emp)">Click</button>
-                <a ui-sref="Review">Click</a>
+                @*<p class="card-text">{{emp.State}}</p>*@
+                @*<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>*@
+                @*<button ng-if="emp.State == 'submit' || emp.State == 'complete' " ng-click="Review(emp)">click</button>*@
+                <button class="btn btn-warning btn-lg" ng-if="emp.State == 'submit'" ng-click="Review(emp)">已填寫</button>
+                <button class="btn btn-success btn-lg" ng-if="emp.State == 'complete' " ng-click="Review(emp)">已回饋</button>
+                <button class="btn btn-secondary btn-lg" disabled ng-if="emp.State == 'unfinished'">未完成</button>
+                @*<a ui-sref="Review">Click</a>*@
             </div>
         </div>
     </div>

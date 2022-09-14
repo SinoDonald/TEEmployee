@@ -109,11 +109,15 @@ function DrawEmployeeBarChart(data, selectedCategory) {
                 //},
                 plugins: {
                     legend: {
-                        position: 'top',
+                        //position: 'top',
+                        display: false
                     },
                     title: {
                         display: true,
-                        text: titles[i]
+                        text: titles[i],                        
+                        font: {
+                            size: 24
+                        }                        
                     }
                 }
             },
@@ -238,7 +242,11 @@ function DrawManagerBarChart(data, selectedManager, selectedCategory) {
             options: {
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '人數'
+                        }
                     }
                 },
                 plugins: {
@@ -247,12 +255,15 @@ function DrawManagerBarChart(data, selectedManager, selectedCategory) {
                     },
                     title: {
                         display: true,
-                        text: titles[i]
+                        text: titles[i],
+                        font: {
+                            size: 24
+                        }
                     }
                 }
             },
         };
-
+        
         chartSet.push(new Chart(document.getElementById('myChart' + i), config));
 
     }
@@ -265,7 +276,7 @@ function DrawManagerBarChart(data, selectedManager, selectedCategory) {
 function AddRow(idx) {
     const div = document.createElement('div');
 
-    div.className = 'row';
+    div.className = 'row  mb-5';
 
     div.innerHTML = '<canvas id="myChart' + idx + '"></canvas>';
 
@@ -284,6 +295,7 @@ function ShowComment(data, selectedManager, selectedCategory) {
         const li = document.createElement('li');
         li.textContent = item;
         li.className = 'list-group-item';
+        li.style.whiteSpace = 'pre-line';
         ul.appendChild(li);
     }
 
@@ -327,17 +339,21 @@ function DrawManagerRadarChart(data, selectedManager, categories) {
 
         for (let num of numOfQuestions) {
 
-            let sum = 0;            
+            let sum = 0;
+            let numOfInvalid = 0;
 
             for (let j = idx; j !== (idx + num); j++) {
 
                 const votes = rdata[i].Votes[j]
                 sum += (votes[0] * 2 + votes[1] * 1);    
+                numOfInvalid += votes[3];
                 
             }
+            //score[i].push((sum / numOfVotes /(num * 2) * 5)); 
 
-            idx += num;
-            score[i].push((sum / numOfVotes) / (num * 2) * 5);
+            score[i].push((sum / ((num * numOfVotes - numOfInvalid) * 2) * 5));            
+
+            idx += num;           
 
         }
 
@@ -377,7 +393,12 @@ function DrawManagerRadarChart(data, selectedManager, categories) {
                 },
                 scales: {
                     r: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        pointLabels: {
+                            font: {
+                                size: 20
+                            }
+                        }
                     }
                 },
                 plugins: {

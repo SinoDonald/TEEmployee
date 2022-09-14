@@ -47,7 +47,7 @@ namespace TEEmployee.Models
         //{
         //    return _selfAssessmentRepository.Get(id);
         //}        
-        
+
         public bool UpdateResponse(List<Assessment> assessments, string user, string state, string year)
         {
             //return _assessmentRepository.Update(assessments, user);
@@ -60,7 +60,7 @@ namespace TEEmployee.Models
             return _assessmentRepository.Update(assessments, state, year, manager.empno, user);
         }
         public bool UpdateMResponse(List<Assessment> assessments, string empId, string user)
-        { 
+        {
             return (_assessmentRepository as SelfAssessmentTxtRepository).UpdateMResponse(assessments, empId, user);
         }
 
@@ -76,7 +76,7 @@ namespace TEEmployee.Models
         // 0729: Feedback for all categories
         public List<Feedback> GetAllFeedbacks(string user, string year)
         {
-            
+
             if (String.IsNullOrEmpty(year))
                 year = Utilities.DayStr();
 
@@ -180,10 +180,10 @@ namespace TEEmployee.Models
             var allCategorySelfAssessmentCharts = new List<CategorySelfAssessmentChart>();
 
             //Create chart model by category
-            foreach(var item in selfAssessments)
+            foreach (var item in selfAssessments)
             {
                 if (item.Id == 0)
-                    allCategorySelfAssessmentCharts.Add(new CategorySelfAssessmentChart() { 
+                    allCategorySelfAssessmentCharts.Add(new CategorySelfAssessmentChart() {
                         CategoryId = item.CategoryId, CategoryName = item.Content, Charts = new List<SelfAssessmentChart>() });
             }
 
@@ -194,7 +194,7 @@ namespace TEEmployee.Models
                 {
                     List<int> votes = new List<int>();
 
-                    foreach(var option in options)
+                    foreach (var option in options)
                     {
                         votes.Add((from response in selfResponses
                                    where response.Choice == option && response.Id == item.Id
@@ -202,9 +202,9 @@ namespace TEEmployee.Models
                     }
 
                     allCategorySelfAssessmentCharts[item.CategoryId - 1].Charts.Add(new SelfAssessmentChart() { Content = item.Content, Votes = votes });
-                }                    
+                }
             }
-            
+
             return allCategorySelfAssessmentCharts;
         }
 
@@ -355,19 +355,19 @@ namespace TEEmployee.Models
 
             List<MixResponse> mixResponses = new List<MixResponse>();
 
-            foreach(var selfAssessment in selfAssessments)
+            foreach (var selfAssessment in selfAssessments)
             {
                 MixResponse mixResponse = new MixResponse() { Id = selfAssessment.Id, CategoryId = selfAssessment.CategoryId, Content = selfAssessment.Content };
-                
-                if(selfAssessment.Id != 0)
+
+                if (selfAssessment.Id != 0)
                 {
-                    foreach(var response in selfAssessmentResponse)
+                    foreach (var response in selfAssessmentResponse)
                     {
                         if (selfAssessment.Id == response.Id)
                         {
                             mixResponse.Choice = response.Choice;
                             break;
-                        }                            
+                        }
                     }
 
                     foreach (var mresponse in selfAssessmentMResponse)
@@ -396,8 +396,8 @@ namespace TEEmployee.Models
         }
 
         public List<string> GetYearList(string user)
-        {            
-            var assessYearList = (_assessmentRepository as SelfAssessmentTxtRepository).GetYearList(user);                      
+        {
+            var assessYearList = (_assessmentRepository as SelfAssessmentTxtRepository).GetYearList(user);
             return assessYearList;
         }
         public List<string> GetManageYearList(string user)
@@ -427,7 +427,7 @@ namespace TEEmployee.Models
                 groups.AddRange(allEmployees.Select(x => x.group_one).ToList());
                 groups.AddRange(allEmployees.Select(x => x.group_two).ToList());
                 groups.AddRange(allEmployees.Select(x => x.group_three).ToList());
-                groups = groups.Where(x => !String.IsNullOrEmpty(x)).Distinct().ToList();                
+                groups = groups.Where(x => !String.IsNullOrEmpty(x)).Distinct().ToList();
             }
             else
             {
@@ -436,10 +436,10 @@ namespace TEEmployee.Models
                 if (user.group_two_manager) groups.Add(user.group_two);
                 if (user.group_three_manager) groups.Add(user.group_three);
             }
-                
+
             return groups;
         }
-        
+
 
 
         public List<ChartEmployeeData> GetChartEmployeeData(string manno, string year)
@@ -452,14 +452,14 @@ namespace TEEmployee.Models
             {
                 string state = (_assessmentRepository as SelfAssessmentTxtRepository).GetStateOfResponse(employee.empno, year);
 
-                if(state == "submit")
+                if (state == "submit")
                 {
                     var selfAssessmentResponse = (_assessmentRepository as SelfAssessmentTxtRepository).GetResponse(employee.empno, year);
                     selfAssessmentResponse = selfAssessmentResponse.Where(x => x.Choice.Contains("option")).ToList();
                     chartEmployeeData.Add(new ChartEmployeeData() { Employee = employee, Responses = selfAssessmentResponse });
-                }                
+                }
             }
-                        
+
             return chartEmployeeData;
         }
 
@@ -477,7 +477,7 @@ namespace TEEmployee.Models
         //        names.Remove(user.name);
         //        names.Insert(0, user.name);
         //    }
-                
+
         //    else
         //        names.Add(user.name);
 
@@ -529,23 +529,23 @@ namespace TEEmployee.Models
                 List<List<int>> Votes = new List<List<int>>();
                 List<List<string>> Responses = new List<List<string>>();
 
-                for(int i = 0; i != numOfQuestion; i++)
+                for (int i = 0; i != numOfQuestion; i++)
                     Votes.Add(Enumerable.Repeat(0, 4).ToList());
 
                 for (int i = 0; i != numOfCategory; i++)
                     Responses.Add(new List<string>());
-                
+
                 // Collect chart data
 
-                foreach(var item in allResponses)
+                foreach (var item in allResponses)
                 {
                     if (item.Id == 0)
                         continue;
-                
+
                     if (item.Id > numOfQuestion)
                     {
-                        if(!String.IsNullOrEmpty(item.Choice))
-                        Responses[item.CategoryId - 1].Add(item.Choice);
+                        if (!String.IsNullOrEmpty(item.Choice))
+                            Responses[item.CategoryId - 1].Add(item.Choice);
                     }
                     else
                     {
@@ -560,6 +560,61 @@ namespace TEEmployee.Models
 
             return new ChartManagerData() { ChartManagerResponses = chartManagerResponses, ManagerAssessments = managerAssessments };
         }
+
+        //=============================
+        // Manage Response New service
+        //=============================
+        public List<EmployeesWithState> ManageResponseStateCheck(string empno)
+        {
+            List<EmployeesWithState> employeesWithStates = new List<EmployeesWithState>();
+
+            if (!_userRepository.Get(empno).department_manager)
+                return null;
+
+
+            string year = Utilities.DayStr();
+            List<User> users = _userRepository.GetAll();
+            List<User> managers = (_assessmentRepository as ManageAssessmentTxtRepository).GetScorePeople();
+
+            foreach (var user in users)
+            {
+                string state = "unfinished";
+
+                foreach (var manager in managers)
+                {
+                    string res = (_assessmentRepository as ManageAssessmentTxtRepository).GetStateOfResponse(year, manager.empno, user.empno);
+                    if (res == "sent")
+                    {
+                        state = res;
+                        break;
+                    }
+                }
+
+                employeesWithStates.Add(new EmployeesWithState() { Employee = user, State = state });
+            }
+
+            return employeesWithStates;
+        }
+
+        // Get all managers and project manager to be scored
+        public List<User> GetAllScoreManagers()
+        {
+            List<User> users = _userRepository.GetAll();
+            users = users.Where(x => x.department_manager || x.group_manager || x.group_one_manager 
+                                    || x.group_two_manager || x.group_three_manager || x.project_manager).ToList();           
+
+            return users;
+        }
+
+        // Update the score manager list this half year
+        public bool UpdateScoreManagers(List<User> selectedManagers)
+        {
+            var res = (_assessmentRepository as ManageAssessmentTxtRepository).UpdateScoreManagers(selectedManagers);
+            return res;
+        }
+
+
+
 
 
         public void Dispose()

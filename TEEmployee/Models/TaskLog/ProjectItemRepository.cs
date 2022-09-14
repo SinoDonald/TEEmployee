@@ -40,7 +40,7 @@ namespace TEEmployee.Models.TaskLog
         {
             List<ProjectItem> ret;
 
-            string sql = @"SELECT empno, yymm, projno, itemno, workhour FROM ProjectItem";
+            string sql = @"SELECT empno, yymm, projno, itemno, workhour, overtime FROM ProjectItem";
             ret = _conn.Query<ProjectItem>(sql).ToList();
 
             return ret;
@@ -74,10 +74,17 @@ namespace TEEmployee.Models.TaskLog
         {            
             int ret;
 
-            string sql = @"INSERT INTO ProjectItem (empno, depno, yymm, projno, itemno, workhour) 
-                        VALUES(@empno, @depno, @yymm, @projno, @itemno, @workhour) 
+            //string sql = @"INSERT INTO ProjectItem (empno, depno, yymm, projno, itemno, workhour) 
+            //            VALUES(@empno, @depno, @yymm, @projno, @itemno, @workhour) 
+            //            ON CONFLICT(empno, yymm, projno, itemno) 
+            //            DO UPDATE SET workhour=@workhour, overtime=@overtime";
+
+            // Add overtime
+            string sql = @"INSERT INTO ProjectItem (empno, depno, yymm, projno, itemno, workhour, overtime) 
+                        VALUES(@empno, @depno, @yymm, @projno, @itemno, @workhour, @overtime) 
                         ON CONFLICT(empno, yymm, projno, itemno) 
-                        DO UPDATE SET workhour=@workhour";
+                        DO UPDATE SET workhour=@workhour, overtime=@overtime";
+
 
             ret = _conn.Execute(sql, projectItem);
 

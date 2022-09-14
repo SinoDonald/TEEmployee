@@ -21,7 +21,26 @@ namespace TEEmployee.Models.TaskLog
             string fn = Path.Combine(_appData, "ProjectItem.txt");
             List<string> lines = System.IO.File.ReadAllLines(fn).ToList();
             List<ProjectItem> projectItems = new List<ProjectItem>();
-            lines.RemoveAt(0);
+
+            //========= v1 ===============  
+            //lines.RemoveAt(0);
+
+            //foreach (var item in lines)
+            //{
+            //    string[] subs = item.Split('\t');
+            //    ProjectItem projectItem = new ProjectItem();
+
+            //    projectItem.empno = subs[0];
+            //    projectItem.depno = subs[1];
+            //    projectItem.yymm = subs[2];
+            //    projectItem.projno = subs[3];
+            //    projectItem.itemno = subs[4];
+            //    projectItem.workHour = Convert.ToInt32(subs[5]);
+
+            //    projectItems.Add(projectItem);
+            //}
+
+            //========== v2 =================
 
             foreach (var item in lines)
             {
@@ -29,14 +48,34 @@ namespace TEEmployee.Models.TaskLog
                 ProjectItem projectItem = new ProjectItem();
 
                 projectItem.empno = subs[0];
-                projectItem.depno = subs[1];
-                projectItem.yymm = subs[2];
-                projectItem.projno = subs[3];
-                projectItem.itemno = subs[4];
-                projectItem.workHour = Convert.ToInt32(subs[5]);
+                projectItem.projno = subs[1];
+                projectItem.itemno = subs[2];
+                projectItem.yymm = subs[3];
 
-                projectItems.Add(projectItem);
+                // work type
+                if (Convert.ToInt32(subs[5]) == 0)
+                    projectItem.overtime = Convert.ToInt32(subs[4]);
+                else
+                    projectItem.workHour = Convert.ToInt32(subs[4]);
+
+                var ret = projectItems.Find(x =>
+                                            x.empno == projectItem.empno &&
+                                            x.projno == projectItem.projno &&
+                                            x.yymm == projectItem.yymm &&
+                                            x.itemno == projectItem.itemno);
+
+                if (ret is object)
+                {
+                    ret.workHour += projectItem.workHour;
+                    ret.overtime += projectItem.overtime;
+                }
+                else
+                    projectItems.Add(projectItem);
+                
             }
+
+
+            //-------------------------------------------------------------
 
             projectItems = projectItems.OrderBy(x => x.empno).ToList();
 

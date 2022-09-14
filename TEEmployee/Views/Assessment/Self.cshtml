@@ -8,66 +8,82 @@
 @section Styles {
     @*<link href="@Url.Content("~/Styles/view_specific_style.css")" rel="stylesheet" type="text/css" />*@
     @*<link href="~/Content/css/table.css" rel="stylesheet" />*@
+    <style>
+        header {
+            margin-top: 100px;
+        }
+
+        .top-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 99;
+        }
+    </style>
 }
 
 
 <div ng-controller="SelfCtrl" class="container" style="margin-top: 100px">
 
+    <header id="top">
+        <h2>自我評估表</h2>
+    </header>
+
     <form name="yearForm">
-        <label for="repeatSelect"> Select year: </label>
+        <label for="repeatSelect">請選擇年份：</label>
         <select name="repeatSelect" id="repeatSelect" ng-model="data.model" class="custom-select custom-select-lg mb-3" ng-change="GetResponseByYear(data.model)">
             <option ng-repeat="option in data.availableOptions" value="{{option.id}}">{{option.name}}</option>
         </select>
     </form>
 
-    
+
 
     <form name="optionForm">
-        <table class="table table-striped table-borderless table-hover">
+        <table class="table table-borderless table-hover">
             @*<table class="table table-striped custom-table">*@
             <thead class="thead-dark">
                 <tr>
                     @*<th>ID</th>
-                <th>CategoryId</th>*@
-                    <th>Content</th>
-                    <th>Choice</th>
+                        <th>CategoryId</th>*@
+                    <th>題目</th>
+                    <th>選項</th>
                 </tr>
             </thead>
             <tbody ng-if="state === 'submit'">
                 <tr ng-repeat="item in SelfAssessments">
 
                     @*<td ng-bind="item.Id"></td>
-        <td ng-bind="item.CategoryId"></td>*@
+                        <td ng-bind="item.CategoryId"></td>*@
 
                     <!--category-->
                     <td ng-if="item.Id == 0" ng-bind="item.Content" colspan="2" class="table-warning"></td>
                     <!--content-->
                     <td ng-if="item.Content != '自評摘要' && item.Content != '意見回饋' && item.Id != 0 && item.Content != '自我總評'" ng-bind="item.Content"></td>
-                    
+
                     <!--option-->
-                    <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Content != '意見回饋' && item.Content != '自我總評'" ng-bind="item.Choice"></td>
+                    <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Content != '意見回饋' && item.Content != '自我總評'" ng-bind="item.Choice" class="w-25"></td>
                     @*<td ng-if="item.Content != '自評摘要' && item.Content != '意見回饋' && item.Id != 0">
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1" value="option1" required>
-                <label class="form-check-label" for="inlineRadio1">優良</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio2" value="option2">
-                <label class="form-check-label" for="inlineRadio2">普通</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio3" value="option3">
-                <label class="form-check-label" for="inlineRadio3">尚可</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio4" value="option4">
-                <label class="form-check-label" for="inlineRadio4">待加強</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio5" value="option5">
-                <label class="form-check-label" for="inlineRadio5">N/A</label>
-            </div>
-        </td>*@
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1" value="option1" required>
+                                <label class="form-check-label" for="inlineRadio1">優良</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio2" value="option2">
+                                <label class="form-check-label" for="inlineRadio2">普通</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio3" value="option3">
+                                <label class="form-check-label" for="inlineRadio3">尚可</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio4" value="option4">
+                                <label class="form-check-label" for="inlineRadio4">待加強</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio5" value="option5">
+                                <label class="form-check-label" for="inlineRadio5">N/A</label>
+                            </div>
+                        </td>*@
                     <!--textarea-->
                     <td ng-if="item.Content=='自評摘要'" colspan="2" @*style="width:80%"*@>
                         @*<input class="form-control form-control-lg" type="text" ng-model="item.Choice" placeholder="自評摘要">*@
@@ -85,10 +101,23 @@
                     </td>
 
                     <!--feedback-->
+                    @*<td ng-if="item.Content=='意見回饋'" colspan="2">
+                            <h3 ng-bind="item.Name"></h3>
+                            <p ng-bind="item.Choice"></p>
+                        </td>*@
                     <td ng-if="item.Content=='意見回饋'" colspan="2">
-                        <h3 ng-bind="item.Name"></h3>
-                        <p ng-bind="item.Choice"></p>
+                        <div class="list-group">
+                            <a href="" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 ng-bind="item.Name" class="mb-1"></h5>
+                                    <small></small>
+                                </div>
+                                <p ng-bind="item.Choice" class="mb-1"></p>
+                            </a>
+                        </div>
                     </td>
+
+
                 </tr>
             </tbody>
 
@@ -96,7 +125,7 @@
                 <tr ng-repeat="item in SelfAssessments">
 
                     @*<td ng-bind="item.Id"></td>
-        <td ng-bind="item.CategoryId"></td>*@
+                        <td ng-bind="item.CategoryId"></td>*@
 
                     <!--category-->
                     <td ng-if="item.Id == 0" ng-bind="item.Content" colspan="2" class="table-warning"></td>
@@ -148,23 +177,81 @@
 
         </table>
     </form>
-    <div class="form-group" ng-if="state!='submit'">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Save" ng-click="CreateResponse('save')" class="btn btn-warning" />
-            <input type="submit" value="Submit" ng-disabled="optionForm.$invalid" ng-click="CreateResponse('submit')" class="btn btn-warning" />
+
+    @*<div ng-if="state === 'submit'">
+            <h2>主管回饋</h2>
+            <ul>
+                <li ng-repeat="item in Feedbacks">
+                    <h3 ng-bind="item.Name"></h3>
+                    <p ng-bind="item.Text"></p>
+                </li>
+            </ul>
+        </div>*@
+
+    <div ng-if="state === 'submit'">
+        <h2>整體主管回饋</h2>
+        <div class="list-group mb-3">
+            <a ng-repeat="item in Feedbacks" href="" class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 ng-bind="item.Name" class="mb-1"></h5>
+                    <small></small>
+                </div>
+                <p ng-bind="item.Text" class="mb-1"></p>
+            </a>
         </div>
     </div>
-    <div ng-if="state === 'submit'">
-        <h2>主管回饋</h2>
-        <ul>
-            <li ng-repeat="item in Feedbacks">
-                <h3 ng-bind="item.Name"></h3>
-                <p ng-bind="item.Text"></p>
-            </li>
-        </ul>
+
+
+        @*<div class="form-group" ng-if="state!='submit'">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" ng-click="CreateResponse('save')" class="btn btn-warning" />
+                    <input type="submit" value="Submit" ng-disabled="optionForm.$invalid" ng-click="CreateResponse('submit')" class="btn btn-warning" />
+                </div>
+            </div>*@
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <a class="btn btn-warning btn-lg mr-2" href="Assessment" role="button">返回</a>
+            <input ng-if="state!='submit'" type="submit" value="儲存" ng-click="CreateResponse('save')" class="btn btn-warning btn-lg mr-2" />
+            <button ng-if="state!='submit'" type="button" ng-disabled="optionForm.$invalid" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#exampleModalCenter">
+                送出
+            </button>
+        </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">請確認</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    完成送出後，將無法再度修改
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" ng-click="CreateResponse('submit')" class="btn btn-primary">確認</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<div class="list-group">
+            <a href="" class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1"></h5>
+                    <small></small>
+                </div>
+                <p class="mb-1"></p>
+            </a>
+        </div>*@
 </div>
+
+<div class="top-btn"><a class="btn btn-primary" href="Assessment/Self#top" role="button">Top</a></div>
 
 @section Scripts {
     <script src="~/Scripts/WebApp/Assessment/SelfCtrl.js"></script>
@@ -201,26 +288,26 @@
     </td>*@
 
 @*<tr ng-repeat="item in SelfAssessments">
-    <td ng-bind="item.Id"></td>
-    <td ng-bind="item.CategoryId"></td>
-    <td ng-bind="item.Content"></td>
+        <td ng-bind="item.Id"></td>
+        <td ng-bind="item.CategoryId"></td>
+        <td ng-bind="item.Content"></td>
 
 
 
-    <td>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1" value="option1">
-            <label class="form-check-label" for="inlineRadio1">Good</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio2" value="option2">
-            <label class="form-check-label" for="inlineRadio2">Goood</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio3" value="option3">
-            <label class="form-check-label" for="inlineRadio3">Goooood</label>
-        </div>
-    </td>
+        <td>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1" value="option1">
+                <label class="form-check-label" for="inlineRadio1">Good</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio2" value="option2">
+                <label class="form-check-label" for="inlineRadio2">Goood</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio3" value="option3">
+                <label class="form-check-label" for="inlineRadio3">Goooood</label>
+            </div>
+        </td>
 
 
-</tr>*@
+    </tr>*@

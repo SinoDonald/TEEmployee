@@ -47,7 +47,7 @@ namespace TEEmployee.Filters
             {
                 //loginUser = "6112";
                 //loginUser = "5526";
-                //loginUser = "4125";
+                loginUser = "4125";
                 //loginUser = "7291";
                 //var ret = _userRepository.Get(loginUser);
 
@@ -74,6 +74,17 @@ namespace TEEmployee.Filters
                     filterContext.HttpContext.Session["group_three"] = ret.group_three;
 
                     filterContext.HttpContext.Session["role"] = null;
+                    filterContext.HttpContext.Session["leader"] = null;
+
+                    if (ret.department_manager)
+                    {
+                        filterContext.HttpContext.Session["leader"] = true;
+                    }
+
+                    if (ret.project_manager)
+                    {
+                        filterContext.HttpContext.Session["role"] = "PM";
+                    }
 
                     if (ret.department_manager || ret.group_manager || ret.group_one_manager || ret.group_two_manager || ret.group_three_manager)
                     {

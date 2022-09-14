@@ -292,6 +292,10 @@ namespace TEEmployee.Controllers
             return ret;
         }
 
+        //==============
+        // Chart
+        //==============
+
         //employee chart
 
         [HttpPost]
@@ -332,6 +336,34 @@ namespace TEEmployee.Controllers
             var ret = _service.GetChartManagerData(Session["empno"].ToString(), year);
             return Json(ret);
         }
+
+        //=============================
+        // Manage Response New service
+        //=============================
+
+        [HttpPost]
+        public JsonResult ManageResponseStateCheck()
+        {
+            _service = new AssessmentService("manage");
+            var ret = _service.ManageResponseStateCheck(Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllScoreManagers()
+        {
+            var ret = _service.GetAllScoreManagers();
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public bool UpdateScoreManagers(List<User> selectedManagers)
+        {
+            _service = new AssessmentService("manage");
+            var ret = _service.UpdateScoreManagers(selectedManagers);
+            return ret;
+        }
+
 
         protected override void Dispose(bool disposing)
         {

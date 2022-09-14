@@ -9,10 +9,14 @@
         header {
             margin-top: 100px;
         }
+
+        table td p {
+            white-space: pre-line;
+        }
     </style>
 }
 
-<div ng-controller="DetailsCtrl" class="container">
+<div ng-controller="DetailsCtrl" class="container-fluid">
 
     <header>
         <h2>@ViewBag.Title</h2>
@@ -35,12 +39,13 @@
             <tr ng-repeat="log in project.logs">
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.projno"></td>
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.itemno"></td>
-                <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.workHour"></td>
-                <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="log.realHour"></td>
+                @*<td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.workHour"></td>*@
+                <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.hourStr"></td>
+                <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.realHour"></td>
                 <td><p ng-bind="log.content"></p></td>
                 <td ng-bind="log.endDate"></td>
                 <td ng-bind="log.note"></td>
-        </tbody>
+</tbody>
     </table>
 
 </div>

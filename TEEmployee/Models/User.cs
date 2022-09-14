@@ -24,6 +24,6 @@ namespace TEEmployee.Models
         public string group_three { get; set; }
         public bool group_three_manager { get; set; }
         public string projects { get; set; }
-        public string project_manager { get; set; }
+        public bool project_manager { get; set; }
     }
 }

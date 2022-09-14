@@ -16,5 +16,6 @@ namespace TEEmployee.Models.TaskLog
         public string projno { get; set; }
         public string itemno { get; set; }
         public int workHour { get; set; }
+        public int overtime { get; set; }
     }
 }

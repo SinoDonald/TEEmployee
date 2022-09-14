@@ -132,6 +132,8 @@ namespace TEEmployee.Models
 
             return manageResponse;
         }
+
+        // 0912 unescaped break line
         public List<Assessment> GetResponse(string year, string manager, string user)
         {
             if (String.IsNullOrEmpty(year))
@@ -162,7 +164,11 @@ namespace TEEmployee.Models
                         manageAssessment.Id = Convert.ToInt32(subs[0]);
                         manageAssessment.CategoryId = Convert.ToInt32(subs[1]);
                         manageAssessment.Content = subs[2];
-                        manageAssessment.Choice = subs[3];
+                        
+                        string unescapedValue = subs[3].Replace("\\n", "\n");
+                        manageAssessment.Choice = unescapedValue;
+                        //manageAssessment.Choice = subs[3];
+
                         manageResponse.Add(manageAssessment);
                     }
                     catch
@@ -183,6 +189,8 @@ namespace TEEmployee.Models
 
             return manageResponse;
         }
+
+        //deprecated
         public List<Assessment> GetAllResponses()
         {
             string fn = Path.Combine(_appData, "ManageResponse");
@@ -207,6 +215,8 @@ namespace TEEmployee.Models
             }
             return allResponses;
         }
+
+        // 0912: escaped break line \n
         public bool Update(List<Assessment> assessments, string state, string year, string manager, string user)
         {
             string fn = Path.Combine(_appData, $"ManageResponse/{year}/{manager}/{user}.txt");
@@ -219,7 +229,10 @@ namespace TEEmployee.Models
 
                 foreach (var item in assessments)
                 {
-                    responses.Add($"{item.Id}/{item.CategoryId}/{item.Content}/{item.Choice}");
+                    // 0912: escaped break line \n
+                    string original = $"{item.Id}/{item.CategoryId}/{item.Content}/{item.Choice}";
+                    string escapedValue = original.Replace("\n", "\\n");
+                    responses.Add(escapedValue);
                 }
 
                 (new FileInfo(fn)).Directory.Create();
@@ -237,8 +250,9 @@ namespace TEEmployee.Models
             throw new NotImplementedException();
         }
 
+        //==================
         // chart
-
+        //==================
         public List<string> GetChartYearList()
         {
             List<string> years = new List<string>();
@@ -279,7 +293,10 @@ namespace TEEmployee.Models
                     manageAssessment.Id = Convert.ToInt32(subs[0]);
                     manageAssessment.CategoryId = Convert.ToInt32(subs[1]);
                     manageAssessment.Content = subs[2];
-                    manageAssessment.Choice = subs[3];
+
+                    string unescapedValue = subs[3].Replace("\\n", "\n");
+                    manageAssessment.Choice = unescapedValue;
+                    //manageAssessment.Choice = subs[3];                    
 
                     allResponses.Add(manageAssessment);                    
                 }
@@ -303,6 +320,27 @@ namespace TEEmployee.Models
             // empno
             return managers.OrderByDescending(x => x).ToList();            
         }
+
+        // 0914  Update Score Manager List
+        public bool UpdateScoreManagers(List<User> selectedManagers)
+        {
+            bool ret = false;
+
+            string fn = Path.Combine(_appData, "ManageResponse", "ScorePeople.txt");
+            try
+            {
+                List<string> empnos = selectedManagers.Select(x => x.empno).ToList();
+                System.IO.File.WriteAllLines(fn, empnos);
+                ret = true;
+            }
+            catch (Exception)
+            {
+                ret = false;
+            }
+
+            return ret;
+        }
+
 
 
         public void Dispose()

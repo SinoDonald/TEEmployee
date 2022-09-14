@@ -4,6 +4,16 @@
     Layout = "~/Views/Shared/_LayoutStar.cshtml";
 }
 
+
+
+@section Styles {
+    <style>
+        .card-img-top{
+            max-width: 256px;
+        }
+    </style>
+}
+
 <h2>Assessments</h2>
 
 <div ng-controller="IndexCtrl" class="container">
@@ -11,85 +21,88 @@
     <div style="margin-top : 100px">
         <h3>Hi @(Session["empno"] +" "+Session["empname"])</h3>
         @*<a class="btn btn-primary" href="~/Assessment/Self">員工自評表</a>
-        <a class="btn btn-danger" href="~/Assessment/Manage">主管評分表</a>
-        <a class="btn btn-success" href="~/Assessment/SelfChart">自評統計</a>*@
-    <div class="card-deck">
-        <div class="card text-center text-white bg-dark">
-            <a href="~/Assessment/Self">
-                <img class="card-img-top" src="~/Content/assets/img/crocodile.png" alt="Card image cap">
-                <h5 class="card-title">自評評估表</h5>
-            </a>
-            @*@{
-                if (true)
+            <a class="btn btn-danger" href="~/Assessment/Manage">主管評分表</a>
+            <a class="btn btn-success" href="~/Assessment/SelfChart">自評統計</a>*@
+        <div class="card-deck">
+            <div class="card text-center text-white bg-dark">
+                <a href="~/Assessment/Self">
+                    <img class="card-img-top" src="~/Content/assets/img/crocodile.png" alt="Card image cap">
+                    <h5 class="card-title">自評評估表</h5>
+                </a>
+                @*@{
+                        if (true)
+                        {
+                            <div>12345678</div>
+                        }
+
+
+
+                    }
+
+                    @if (true)
+                    {
+                        <div>87654321</div>
+                    }*@
+
+
+                <div class="card-body">
+                    @*<p class="card-text">With supporting text below as a natural lead-in to additional content</p>*@
+                </div>
+            </div>
+            <div class="card text-center">
+                <a href="~/Assessment/Manage">
+                    <img class="card-img-top" src="~/Content/assets/img/tiger.png" alt="Card image cap">
+                    <h5 class="card-title">給予主管建議評估表</h5>
+                    <div class="card-body">
+                        @*<p class="card-text">With supporting text below as a natural lead-in to additional content</p>*@
+                    </div>
+                </a>
+            </div>
+
+
+
+            @if (Session["role"] is object)
+            {
+                if (Session["role"].ToString() == "Manager")
                 {
-                    <div>12345678</div>
+                    <div class="card text-center">
+                        <a href="~/Assessment/Feedback">
+                            <img class="card-img-top" src="~/Content/assets/img/rabbit.png" alt="Card image cap">
+                            <h5 class="card-title">主管給予員工建議</h5>
+                            <div class="card-body">
+                                @*<p class="card-text">With supporting text below as a natural lead-in to additional content</p>*@
+                            </div>
+                        </a>
+                    </div>
                 }
 
 
+                @*<div class="card text-center">
+                        <a href="~/Assessment/Self">
+                            <img class="card-img-top" src="~/Content/assets/img/panda-bear.png" alt="Card image cap">
+                            <h5 class="card-title">Special title treatment</h5>
+                            <div class="card-body">
+                                <p class="card-text">With supporting text below as a natural lead-in to additional content</p>
+                            </div>
+                        </a>
+                    </div>*@
 
+                <div class="card text-center">
+                    <a href="~/Assessment/ChartMenu">
+                        <img class="card-img-top" src="~/Content/assets/img/panda-bear.png" alt="Card image cap">
+                        <h5 class="card-title">統計圖表</h5>
+                        <div class="card-body">
+                            @*<p class="card-text">With supporting text below as a natural lead-in to additional content</p>*@
+                        </div>
+                    </a>
+                </div>
             }
 
-            @if (true)
-            {
-                <div>87654321</div>
-            }*@
-
-
-            <div class="card-body">
-                <p class="card-text">With supporting text below as a natural lead-in to additional content</p>
-            </div>
         </div>
-        <div class="card text-center">
-            <a href="~/Assessment/Manage">
-                <img class="card-img-top" src="~/Content/assets/img/tiger.png" alt="Card image cap">
-                <h5 class="card-title">給予主管建議評估表</h5>
-                <div class="card-body">
-                    <p class="card-text">@*With supporting text below as a natural lead-in to additional content*@</p>
-                </div>
-            </a>
-        </div>
-
-        <div class="card text-center">
-            <a href="~/Assessment/ChartMenu">
-                <img class="card-img-top" src="~/Content/assets/img/panda-bear.png" alt="Card image cap">
-                <h5 class="card-title">統計圖表</h5>
-                <div class="card-body">
-                    <p class="card-text">With supporting text below as a natural lead-in to additional content</p>
-                </div>
-            </a>
-        </div>
-        
-        @if (Session["role"] is object)
-        {
-
-            <div class="card text-center">
-                <a href="~/Assessment/Feedback">
-                    <img class="card-img-top" src="~/Content/assets/img/rabbit.png" alt="Card image cap">
-                    <h5 class="card-title">主管給予員工建議</h5>
-                    <div class="card-body">
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content</p>
-                    </div>
-                </a>
-            </div>
-
-            @*<div class="card text-center">
-                <a href="~/Assessment/Self">
-                    <img class="card-img-top" src="~/Content/assets/img/panda-bear.png" alt="Card image cap">
-                    <h5 class="card-title">Special title treatment</h5>
-                    <div class="card-body">
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content</p>
-                    </div>
-                </a>
-            </div>*@
-
-        }
 
 
     </div>
 
-    
-    </div>
-    
 </div>
 
 @section Scripts {

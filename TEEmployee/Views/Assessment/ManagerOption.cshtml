@@ -1,9 +1,27 @@
 ﻿<div ng-controller="ManagerOptionCtrl" class="container" style="margin-top: 100px">
     @*@if (Session["empno"] is "4125")
-    {
-        <input type="submit" value="設定" ng-click="SetManager()" class="btn btn-warning" />
-    }*@
-    <label> 請選擇要評核的主管 </label>
+        {
+            <input type="submit" value="設定" ng-click="SetManager()" class="btn btn-warning" />
+        }*@
+
+    <div class="form-group d-flex justify-content-between">
+        <h3>請選擇要給予建議的主管(可複選)</h3>
+        @if (Session["leader"] is object)
+         {
+             <div>
+                @*<a class="btn btn-outline-primary btn-lg mr-2" href="Assessment" role="button">名單設定</a>*@                
+                <button type="button" ng-click="GetAllScoreManagers()" class="btn btn-outline-primary btn-lg mr-2" data-toggle="modal" data-target="#exampleModal">名單設定</button>
+             </div>
+             <div>
+                <button type="button" ng-click="CheckState()" class="btn btn-outline-primary btn-lg mr-2" data-toggle="modal" data-target="#exampleModalLong">填寫情況</button>
+                @*<a ng-click="CheckState()" class="btn btn-outline-primary btn-lg mr-2" role="button">填寫情況</a>*@
+             </div>
+         }
+        <div>
+            <a class="btn btn-outline-primary btn-lg mr-2" href="Assessment" role="button">返回</a>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-sm-3" ng-repeat="item in GetScorePeople">
             <div class="card border-primary mb-3" style="max-width: 18rem;">
@@ -15,4 +33,58 @@
             </div>
         </div>
     </div>
+
+    <!--Check State Modal -->
+    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">尚未填寫</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <img ng-if="loading" class="mx-auto d-block" src="~/Content/assets/img/Walk.gif" />
+                    @*<h4>尚未填寫</h4>*@
+                    <ul class="list-group">
+                        <li ng-repeat="item in manageResponseStates | filter: 'unfinished'" ng-bind="item.Employee.name" class="list-group-item"></li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    @*<button type="button" class="btn btn-primary">Save changes</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <!--Set Score Manager Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">名單設定</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="form-check" ng-repeat="item in scoreManagers">
+                            <input class="form-check-input" type="checkbox" ng-model="item.selected" id="gridCheck{{$index}}">
+                            <label class="form-check-label" ng-bind="item.name" for="gridCheck{{$index}}"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                    <button type="button" class="btn btn-primary" ng-click="UpdateScoreManagers()">儲存變更</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>

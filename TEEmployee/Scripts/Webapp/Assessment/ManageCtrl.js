@@ -50,6 +50,21 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Assessment/SetScorePeople', o);
     }
 
+    // Check states of all employee, return true if any of it is 'sent'
+    this.ManageResponseStateCheck = function (o) {
+        return $http.post('Assessment/ManageResponseStateCheck', o);
+    }
+
+    // Get All Managers(include project managers) to be selected
+    this.GetAllScoreManagers = function (o) {
+        return $http.post('Assessment/GetAllScoreManagers', o);
+    }
+
+    // Update Score Managers that are selected
+    this.UpdateScoreManagers = function (o) {
+        return $http.post('Assessment/UpdateScoreManagers', o);
+    }
+
 }]);
 
 app.factory('myFactory', function () {
@@ -77,8 +92,8 @@ app.controller('ManageCtrl', ['$scope', '$location', 'appService', '$rootScope',
 
 }]);
 
-app.controller('ManagerOptionCtrl', ['$scope', '$location', 'appService', '$rootScope', 'myFactory', function ($scope, $location, appService, $rootScope, myFactory) {
-
+app.controller('ManagerOptionCtrl', ['$scope', '$location', 'appService', '$rootScope', 'myFactory', '$window', function ($scope, $location, appService, $rootScope, myFactory, $window) {
+        
     // 取得所有要評核的主管
     appService.GetScorePeople({})
         .then(function (ret) {
@@ -97,6 +112,45 @@ app.controller('ManagerOptionCtrl', ['$scope', '$location', 'appService', '$root
     // 設定要被評核的人員
     $scope.SetManager = function () {
         $location.path('/SetManager');
+    }
+
+    // Check employees who have not finished any assessments
+    $scope.CheckState = () => {
+
+        $scope.loading = true;
+
+        appService.ManageResponseStateCheck({})
+            .then((ret) => {
+                $scope.manageResponseStates = ret.data;
+                $scope.loading = false;
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+
+    // Get All Managers(include project managers) to be selected
+    $scope.GetAllScoreManagers = () => {
+        if (!$scope.scoreManagers) {
+            appService.GetAllScoreManagers({})
+                .then((ret) => $scope.scoreManagers = ret.data)
+                .catch((ret) => alert('Error'));
+        }        
+    }
+
+    // Update Score Managers that are selected
+    $scope.UpdateScoreManagers = () => {
+
+        let selectedManagers = $scope.scoreManagers.filter(x => x.selected === true);
+
+        appService.UpdateScoreManagers({ selectedManagers: selectedManagers})
+            .then((ret) => {
+                $window.location.href = 'Assessment/Manage';
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+
     }
 
 }]);
@@ -141,7 +195,7 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
     $scope.CreateManageResponse = function (data) {
         appService.CreateManageResponse({ assessments: $scope.ManageAssessments, state: data, year: $scope.data.model, manager: $scope.manager })
             .then(function (ret) {
-                if (data == 'save') {
+                if (data === 'save') {
                     alert('已儲存');
                 }
                 else {

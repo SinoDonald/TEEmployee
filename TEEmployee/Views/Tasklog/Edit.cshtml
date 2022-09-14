@@ -34,7 +34,7 @@
     </style>
 }
 
-<div ng-controller="EditCtrl" class="container">
+<div ng-controller="EditCtrl" class="container-fluid">
 
     <header>
         <h2>@ViewBag.Title</h2>
@@ -81,9 +81,11 @@
                     <input class="form-control" type="text" maxlength="5" size="5" ng-model="project.projno">
                 </td>
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.itemno"></td>
-                <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.workHour"></td>
+                @*<td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.workHour"></td>*@
+                <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.hourStr"></td>
+
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0">
-                    <input class="form-control" type="text" maxlength="3" size="3"*@ ng-model="log.realHour">
+                    <input class="form-control" type="text" maxlength="3" size="3" ng-model="project.realHour">
                 </td>
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0">
 

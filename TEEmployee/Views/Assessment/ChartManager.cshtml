@@ -15,7 +15,7 @@
 
         .chartmenu {
             display: flex;
-            margin-bottom: 100px;
+            margin-bottom: 40px;
         }
 
         .chartmenu div {
@@ -42,7 +42,7 @@
 }
 
 <header>
-    <h2>ChartManager</h2>
+    <h2>給予主管建議評估總表</h2>
 </header>
 
 
@@ -52,19 +52,19 @@
     <div class="container">
         <div class="chartmenu">
             <div>
-                <label for="SelectYear"> Select the Year: </label>
+                <label for="SelectYear">請選擇年份</label>
                 <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" ng-change="GetChartData()" aria-label="Select the Year">
                     <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
                 </select>
             </div>
             <div>
-                <label for="SelectManager"> Select the Manager: </label>
+                <label for="SelectManager">請選擇主管</label>
                 <select class="form-select manager" id="SelectManager" name="SelectManager" ng-model="selectedManager" ng-change="DrawChart()" aria-label="Select the Manager">
                     <option ng-repeat="manager in managers" value="{{manager}}">{{manager}}</option>
                 </select>
             </div>
             <div>
-                <label for="SelectCategory"> Select the Category: </label>
+                <label for="SelectCategory">請選擇項目</label>
                 <select class="form-select" id="SelectCategory" name="SelectCategory" ng-model="selectedCategory" ng-change="DrawChart()" aria-label="Select the Category">
                     <option ng-repeat="category in categories" value="{{category.id}}">{{category.name}}</option>
                 </select>

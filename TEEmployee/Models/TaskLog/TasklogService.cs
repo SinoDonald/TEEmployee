@@ -91,6 +91,8 @@ namespace TEEmployee.Models.TaskLog
                 }
             }
 
+            monthlyRecordData = monthlyRecordData.OrderBy(x => x.User.empno).ToList();
+
             return monthlyRecordData;
         }
 

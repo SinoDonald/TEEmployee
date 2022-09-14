@@ -279,7 +279,7 @@ namespace TEEmployee.Models
 
 
 
-
+        //deprecated
         public List<Assessment> GetAllResponses()
         {
             string fn = Path.Combine(_appData, "Response");
@@ -472,7 +472,7 @@ namespace TEEmployee.Models
 
         // 0715: Get feedback with state for manager
         // 0729: Feedback for all categories
-               
+        // 0912 unescaped break line
 
         public (string, List<string>) GetFeedback(string empno, string manno, string name)
         {
@@ -492,8 +492,14 @@ namespace TEEmployee.Models
 
                         state = subs[2];
 
+
+                        //When reading back in the file, you will need to unescape each line.                                                
                         for (int i = 3; i < subs.Length; i++)
-                            feedbacks.Add(subs[i]);
+                        {
+                            string unescapedValue = subs[i].Replace("\\n", "\n");
+                            feedbacks.Add(unescapedValue);
+                        }
+                            
 
                         break;
                     }
@@ -539,6 +545,8 @@ namespace TEEmployee.Models
 
         // 0715 Get all "submit" feedbacks
         // 0729 Get all categories feedbacks
+        // 0912: escaped and unescaped break line \n
+
         public List<(string, List<string>)> GetAllFeedbacks(string empno, string year)
         {
             List<(string, List<string>)> nameWithFeedbacks = new List<(string, List<string>)>();
@@ -557,8 +565,16 @@ namespace TEEmployee.Models
                         string name = subs[0];
                         List<string> feedbacks = new List<string>();
 
+
+                        //When reading back in the file, you will need to unescape each line.                                                
                         for (int i = 3; i < subs.Length; i++)
-                            feedbacks.Add(subs[i]);
+                        {
+                            string unescapedValue = subs[i].Replace("\\n", "\n");
+                            feedbacks.Add(unescapedValue);
+                        }
+
+                        //for (int i = 3; i < subs.Length; i++)
+                        //    feedbacks.Add(subs[i]);
 
                         nameWithFeedbacks.Add((name, feedbacks));
                     }
@@ -600,7 +616,7 @@ namespace TEEmployee.Models
 
 
         // 0729:  Feedback for all category
-
+        // 0912: escaped break line \n
         public bool UpdateFeedback(List<string> feedbacks, string state, string empno, string manno, string name)
         {
             string fn = Path.Combine(_appData, $"Feedback/{Utilities.DayStr()}/{empno}.txt");
@@ -609,9 +625,14 @@ namespace TEEmployee.Models
             try
             {
                 string feedbackText = $"{name}\t{manno}\t{state}";
-
+                
+                // 0912: escaped break line \n            
                 foreach (var s in feedbacks)
-                    feedbackText += $"\t{s}";                
+                {
+                    string escapedValue = s.Replace("\n", "\\n");
+                    feedbackText += $"\t{escapedValue}";
+                }
+                                   
 
                 if (!File.Exists(fn))
                 {

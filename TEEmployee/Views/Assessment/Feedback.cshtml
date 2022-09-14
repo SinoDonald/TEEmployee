@@ -4,10 +4,38 @@
     Layout = "~/Views/Shared/_LayoutStar.cshtml";
 }
 
+@section Styles {  
+    <style>      
+        .top-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 99;
+        }
+        table td div p {
+            white-space: pre-line;
+        }
+    </style>
+}
+
 <div ng-controller="FeedbackCtrl" class="container" style="margin-top: 100px">
     <div ui-view></div>
 </div>
 
+<div class="top-btn"><a class="btn btn-primary" href="" role="button">Top</a></div>
+
 @section Scripts {
     <script src="~/Scripts/WebApp/Assessment/FeedbackCtrl.js"></script>
+    <script>
+
+        const btn = document.querySelector('.top-btn');
+        btn.addEventListener('click', topFunction);
+
+        function topFunction() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+    </script>
+
+
 }
