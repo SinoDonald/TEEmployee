@@ -232,6 +232,7 @@ namespace TEEmployee.Models
                         user.dutyName = "協理";
                         index = i;
                     }
+
                     users.Add(user);
                 }
                 i++;
@@ -314,6 +315,8 @@ namespace TEEmployee.Models
                     Employee = item,
                     State = state
                 });
+
+                employeesWithStates = employeesWithStates.OrderBy(x => x.Employee.name).ToList();
             }
 
             return employeesWithStates;
@@ -592,6 +595,8 @@ namespace TEEmployee.Models
 
                 employeesWithStates.Add(new EmployeesWithState() { Employee = user, State = state });
             }
+
+            employeesWithStates = employeesWithStates.OrderBy(x => x.Employee.name).ToList();
 
             return employeesWithStates;
         }

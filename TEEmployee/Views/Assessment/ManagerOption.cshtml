@@ -47,12 +47,25 @@
                 <div class="modal-body">
                     <img ng-if="loading" class="mx-auto d-block" src="~/Content/assets/img/Walk.gif" />
                     @*<h4>尚未填寫</h4>*@
+                    <h4 class="mt-2">設計</h4>
                     <ul class="list-group">
-                        <li ng-repeat="item in manageResponseStates | filter: 'unfinished'" ng-bind="item.Employee.name" class="list-group-item"></li>
+                        <li ng-repeat="item in manageResponseStates | filter: 'unfinished' | filter: '設計'" ng-bind="item.Employee.name" class="list-group-item"></li>
+                    </ul>
+                    <h4 class="mt-2">規劃</h4>
+                    <ul class="list-group">
+                        <li ng-repeat="item in manageResponseStates | filter: 'unfinished' | filter: '規劃'" ng-bind="item.Employee.name" class="list-group-item"></li>
+                    </ul>
+                    <h4 class="mt-2">專管</h4>
+                    <ul class="list-group">
+                        <li ng-repeat="item in manageResponseStates | filter: 'unfinished' | filter: '專管'" ng-bind="item.Employee.name" class="list-group-item"></li>
+                    </ul>
+                    <h4 class="mt-2">行政</h4>
+                    <ul class="list-group">
+                        <li ng-repeat="item in manageResponseStates | filter: 'unfinished' | filter: '行政'" ng-bind="item.Employee.name" class="list-group-item"></li>
                     </ul>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
                     @*<button type="button" class="btn btn-primary">Save changes</button>*@
                 </div>
             </div>

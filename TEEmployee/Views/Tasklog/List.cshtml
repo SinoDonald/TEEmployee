@@ -32,38 +32,39 @@
 <div ng-controller="ListCtrl" class="container">
 
     <header>
-        <h2>@ViewBag.Title</h2>
+        @*<h2>@ViewBag.Title</h2>*@
+        <h2>查閱工作紀錄管控表</h2>        
     </header>
 
 
     <div class="month-select">
         <div>
-            <label for="SelectYear">Select Year: </label>
+            <label for="SelectYear">請選擇年份：</label>
             <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" aria-label="Select Year">
                 <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
             </select>
         </div>
         <div>
-            <label for="SelectMonth">Select Month: </label>
+            <label for="SelectMonth">請選擇月份：</label>
             <select class="form-select" id="SelectMonth" name="SelectMonth" ng-model="selectedMonth" aria-label="Select Month">
                 <option ng-repeat="month in months" value="{{month}}">{{month}}</option>
             </select>
         </div>
         <div class="center">
-            <button type="button" class="btn btn-warning" ng-click="GetAllMonthlyRecordData()">Search</button>
+            <button type="button" class="btn btn-warning" ng-click="GetAllMonthlyRecordData()">查詢</button>
         </div>
     </div>
 
     <table class="table">
         <tr>
-            <th>mmyy</th>
-            <th>empno</th>
-            <th>name</th>
-            <th>Group</th>
-            <th>Group 1</th>
-            <th>Group 2</th>
-            <th>Group 3</th>
-            <th>Link</th>
+            <th>年月份</th>
+            <th>員工編號</th>
+            <th>姓名</th>
+            <th>群組</th>
+            <th>小組1</th>
+            <th>小組2</th>
+            <th>小組3</th>
+            <th>內容</th>
         </tr>
         <tr ng-repeat="item in data">
             <td ng-bind="item.MonthlyRecord.yymm"></td>
@@ -74,7 +75,7 @@
             <td ng-bind="item.User.group_two"></td>
             <td ng-bind="item.User.group_three"></td>
             <td>
-                <a target="_blank" href="~/Tasklog/Details/{{item.MonthlyRecord.guid}}">Details</a>
+                <a target="_blank" href="~/Tasklog/Details/{{item.MonthlyRecord.guid}}">詳細內容</a>
             </td>
         </tr>
 

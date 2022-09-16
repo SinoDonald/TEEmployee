@@ -65,14 +65,27 @@ namespace TEEmployee.Models
                 User user = _userRepository.Get(line);
                 if (user != null)
                 {
-                    if (user.dutyName.Equals("NULL"))
+                    //if (user.dutyName.Equals("NULL"))
+                    //{
+                    //    user.dutyName = "";
+                    //}
+                    //if (user.empno.Equals("4125"))
+                    //{
+                    //    user.dutyName = "協理";
+                    //}
+
+                    if (user.department_manager)
+                    {
+                        user.dutyName = "協理";
+                    }                        
+                    else if (user.group_manager) {
+                        user.dutyName = "技術經理";
+                    }
+                    else
                     {
                         user.dutyName = "";
                     }
-                    if (user.empno.Equals("4125"))
-                    {
-                        user.dutyName = "協理";
-                    }
+                        
                     users.Add(user);
                 }
             }

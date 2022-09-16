@@ -85,7 +85,7 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', fun
     $scope.CreateResponse = function (state) {
         appService.CreateResponse({ assessments: $scope.SelfAssessments, state: state, year: $scope.data.model })
             .then(function (ret) {
-                $window.location.href = 'Home';
+                $window.location.href = 'Assessment';
             });
     }
 

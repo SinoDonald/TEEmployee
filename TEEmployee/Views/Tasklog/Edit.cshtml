@@ -78,7 +78,7 @@
         <tbody ng-repeat="project in projects" ng-init="parentIndex=$index">
             <tr ng-repeat="log in project.logs">
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0">
-                    <input class="form-control" type="text" maxlength="5" size="5" ng-model="project.projno">
+                    <input class="form-control" oninput="this.value = this.value.toUpperCase()" type="text" maxlength="5" size="5" ng-model="project.projno">
                 </td>
                 <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.itemno"></td>
                 @*<td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.workHour"></td>*@

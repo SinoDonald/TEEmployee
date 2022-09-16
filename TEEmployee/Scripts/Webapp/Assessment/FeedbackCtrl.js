@@ -239,7 +239,7 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
 
         appService.UpdateFeedback({ feedbacks: feedbacks, state: state, empno: myFactory.get().EmployeeInfo.Employee.empno })
             .then(function (ret) {
-                $window.location.href = 'Home';
+                $window.location.href = 'Assessment/Feedback';
             });
     }
 

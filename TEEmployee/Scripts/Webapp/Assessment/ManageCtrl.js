@@ -133,7 +133,12 @@ app.controller('ManagerOptionCtrl', ['$scope', '$location', 'appService', '$root
     $scope.GetAllScoreManagers = () => {
         if (!$scope.scoreManagers) {
             appService.GetAllScoreManagers({})
-                .then((ret) => $scope.scoreManagers = ret.data)
+                .then((ret) => {
+                    $scope.scoreManagers = ret.data;
+                    for (let item of $scope.scoreManagers) {
+                        item.selected = true;
+                    }
+                })
                 .catch((ret) => alert('Error'));
         }        
     }
