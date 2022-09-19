@@ -19,6 +19,9 @@
             right: 40px;
             z-index: 99;
         }
+        p.lbk {
+            white-space: pre-line;
+        }
     </style>
 }
 
@@ -112,7 +115,7 @@
                                     <h5 ng-bind="item.Name" class="mb-1"></h5>
                                     <small></small>
                                 </div>
-                                <p ng-bind="item.Choice" class="mb-1"></p>
+                                <p ng-bind="item.Choice" class="mb-1 lbk"></p>
                             </a>
                         </div>
                     </td>
@@ -196,7 +199,7 @@
                     <h5 ng-bind="item.Name" class="mb-1"></h5>
                     <small></small>
                 </div>
-                <p ng-bind="item.Text" class="mb-1"></p>
+                <p ng-bind="item.Text" class="mb-1 lbk"></p>
             </a>
         </div>
     </div>

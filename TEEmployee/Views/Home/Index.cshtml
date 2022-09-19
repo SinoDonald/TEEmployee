@@ -1,9 +1,9 @@
 ﻿
-@model TEEmployee.Models.User
+@*@model TEEmployee.Models.User*@
 
 @{
     ViewBag.Title = "Home Page";
-    Layout = "~/Views/Shared/_LayoutStar - Copy.cshtml";
+    //Layout = "~/Views/Shared/_LayoutStar - Copy.cshtml";
 }
 
 <!-- Masthead-->
@@ -14,13 +14,13 @@
                 <h1 class="text-white font-weight-bold">員工職涯規劃<br>溝通與紀錄平台</h1>
                 <hr class="divider" />
 
-                @using (Html.BeginForm())
+                @*@using (Html.BeginForm())
                 {
                     <div class="form-group">                       
                         @Html.EditorFor(model => model.empno, new { htmlAttributes = new { @class = "form-control" ,@placeholder = "Enter Employee Number" } })                       
                         <input type="submit" value="Save" class="btn btn-default" style="color: white" /> 
                     </div>
-                }
+                }*@
                 @*<form method="post" action="~/Home/SwitchEmployeeNumber">
                     <input type="text" class="form-control" id="id" name="id" placeholder="Employee number" value="@Model.empno">
                     <button type="submit" class="btn btn-primary">Switch</button>
