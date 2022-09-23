@@ -26,9 +26,10 @@
         <div class="col-sm-3" ng-repeat="item in GetScorePeople">
             <div class="card border-primary mb-3" style="max-width: 18rem;">
                 <div class="card-body">
-                    <h5 class="card-title">{{item.name}} {{item.dutyName}}</h5>
-                    <p class="card-text">{{item.empno}}</p>
-                    <input type="submit" value="填問卷" ng-click="ManagerSuggest(item)" class="btn btn-warning" />
+                    <h5 class="card-title">{{item.Employee.name}} {{item.Employee.dutyName}}</h5>
+                    <p class="card-text">{{item.Employee.empno}}</p>
+                    <input type="submit" value="填問卷" ng-if="item.State != 'sent'" ng-click="ManagerSuggest(item.Employee)" class="btn btn-warning" />
+                    <button class="btn btn-success" ng-if="item.State == 'sent'" ng-click="ManagerSuggest(item.Employee)">已填寫</button>                    
                 </div>
             </div>
         </div>

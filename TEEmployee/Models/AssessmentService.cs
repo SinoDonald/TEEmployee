@@ -246,12 +246,29 @@ namespace TEEmployee.Models
             var allManagers = _userRepository.GetManagers().OrderBy(x => x.empno).ToList();
             return allManagers;
         }
-        public List<User> GetScorePeople()
+        //public List<User> GetScorePeople()
+        //{
+        //    _assessmentRepository = new ManageAssessmentTxtRepository();
+        //    List<User> scorePeople = (_assessmentRepository as ManageAssessmentTxtRepository).GetScorePeople();
+        //    return scorePeople;
+        //}
+
+        //0923 return score people with state
+        public List<EmployeesWithState> GetScorePeople(string empno)
         {
+            List<EmployeesWithState> employeesWithStates = new List<EmployeesWithState>();
             _assessmentRepository = new ManageAssessmentTxtRepository();
             List<User> scorePeople = (_assessmentRepository as ManageAssessmentTxtRepository).GetScorePeople();
-            return scorePeople;
+
+            foreach (var item in scorePeople)
+            {
+                string state = (_assessmentRepository as ManageAssessmentTxtRepository).GetStateOfResponse(Utilities.DayStr(), item.empno, empno);
+                employeesWithStates.Add(new EmployeesWithState() { Employee = item, State = state });
+            }
+
+            return employeesWithStates;
         }
+
 
         // 0713 
         //public List<EmployeesWithState> GetAllEmployeesWithState(string manno, string name)

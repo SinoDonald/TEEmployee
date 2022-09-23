@@ -202,7 +202,7 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult GetScorePeople()
         {
-            var ret = _service.GetScorePeople();
+            var ret = _service.GetScorePeople(Session["empno"].ToString());
             return Json(ret);
         }
 
