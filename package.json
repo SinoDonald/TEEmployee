@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "angularjs-bootstrap-datetimepicker": "^1.1.4"
+  }
+}

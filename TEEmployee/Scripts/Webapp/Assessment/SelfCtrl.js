@@ -1,4 +1,4 @@
-﻿var app = angular.module('app', []);
+﻿var app = angular.module('app', ['ngAnimate']);
 
 app.run(['$http', '$window', function ($http, $window) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -34,7 +34,7 @@ app.service('appService', ['$http', function ($http) {
     
 }]);
 
-app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
+app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', '$timeout', function ($scope, $window, appService, $rootScope, $timeout) {
 
     $scope.SelfAssessments = [];
     $scope.state;
@@ -85,7 +85,19 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', fun
     $scope.CreateResponse = function (state) {
         appService.CreateResponse({ assessments: $scope.SelfAssessments, state: state, year: $scope.data.model })
             .then(function (ret) {
-                $window.location.href = 'Assessment';
+                //$window.location.href = 'Assessment';
+                if (state === 'save') {
+                    /* alert('已儲存');*/
+                    $scope.succeed = true;
+                    $timeout(function () {
+                        $scope.succeed = false;
+                    }, 2000);
+                    
+                }
+                else {
+                    //alert('已送出');
+                    $window.location.href = 'Assessment';
+                }
             });
     }
 
@@ -186,7 +198,6 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', fun
             });
 
     }
-
 
     $scope.GetResponseByYear();
 

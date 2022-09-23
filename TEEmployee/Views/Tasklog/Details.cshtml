@@ -1,6 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "Details";
+    ViewBag.Title = "工作紀錄管控表詳細內容";
 }
 
 
@@ -19,7 +20,8 @@
 <div ng-controller="DetailsCtrl" class="container-fluid">
 
     <header>
-        <h2>@ViewBag.Title</h2>
+        @*<h2>@ViewBag.Title</h2>*@
+        <h2>詳細內容</h2>
     </header>
 
     <table class="table">
@@ -45,7 +47,7 @@
                 <td><p ng-bind="log.content"></p></td>
                 <td ng-bind="log.endDate"></td>
                 <td ng-bind="log.note"></td>
-</tbody>
+        </tbody>
     </table>
 
 </div>
@@ -55,4 +57,8 @@
         var guid = '@ViewBag.id';
     </script>
     <script src="~/Scripts/WebApp/Tasklog/TasklogCtrl.js"></script>
+    @*<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment-with-locales.js"></script>*@
+    @*<script src="//cdn.rawgit.com/indrimuska/angular-moment-picker/master/dist/angular-moment-picker.min.js"></script>*@
+    <script src="~/Scripts/moment-with-locales.js"></script>
+    <script src="~/Scripts/angular-moment-picker.min.js"></script>
 }

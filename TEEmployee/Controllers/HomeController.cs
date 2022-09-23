@@ -42,6 +42,9 @@ namespace TEEmployee.Controllers
             {
                 User user = new UserRepository().Get(fake.empno);
 
+                if (user is null)
+                    return RedirectToAction("Unauthorized");
+
                 Session["empno"] = user.empno;
                 Session["empname"] = user.name;
                 Session["group"] = user.group;

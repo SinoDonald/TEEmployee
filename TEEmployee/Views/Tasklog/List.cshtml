@@ -1,9 +1,13 @@
 ﻿
 @{
     ViewBag.Title = "List";
+    ViewBag.Title = "查閱工作紀錄管控表";
 }
 
 @section Styles {
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    @*<link href="//cdn.rawgit.com/indrimuska/angular-moment-picker/master/dist/angular-moment-picker.min.css" rel="stylesheet">*@
+    <link rel="stylesheet" href="~/Content/css/angular-moment-picker.min.css">
     <style>
         header {
             margin-top: 100px;
@@ -24,6 +28,16 @@
             justify-content: center;
             align-items: center;
         }
+
+        .sortorder:after {
+            content: '\25b2';
+            // BLACK UP-POINTING TRIANGLE
+        }
+
+        .sortorder.reverse:after {
+            content: '\25bc';
+            // BLACK DOWN-POINTING TRIANGLE
+        }
     </style>
 }
 
@@ -33,40 +47,78 @@
 
     <header>
         @*<h2>@ViewBag.Title</h2>*@
-        <h2>查閱工作紀錄管控表</h2>        
+        <h2>查閱工作紀錄管控表</h2>
     </header>
 
 
-    <div class="month-select">
-        <div>
-            <label for="SelectYear">請選擇年份：</label>
-            <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" aria-label="Select Year">
-                <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
-            </select>
+    @*<div class="month-select">
+            <div>
+                <label for="SelectYear">請選擇年份：</label>
+                <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" aria-label="Select Year">
+                    <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+                </select>
+            </div>
+            <div>
+                <label for="SelectMonth">請選擇月份：</label>
+                <select class="form-select" id="SelectMonth" name="SelectMonth" ng-model="selectedMonth" aria-label="Select Month">
+                    <option ng-repeat="month in months" value="{{month}}">{{month}}</option>
+                </select>
+            </div>
+            <div class="center">
+                <button type="button" class="btn btn-warning" ng-click="GetAllMonthlyRecordData()">查詢</button>
+            </div>
+        </div>*@
+
+    <div class="input-group mb-3 w-25 p-3"
+         moment-picker="ctrl.datepicker"
+         format="YYYY-MM"
+         locale="zh-tw"
+         change="GetAllMonthlyRecordData()">
+        @*<span class="input-group-addon">
+            </span>*@
+        <div class="input-group-prepend">
+            <span class="input-group-text material-icons" id="basic-addon1">calendar_month</span>
         </div>
-        <div>
-            <label for="SelectMonth">請選擇月份：</label>
-            <select class="form-select" id="SelectMonth" name="SelectMonth" ng-model="selectedMonth" aria-label="Select Month">
-                <option ng-repeat="month in months" value="{{month}}">{{month}}</option>
-            </select>
-        </div>
-        <div class="center">
-            <button type="button" class="btn btn-warning" ng-click="GetAllMonthlyRecordData()">查詢</button>
+        <input class="form-control"
+               placeholder="Select a date"
+               ng-model="ctrl.datepicker"
+               ng-model-options="{ updateOn: 'blur' }">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">請選擇年月份</span>
         </div>
     </div>
 
     <table class="table">
         <tr>
             <th>年月份</th>
-            <th>員工編號</th>
-            <th>姓名</th>
-            <th>群組</th>
-            <th>小組1</th>
-            <th>小組2</th>
-            <th>小組3</th>
+            <th ng-click="sortBy('MonthlyRecord.empno')">
+                員工編號
+                <span class="sortorder" ng-show="propertyName === 'MonthlyRecord.empno'" ng-class="{reverse: reverse}"></span>
+            </th>
+            <th ng-click="sortBy('User.name')">
+                姓名
+                <span class="sortorder" ng-show="propertyName === 'User.name'" ng-class="{reverse: reverse}"></span>
+            </th>
+            <th ng-click="sortBy('User.group')">
+                群組
+                <span class="sortorder" ng-show="propertyName === 'User.group'" ng-class="{reverse: reverse}"></span>
+            </th>
+            <th ng-click="sortBy('User.group_one')">
+                小組1
+                <span class="sortorder" ng-show="propertyName === 'User.group_one'" ng-class="{reverse: reverse}"></span>
+            </th>
+            <th ng-click="sortBy('User.group_two')">
+                小組2
+                <span class="sortorder" ng-show="propertyName === 'User.group_two'" ng-class="{reverse: reverse}"></span>
+            </th>
+            <th ng-click="sortBy('User.group_three')">
+                小組3
+                <span class="sortorder" ng-show="propertyName === 'User.group_three'" ng-class="{reverse: reverse}"></span>
+            </th>
             <th>內容</th>
         </tr>
-        <tr ng-repeat="item in data">
+
+        <tr ng-repeat="item in data | orderBy: propertyName:reverse">
             <td ng-bind="item.MonthlyRecord.yymm"></td>
             <td ng-bind="item.MonthlyRecord.empno"></td>
             <td ng-bind="item.User.name"></td>
@@ -81,8 +133,17 @@
 
     </table>
 
+    <div class="form-group">
+        <a class="btn btn-warning btn-lg mr-2" href="Tasklog" role="button">返回</a>
+    </div>
+
+
 </div>
 
 @section Scripts {
     <script src="~/Scripts/WebApp/Tasklog/TasklogCtrl.js"></script>
+    @*<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment-with-locales.js"></script>
+        <script src="//cdn.rawgit.com/indrimuska/angular-moment-picker/master/dist/angular-moment-picker.min.js"></script>*@
+    <script src="~/Scripts/moment-with-locales.js"></script>
+    <script src="~/Scripts/angular-moment-picker.min.js"></script>
 }

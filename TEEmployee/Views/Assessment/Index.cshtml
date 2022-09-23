@@ -1,5 +1,6 @@
 ﻿@{
     ViewBag.Title = "Assessment";
+    ViewBag.Title = "自評表與考核";
     //Layout = "~/Views/Shared/_Layout.cshtml";
     Layout = "~/Views/Shared/_LayoutStar.cshtml";
 }
@@ -24,10 +25,11 @@
             <a class="btn btn-danger" href="~/Assessment/Manage">主管評分表</a>
             <a class="btn btn-success" href="~/Assessment/SelfChart">自評統計</a>*@
         <div class="card-deck">
-            <div class="card text-center text-white bg-dark">
+            <div class="card text-center text-white">
                 <a href="~/Assessment/Self">
-                    <img class="card-img-top" src="~/Content/assets/img/crocodile.png" alt="Card image cap">
-                    <h5 class="card-title">自評評估表</h5>
+                    @*<img class="card-img-top" src="~/Content/assets/img/crocodile.png" alt="Card image cap">*@
+                    <img class="card-img-top" src="~/Content/assets/img/self.png" alt="Card image cap">
+                    <h5 class="card-title">自我評估表</h5>
                 </a>
                 @*@{
                         if (true)
@@ -51,7 +53,8 @@
             </div>
             <div class="card text-center">
                 <a href="~/Assessment/Manage">
-                    <img class="card-img-top" src="~/Content/assets/img/tiger.png" alt="Card image cap">
+                    @*<img class="card-img-top" src="~/Content/assets/img/tiger.png" alt="Card image cap">*@
+                    <img class="card-img-top" src="~/Content/assets/img/manager.png" alt="Card image cap">
                     <h5 class="card-title">給予主管建議評估表</h5>
                     <div class="card-body">
                         @*<p class="card-text">With supporting text below as a natural lead-in to additional content</p>*@
@@ -67,7 +70,8 @@
                 {
                     <div class="card text-center">
                         <a href="~/Assessment/Feedback">
-                            <img class="card-img-top" src="~/Content/assets/img/rabbit.png" alt="Card image cap">
+                            @*<img class="card-img-top" src="~/Content/assets/img/rabbit.png" alt="Card image cap">*@
+                            <img class="card-img-top" src="~/Content/assets/img/feedback.png" alt="Card image cap">
                             <h5 class="card-title">主管給予員工建議</h5>
                             <div class="card-body">
                                 @*<p class="card-text">With supporting text below as a natural lead-in to additional content</p>*@
@@ -89,7 +93,8 @@
 
                 <div class="card text-center">
                     <a href="~/Assessment/ChartMenu">
-                        <img class="card-img-top" src="~/Content/assets/img/panda-bear.png" alt="Card image cap">
+                        @*<img class="card-img-top" src="~/Content/assets/img/panda-bear.png" alt="Card image cap">*@
+                        <img class="card-img-top" src="~/Content/assets/img/chart.png" alt="Card image cap">
                         <h5 class="card-title">統計圖表</h5>
                         <div class="card-body">
                             @*<p class="card-text">With supporting text below as a natural lead-in to additional content</p>*@

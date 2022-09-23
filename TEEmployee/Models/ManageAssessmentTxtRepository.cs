@@ -285,36 +285,45 @@ namespace TEEmployee.Models
             List<Assessment> allResponses = new List<Assessment>();
 
             string dir = Path.Combine(_appData, $"ManageResponse/{year}/{manno}");
-            var fnList = System.IO.Directory.GetFiles(dir, "*.txt").OrderBy(x => System.IO.Path.GetFileName(x)).ToList();
-                     
-            foreach (var fn in fnList)
-            {                
 
-                var lines = File.ReadAllLines(fn);
+            try
+            {
+                var fnList = System.IO.Directory.GetFiles(dir, "*.txt").OrderBy(x => System.IO.Path.GetFileName(x)).ToList();
 
-                if (lines.FirstOrDefault().Split(';').FirstOrDefault() != "sent")
-                    continue;
+                foreach (var fn in fnList)
+                {
 
-                List<Assessment> responses = new List<Assessment>();
+                    var lines = File.ReadAllLines(fn);
 
-                for (int i = 1; i != lines.Length; i++)
-                {                    
-                    string[] subs = lines[i].Split('/');
+                    if (lines.FirstOrDefault().Split(';').FirstOrDefault() != "sent")
+                        continue;
 
-                    Assessment manageAssessment = new Assessment();
+                    List<Assessment> responses = new List<Assessment>();
 
-                    manageAssessment.Id = Convert.ToInt32(subs[0]);
-                    manageAssessment.CategoryId = Convert.ToInt32(subs[1]);
-                    manageAssessment.Content = subs[2];
+                    for (int i = 1; i != lines.Length; i++)
+                    {
+                        string[] subs = lines[i].Split('/');
 
-                    string unescapedValue = subs[3].Replace("\\n", "\n");
-                    manageAssessment.Choice = unescapedValue;
-                    //manageAssessment.Choice = subs[3];                    
+                        Assessment manageAssessment = new Assessment();
 
-                    allResponses.Add(manageAssessment);                    
+                        manageAssessment.Id = Convert.ToInt32(subs[0]);
+                        manageAssessment.CategoryId = Convert.ToInt32(subs[1]);
+                        manageAssessment.Content = subs[2];
+
+                        string unescapedValue = subs[3].Replace("\\n", "\n");
+                        manageAssessment.Choice = unescapedValue;
+                        //manageAssessment.Choice = subs[3];                    
+
+                        allResponses.Add(manageAssessment);
+                    }
+
                 }
+            }
+            catch
+            {
 
             }
+            
 
             return allResponses;
         }

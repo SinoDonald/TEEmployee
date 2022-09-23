@@ -1,4 +1,4 @@
-﻿var app = angular.module('app', ['ui.router']);
+﻿var app = angular.module('app', ['ui.router', 'ngAnimate']);
 
 app.config(function ($stateProvider, $urlRouterProvider) {
 
@@ -160,7 +160,7 @@ app.controller('ManagerOptionCtrl', ['$scope', '$location', 'appService', '$root
 
 }]);
 
-app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', function ($scope, $window, appService, $rootScope, myFactory) {
+app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', '$timeout', function ($scope, $window, appService, $rootScope, myFactory, $timeout) {
 
     $scope.ManageAssessments = [];
 
@@ -201,10 +201,14 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
         appService.CreateManageResponse({ assessments: $scope.ManageAssessments, state: data, year: $scope.data.model, manager: $scope.manager })
             .then(function (ret) {
                 if (data === 'save') {
-                    alert('已儲存');
+                /*alert('已儲存');*/
+                    $scope.succeed = true;
+                    $timeout(function () {
+                        $scope.succeed = false;
+                    }, 2000);
                 }
                 else {
-                    alert('已寄出');
+                    /*alert('已送出');*/
                     $window.location.href = 'Assessment/Manage';
                 }
             });
@@ -212,7 +216,8 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
 
     // 回列表
     $scope.ToManage = function () {
-        $window.location.href = 'Assessment/Index';
+        //$window.location.href = 'Assessment/Index';
+        $window.location.href = 'Assessment/Manage';
     }
 
 }]);
