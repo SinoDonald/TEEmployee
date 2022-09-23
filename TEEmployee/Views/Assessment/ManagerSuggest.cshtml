@@ -4,7 +4,8 @@
     //Layout = "~/Views/Shared/_LayoutStar.cshtml";
 }
 
-<h4><a href="javascript:history.back()">給予主管建議評估表</a></h4>
+@*<h4><a href="javascript:history.back()">給予主管建議評估表</a></h4>*@
+<h4>給予主管建議評估表</h4>
 
 <div ng-controller="ManagerSuggestCtrl" class="container my-5">
 
@@ -23,7 +24,7 @@
                     <th>選擇</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody ng-if="state != 'sent'">
                 <tr ng-repeat="item in ManageAssessments">
                     <td ng-if="item.Id == 0" ng-bind="item.Content" colspan="2" class="table-warning"></td>
                     <td ng-if="item.Content != '建議' && item.Id != 0 && item.Id != 44" ng-bind="item.Content"></td>
@@ -56,19 +57,63 @@
                     </td>
                 </tr>
             </tbody>
+
+            <tbody ng-if="state === 'sent'">
+                <tr ng-repeat="item in ManageAssessments">
+                    <td ng-if="item.Id == 0" ng-bind="item.Content" colspan="2" class="table-warning"></td>
+                    <td ng-if="item.Content != '建議' && item.Id != 0 && item.Id != 44" ng-bind="item.Content"></td>
+                    <td ng-if="item.Content != '建議' && item.Id != 0 && item.Id == 44">
+                        <input type="text" ng-model="item.Content" placeholder="自訂問題">
+                    </td>
+                    <td ng-if="item.Content != '建議' && item.Id != 0">
+                        <div class="form-check form-check-inline">
+                            <input ng-disabled="true" class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1" value="option1" required>
+                            <label class="form-check-label" for="inlineRadio1">同意</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input ng-disabled="true" class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio2" value="option2">
+                            <label class="form-check-label" for="inlineRadio2">中立</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input ng-disabled="true" class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio3" value="option3">
+                            <label class="form-check-label" for="inlineRadio3">不同意</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input ng-disabled="true" class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio4" value="option4">
+                            <label class="form-check-label" for="inlineRadio4">N/A</label>
+                        </div>
+                    </td>
+                    <td ng-if="item.Content=='建議'" colspan="2" style="width:80%">
+                        <div class="form-group">
+                            @*<label for="exampleFormControlTextarea1">建議</label>
+                                <textarea class="form-control" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>*@
+                            <h5 class="mb-1">建議</h5>
+                            <p ng-bind="item.Choice" class="mb-1 lbk"></p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+
         </table>
+
+
     </form>
+
+    <div ng-cloak ng-show="succeed" class="alert alert-success animate-show-hide" role="alert">
+        儲存成功!
+    </div>
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" value="返回" ng-click="ToManage()" class="btn btn-warning" />
             <input type="submit" ng-if="state!='sent'" value="儲存" ng-click="CreateManageResponse('save')" class="btn btn-warning" />
             @*<input type="submit" ng-if="state!='sent'" value="送出" ng-disabled="optionForm.$invalid" class="btn btn-warning" />*@
-            <button ng-if="state!='sent'" type="button" ng-disabled="optionForm.$invalid" class="btn btn-warning" data-toggle="modal" data-target="#exampleModalCenter">
+            <button ng-if="state!='sent'" type="button" ng-disabled="optionForm.$invalid" class="btn btn-warning mr-2" data-toggle="modal" data-target="#exampleModalCenter">
                 送出
             </button>
+            <span ng-if="state!='sent'"><strong>全部題目勾選完成才可送出</strong></span>
         </div>
-    </div>    
+    </div>
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -85,13 +130,11 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                    <button type="button" ng-click="CreateManageResponse('sent')"  class="btn btn-primary">確認</button>
+                    <button type="button" ng-click="CreateManageResponse('sent')" class="btn btn-primary">確認</button>
                 </div>
             </div>
         </div>
     </div>
-
-
 
 </div>
 

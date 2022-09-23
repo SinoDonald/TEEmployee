@@ -1,4 +1,4 @@
-﻿var app = angular.module('app', []);
+﻿var app = angular.module('app', ['moment-picker', 'ngAnimate']);
 
 app.run(['$http', '$window', function ($http, $window) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -52,9 +52,23 @@ app.controller('ListCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
     
     $scope.data = [];
 
+    $scope.ctrl = {};
+    $scope.ctrl.datepicker = moment().add(-1, 'months').locale('zh-tw').format('YYYY-MM');
+
+    $scope.propertyName = 'User.group_one';
+    $scope.reverse = true;
+    
+    $scope.sortBy = function (propertyName) {
+        $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
+        $scope.propertyName = propertyName;
+    };
+
+
+
     $scope.GetAllMonthlyRecordData = () => {
 
-        let yymm = `${Number($scope.selectedYear) - 1911}${$scope.selectedMonth}`;
+        //let yymm = `${Number($scope.selectedYear) - 1911}${$scope.selectedMonth}`;
+        let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`;
 
         appService.GetAllMonthlyRecordData({yymm: yymm}).then((ret) => {
 
@@ -140,11 +154,15 @@ app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 
 
 }]);
 
-app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
+app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', '$timeout', function ($scope, $window, appService, $rootScope, $q, $timeout) {
 
     // select year and month
     $scope.months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
     $scope.years = [];
+
+    $scope.ctrl = {};
+    $scope.ctrl.datepicker = moment().locale('zh-tw').format('YYYY-MM');
+    /*$scope.ctrl.datepicker = "";*/
 
     const date = new Date();
     const [month, year] = [date.getMonth(), date.getFullYear()];
@@ -197,7 +215,8 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
         //flatten projects
 
         let projectTasks = [];
-        let yymm = `${Number($scope.selectedYear) - 1911}${$scope.selectedMonth}`
+        //let yymm = `${Number($scope.selectedYear) - 1911}${$scope.selectedMonth}`
+        let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`; 
 
         for (let project of $scope.projects) {
 
@@ -217,7 +236,9 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
         if ($scope.deletedIds.length !== 0) {
             appService.DeleteProjectTask($scope.deletedIds)
-                .then((ret) => { })
+                .then((ret) => {
+                   
+                })
                 .catch((ret) => { alert('Error'); }
                 );
         }        
@@ -229,7 +250,16 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 );
         }     
 
-        $window.location.href = 'Tasklog/Index';
+        $scope.succeed = true;
+        $timeout(function () {
+            $scope.succeed = false;
+        }, 2000);
+
+        //alert('已儲存');
+
+        //$window.location.reload();
+
+        /*$window.location.href = 'Tasklog/Index';*/
 
         //appService.UpdateProjectTask(projectTasks).then((ret) => {
         //    $window.location.href = 'Home';
@@ -239,7 +269,9 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
     $scope.GetTasklogData = () => {
 
-        let yymm = `${Number($scope.selectedYear) - 1911}${$scope.selectedMonth}`;        
+        //let yymm = `${Number($scope.selectedYear) - 1911}${$scope.selectedMonth}`;
+
+        let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`; 
 
         appService.GetTasklogData({ yymm: yymm }).then((ret) => {
 

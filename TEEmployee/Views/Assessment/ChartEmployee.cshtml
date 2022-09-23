@@ -1,6 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "ChartEmployee";
+    ViewBag.Title = "員工自我評估總表";
 }
 
 @section Styles {
@@ -17,23 +18,26 @@
             display: flex;
         }
 
-        .chartmenu div {
-            flex: 1;
-            margin: 0 20px;
-        }
-        
+            .chartmenu div {
+                flex: 1;
+                margin: 0 20px;
+            }
+
         .top-btn {
             position: fixed;
             bottom: 40px;
             right: 40px;
             z-index: 99;
         }
-       /* .back-btn {
+        /* .back-btn {
             position: fixed;
             bottom: 40px;
             right: 120px;
             z-index: 99;
         }*/
+        .highlight-select {
+            background-color: papayawhip;
+        }
     </style>
 }
 
@@ -55,9 +59,9 @@
                 </select>
             </div>
             <div>
-                <label for="SelectGroup">請選擇群組</label>
+                <label for="SelectGroup">請選擇組別</label>
                 <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
-                    <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
+                    <option ng-repeat="group in groups" ng-class="{'highlight-select': group == '設計' || group == '規劃'|| group == '專管'|| group == '智慧軌道創新小組'|| group == '行政組'|| group == '計畫管理組'}" value="{{group}}">{{group}}</option>
                 </select>
             </div>
             <div>
@@ -83,7 +87,8 @@
 
 @section scripts {
     <script src="~/Scripts/WebApp/Assessment/ChartEmployeeCtrl.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @*<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>*@
+    <script src="~/Scripts/chart.min.js"></script>    
     <script src="~/Scripts/WebApp/Assessment/CustomChart.js"></script>
     @*<script src="~/Scripts/WebApp/Assessment/SelfChart.js"></script>*@
 }

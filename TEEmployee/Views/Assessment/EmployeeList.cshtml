@@ -9,7 +9,7 @@
             <a class="btn btn-outline-primary btn-lg mr-2" href="Assessment" role="button">返回</a>
         </div>
     </div>
-    
+
 
     <form name="myForm">
 
@@ -49,8 +49,24 @@
                 </label>
         </div>*@
 
-    <div class="card-columns">
-        <div class="card" ng-repeat="emp in Employees | filter: search:strict">
+    <!--<div class="card-columns">
+        <div class="card" ng-repeat="emp in Employees | filter: search:strict">-->
+            @*<img class="card-img-top" src="~/Content/assets/img/man.png" alt="Card image cap">*@
+            <!--<div class="card-body">
+                <h5 class="card-title">{{emp.Employee.name}}</h5>-->
+                @*<p class="card-text">{{emp.State}}</p>*@
+                @*<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>*@
+                @*<button ng-if="emp.State == 'submit' || emp.State == 'complete' " ng-click="Review(emp)">click</button>*@
+                <!--<button class="btn btn-warning btn-lg" ng-if="emp.State == 'submit'" ng-click="Review(emp)">已填寫</button>
+                <button class="btn btn-success btn-lg" ng-if="emp.State == 'complete' " ng-click="Review(emp)">已回饋</button>
+                <button class="btn btn-secondary btn-lg" disabled ng-if="emp.State == 'unfinished'">未完成</button>-->
+                @*<a ui-sref="Review">Click</a>*@
+            <!--</div>
+        </div>
+    </div>-->
+
+    <div class="card-deck">
+        <div class="card mb-3" ng-repeat="emp in Employees | filter: search:strict">
             @*<img class="card-img-top" src="~/Content/assets/img/man.png" alt="Card image cap">*@
             <div class="card-body">
                 <h5 class="card-title">{{emp.Employee.name}}</h5>

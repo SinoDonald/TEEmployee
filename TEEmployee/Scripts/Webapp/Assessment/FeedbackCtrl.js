@@ -1,4 +1,4 @@
-﻿var app = angular.module('app', ['ui.router']);
+﻿var app = angular.module('app', ['ui.router', 'ngAnimate']);
 
 app.config(function ($stateProvider, $urlRouterProvider) {
 
@@ -147,7 +147,7 @@ app.controller('EmployeeListCtrl', ['$scope', '$location', 'appService', '$rootS
 
 }]);
 
-app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', function ($scope, $window, appService, $rootScope, myFactory) {
+app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', '$timeout', function ($scope, $window, appService, $rootScope, myFactory, $timeout) {
 
     const optionText = ['優良', '普通', '尚可', '待加強', 'N/A'];
 
@@ -239,7 +239,18 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
 
         appService.UpdateFeedback({ feedbacks: feedbacks, state: state, empno: myFactory.get().EmployeeInfo.Employee.empno })
             .then(function (ret) {
-                $window.location.href = 'Assessment/Feedback';
+                //$window.location.href = 'Assessment/Feedback';
+                if (state === 'save') {
+                /*alert('已儲存');*/
+                    $scope.succeed = true;
+                    $timeout(function () {
+                        $scope.succeed = false;
+                    }, 2000);
+                }
+                else {
+                    /*alert('已送出');*/
+                    $window.location.href = 'Assessment/Feedback';
+                }
             });
     }
 

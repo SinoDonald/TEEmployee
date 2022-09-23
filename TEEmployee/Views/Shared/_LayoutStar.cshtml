@@ -5,7 +5,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @*<title>@ViewBag.Title - My ASP.NET Application</title>*@
+    <title>@ViewBag.Title - 軌道二部員工平台</title>
     <base href="@Url.Content("~/")" />
     <link rel="stylesheet" href="~/Content/bootstrap.css">
     @*<link rel="stylesheet" href="~/Content/Site.css">*@
@@ -22,8 +23,10 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="~/Content/css/starstyles.css" rel="stylesheet" />
     <link href="~/Content/css/custom.css" rel="stylesheet" />
+    <link href="~/Content/css/animations.css" rel="stylesheet" />
     <script src="~/Scripts/angular.min.js"></script>
     <script src="~/Scripts/angular-ui-router.min.js"></script>
+    <script src="~/Scripts/angular-animate.min.js"></script>
     @*<script src="~/Scripts/angular-route.min.js"></script>*@
     @RenderSection("Styles", required: false)
 </head>
