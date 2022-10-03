@@ -1,15 +1,18 @@
-﻿@{
+﻿@using TEEmployee.Models;
+@{
+
     ViewBag.Title = "Assessment";
     ViewBag.Title = "自評表與考核";
     //Layout = "~/Views/Shared/_Layout.cshtml";
     Layout = "~/Views/Shared/_LayoutStar.cshtml";
+    //ViewBag.date = DateTime.Now.ToString("MMdd");
 }
 
 
 
 @section Styles {
     <style>
-        .card-img-top{
+        .card-img-top {
             max-width: 256px;
         }
     </style>
@@ -111,5 +114,8 @@
 </div>
 
 @section Scripts {
-    <script src="~/Scripts/WebApp/Assessment/IndexCtrl.js"></script>
+    <script src="@Html.Versioned("~/Scripts/WebApp/Assessment/IndexCtrl.js")"></script>
+    @*<script src="~/Scripts/WebApp/Assessment/IndexCtrl.js?@ViewBag.date"></script>*@
+    @*<script src="~/Scripts/WebApp/Assessment/IndexCtrl.js?v=1"></script>*@
+    @*<script src="~/Scripts/WebApp/Assessment/IndexCtrl.js"></script>*@
 }

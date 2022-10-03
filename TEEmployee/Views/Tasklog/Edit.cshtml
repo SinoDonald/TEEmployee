@@ -1,4 +1,4 @@
-﻿
+﻿@using TEEmployee.Models;
 @{
     ViewBag.Title = "工作紀錄管控表";
 }
@@ -127,7 +127,7 @@
 
                 @*<td><input type="text" ng-model="log.content"></td>*@
                 <td>
-                    <textarea class="form-control" ng-model="log.content" id="exampleFormControlTextarea1" cols="50" rows="1"></textarea>
+                    <textarea class="form-control autoExpand" ng-model="log.content" id="exampleFormControlTextarea1" cols="50" rows="1"></textarea>
                 </td>
                 <td><input class="form-control" type="text" size="10" ng-model="log.endDate"></td>
                 <td><input class="form-control" type="text" size="10" ng-model="log.note"></td>
@@ -160,6 +160,7 @@
         <button type="button" class="btn btn-warning btn-lg mr-2" name="UpdateTasklogData" ng-click="UpdateTasklogData()">
             <span>儲存</span>
         </button>
+        <span><strong>僅儲存【詳細工作內容】有填寫之紀錄</strong></span>
     </div>
 
 
@@ -206,7 +207,8 @@
 </div>
 
 @section Scripts {
-    <script src="~/Scripts/WebApp/Tasklog/TasklogCtrl.js"></script>
+    @*<script src="~/Scripts/WebApp/Tasklog/TasklogCtrl.js"></script>*@
+    <script src="@Html.Versioned("~/Scripts/WebApp/Tasklog/TasklogCtrl.js")"></script>
     @*<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment-with-locales.js"></script>
         <script src="//cdn.rawgit.com/indrimuska/angular-moment-picker/master/dist/angular-moment-picker.min.js"></script>*@
     <script src="~/Scripts/moment-with-locales.js"></script>

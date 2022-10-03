@@ -174,6 +174,8 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
         ]
     };
 
+    let limit = 250; //height limit
+
     // 取得所有的問卷年份
     appService.GetManageYearList({}).then(function (ret) {
         $scope.years = ret;
@@ -189,6 +191,17 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
             .then(function (ret) {
                 $scope.ManageAssessments = ret.data.Responses;
                 $scope.state = ret.data.State;
+
+                // set textarea height in beginning
+                $timeout(function () {
+
+                    const textAreaItems = document.querySelectorAll(".autoExpand");
+                    for (let elm of textAreaItems) {
+                        elm.style.height = "";
+                        elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+                    }
+                }, 0);
+
             })
             .catch(function (ret) {
                 alert('Error');
@@ -219,6 +232,18 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
         //$window.location.href = 'Assessment/Index';
         $window.location.href = 'Assessment/Manage';
     }
+
+    // textarea auto expand
+    function onExpandableTextareaInput({ target: elm }) {
+
+        if (!elm.classList.contains('autoExpand') || !elm.nodeName === 'TEXTAREA') return
+
+        elm.style.height = "";
+        elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+    }
+
+    // global delegated event listener
+    document.addEventListener('input', onExpandableTextareaInput)
 
 }]);
 app.controller('SetManagerCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', function ($scope, $window, appService, $rootScope, myFactory) {

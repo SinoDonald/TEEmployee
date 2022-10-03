@@ -150,6 +150,7 @@ app.controller('EmployeeListCtrl', ['$scope', '$location', 'appService', '$rootS
 app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', '$timeout', function ($scope, $window, appService, $rootScope, myFactory, $timeout) {
 
     const optionText = ['優良', '普通', '尚可', '待加強', 'N/A'];
+    const limit = 250; // textarea height limit
 
     $scope.name = myFactory.get().EmployeeInfo.Employee.name;
 
@@ -190,6 +191,17 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
                 }
 
                 $scope.feedback = ret.data.Text[count];
+
+                // set textarea height in beginning
+                $timeout(function () {
+
+                    const textAreaItems = document.querySelectorAll(".autoExpand");
+                    for (let elm of textAreaItems) {
+                        elm.style.height = "";
+                        elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+                    }
+                }, 0);
+
 
             })
             .catch(function (ret) {
@@ -277,6 +289,20 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
     //    .catch(function (ret) {
     //        alert('Error');
     //    });
+
+    function onExpandableTextareaInput({ target: elm }) {
+
+        if (!elm.classList.contains('autoExpand') || !elm.nodeName === 'TEXTAREA') return
+
+        elm.style.height = "";
+        elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+    }
+
+    // global delegated event listener
+    document.addEventListener('input', onExpandableTextareaInput)
+
+
+
 
 }]);
 

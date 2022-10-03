@@ -72,7 +72,7 @@
                 <td ng-if="item.Content =='意見回饋'" colspan="2">
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1">意見回饋</label>
-                        <textarea class="form-control assesstext" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>
+                        <textarea class="form-control assesstext autoExpand" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>
                     </div>
                 </td>
 
@@ -106,7 +106,7 @@
                         @*<label for="exampleFormControlTextarea1">意見回饋</label>
                             <textarea class="form-control assesstext" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>*@
                         <label for="exampleFormControlTextarea1">意見回饋</label>
-                        <p ng-bind="item.Choice"></p>
+                        <p class="lbk" ng-bind="item.Choice"></p>
                     </div>
                 </td>
 

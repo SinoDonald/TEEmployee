@@ -5,6 +5,14 @@
     Layout = "~/Views/Shared/_LayoutStar.cshtml";
 }
 
+@section Styles {
+    <style>        
+        p.lbk {
+            white-space: pre-line;
+        }
+    </style>
+}
+
 <div ng-controller="ManageCtrl" class="container" style="margin-top: 100px">
     <div ui-view></div>
 </div>

@@ -1,4 +1,5 @@
-﻿@{
+﻿@using TEEmployee.Models;
+@{
     ViewBag.Title = "Self";
     ViewBag.Title = "自我評估表";
     //Layout = "~/Views/Shared/_Layout.cshtml";
@@ -24,7 +25,6 @@
         p.lbk {
             white-space: pre-line;
         }
-        
     </style>
 }
 
@@ -132,7 +132,7 @@
             </tbody>
 
             <tbody ng-if="state != 'submit'">
-                <tr ng-repeat="item in SelfAssessments">
+                <tr ng-repeat="item in SelfAssessments" @*ng-init="$last && finished()"*@>
 
                     @*<td ng-bind="item.Id"></td>
                         <td ng-bind="item.CategoryId"></td>*@
@@ -145,24 +145,24 @@
                     <!--option-->
                     <td ng-if="item.Content != '自評摘要' && item.Content != '意見回饋' && item.Id != 0 && item.Content != '自我總評'">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1" value="option1" required>
-                            <label class="form-check-label" for="inlineRadio1">優良</label>
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1{{$index}}" value="option1" required>
+                            <label class="form-check-label" for="inlineRadio1{{$index}}">優良</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio2" value="option2">
-                            <label class="form-check-label" for="inlineRadio2">普通</label>
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio2{{$index}}" value="option2">
+                            <label class="form-check-label" for="inlineRadio2{{$index}}">普通</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio3" value="option3">
-                            <label class="form-check-label" for="inlineRadio3">尚可</label>
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio3{{$index}}" value="option3">
+                            <label class="form-check-label" for="inlineRadio3{{$index}}">尚可</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio4" value="option4">
-                            <label class="form-check-label" for="inlineRadio4">待加強</label>
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio4{{$index}}" value="option4">
+                            <label class="form-check-label" for="inlineRadio4{{$index}}">待加強</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio5" value="option5">
-                            <label class="form-check-label" for="inlineRadio5">N/A</label>
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio5{{$index}}" value="option5">
+                            <label class="form-check-label" for="inlineRadio5{{$index}}">N/A</label>
                         </div>
                     </td>
                     <!--textarea-->
@@ -170,14 +170,14 @@
                         @*<input class="form-control form-control-lg" type="text" ng-model="item.Choice" placeholder="自評摘要">*@
                         <div class="form-group">
                             <label for="exampleFormControlTextarea1">自評摘要</label>
-                            <textarea class="form-control" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>
+                            <textarea class="form-control autoExpand" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>
                         </div>
                     </td>
                     <td ng-if="item.Content=='自我總評'" colspan="2" @*style="width:80%"*@>
                         @*<input class="form-control form-control-lg" type="text" ng-model="item.Choice" placeholder="自評摘要">*@
                         <div class="form-group">
                             <label for="exampleFormControlTextarea1">自我總評</label>
-                            <textarea class="form-control" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>
+                            <textarea class="form-control autoExpand" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>
                         </div>
                     </td>
 
@@ -218,7 +218,7 @@
                 <input type="submit" value="Submit" ng-disabled="optionForm.$invalid" ng-click="CreateResponse('submit')" class="btn btn-warning" />
             </div>
         </div>*@
-        
+
     <div ng-cloak ng-show="succeed" class="alert alert-success animate-show-hide" role="alert">
         儲存成功!
     </div>
@@ -267,12 +267,15 @@
                 <p class="mb-1"></p>
             </a>
         </div>*@
+
 </div>
 
+<div class="top-btn"><a class="btn btn-primary" href="Assessment/Self#top" role="button">Top</a></div>
 
 
 @section Scripts {
-    <script src="~/Scripts/WebApp/Assessment/SelfCtrl.js"></script>    
+    @*<script src="~/Scripts/WebApp/Assessment/SelfCtrl.js"></script>*@
+    <script src="@Html.Versioned("~/Scripts/WebApp/Assessment/SelfCtrl.js")"></script>
 }
 
 @*<td>

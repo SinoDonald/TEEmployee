@@ -41,6 +41,8 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', '$t
 
     const optionText = ['優良', '普通', '尚可', '待加強', 'N/A'];
 
+    const limit = 250; //text area height limit
+
 
     //$scope.response = {
     //    "Id": 7596,
@@ -73,6 +75,28 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', '$t
 
 
     $scope.Response = [];
+
+    // modify textarea height if the state is "save"
+   
+    $scope.finished = () => {
+        
+        $timeout(function () {
+
+            if ($scope.state === 'save') {
+
+                const textAreaItems = document.querySelectorAll(".autoExpand");
+                for (let elm of textAreaItems) {
+                    elm.style.height = "";
+                    elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+                }
+
+            }
+
+        }, 0);
+
+    }
+
+
 
     //$scope.CreateResponse = function () {
     //    appService.CreateResponse($scope.SelfAssessments)
@@ -134,6 +158,7 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', '$t
 
                     var feedbacksByCategory = [];
 
+                    //...
                     var category_count = Math.max(...ret.data.Responses.map(o => Number(o.CategoryId)))
 
                     //$scope.SelfAssessments = ret.data.Responses
@@ -171,10 +196,11 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', '$t
                             }
 
                             //$scope.Responses = ret.data.Responses 
-                            $scope.SelfAssessments = ret.data.Responses
-
+                            $scope.SelfAssessments = ret.data.Responses                           
+                            $scope.finished();
 
                             $scope.Feedbacks = feedbacksByCategory[count];
+                            
                         });
                                         
 
@@ -251,5 +277,20 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', '$t
     //    });
    
 
+    
+    function onExpandableTextareaInput({ target: elm }) {
+
+        if (!elm.classList.contains('autoExpand') || !elm.nodeName === 'TEXTAREA') return
+
+        elm.style.height = "";
+        elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+    }
+
+    // global delegated event listener
+    document.addEventListener('input', onExpandableTextareaInput);
+
 
 }]);
+
+
+

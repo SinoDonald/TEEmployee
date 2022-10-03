@@ -1,26 +1,27 @@
-﻿
+﻿@using TEEmployee.Models;
 @{
     ViewBag.Title = "Feedback";
     ViewBag.Title = "主管給予員工建議";
     Layout = "~/Views/Shared/_LayoutStar.cshtml";
 }
 
-@section Styles {  
-    <style>      
+@section Styles {
+    <style>
         .top-btn {
             position: fixed;
             bottom: 40px;
             right: 40px;
             z-index: 99;
         }
+
         table td div p {
             white-space: pre-line;
         }
-        
+
         .card-deck .card {
             flex: 0 30%;
         }
-        
+
         p.lbk {
             white-space: pre-line;
         }
@@ -34,7 +35,8 @@
 <div class="top-btn"><a class="btn btn-primary" href="" role="button">Top</a></div>
 
 @section Scripts {
-    <script src="~/Scripts/WebApp/Assessment/FeedbackCtrl.js"></script>
+    @*<script src="~/Scripts/WebApp/Assessment/FeedbackCtrl.js"></script>*@
+    <script src="@Html.Versioned("~/Scripts/WebApp/Assessment/FeedbackCtrl.js")"></script>
     <script>
 
         const btn = document.querySelector('.top-btn');
@@ -45,6 +47,7 @@
             document.documentElement.scrollTop = 0;
         }
     </script>
+
 
 
 }

@@ -167,6 +167,9 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
     const date = new Date();
     const [month, year] = [date.getMonth(), date.getFullYear()];
 
+
+    var limit = 250; // textarea height limit
+
     for (let i = year; i !== 2019; i--) {
         $scope.years.push(i.toString());
     }
@@ -234,26 +237,71 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
         }
 
-        if ($scope.deletedIds.length !== 0) {
-            appService.DeleteProjectTask($scope.deletedIds)
-                .then((ret) => {
+        //if ($scope.deletedIds.length !== 0) {
+        //    appService.DeleteProjectTask($scope.deletedIds)
+        //        .then((ret) => {
                    
+        //        })
+        //        .catch((ret) => { alert('Error'); }
+        //        );
+        //}        
+
+        //if (projectTasks.length !== 0) {
+        //    appService.UpdateProjectTask(projectTasks)
+        //        .then((ret) => { })
+        //        .catch((ret) => { alert('Error'); }
+        //        );
+        //}     
+
+        //$scope.GetTasklogData();
+
+        //$scope.succeed = true;
+        //$timeout(function () {
+        //    $scope.succeed = false;
+        //}, 2000);
+
+
+        //let promiseA = new Promise((resolve, reject) => { });
+        //let promiseB = new Promise((resolve, reject) => { });
+        let promiseA = Promise.resolve('a');
+        let promiseB = Promise.resolve('b');
+
+        if ($scope.deletedIds.length !== 0) {
+            promiseA = appService.DeleteProjectTask($scope.deletedIds)
+                .then((ret) => {
+
                 })
                 .catch((ret) => { alert('Error'); }
                 );
-        }        
+        }
 
         if (projectTasks.length !== 0) {
-            appService.UpdateProjectTask(projectTasks)
+            promiseB = appService.UpdateProjectTask(projectTasks)
                 .then((ret) => { })
                 .catch((ret) => { alert('Error'); }
                 );
-        }     
+        }
 
-        $scope.succeed = true;
-        $timeout(function () {
-            $scope.succeed = false;
-        }, 2000);
+        //$scope.GetTasklogData();
+
+        //$scope.succeed = true;
+        //$timeout(function () {
+        //    $scope.succeed = false;
+        //}, 2000);
+
+        
+
+
+        $q.all([promiseA, promiseB]).then((ret) => {
+
+            $scope.GetTasklogData();
+
+            $scope.succeed = true;
+            $timeout(function () {
+                $scope.succeed = false;
+            }, 2000);
+        });
+
 
         //alert('已儲存');
 
@@ -271,7 +319,8 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
         //let yymm = `${Number($scope.selectedYear) - 1911}${$scope.selectedMonth}`;
 
-        let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`; 
+        let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`;
+
 
         appService.GetTasklogData({ yymm: yymm }).then((ret) => {
 
@@ -356,11 +405,38 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 $scope.projects.push({ logs: [{}] });
 
 
+            // modify textarea height in the beginning
+            
+            $timeout(function () {
+                     
+                    const textAreaItems = document.querySelectorAll(".autoExpand");
+                    for (let elm of textAreaItems) {
+                        elm.style.height = "";
+                        elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+                    }
+
+                    
+            }, 0);
+            
+
+
+
         });
     }
 
 
     $scope.GetTasklogData();
+
+    function onExpandableTextareaInput({ target: elm }) {
+
+        if (!elm.classList.contains('autoExpand') || !elm.nodeName === 'TEXTAREA') return
+
+        elm.style.height = "";
+        elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+    }
+
+    // global delegated event listener
+    document.addEventListener('input', onExpandableTextareaInput)
 
 
 }]);

@@ -33,26 +33,26 @@
                     </td>
                     <td ng-if="item.Content != '建議' && item.Id != 0">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1" value="option1" required>
-                            <label class="form-check-label" for="inlineRadio1">同意</label>
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1{{$index}}" value="option1" required>
+                            <label class="form-check-label" for="inlineRadio1{{$index}}">同意</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio2" value="option2">
-                            <label class="form-check-label" for="inlineRadio2">中立</label>
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio2{{$index}}" value="option2">
+                            <label class="form-check-label" for="inlineRadio2{{$index}}">中立</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio3" value="option3">
-                            <label class="form-check-label" for="inlineRadio3">不同意</label>
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio3{{$index}}" value="option3">
+                            <label class="form-check-label" for="inlineRadio3{{$index}}">不同意</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio4" value="option4">
-                            <label class="form-check-label" for="inlineRadio4">N/A</label>
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio4{{$index}}" value="option4">
+                            <label class="form-check-label" for="inlineRadio4{{$index}}">N/A</label>
                         </div>
                     </td>
                     <td ng-if="item.Content=='建議'" colspan="2" style="width:80%">
                         <div class="form-group">
                             <label for="exampleFormControlTextarea1">建議</label>
-                            <textarea class="form-control" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>
+                            <textarea class="form-control autoExpand" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>
                         </div>
                     </td>
                 </tr>
