@@ -10,19 +10,37 @@ namespace TEEmployee.Models
 {
     public static class HtmlHelperExtensions
     {
-        public static string Versioned(this HtmlHelper helper, string target)
+        public static HtmlString Versioned(this UrlHelper helper, string target)
         {
-
-            DateTime localDate = DateTime.Now;
-
-            if (target.StartsWith("~"))
+            
+            if (!HttpContext.Current.IsDebuggingEnabled)
             {
-                target = target.Substring(1);
+                //var minTarget = target.Substring(0, target.Length - 2) + "min.js";
+
+                //if (File.Exists(HttpContext.Current.Server.MapPath(minTarget)))
+                //    target = minTarget;
+
+                var file = HttpContext.Current.Server.MapPath(target);
+
+                DateTime lastModifiedDate = File.GetLastWriteTime(file);
+
+                string versionedUrl = $"{target}?v={lastModifiedDate.Ticks}";
+                                
+                return new HtmlString(helper.Content(versionedUrl));
             }
 
-            string versionedUrl = $"{target}?v={localDate.Ticks}";
+            return new HtmlString(helper.Content(target));
 
-            return versionedUrl;
+            //DateTime localDate = DateTime.Now;
+
+            //if (target.StartsWith("~"))
+            //{
+            //    target = target.Substring(1);
+            //}
+
+            //string versionedUrl = $"{target}?v={localDate.Ticks}";
+
+            //return new HtmlString(versionedUrl);            
 
         }
 

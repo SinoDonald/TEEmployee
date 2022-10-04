@@ -31,7 +31,7 @@ namespace TEEmployee.Filters
 
             if (filterContext.Result is HttpUnauthorizedResult)
             {
-                filterContext.HttpContext.Response.Redirect("~/Home/Unauthorized/" +
+                filterContext.HttpContext.Response.Redirect("~/Error/Unauthorized/" +
                 filterContext.HttpContext.User.Identity.Name);
                 filterContext.Result = new EmptyResult();
                 return;
@@ -100,7 +100,7 @@ namespace TEEmployee.Filters
                 }
                 else
                 {
-                    filterContext.HttpContext.Response.Redirect("~/Home/Unauthorized/"
+                    filterContext.HttpContext.Response.Redirect("~/Error/Unauthorized/"
                         //+filterContext.HttpContext.User.Identity.Name
                     );
                     filterContext.Result = new EmptyResult();
@@ -168,17 +168,6 @@ namespace TEEmployee.Filters
             //    }
 
             //}
-
-
-
-
-
-
-
-
-
-
-
 
 
         }

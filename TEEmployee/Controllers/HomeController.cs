@@ -30,10 +30,10 @@ namespace TEEmployee.Controllers
             return View();
         }
 
-        public ActionResult Unauthorized()
-        {           
-            return View();
-        }
+        //public ActionResult Unauthorized()
+        //{           
+        //    return View();
+        //}
 
         [HttpPost]
         public ActionResult Index(User fake)
@@ -42,8 +42,8 @@ namespace TEEmployee.Controllers
             {
                 User user = new UserRepository().Get(fake.empno);
 
-                if (user is null)
-                    return RedirectToAction("Unauthorized");
+                if (user is null)                    
+                    return RedirectToAction("Unauthorized", "Error");
 
                 Session["empno"] = user.empno;
                 Session["empname"] = user.name;

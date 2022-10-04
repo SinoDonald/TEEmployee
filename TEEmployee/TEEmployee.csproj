@@ -149,6 +149,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AssessmentController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TasklogController.cs" />
     <Compile Include="Filters\MyAuthorizeAttribute.cs" />
@@ -247,6 +248,7 @@
     <Content Include="Content\bootstrap-grid.css.map" />
     <Content Include="Scripts\angular.min.js.map" />
     <Content Include="Scripts\angular-route.min.js.map" />
+    <None Include="bundleconfig.json" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -272,12 +274,24 @@
     <Content Include="Scripts\Webapp\Assessment\CustomChart.js" />
     <Content Include="Scripts\Webapp\Assessment\EmployeeCtrl.js" />
     <Content Include="Scripts\Webapp\Assessment\FeedbackCtrl.js" />
+    <Content Include="Scripts\Webapp\Assessment\FeedbackCtrl.min.js">
+      <DependentUpon>FeedbackCtrl.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Webapp\Assessment\IndexCtrl.min.js">
+      <DependentUpon>IndexCtrl.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\Webapp\Assessment\ManageCtrl.js" />
     <Content Include="Scripts\Webapp\Assessment\SelfChart.js" />
     <Content Include="Scripts\Webapp\Assessment\SelfChartCtrl.js" />
     <Content Include="Scripts\Webapp\Assessment\SelfCtrl.js" />
     <Content Include="Scripts\Webapp\Assessment\IndexCtrl.js" />
+    <Content Include="Scripts\Webapp\Assessment\SelfCtrl.min.js">
+      <DependentUpon>SelfCtrl.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\Webapp\Tasklog\TasklogCtrl.js" />
+    <Content Include="Scripts\Webapp\Tasklog\TasklogCtrl.min.js">
+      <DependentUpon>TasklogCtrl.js</DependentUpon>
+    </Content>
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -312,7 +326,7 @@
     <Content Include="Views\Assessment\Compare.cshtml" />
     <Content Include="Views\Assessment\EmpList.cshtml" />
     <Content Include="Views\Assessment\AssessEmp.cshtml" />
-    <Content Include="Views\Home\Unauthorized.cshtml" />
+    <Content Include="Views\Error\Unauthorized.cshtml" />
     <Content Include="Views\Assessment\Feedback.cshtml" />
     <Content Include="Views\Assessment\EmployeeList.cshtml" />
     <Content Include="Views\Assessment\AssessEmployee.cshtml" />
