@@ -1,4 +1,4 @@
-@charset "UTF-8";
+﻿@charset "UTF-8";
 /*!
 * Start Bootstrap - Creative v7.0.6 (https://startbootstrap.com/theme/creative)
 * Copyright 2013-2022 Start Bootstrap
@@ -11294,8 +11294,9 @@ html {
 }
 
 body {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
+    /*margin: 0 auto;*/
 }
 
 .page-section {
