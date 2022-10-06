@@ -209,6 +209,14 @@ namespace TEEmployee.Models.TaskLog
             return ret;
         }
 
+        public User GetUserByGuid(string guid)
+        {
+            var record = _monthlyRecordRepository.Get(new Guid(guid));
+            var ret = _userRepository.Get(record.empno);
+
+            return ret;
+        }
+
 
         List<User> FilterEmployeeByRole(User user)
         {

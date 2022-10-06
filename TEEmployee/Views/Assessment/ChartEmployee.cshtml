@@ -38,19 +38,26 @@
         .highlight-select {
             background-color: papayawhip;
         }
+        .bar div{
+            height: 50vh;
+        }
+
     </style>
 }
 
-<div id="top"></div>>
-<header>
-    <h2>員工自我評估總表</h2>
-</header>
-
+@*<div id="top"></div>>*@
 
 <div ng-controller="ChartEmployeeCtrl">
-
-
     <div class="container">
+
+        <header class="mb-4 d-flex justify-content-between">
+            <h2>員工自我評估總表</h2>
+            <div>
+                <a class="btn btn-outline-primary btn-lg mr-2" href="Assessment/ChartMenu" role="button">返回</a>
+            </div>
+        </header>
+
+
         <div class="chartmenu  mb-5">
             <div>
                 <label for="SelectYear">請選擇年份</label>

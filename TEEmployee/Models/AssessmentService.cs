@@ -353,8 +353,9 @@ namespace TEEmployee.Models
             if (user.group_one_manager == true)
                 filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_one).ToList());
 
+            // 智慧組長不互看
             if (user.group_two_manager == true)
-                filtered_employees.AddRange(allEmployees.Where(p => p.group_two == user.group_two).ToList());
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_two == user.group_two && p.group_two_manager == false).ToList());
 
             if (user.group_three_manager == true)
                 filtered_employees.AddRange(allEmployees.Where(p => p.group_three == user.group_three).ToList());

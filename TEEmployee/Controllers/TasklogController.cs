@@ -88,6 +88,13 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        [HttpPost]
+        public JsonResult GetUserByGuid(string guid)
+        {
+            var ret = _service.GetUserByGuid(guid);
+            return Json(ret);
+        }
+
         //[HttpPost]
         //public JsonResult GetProjectTask(string yymm)
         //{            

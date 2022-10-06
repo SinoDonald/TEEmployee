@@ -30,6 +30,9 @@ app.service('appService', ['$http', function ($http) {
     this.GetTasklogDataByGuid = (o) => {
         return $http.post('Tasklog/GetTasklogDataByGuid', o);
     };
+    this.GetUserByGuid = (o) => {
+        return $http.post('Tasklog/GetUserByGuid', o);
+    };
 
 }]);
 
@@ -83,6 +86,13 @@ app.controller('ListCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
 app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
 
+    
+    appService.GetUserByGuid({ guid: $window.guid }).then((ret) => {
+        $scope.user = ret.data;
+        document.title = $scope.user.name + "-工作紀錄管控表"
+    })
+
+
     appService.GetTasklogDataByGuid({ guid: $window.guid }).then((ret) => {
 
         //$scope.ptdata = ret.data;
@@ -121,12 +131,12 @@ app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 
             }
 
             if ($scope.projects[projidx].itemno) {
-                $scope.projects[projidx].itemno += `${item.itemno} `;
+                $scope.projects[projidx].itemno += `${item.itemno}, `;
                 $scope.projects[projidx].workHour += item.workHour;
                 $scope.projects[projidx].overtime += item.overtime;
             }
             else {
-                $scope.projects[projidx].itemno = `${item.itemno} `;
+                $scope.projects[projidx].itemno = `${item.itemno}, `;
                 $scope.projects[projidx].workHour = item.workHour;
                 $scope.projects[projidx].overtime = item.overtime;
             }
@@ -143,6 +153,10 @@ app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 
                 $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();
                                
             }
+
+            if ($scope.projects[i].itemno)
+                $scope.projects[i].itemno = $scope.projects[i].itemno.slice(0, $scope.projects[i].itemno.length - 2);
+
 
         }
 
@@ -196,18 +210,29 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
     //    $scope.projects[projectidx].logs.splice(idx + 1, 0, {} );
     //};
 
-    // add at bottim
+    // add at bottom
     $scope.addLogRow = (projectidx, idx) => {
         $scope.projects[projectidx].logs.splice($scope.projects[projectidx].logs.length, 0, {});
     };
 
     $scope.removeLogRow = (projectidx, idx) => {
 
-        let id = $scope.projects[projectidx].logs[idx].id;
-        if (id)
-            $scope.deletedIds.push(id); 
+        // add apparent hint that projected item cannot be removed, only can clear
+        if ($scope.projects[projectidx].itemno !== undefined && $scope.projects[projectidx].logs.length === 1) {
+            $scope.projects[projectidx].logs[idx].content = '';
+            $scope.projects[projectidx].logs[idx].endDate = '';
+            $scope.projects[projectidx].logs[idx].note = '';
+        }
+        else {
 
-        $scope.projects[projectidx].logs.splice(idx, 1);
+            let id = $scope.projects[projectidx].logs[idx].id;
+            if (id)
+                $scope.deletedIds.push(id);
+
+            $scope.projects[projectidx].logs.splice(idx, 1);
+
+        }
+        
     };
     $scope.addProjRow = () => {
         $scope.projects.push({ logs: [{}]});
@@ -225,13 +250,21 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
             for (let log of project.logs) {
 
-                if (log.content) {
+                //if (log.content) {
 
-                    projectTasks.push({
-                        id: log.id, yymm: yymm, projno: project.projno, realHour: project.realHour, 
-                        content: log.content, endDate: log.endDate, note: log.note
-                    });
-                }
+                //    projectTasks.push({
+                //        id: log.id, yymm: yymm, projno: project.projno, realHour: project.realHour, 
+                //        content: log.content, endDate: log.endDate, note: log.note
+                //    });
+                //}
+
+              
+                projectTasks.push({
+                    id: log.id, yymm: yymm, projno: project.projno, realHour: project.realHour,
+                    content: log.content, endDate: log.endDate, note: log.note
+                });
+                
+
 
             }
 
@@ -355,15 +388,17 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 }
 
                 if ($scope.projects[projidx].itemno) {
-                    $scope.projects[projidx].itemno += `${item.itemno} `;
+                    $scope.projects[projidx].itemno += `${item.itemno}, `;
                     $scope.projects[projidx].workHour += item.workHour;
                     $scope.projects[projidx].overtime += item.overtime;
                 }
                 else {
-                    $scope.projects[projidx].itemno = `${item.itemno} `;
+                    $scope.projects[projidx].itemno = `${item.itemno}, `;
                     $scope.projects[projidx].workHour = item.workHour;
                     $scope.projects[projidx].overtime = item.overtime;
                 }
+
+                
 
                 //if ($scope.projects[projidx].workHour > 0 || $scope.projects[projidx].overtime > 0)
                 //    $scope.projects[projidx].hourStr = $scope.projects[projidx].workHour.toString() + ' + ' + $scope.projects[projidx].overtime.toString();
@@ -374,6 +409,8 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 //}
 
             }
+
+            
 
             for (let i = 0; i < $scope.projects.length; i++) {
 
@@ -386,6 +423,9 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                     }
 
                 }
+
+                if ($scope.projects[i].itemno)
+                    $scope.projects[i].itemno = $scope.projects[i].itemno.slice(0, $scope.projects[i].itemno.length - 2);
                 
             }
 

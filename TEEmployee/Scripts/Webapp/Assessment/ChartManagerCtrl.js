@@ -142,6 +142,7 @@ app.controller('ChartManagerCtrl', ['$scope', '$window', 'appService', '$rootSco
         })
     }
 
+    // 1006 add 總評 condition
     $scope.SwitchMode = ($event, mode) => {
 
         $scope.mode = mode;
@@ -150,9 +151,15 @@ app.controller('ChartManagerCtrl', ['$scope', '$window', 'appService', '$rootSco
         if (mode === 'comment') {
             $scope.selectedManager = $scope.managers[0];
             managerSelect.disabled = true;
+            $scope.categories.push({ name: '總評', id: '8' });
         }
-        else
+        else {
             managerSelect.disabled = false;
+            $scope.categories.splice(7, 1);
+            if ($scope.selectedCategory === '8')
+                $scope.selectedCategory = '1';
+        }
+            
 
         const children = $event.currentTarget.parentElement.children;
         for (const child of children)

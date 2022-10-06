@@ -10,26 +10,31 @@
             /*background-color: linen;*/
         }
         header {
+            margin: 0 auto;
             margin-top: 100px;
+            max-width: 980px;
         }
         main {
             margin: 0 auto;
             width: 80%;
-            max-width = 980px;
+            max-width: 980px;
             /*background-color: lightcyan;*/
         }
     </style>
 }
 
-<header>
+<header class="d-flex justify-content-between mb-3">
     @*<h2>ChartMenu</h2>*@
     <h2 class="ml-2">統計圖表</h2>
+    <div>
+        <a class="btn btn-outline-primary btn-lg mr-2" href="Assessment" role="button">返回</a>
+    </div>
 </header>
 
 <main>
     <div class="card-deck">
         <div class="card text-white bg-dark mb-3">
-            <a target="_blank" href="~/Assessment/ChartEmployee">
+            <a href="~/Assessment/ChartEmployee">
                 <img class="card-img-top" src="~/Content/assets/img/employee.jpg" alt="Card image cap">
             </a>            
             <div class="card-body">
@@ -41,7 +46,7 @@
             </div>
         </div>
         <div class="card text-white bg-dark mb-3">
-            <a target="_blank" href="~/Assessment/ChartManager">
+            <a href="~/Assessment/ChartManager">
                 <img class="card-img-top" src="~/Content/assets/img/team.jpg" alt="Card image cap">
             </a>            
             <div class="card-body">

@@ -39,7 +39,7 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', '$t
     $scope.SelfAssessments = [];
     $scope.state;
 
-    const optionText = ['優良', '普通', '尚可', '待加強', 'N/A'];
+    const optionText = ['優良', '好', '普通', '待加強', 'N/A'];
 
     const limit = 250; //text area height limit
 

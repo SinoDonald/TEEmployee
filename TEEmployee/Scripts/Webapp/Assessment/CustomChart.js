@@ -9,7 +9,7 @@ function DrawEmployeeBarChart(data, selectedCategory) {
     let titles = [];
     let choices = [];
     //let grades = ['優良', '普通', '尚可', '待加強', 'N/A'];
-    let grades = ['N/A', '待加強', '尚可', '普通', '優良'];
+    let grades = ['N/A', '待加強', '普通', '好', '優良'];
 
     painting.innerHTML = '';
 
@@ -85,6 +85,8 @@ function DrawEmployeeBarChart(data, selectedCategory) {
             type: 'bar',
             data: chartData,
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {                    
                     y: {
                         beginAtZero: true,
@@ -126,6 +128,8 @@ function DrawEmployeeBarChart(data, selectedCategory) {
         chartSet.push(new Chart(document.getElementById('myChart' + i), config));
 
     }
+
+    painting.className = 'bar';
 
 }
 
@@ -240,6 +244,8 @@ function DrawManagerBarChart(data, selectedManager, selectedCategory) {
             type: 'bar',
             data: chartData,
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true,
@@ -268,7 +274,7 @@ function DrawManagerBarChart(data, selectedManager, selectedCategory) {
 
     }
 
-    painting.className = '';
+    painting.className = 'bar';
 
 }
 
@@ -321,8 +327,10 @@ function DrawManagerRadarChart(data, selectedManager, categories) {
 
     painting.innerHTML = '';
 
-    if (selectedManager !== 'All')
+    if (selectedManager !== 'All') {
         rdata = data.ChartManagerResponses.filter(item => item.Manager.name === selectedManager);
+    }
+        
 
 
     // loop name
@@ -385,7 +393,7 @@ function DrawManagerRadarChart(data, selectedManager, categories) {
         const config = {
             type: 'radar',
             data: chartData,
-            options: {
+            options: {             
                 elements: {
                     line: {
                         borderWidth: 3
@@ -407,7 +415,10 @@ function DrawManagerRadarChart(data, selectedManager, categories) {
                     },
                     title: {
                         display: true,
-                        text: names[i]
+                        text: names[i],
+                        font: {
+                            size: 24
+                        }
                     }
                 }
             },
@@ -416,5 +427,6 @@ function DrawManagerRadarChart(data, selectedManager, categories) {
         chartSet.push(new Chart(document.getElementById('myChart' + i), config));
         
     }
-    painting.className = 'radar';
+    painting.className = 'radar d-flex flex-wrap justify-content-center';
+    //painting.className = 'radar';
 }
