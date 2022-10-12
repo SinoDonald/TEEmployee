@@ -1,4 +1,4 @@
-﻿
+﻿@using TEEmployee.Models;
 @{
     ViewBag.Title = "ChartEmployee";
     ViewBag.Title = "員工自我評估總表";
@@ -38,10 +38,10 @@
         .highlight-select {
             background-color: papayawhip;
         }
-        .bar div{
+
+        .bar div {
             height: 50vh;
         }
-
     </style>
 }
 
@@ -93,9 +93,11 @@
 
 
 @section scripts {
-    <script src="~/Scripts/WebApp/Assessment/ChartEmployeeCtrl.js"></script>
+    @*<script src="~/Scripts/WebApp/Assessment/ChartEmployeeCtrl.js"></script>*@
+    <script src="@Url.Versioned("~/Scripts/WebApp/Assessment/ChartEmployeeCtrl.js")"></script>
     @*<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>*@
-    <script src="~/Scripts/chart.min.js"></script>    
-    <script src="~/Scripts/WebApp/Assessment/CustomChart.js"></script>
+    <script src="~/Scripts/chart.min.js"></script>
+    @*<script src="~/Scripts/WebApp/Assessment/CustomChart.js"></script>*@
+    <script src="@Url.Versioned("~/Scripts/WebApp/Assessment/CustomChart.js")"></script>
     @*<script src="~/Scripts/WebApp/Assessment/SelfChart.js"></script>*@
 }

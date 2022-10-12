@@ -274,9 +274,6 @@
     <Content Include="Scripts\Webapp\Assessment\CustomChart.js" />
     <Content Include="Scripts\Webapp\Assessment\EmployeeCtrl.js" />
     <Content Include="Scripts\Webapp\Assessment\FeedbackCtrl.js" />
-    <Content Include="Scripts\Webapp\Assessment\FeedbackCtrl.min.js">
-      <DependentUpon>FeedbackCtrl.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Webapp\Assessment\IndexCtrl.min.js">
       <DependentUpon>IndexCtrl.js</DependentUpon>
     </Content>

@@ -246,7 +246,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
         //let yymm = `${Number($scope.selectedYear) - 1911}${$scope.selectedMonth}`
         let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`; 
 
-        for (let project of $scope.projects) {
+        for (var project of $scope.projects) {
 
             for (let log of project.logs) {
 
@@ -447,17 +447,16 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
             // modify textarea height in the beginning
             
+           
             $timeout(function () {
-                     
-                    const textAreaItems = document.querySelectorAll(".autoExpand");
-                    for (let elm of textAreaItems) {
-                        elm.style.height = "";
-                        elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
-                    }
 
-                    
+                var pp = document.querySelectorAll(".autoExpand");
+                for (var elm of pp) {
+                    elm.style.height = "";
+                    elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+                }
+
             }, 0);
-            
 
 
 
@@ -466,6 +465,10 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
 
     $scope.GetTasklogData();
+
+    
+
+
 
     function onExpandableTextareaInput({ target: elm }) {
 

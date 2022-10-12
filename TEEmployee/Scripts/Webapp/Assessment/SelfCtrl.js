@@ -78,23 +78,23 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', '$t
 
     // modify textarea height if the state is "save"
    
-    $scope.finished = () => {
+    //$scope.finished = () => {
         
-        $timeout(function () {
+    //    $timeout(function () {
 
-            if ($scope.state === 'save') {
+    //        if ($scope.state === 'save') {
 
-                const textAreaItems = document.querySelectorAll(".autoExpand");
-                for (let elm of textAreaItems) {
-                    elm.style.height = "";
-                    elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
-                }
+    //            const textAreaItems = document.querySelectorAll(".autoExpand");
+    //            for (let elm of textAreaItems) {
+    //                elm.style.height = "";
+    //                elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+    //            }
 
-            }
+    //        }
 
-        }, 0);
+    //    }, 0);
 
-    }
+    //}
 
 
 
@@ -197,10 +197,26 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', '$t
 
                             //$scope.Responses = ret.data.Responses 
                             $scope.SelfAssessments = ret.data.Responses                           
-                            $scope.finished();
-
-                            $scope.Feedbacks = feedbacksByCategory[count];
                             
+                            $scope.Feedbacks = feedbacksByCategory[count];
+
+                           
+                            $timeout(function () {
+
+                                if ($scope.state === 'save') {
+
+                                    var pp = document.querySelectorAll(".autoExpand");
+                                    for (let elm of pp) {
+                                        elm.style.height = "";
+                                        elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+                                    }
+
+                                }
+
+                            }, 0);
+
+                            
+
                         });
                                         
 

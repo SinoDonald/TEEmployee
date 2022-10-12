@@ -195,7 +195,7 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
                 // set textarea height in beginning
                 $timeout(function () {
 
-                    const textAreaItems = document.querySelectorAll(".autoExpand");
+                    var textAreaItems = document.querySelectorAll(".autoExpand");
                     for (let elm of textAreaItems) {
                         elm.style.height = "";
                         elm.style.height = Math.min(elm.scrollHeight, limit) + "px";

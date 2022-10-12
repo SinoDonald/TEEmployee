@@ -15,10 +15,10 @@ namespace TEEmployee.Models
             
             if (!HttpContext.Current.IsDebuggingEnabled)
             {
-                //var minTarget = target.Substring(0, target.Length - 2) + "min.js";
+                var minTarget = target.Substring(0, target.Length - 2) + "min.js";
 
-                //if (File.Exists(HttpContext.Current.Server.MapPath(minTarget)))
-                //    target = minTarget;
+                if (File.Exists(HttpContext.Current.Server.MapPath(minTarget)))
+                    target = minTarget;
 
                 var file = HttpContext.Current.Server.MapPath(target);
 
