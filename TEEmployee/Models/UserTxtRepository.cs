@@ -54,6 +54,65 @@ namespace TEEmployee.Models
             users = users.OrderBy(a => a.empno).ToList();
 
             return users;
+
+
+            //try
+            //{
+            //    string fn = Path.Combine(_appData, "employee.txt");
+            //    List<string> lines = System.IO.File.ReadAllLines(fn).ToList();
+
+            //    foreach (var item in lines)
+            //    {
+            //        string[] subs = item.Split('\t');
+            //        User user = new User();
+
+            //        user.empno = subs[0];
+            //        user.name = subs[1];
+            //        user. = subs[2];
+            //        user.yymm = subs[3];
+
+            //        // work type
+            //        if (Convert.ToInt32(subs[5]) == 0)
+            //            projectItem.overtime = Convert.ToInt32(subs[4]);
+            //        else
+            //            projectItem.workHour = Convert.ToInt32(subs[4]);
+
+            //        var ret = projectItems.Find(x =>
+            //                                    x.empno == projectItem.empno &&
+            //                                    x.projno == projectItem.projno &&
+            //                                    x.yymm == projectItem.yymm &&
+            //                                    x.itemno == projectItem.itemno);
+
+            //        if (ret is object)
+            //        {
+            //            ret.workHour += projectItem.workHour;
+            //            ret.overtime += projectItem.overtime;
+            //        }
+            //        else
+            //            projectItems.Add(projectItem);
+
+            //    }
+
+
+                //-------------------------------------------------------------
+
+            //    projectItems = projectItems.OrderBy(x => x.empno).ToList();
+
+            //    // Delete the resource after reading it
+
+            //    File.Delete(fn);
+
+
+
+            //}
+            //catch
+            //{
+
+            //}
+
+
+            //return projectItems;
+
         }
         public List<User> GetManagers()
         {

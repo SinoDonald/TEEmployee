@@ -149,8 +149,8 @@ app.controller('ChartManagerCtrl', ['$scope', '$window', 'appService', '$rootSco
         const managerSelect = document.querySelector(".manager");
 
         if (mode === 'comment') {
-            $scope.selectedManager = $scope.managers[0];
-            managerSelect.disabled = true;
+            //$scope.selectedManager = $scope.managers[0];
+            //managerSelect.disabled = true;
             $scope.categories.push({ name: '總評', id: '8' });
         }
         else {

@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewBag.Title = "Admin";
+}
+
+@section Styles {
+
+    <style>
+        header {
+            margin-top: 100px;
+        }
+    </style>
+}
+
+
+<div ng-controller="AdminCtrl" class="container">
+
+    <header>
+        <h2>Admin</h2>
+    </header>
+
+    <button type="button" class="btn btn-outline-success" name="addRow" ng-click="InsertProjectItem()">
+        Come with me
+    </button>
+
+    <button type="button" class="btn btn-outline-warning" name="addRow" ng-click="CreateMonthlyRecord()">
+        How do you turn this on
+    </button>
+
+    <input class="btn btn-danger" type="file" id="input" />
+
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/WebApp/Home/AdminCtrl.js"></script>
+    <script src="~/Scripts/read-excel-file.min.js"></script>
+}

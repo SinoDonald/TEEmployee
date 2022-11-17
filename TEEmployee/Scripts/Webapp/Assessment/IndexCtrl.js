@@ -9,11 +9,17 @@ app.service('appService', ['$http', function ($http) {
     this.GetAllSelfAssessments = function (o) {
         return $http.post('Assessment/GetAllSelfAssessments', o);
     };
+
+    this.GetFeedbackNotification = (o) => {
+        return $http.post('Assessment/GetFeedbackNotification', o);
+    };
 }]);
 
 app.controller('IndexCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
 
     $scope.SelfAssessments = [];
+    $scope.FeedbackNotification = {};
+
     appService.GetAllSelfAssessments({})
         .then(function (ret) {
             $scope.SelfAssessments = ret.data;
@@ -21,5 +27,13 @@ app.controller('IndexCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
         .catch(function (ret) {
             alert('Error');            
         });
+
+    appService.GetFeedbackNotification({})
+        .then((ret) => {
+            $scope.FeedbackNotification  = ret.data;
+        })
+        .catch((ret) => {
+            alert('Error');
+        })        
 
 }]);

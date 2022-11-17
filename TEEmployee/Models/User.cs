@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -15,14 +16,19 @@ namespace TEEmployee.Models
         public string name { get; set; }
         public string dutyName { get; set; }
         public bool department_manager { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string group { get; set; }
         public bool group_manager { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string group_one { get; set; }
         public bool group_one_manager { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string group_two { get; set; }
         public bool group_two_manager { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string group_three { get; set; }
         public bool group_three_manager { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string projects { get; set; }
         public bool project_manager { get; set; }
     }

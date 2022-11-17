@@ -50,12 +50,43 @@ namespace TEEmployee.Models.TaskLog
         {
             int ret;
 
-            string sql = @"INSERT INTO ProjectItem (empno, depno, yymm, projno, itemno, workhour) 
-                        VALUES(@empno, @depno, @yymm, @projno, @itemno, @workhour)";
+            string sql = @"INSERT INTO ProjectItem (empno, depno, yymm, projno, itemno, workhour, overtime) 
+                        VALUES(@empno, @depno, @yymm, @projno, @itemno, @workhour, @overtime)";
 
             ret = _conn.Execute(sql, projectItem);
 
             return ret > 0 ? true : false;
+        }
+
+        public bool Insert(List<ProjectItem> projectItem)
+        {
+            _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {               
+
+                int ret;
+
+                string sql = @"INSERT INTO ProjectItem (empno, depno, yymm, projno, itemno, workhour, overtime) 
+                        VALUES(@empno, @depno, @yymm, @projno, @itemno, @workhour, @overtime)";
+
+                ret = _conn.Execute(sql, projectItem);
+
+
+                tran.Commit();
+
+                return ret > 0 ? true : false;
+                
+            }
+
+            //    int ret;
+
+            //string sql = @"INSERT INTO ProjectItem (empno, depno, yymm, projno, itemno, workhour, overtime) 
+            //            VALUES(@empno, @depno, @yymm, @projno, @itemno, @workhour, @overtime)";
+
+            //ret = _conn.Execute(sql, projectItem);
+
+            //return ret > 0 ? true : false;
         }
 
         public bool Update(ProjectItem projectItem)

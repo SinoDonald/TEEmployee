@@ -30,6 +30,11 @@ namespace TEEmployee.Models.TaskLog
             return _projectItemRepository.Insert(projectItem);
         }
 
+        public bool InsertProjectItem(List<ProjectItem> projectItem)
+        {
+            return _projectItemRepository.Insert(projectItem);
+        }
+
         public bool UpdateProjectItem(ProjectItem projectItem)
         {
             return _projectItemRepository.Update(projectItem);
@@ -47,12 +52,44 @@ namespace TEEmployee.Models.TaskLog
         }
 
         //---------------------------------------------------------
+        public bool InsertMonthlyRecord(MonthlyRecord monthlyRecord)
+        {
+            return _monthlyRecordRepository.Insert(monthlyRecord);
+        }
+
+        // 1109: Create monthlyRecord by All users
+        public bool CreateMonthlyRecord()
+        {
+            var users = _userRepository.GetAll();
+            List<MonthlyRecord> monthlyRecords = new List<MonthlyRecord>();
+            string yymm = (DateTime.Now.Year - 1911).ToString() + DateTime.Now.ToString("MM");
+
+            foreach (var item in users)
+            {
+                MonthlyRecord monthlyRecord = new MonthlyRecord()
+                {
+                    empno = item.empno,
+                    yymm = yymm,
+                    guid = Guid.NewGuid()
+                };
+
+                monthlyRecords.Add(monthlyRecord);
+            }
+
+            return _monthlyRecordRepository.Upsert(monthlyRecords);
+        }
+
 
         public bool UpsertMonthlyRecord(MonthlyRecord monthlyRecord)
         {
             return _monthlyRecordRepository.Upsert(monthlyRecord);
         }
-       
+
+        public bool UpsertMonthlyRecord(List<MonthlyRecord> monthlyRecord)
+        {
+            return _monthlyRecordRepository.Upsert(monthlyRecord);
+        }
+
         public List<MonthlyRecord> GetAllMonthlyRecord()
         {
             var ret = _monthlyRecordRepository.GetAll();
@@ -246,10 +283,22 @@ namespace TEEmployee.Models.TaskLog
         }
 
 
+        //=============================
+        // Insert UserExtra 
+        //=============================
+        public bool InsertUserExtra(List<User> users)
+        {           
+            var ret = (_userRepository as UserRepository).Insert(users);
 
-        //--------------------------------------------------------------------------
+            return ret;
+        }
 
-        public void Dispose()
+               
+
+
+    //--------------------------------------------------------------------------
+
+    public void Dispose()
         {
             _projectItemRepository.Dispose();
             _monthlyRecordRepository.Dispose();

@@ -691,7 +691,28 @@ namespace TEEmployee.Models
             return res;
         }
 
+        //=============================
+        // Feedback Notification
+        //=============================
 
+        public FeedbackNotification GetFeedbackNotification(string empno)
+        {
+            var ret = (_assessmentRepository as SelfAssessmentTxtRepository).GetFeedbackNotification(empno, Utilities.DayStr());
+            return new FeedbackNotification() { Unread = ret };
+        }
+
+        public bool UpdateFeedbackNotification(string user, string empno)
+        {
+            bool unread = true;
+            if (user == empno) unread = false;
+            if (String.IsNullOrEmpty(empno)) {
+                empno = user;
+                unread = false;
+            }               
+
+            var ret = (_assessmentRepository as SelfAssessmentTxtRepository).UpdateFeedbackNotification(empno, Utilities.DayStr(), unread);
+            return ret;
+        }
 
 
 
@@ -702,6 +723,8 @@ namespace TEEmployee.Models
             //_responseRepository.Dispose();
         }
     }
+
+    
 
     public class SelfAssessResponse
     {
@@ -741,4 +764,8 @@ namespace TEEmployee.Models
         public List<ChartManagerResponse> ChartManagerResponses { get; set; }        
     }
 
+    public class FeedbackNotification
+    {
+        public bool Unread { get; set; }
+    }
 }

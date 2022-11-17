@@ -4,7 +4,7 @@
     ViewBag.Title = "Assessment";
     ViewBag.Title = "自評表與考核";
     //Layout = "~/Views/Shared/_Layout.cshtml";
-    Layout = "~/Views/Shared/_LayoutStar.cshtml";
+    //Layout = "~/Views/Shared/_LayoutStar.cshtml";
     //ViewBag.date = DateTime.Now.ToString("MMdd");
 }
 
@@ -15,15 +15,21 @@
         .card-img-top {
             max-width: 256px;
         }
+
+        header {
+            margin-top: 100px;
+        }
     </style>
 }
 
-<h2>Assessments</h2>
-
 <div ng-controller="IndexCtrl" class="container">
 
-    <div style="margin-top : 100px">
-        <h3>Hi @(Session["empno"] +" "+Session["empname"])</h3>
+    <header>
+        <h2>自評表與考核</h2>
+    </header>
+
+    <div>
+        @*<h3>Hi @(Session["empno"] +" "+Session["empname"])</h3>*@
         @*<a class="btn btn-primary" href="~/Assessment/Self">員工自評表</a>
             <a class="btn btn-danger" href="~/Assessment/Manage">主管評分表</a>
             <a class="btn btn-success" href="~/Assessment/SelfChart">自評統計</a>*@
@@ -32,7 +38,7 @@
                 <a href="~/Assessment/Self">
                     @*<img class="card-img-top" src="~/Content/assets/img/crocodile.png" alt="Card image cap">*@
                     <img class="card-img-top" src="~/Content/assets/img/self.png" alt="Card image cap">
-                    <h5 class="card-title">自我評估表</h5>
+                    <h5 class="card-title">自我評估表 <span ng-cloak ng-show="FeedbackNotification.Unread" class="badge badge-success">新回饋</span></h5>
                 </a>
                 @*@{
                         if (true)

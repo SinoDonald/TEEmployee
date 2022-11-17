@@ -93,7 +93,7 @@ namespace TEEmployee.Controllers
         }
 
         // Web api---
-        [HttpPost]
+        //[HttpPost]
         public JsonResult GetAllSelfAssessments()
         {
             var ret = _service.GetAllSelfAssessments();
@@ -361,6 +361,24 @@ namespace TEEmployee.Controllers
         {
             _service = new AssessmentService("manage");
             var ret = _service.UpdateScoreManagers(selectedManagers);
+            return ret;
+        }
+
+        //=============================
+        // Feedback Notification
+        //=============================
+        
+        [HttpPost]
+        public JsonResult GetFeedbackNotification()
+        {            
+            var ret = _service.GetFeedbackNotification(Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public bool UpdateFeedbackNotification(string empno)
+        {
+            var ret = _service.UpdateFeedbackNotification(Session["empno"].ToString(), empno);
             return ret;
         }
 

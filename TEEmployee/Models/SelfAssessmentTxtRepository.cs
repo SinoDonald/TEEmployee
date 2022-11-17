@@ -445,7 +445,7 @@ namespace TEEmployee.Models
 
                 List<string> responses = new List<string>();
 
-                responses.Add($"{state};{time}");
+                responses.Add($"{state};{time};read");
 
                 foreach (var item in assessments)
                 {
@@ -723,6 +723,55 @@ namespace TEEmployee.Models
         //}
 
 
+        //=============================
+        // Feedback Notification
+        //=============================
+
+        // return true if it is unread
+        public bool GetFeedbackNotification(string empno, string year)
+        {
+            bool unread = false;
+
+            try
+            {
+                string fn = Path.Combine(_appData, $"Response/{year}/{empno}.txt");
+                string line = File.ReadLines(fn).FirstOrDefault();
+
+                if (line.Split(';')[2] == "unread")
+                    unread = true;
+            }
+            catch
+            {
+
+            }
+
+            return unread;
+        }
+
+        public bool UpdateFeedbackNotification(string empno, string year, bool isUnread)
+        {        
+            bool ret = false;
+
+            try
+            {
+                string fn = Path.Combine(_appData, $"Response/{year}/{empno}.txt");
+                var lines = File.ReadAllLines(fn).ToList();
+                var line = lines[0].Split(';');
+
+                string unread = isUnread ? "unread" : "read";
+
+                lines[0] = $"{line[0]};{line[1]};{unread}";
+
+                System.IO.File.WriteAllLines(fn, lines);
+
+            }
+            catch
+            {
+
+            }
+
+            return ret;
+        }
 
 
 

@@ -39,17 +39,20 @@
                             <label class="form-check-label" for="inlineRadio1{{$index}}">同意</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio2{{$index}}" value="option2">
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio2{{$index}}" value="option2" required>
                             <label class="form-check-label" for="inlineRadio2{{$index}}">中立</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio3{{$index}}" value="option3">
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio3{{$index}}" value="option3" required>
                             <label class="form-check-label" for="inlineRadio3{{$index}}">不同意</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio4{{$index}}" value="option4">
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio4{{$index}}" value="option4" required>
                             <label class="form-check-label" for="inlineRadio4{{$index}}">N/A</label>
                         </div>
+                        <span ng-show="optionForm.{{'inlineRadioOptions'+ $index}}.$error.required && clicked" class="err">
+                            未填寫
+                        </span>
                     </td>
                     <td ng-if="item.Content=='建議'" colspan="2" style="width:80%">
                         <div class="form-group">
@@ -110,7 +113,7 @@
             <input type="submit" value="返回" ng-click="ToManage()" class="btn btn-warning" />
             <input type="submit" ng-if="state!='sent'" value="儲存" ng-click="CreateManageResponse('save')" class="btn btn-warning" />
             @*<input type="submit" ng-if="state!='sent'" value="送出" ng-disabled="optionForm.$invalid" class="btn btn-warning" />*@
-            <button ng-if="state!='sent'" type="button" ng-disabled="optionForm.$invalid" class="btn btn-warning mr-2" data-toggle="modal" data-target="#exampleModalCenter">
+            <button ng-if="state!='sent'" type="button" ng-click="clickclick()" @*ng-disabled="optionForm.$invalid"*@ class="btn btn-warning mr-2" data-toggle="modal" data-target="#exampleModalCenter">
                 送出
             </button>
             <span ng-if="state!='sent'"><strong>全部題目勾選完成才可送出</strong></span>
@@ -128,11 +131,14 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <span ng-show="optionForm.$invalid" class="err"><strong>全部題目勾選完成才可送出</strong></span>
+                </div>
+                <div class="modal-body">
                     完成送出後，將無法再度修改
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                    <button type="button" ng-click="CreateManageResponse('sent')" class="btn btn-primary">確認</button>
+                    <button type="button" ng-disabled="optionForm.$invalid" ng-click="CreateManageResponse('sent')" class="btn btn-primary">送出</button>
                 </div>
             </div>
         </div>

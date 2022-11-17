@@ -11,6 +11,7 @@ namespace TEEmployee.Models.TaskLog
         ProjectItem Get(int id);
         List<ProjectItem> GetAll();
         bool Insert(ProjectItem projectItem);
+        bool Insert(List<ProjectItem> projectItem);
         bool Upsert(ProjectItem projectItem);
         bool Update(ProjectItem projectItem);
         bool Delete(ProjectItem projectItem);        

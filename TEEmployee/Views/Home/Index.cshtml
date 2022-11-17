@@ -1,5 +1,4 @@
-﻿
-@*@model TEEmployee.Models.User*@
+﻿@*@model TEEmployee.Models.User*@
 
 @{
     //ViewBag.Title = "Home Page";
@@ -7,25 +6,39 @@
     //Layout = "~/Views/Shared/_LayoutStar - Copy.cshtml";
 }
 
+@section Styles {
+    <style>
+        .overlay {
+            white-space: pre-line;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+    </style>
+}
+
 <!-- Masthead-->
 <header class="masthead">
     <div class="container px-4 px-lg-5 h-100">
         <div class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
             <div class="col-lg-8 align-self-end">
-                <h1 class="text-white font-weight-bold">員工職涯規劃<br>溝通與紀錄平台</h1>
+                <h1 class="text-white font-weight-bold">職涯規劃<br>溝通與紀錄平台</h1>
                 <hr class="divider" />
 
                 @*@using (Html.BeginForm())
-                {
-                    <div class="form-group">                       
-                        @Html.EditorFor(model => model.empno, new { htmlAttributes = new { @class = "form-control" ,@placeholder = "Enter Employee Number" } })                       
-                        <input type="submit" value="Save" class="btn btn-default" style="color: white" /> 
-                    </div>
-                }*@
+                    {
+                        <div class="form-group">
+                            @Html.EditorFor(model => model.empno, new { htmlAttributes = new { @class = "form-control" ,@placeholder = "Enter Employee Number" } })
+                            <input type="submit" value="Save" class="btn btn-default" style="color: white" />
+                        </div>
+                    }*@
                 @*<form method="post" action="~/Home/SwitchEmployeeNumber">
-                    <input type="text" class="form-control" id="id" name="id" placeholder="Employee number" value="@Model.empno">
-                    <button type="submit" class="btn btn-primary">Switch</button>
-                </form>*@
+                        <input type="text" class="form-control" id="id" name="id" placeholder="Employee number" value="@Model.empno">
+                        <button type="submit" class="btn btn-primary">Switch</button>
+                    </form>*@
 
             </div>
             <div class="col-lg-8 align-self-baseline">
@@ -90,8 +103,70 @@
         </div>*@
             @*new no photo nox*@
             <div class="col-lg-4 col-sm-6">
+                <a class="portfolio-box">
+                    <div class="position-relative">
+                        <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/n1.jpg" alt="..." />
+                        <div class="overlay">
+                        </div>
+                    </div>
+                    <p class="text-center mt-2 h3">核心專業盤點</p>
+                </a>
+            </div>
+            <div class="col-lg-4 col-sm-6">
+                <a class="portfolio-box">
+                    <div class="position-relative">
+                        <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/n2.jpg" alt="..." />
+                        <div class="overlay">
+                        </div>
+                    </div>
+                    <p class="text-center mt-2 h3">拓展專業培養</p>
+                </a>
+            </div>
+            <div class="col-lg-4 col-sm-6">
+                <a class="portfolio-box">
+                    <div class="position-relative">
+                        <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/n3.jpg" alt="..." />
+                        <div class="overlay">
+                        </div>
+                    </div>
+                    <p class="text-center mt-2 h3">培訓紀錄與規劃</p>
+                </a>
+            </div>
+            <div class="col-lg-4 col-sm-6">
+                <a class="portfolio-box">
+                    <div class="position-relative">
+                        <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/n4.jpg" alt="..." />
+                        <div class="overlay">
+                        </div>
+                    </div>
+                    <p class="text-center mt-2 h3">年度行事曆目標</p>
+                </a>
+            </div>
+            @*<div class="col-lg-4 col-sm-6">
+            <a class="portfolio-box" href="">
+                <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/n2.jpg" alt="..." />
+                <p class="text-center mt-2 h3">拓展專業培養</p>
+            </a>
+        </div>*@
+
+            <div class="col-lg-4 col-sm-6">
+                <a class="portfolio-box">
+                    <div class="position-relative">
+                        <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/n7.jpg" alt="..." />
+                        <div class="overlay">
+                        </div>
+                    </div>
+                    <p class="text-center mt-2 h3">升等規劃與條件</p>
+                </a>
+            </div>
+
+            <div class="col-lg-4 col-sm-6">
                 <a class="portfolio-box" href="@Url.Action("Index", "Assessment")">
-                    <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/5.jpg" alt="..." />
+                    <div class="position-relative">
+                        <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/n5.jpg" alt="..." />
+                        <div class="portfolio-box-caption p-3">
+                        </div>
+                    </div>
                     <p class="text-center mt-2 h3">自評表與考核</p>
                 </a>
             </div>
@@ -105,20 +180,42 @@
             </a>
         </div>*@
             @*<div class="col-lg-4 col-sm-6">
-                <a class="portfolio-box" href="@Url.Action("Index", "Tasklog")" )">
-                    <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/coast.jpg" alt="..." />
-                    <div class="portfolio-box-caption p-3">
-                        <div class="project-category text-white-50">Tasklog</div>
-                        <div class="project-name">工作紀錄管控表</div>
-                    </div>
-                </a>
-            </div>*@
+            <a class="portfolio-box" href="@Url.Action("Index", "Tasklog")" )">
+                <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/coast.jpg" alt="..." />
+                <div class="portfolio-box-caption p-3">
+                    <div class="project-category text-white-50">Tasklog</div>
+                    <div class="project-name">工作紀錄管控表</div>
+                </div>
+            </a>
+        </div>*@
             <div class="col-lg-4 col-sm-6">
                 <a class="portfolio-box" href="@Url.Action("Index", "Tasklog")">
-                    <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/coast.jpg" alt="..." />
+                    <div class="position-relative">
+                        <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/n6.png" alt="..." />
+                        <div class="portfolio-box-caption p-3">
+                        </div>
+                    </div>
                     <p class="text-center mt-2 h3">工作紀錄管控表</p>
                 </a>
             </div>
+
+            @if (Session["Admin"] is object)
+            {
+                <div class="col-lg-4 col-sm-6">
+                    <a class="portfolio-box" href="@Url.Action("Admin")">
+                        <div class="position-relative">
+                            <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/doge.jpg" alt="..." />
+                            <div class="portfolio-box-caption p-3">
+                            </div>
+                        </div>
+                        <p class="text-center mt-2 h3">Admin</p>
+                    </a>
+                </div>
+            }
+
+
+
+
             @*<div class="col-lg-4 col-sm-6">
             <a class="portfolio-box" href="" )">
                 <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/food.jpg" alt="..." />

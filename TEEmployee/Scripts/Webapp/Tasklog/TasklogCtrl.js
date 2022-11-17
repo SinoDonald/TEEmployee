@@ -59,7 +59,7 @@ app.controller('ListCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
     $scope.ctrl.datepicker = moment().add(-1, 'months').locale('zh-tw').format('YYYY-MM');
 
     $scope.propertyName = 'User.group_one';
-    $scope.reverse = true;
+    $scope.reverse = false;
     
     $scope.sortBy = function (propertyName) {
         $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
@@ -105,9 +105,11 @@ app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 
         for (let task of projectTasks) {
 
             // add if projectItems owns the same projno
+            // 1109 update: show all project even if it dosent'n own 
+            //if (projectItems.findIndex(x => x.projno === task.projno) < 0)
+            //    continue;
 
-            if (projectItems.findIndex(x => x.projno === task.projno) < 0)
-                continue;
+            
 
             let projidx = $scope.projects.findIndex(x => x.projno === task.projno);
 

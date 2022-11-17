@@ -1,6 +1,6 @@
 ﻿var app = angular.module('app', ['ui.router', 'ngAnimate']);
 
-app.config(function ($stateProvider, $urlRouterProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
     $stateProvider
         .state('EmployeeList', {
@@ -12,7 +12,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
             templateUrl: 'Assessment/AssessEmployee'
         })
 
-});
+}]);
 
 app.run(['$http', '$window', function ($http, $window) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -69,6 +69,9 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Assessment/GetFeedback', o);
     };
 
+    this.UpdateFeedbackNotification = (o) => {
+        return $http.post('Assessment/UpdateFeedbackNotification', o);
+    };
 }]);
 
 app.factory('myFactory', function () {
@@ -102,6 +105,10 @@ app.controller('FeedbackCtrl', ['$scope', '$location', 'appService', '$rootScope
 app.controller('EmployeeListCtrl', ['$scope', '$location', 'appService', '$rootScope', 'myFactory', function ($scope, $location, appService, $rootScope, myFactory) {
 
     $scope.Employees = [];
+
+    $scope.sortBy = function (propertyName) {        
+        $scope.propertyName = propertyName;
+    };
 
     //appService.GetAllEmployees({})
     //    .then(function (ret) {
@@ -260,8 +267,12 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
                     }, 2000);
                 }
                 else {
+                    appService.UpdateFeedbackNotification({ empno: myFactory.get().EmployeeInfo.Employee.empno }).then((ret) => {
+                        $window.location.href = 'Assessment/Feedback';
+                    })
+
                     /*alert('已送出');*/
-                    $window.location.href = 'Assessment/Feedback';
+                    //$window.location.href = 'Assessment/Feedback';
                 }
             });
     }

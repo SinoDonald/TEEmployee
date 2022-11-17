@@ -31,13 +31,40 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Assessment/GetAllFeedbacks', o);
     };
 
+    this.UpdateFeedbackNotification = (o) => {
+        return $http.post('Assessment/UpdateFeedbackNotification', o);
+    };
     
 }]);
 
-app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', '$timeout', function ($scope, $window, appService, $rootScope, $timeout) {
+app.factory('myFactory', function () {
+
+    var savedData = {}
+
+    function set(data) {
+        savedData.manager = data;
+    }
+
+    function get() {
+        return savedData;
+    }
+
+    return {
+        set: set,
+        get: get,
+    }
+
+});
+
+
+app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', '$timeout', 'myFactory', function ($scope, $window, appService, $rootScope, $timeout, myFactory) {
 
     $scope.SelfAssessments = [];
     $scope.state;
+    $scope.clicked = false;
+    $scope.clickclick = () => {
+        $scope.clicked = true;
+    }
 
     const optionText = ['優良', '好', '普通', '待加強', 'N/A'];
 
@@ -304,6 +331,10 @@ app.controller('SelfCtrl', ['$scope', '$window', 'appService', '$rootScope', '$t
 
     // global delegated event listener
     document.addEventListener('input', onExpandableTextareaInput);
+
+    appService.UpdateFeedbackNotification({}).then((ret) => {
+        
+    })
 
 
 }]);

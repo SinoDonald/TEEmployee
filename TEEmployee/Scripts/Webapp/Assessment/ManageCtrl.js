@@ -1,6 +1,6 @@
 ﻿var app = angular.module('app', ['ui.router', 'ngAnimate']);
 
-app.config(function ($stateProvider, $urlRouterProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
     $stateProvider
         .state('ManagerOption', {
@@ -16,7 +16,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
             templateUrl: 'Assessment/SetManager'
         })
 
-});
+}]);
 
 app.run(['$http', '$window', function ($http, $window) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -173,6 +173,11 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
             //{ id: '2022H2', name: '2022H2' }
         ]
     };
+
+    $scope.clicked = false;
+    $scope.clickclick = () => {
+        $scope.clicked = true;
+    }
 
     let limit = 250; //height limit
 

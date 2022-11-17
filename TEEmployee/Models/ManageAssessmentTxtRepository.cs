@@ -157,10 +157,10 @@ namespace TEEmployee.Models
             try
             {
                 string dirPath = Path.Combine(_appData, $"ManageResponse/{year}/{manager}");
-                if (Directory.Exists(dirPath) == false)
-                {
-                    Directory.CreateDirectory(dirPath);
-                }
+                //if (Directory.Exists(dirPath) == false)
+                //{
+                //    Directory.CreateDirectory(dirPath);
+                //}
                 string fn = Path.Combine(_appData, $"ManageResponse/{year}/{manager}/{user}.txt");
                 if (!File.Exists(fn))
                 {

@@ -3,24 +3,30 @@
     "outputFileName": "Scripts/Webapp/Assessment/IndexCtrl.min.js",
     "inputFiles": [
       "Scripts/Webapp/Assessment/IndexCtrl.js"
-    ],
-    "sourceMap": false,
-    "sourceMapRootPath": null
+    ]
   },
   {
     "outputFileName": "Scripts/Webapp/Assessment/SelfCtrl.min.js",
     "inputFiles": [
       "Scripts/Webapp/Assessment/SelfCtrl.js"
-    ],
-    "sourceMap": false,
-    "sourceMapRootPath": null
+    ]
   },
   {
     "outputFileName": "Scripts/Webapp/Tasklog/TasklogCtrl.min.js",
     "inputFiles": [
       "Scripts/Webapp/Tasklog/TasklogCtrl.js"
-    ],
-    "sourceMap": false,
-    "sourceMapRootPath": null
+    ]
+  },
+  {
+    "outputFileName": "Scripts/Webapp/Assessment/ManageCtrl.min.js",
+    "inputFiles": [
+      "Scripts/Webapp/Assessment/ManageCtrl.js"
+    ]
+  },
+  {
+    "outputFileName": "Scripts/Webapp/Assessment/FeedbackCtrl.min.js",
+    "inputFiles": [
+      "Scripts/Webapp/Assessment/FeedbackCtrl.js"
+    ]
   }
 ]

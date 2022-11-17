@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Filters;
 using TEEmployee.Models;
+using TEEmployee.Models.TaskLog;
 
 namespace TEEmployee.Controllers
 {
@@ -28,6 +29,16 @@ namespace TEEmployee.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        public ActionResult Admin()
+        {
+            ViewBag.Message = "Hello there!!";
+
+            if (Session["Admin"] is object)
+                return View();
+            else
+                return RedirectToAction("Index");
         }
 
         //public ActionResult Unauthorized()
@@ -77,5 +88,102 @@ namespace TEEmployee.Controllers
 
             return RedirectToAction("Index");
         }
+
+
+        [HttpPost]
+        public bool InsertProjectItem()
+        {
+            bool ret = false;
+
+            if (Session["Admin"] is object)
+            {               
+                List<ProjectItem> projectItems = new List<ProjectItem>();
+
+                using (TasklogService service = new TasklogService(false))
+                {
+                    projectItems = service.GetAllProjectItem();
+                }
+
+                if (projectItems.Count != 0) ret = true;
+
+                //List<MonthlyRecord> monthlyRecords = new List<MonthlyRecord>();
+                //foreach (var item in projectItems)
+                //{
+                //    MonthlyRecord monthlyRecord = new MonthlyRecord()
+                //    {
+                //        empno = item.empno,
+                //        yymm = item.yymm,
+                //        guid = Guid.NewGuid()
+                //    };
+
+                //    monthlyRecords.Add(monthlyRecord);
+                //}
+
+
+                //using (TasklogService service = new TasklogService())
+                //{
+                //    foreach (var item in projectItems)
+                //    {
+                //        MonthlyRecord monthlyRecord = new MonthlyRecord()
+                //        {
+                //            empno = item.empno,
+                //            yymm = item.yymm,
+                //            guid = Guid.NewGuid()
+                //        };
+
+                //        service.InsertProjectItem(item);
+                //        service.UpsertMonthlyRecord(monthlyRecord);
+                //    }
+
+                //}
+
+
+                using (TasklogService service = new TasklogService())
+                {                    
+                        service.InsertProjectItem(projectItems);
+                        //service.UpsertMonthlyRecord(monthlyRecords);
+                }
+
+            }
+
+            return ret;
+        }
+
+
+        [HttpPost]
+        public bool InsertUserExtra(List<User> users)
+        {
+            bool ret = false;
+
+            if (Session["Admin"] is object)
+            {               
+                using (TasklogService service = new TasklogService())
+                {
+                    ret = service.InsertUserExtra(users);
+                }
+            }
+
+            return ret;
+        }
+
+
+        [HttpPost]
+        public bool CreateMonthlyRecord()
+        {
+            bool ret = false;
+
+            if (Session["Admin"] is object)
+            {            
+                using (TasklogService service = new TasklogService())
+                {
+                    ret = service.CreateMonthlyRecord();
+                }
+
+            }
+
+            return ret;
+        }
+
+
     }
 }

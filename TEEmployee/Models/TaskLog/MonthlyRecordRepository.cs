@@ -57,7 +57,15 @@ namespace TEEmployee.Models.TaskLog
 
         public bool Insert(MonthlyRecord monthlyRecord)
         {
-            throw new NotImplementedException();
+            int ret;
+
+            string sql = @"INSERT INTO MonthlyRecord (guid, empno, yymm) 
+                        VALUES(@guid, @empno, @yymm)";
+
+            ret = _conn.Execute(sql, monthlyRecord);
+
+            return ret > 0 ? true : false;
+
         }
 
         public bool Update(MonthlyRecord monthlyRecord)
@@ -77,6 +85,39 @@ namespace TEEmployee.Models.TaskLog
             ret = _conn.Execute(sql, monthlyRecord);
 
             return ret > 0 ? true : false;
+        }
+
+        public bool Upsert(List<MonthlyRecord> monthlyRecord)
+        {
+            _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                int ret;
+
+                string sql = @"INSERT INTO MonthlyRecord (guid, empno, yymm) 
+                        VALUES(@guid, @empno, @yymm) 
+                        ON CONFLICT(empno, yymm) 
+                        DO NOTHING";
+
+                ret = _conn.Execute(sql, monthlyRecord);
+
+                tran.Commit();
+
+                return ret > 0 ? true : false;
+
+                
+            }
+            //    int ret;
+
+            //string sql = @"INSERT INTO MonthlyRecord (guid, empno, yymm) 
+            //            VALUES(@guid, @empno, @yymm) 
+            //            ON CONFLICT(empno, yymm) 
+            //            DO NOTHING";
+
+            //ret = _conn.Execute(sql, monthlyRecord);
+
+            //return ret > 0 ? true : false;
         }
     }
 }
