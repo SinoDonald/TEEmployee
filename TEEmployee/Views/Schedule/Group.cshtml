@@ -1,0 +1,74 @@
+﻿<div ng-controller="GroupCtrl">
+
+    <h3>Group</h3>
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Project No.</th>
+                <th scope="col">Content</th>
+                <th scope="col">Members</th>
+            </tr>
+        </thead>
+        <tbody ng-repeat="schedule in data.Owned.Group">
+            <tr>
+                <td>
+                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        Button
+                    </button>
+                </td>
+                <td ng-bind="schedule.projno"></td>
+                <td ng-bind="schedule.content"></td>
+                <td ng-bind="schedule.member"></td>                
+            </tr>
+            <tr>
+                <td>
+                   
+                </td>
+                <td colspan="3">
+                    <div class="collapse" id="collapseExample">
+                        <table class="table mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Content</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="milestone in schedule.milestones">
+                                    <td ng-bind="milestone.content"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>                    
+                </td>
+
+            </tr>
+        </tbody>
+
+
+        @*<tbody>
+            <tr ng-repeat="row in data.Owned.Group">
+                <td ng-bind="row.projno"></td>
+                <td ng-bind="row.content"></td>
+                <td ng-bind="row.member"></td>
+                <td>
+                    <table class="table mb-0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Content</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="milestone in data.milestones">
+                                <td ng-bind="milestone.content"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+
+            </tr>
+        </tbody>*@
+    </table>
+
+</div>

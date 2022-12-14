@@ -41,6 +41,10 @@ namespace TEEmployee.Controllers
                 return RedirectToAction("Index");
         }
 
+        public ActionResult Document()
+        {            
+            return View();           
+        }
         //public ActionResult Unauthorized()
         //{           
         //    return View();
@@ -65,10 +69,16 @@ namespace TEEmployee.Controllers
 
                 Session["role"] = null;
                 Session["leader"] = null;
+                Session["group_leader"] = null;
 
                 if (user.department_manager)
                 {
                     Session["leader"] = true;
+                }
+
+                if (user.group_manager)
+                {
+                    Session["group_leader"] = true;
                 }
 
                 if (user.project_manager)
@@ -81,10 +91,7 @@ namespace TEEmployee.Controllers
                     Session["role"] = "Manager";
                 }
 
-
             }
-
-
 
             return RedirectToAction("Index");
         }
@@ -97,6 +104,9 @@ namespace TEEmployee.Controllers
 
             if (Session["Admin"] is object)
             {               
+
+                // read new project items from txt file
+
                 List<ProjectItem> projectItems = new List<ProjectItem>();
 
                 using (TasklogService service = new TasklogService(false))
@@ -138,12 +148,34 @@ namespace TEEmployee.Controllers
                 //}
 
 
+                // insert new project items into database
+
                 using (TasklogService service = new TasklogService())
                 {                    
                         service.InsertProjectItem(projectItems);
                         //service.UpsertMonthlyRecord(monthlyRecords);
                 }
 
+            }
+
+            return ret;
+        }
+
+        [HttpPost]
+        public bool UpdateUser()
+        {
+            // update user from txt file
+
+            bool ret = false;
+
+            if (Session["Admin"] is object)
+            {
+                List<User> users = new List<User>();
+
+                using (TasklogService service = new TasklogService())
+                {
+                    ret = service.InsertUser();
+                }
             }
 
             return ret;

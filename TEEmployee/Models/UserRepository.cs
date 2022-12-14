@@ -92,8 +92,38 @@ namespace TEEmployee.Models
             //ret = _conn.Execute(sql, projectItem);
 
             //return ret > 0 ? true : false;
+
+            
         }
 
+
+        // 1206: insert "User" (Delete all first)
+        public bool InsertUser(List<User> users)
+        {
+
+            _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+
+                int ret;
+
+                string sql = @"DELETE FROM user";
+                ret = _conn.Execute(sql);
+
+
+                sql = @"INSERT INTO user (empno, name, gid, profTitle, duty, dutyName, tel, email) 
+                        VALUES(@empno, @name, @gid, @profTitle, @duty, @dutyName, @tel, @email)";
+
+                ret = _conn.Execute(sql, users);
+
+                tran.Commit();
+
+                return ret > 0;
+
+            }
+            
+        }
 
 
 

@@ -64,9 +64,10 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto my-2 my-lg-0">
                     @*<li style="vertical-align: middle" class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>*@
+        <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+        <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>*@
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Document", "Home")">說明文件</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             功能模組
@@ -76,6 +77,7 @@
                             <a class="dropdown-item" href="Tasklog">工作紀錄管控表</a>
                         </div>
                     </li>
+                    
                     @*<li class="nav-item"><a class="nav-link" href="#">@User.Identity.Name</a></li>*@
                     <li class="nav-item">
                         <div class="dropdown">
@@ -93,9 +95,9 @@
                                     using (Html.BeginForm("Index", "Home", FormMethod.Post))
                                     {
                                         @*<div class="form-group">
-                                                @Html.LabelFor(m => m.Name)
-                                                @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
-                                            </div>*@
+                                @Html.LabelFor(m => m.Name)
+                                @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                            </div>*@
 
                                         // form is postback to /Home/Enroll
                                         @*<input type="submit" value="Enroll" class="btn" />*@
@@ -106,45 +108,45 @@
                                             @Html.TextBoxFor(model => model.empno, new { @class = "form-control" })
                                             <button type="submit" class="btn btn-primary">切換身分</button>
                                         </div>
-                                            
+
                                         @*</form>*@
                                     }
 
                                     @*<form class="px-4 py-3">
-                                            <div class="form-group">
-                                                <label for="exampleDropdownFormEmail1">員工編號</label>
-                                                <input type="email" class="form-control" id="exampleDropdownFormEmail1">
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">切換身分</button>
-                                        </form>*@
+                            <div class="form-group">
+                                <label for="exampleDropdownFormEmail1">員工編號</label>
+                                <input type="email" class="form-control" id="exampleDropdownFormEmail1">
+                            </div>
+                            <button type="submit" class="btn btn-primary">切換身分</button>
+                        </form>*@
                                 }
                             </div>
                         </div>
                     </li>
                     @*<li class="nav-item dropdown">
-                            <div class="dropdown">
-                                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    @User.Identity.Name
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="#">@Session["group"].ToString()</a>
-                                    <a class="dropdown-item" href="#">@Session["group_one"].ToString()</a>
-                                    <a class="dropdown-item" href="#">@Session["group_two"].ToString()</a>
-                                    <a class="dropdown-item" href="#">@Session["group_three"].ToString()</a>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Dropdown
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                            </div>
-                        </li>*@
+            <div class="dropdown">
+                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @User.Identity.Name
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">@Session["group"].ToString()</a>
+                    <a class="dropdown-item" href="#">@Session["group_one"].ToString()</a>
+                    <a class="dropdown-item" href="#">@Session["group_two"].ToString()</a>
+                    <a class="dropdown-item" href="#">@Session["group_three"].ToString()</a>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Dropdown
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+        </li>*@
 
                 </ul>
             </div>

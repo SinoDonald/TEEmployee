@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Serialization;
 
 namespace TEEmployee.Models
 {
@@ -31,5 +32,17 @@ namespace TEEmployee.Models
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string projects { get; set; }
         public bool project_manager { get; set; }
+
+        [ScriptIgnore]
+        public string gid { get; set; }
+        [ScriptIgnore]
+        public string profTitle { get; set; }
+        [ScriptIgnore]
+        public string duty { get; set; }
+        [ScriptIgnore]
+        public string tel { get; set; }
+        [ScriptIgnore]
+        public string email { get; set; }
+        
     }
 }

@@ -279,6 +279,13 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllOtherFeedbacks(string empno)
+        {
+            var ret = _service.GetAllOtherFeedbacks(empno, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
         public JsonResult GetAllFeedbacks(string year)
         {
             var ret = _service.GetAllFeedbacks(Session["empno"].ToString(), year);

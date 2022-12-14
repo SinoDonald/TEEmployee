@@ -23,6 +23,10 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Home/CreateMonthlyRecord', o);
     };
 
+    this.UpdateUser = function (o) {
+        return $http.post('Home/UpdateUser', o);
+    };
+
 }]);
 
 app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
@@ -31,6 +35,19 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
     $scope.InsertProjectItem = () => {
                 
         appService.InsertProjectItem({})
+            .then((ret) => {
+                if (ret.data === 'True') alert('Update succeed')
+                else alert('No data found')
+                $window.location.href = 'Home';
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }   
+
+    $scope.UpdateUser = () => {
+
+        appService.UpdateUser({})
             .then((ret) => {
                 if (ret.data === 'True') alert('Update succeed')
                 else alert('No data found')

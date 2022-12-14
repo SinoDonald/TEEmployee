@@ -216,6 +216,7 @@ namespace TEEmployee.Models
 
         // 0713
         // 0912 unescaped break line
+        // 1206 remedy solution to "/" slash split
         public List<Assessment> GetResponse(string user, string year)
         {
             List<Assessment> selfResponse = new List<Assessment>();
@@ -237,6 +238,12 @@ namespace TEEmployee.Models
 
                     //When reading back in the file, you will need to unescape each line.
                     string unescapedValue = subs[3].Replace("\\n", "\n");
+
+                    
+                    // replace slash
+                    if (selfAssessment.Content == "自評摘要" || selfAssessment.Content == "自我總評")
+                        unescapedValue = SaveSlash(unescapedValue);
+
                     selfAssessment.Choice = unescapedValue;
                     //selfAssessment.Choice = subs[3];
 
@@ -434,7 +441,9 @@ namespace TEEmployee.Models
 
             return years.OrderByDescending(x => x).ToList();
         }
+
         // update the state in the first line
+        // 1206: remedy solution to "/" split problem
         public bool Update(List<Assessment> assessments, string user, string state, string year, DateTime time)
         {
             string fn = Path.Combine(_appData, $"Response/{year}/{user}.txt");
@@ -449,6 +458,10 @@ namespace TEEmployee.Models
 
                 foreach (var item in assessments)
                 {
+                    // replace slash
+                    if (item.Content == "自評摘要" || item.Content == "自我總評")
+                        item.Choice = SaveSlash(item.Choice);
+
                     // 0912: escaped break line \n
                     string original = $"{item.Id}/{item.CategoryId}/{item.Content}/{item.Choice}";
                     string escapedValue = original.Replace("\n", "\\n");
@@ -774,7 +787,22 @@ namespace TEEmployee.Models
         }
 
 
+        private string SaveSlash(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+                return s;
 
+            if (s.Contains("/"))
+            {
+                s = s.Replace("/", "slash");
+            }
+            else if (s.Contains("slash"))
+            {
+                s = s.Replace("slash", "/");
+            }
+
+            return s;
+        }
 
 
     }

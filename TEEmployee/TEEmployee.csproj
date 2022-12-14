@@ -151,6 +151,7 @@
     <Compile Include="Controllers\AssessmentController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ScheduleController.cs" />
     <Compile Include="Controllers\TasklogController.cs" />
     <Compile Include="Filters\MyAuthorizeAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -167,6 +168,10 @@
     <Compile Include="Models\MixResponse.cs" />
     <Compile Include="Models\Response.cs" />
     <Compile Include="Models\ResponseTxtRepository.cs" />
+    <Compile Include="Models\Schedule\IScheduleRepository.cs" />
+    <Compile Include="Models\Schedule\Schedule.cs" />
+    <Compile Include="Models\Schedule\ScheduleRepository.cs" />
+    <Compile Include="Models\Schedule\ScheduleService.cs" />
     <Compile Include="Models\SelfAssessmentChart.cs" />
     <Compile Include="Models\SelfAssessmentTxtRepository.cs" />
     <Compile Include="Models\TaskLog\IMonthlyRecordRepository.cs" />
@@ -292,6 +297,7 @@
       <DependentUpon>SelfCtrl.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Webapp\Home\AdminCtrl.js" />
+    <Content Include="Scripts\Webapp\Schedule\ScheduleCtrl.js" />
     <Content Include="Scripts\Webapp\Tasklog\TasklogCtrl.js" />
     <Content Include="Scripts\Webapp\Tasklog\TasklogCtrl.min.js">
       <DependentUpon>TasklogCtrl.js</DependentUpon>
@@ -346,6 +352,11 @@
     <Content Include="Views\Tasklog\Edit.cshtml" />
     <Content Include="Views\Assessment\SetManager.cshtml" />
     <Content Include="Views\Home\Admin.cshtml" />
+    <Content Include="Views\Schedule\Index.cshtml" />
+    <Content Include="Views\Home\Document.cshtml" />
+    <Content Include="Views\Schedule\Group.cshtml" />
+    <Content Include="Views\Schedule\Individual.cshtml" />
+    <Content Include="Views\Schedule\Future.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Response\" />

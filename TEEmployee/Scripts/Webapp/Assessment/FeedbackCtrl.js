@@ -69,6 +69,10 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Assessment/GetFeedback', o);
     };
 
+    this.GetAllOtherFeedbacks = function (o) {
+        return $http.post('Assessment/GetAllOtherFeedbacks', o);
+    };
+    
     this.UpdateFeedbackNotification = (o) => {
         return $http.post('Assessment/UpdateFeedbackNotification', o);
     };
@@ -81,8 +85,9 @@ app.factory('myFactory', function () {
     //    savedData.mixResponse = data2;
     //}
 
-    function set(data) {
-        savedData.EmployeeInfo = data;        
+    function set(data, isBoss) {
+        savedData.EmployeeInfo = data;
+        savedData.isBoss = isBoss;
     }
 
     function get() {
@@ -134,9 +139,9 @@ app.controller('EmployeeListCtrl', ['$scope', '$location', 'appService', '$rootS
             alert('Error');
         });
 
-    $scope.Review = function (data) {
+    $scope.Review = function (data, isBoss) {
         $location.path('/AssessEmployee');
-        myFactory.set(data)
+        myFactory.set(data, isBoss)
 
     /*myFactory.set(data);*/
            //appService.GetMixResponse(data)
@@ -160,6 +165,7 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
     const limit = 250; // textarea height limit
 
     $scope.name = myFactory.get().EmployeeInfo.Employee.name;
+    $scope.isBoss = myFactory.get().isBoss;
 
     $scope.GetResponseByYear = function (year) {
         appService.GetResponseByYear({ year: year, empno: myFactory.get().EmployeeInfo.Employee.empno })
@@ -180,24 +186,55 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
 
                 $scope.Responses = ret.data.Responses; 
 
-                return appService.GetFeedback({ empno: myFactory.get().EmployeeInfo.Employee.empno })
-                
+                if ($scope.isBoss)
+                    return appService.GetAllOtherFeedbacks({ empno: myFactory.get().EmployeeInfo.Employee.empno })
+                else
+                    return appService.GetFeedback({ empno: myFactory.get().EmployeeInfo.Employee.empno })
             })
             .then(function (ret) {
                 //$scope.state = ret.data.State;                
                 //$scope.feedback = ret.data.Text
-                $scope.state = ret.data.State
 
-                var count = 0;
+                if ($scope.isBoss) {
+                    $scope.state = 'submit'
 
-                for (var i = 0; i < $scope.Responses.length; i++) {
-                    if ($scope.Responses[i].Content === '意見回饋') {
-                        $scope.Responses[i].Choice = ret.data.Text[count];
-                        count++;
+                    let count = 0;
+
+                    for (var i = 0; i < $scope.Responses.length; i++) {
+                        if ($scope.Responses[i].Content === '意見回饋') {
+                            $scope.Responses[i].Choice = '';
+                            for (let fed of ret.data) {
+                                $scope.Responses[i].Choice += ('\n' + fed.Name + ':\n' + fed.Text[count] + '\n');
+                            }
+                            
+                            count++;
+                        }
                     }
+
+                    $scope.feedback = ''
+                    for (let fed of ret.data) {                        
+                        $scope.feedback += ('\n' + fed.Name + ':\n' + fed.Text[count] + '\n');
+                    }
+                    
                 }
 
-                $scope.feedback = ret.data.Text[count];
+                else {
+                    $scope.state = ret.data.State;
+
+                    let count = 0;
+
+                    for (let i = 0; i < $scope.Responses.length; i++) {
+                        if ($scope.Responses[i].Content === '意見回饋') {
+                            $scope.Responses[i].Choice = ret.data.Text[count];
+                            count++;
+                        }
+                    }
+
+                    $scope.feedback = ret.data.Text[count];
+                }
+                    
+                
+                
 
                 // set textarea height in beginning
                 $timeout(function () {

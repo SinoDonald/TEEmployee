@@ -76,17 +76,23 @@
                 @*<p class="card-text">{{emp.State}}</p>*@
                 @*<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>*@
                 @*<button ng-if="emp.State == 'submit' || emp.State == 'complete' " ng-click="Review(emp)">click</button>*@
-                <button class="btn btn-warning btn-lg" ng-if="emp.State == 'submit'" ng-click="Review(emp)">已填寫</button>
-                <button class="btn btn-success btn-lg" ng-if="emp.State == 'complete' " ng-click="Review(emp)">已回饋</button>
+                <button class="btn btn-warning btn-lg" ng-if="emp.State == 'submit'" ng-click="Review(emp, false)">已填寫</button>
+                <button class="btn btn-success btn-lg" ng-if="emp.State == 'complete' " ng-click="Review(emp, false)">已回饋</button>
                 <button class="btn btn-secondary btn-lg" disabled ng-if="emp.State == 'unfinished'">未完成</button>
+                @if (Session["leader"] is object || Session["group_leader"] is object)
+                {
+                    <button class="btn btn-light btn-lg" ng-if="emp.State != 'unfinished'" ng-click="Review(emp, true)">其他回饋</button>
+                }
+
+
                 @*<a ui-sref="Review">Click</a>*@
-            <h5 class="mt-2">
-                <span ng-click="sortBy(emp.Employee.group)" class="badge badge-info">{{emp.Employee.group}}</span>
-                <span ng-click="sortBy(emp.Employee.group_one)" class="badge badge-info">{{emp.Employee.group_one}}</span>
-                <span ng-click="sortBy(emp.Employee.group_two)" class="badge badge-info">{{emp.Employee.group_two}}</span>
-                <span ng-click="sortBy(emp.Employee.group_three)" class="badge badge-info">{{emp.Employee.group_three}}</span>
-            </h5>
-                
+                <h5 class="mt-2">
+                    <span ng-click="sortBy(emp.Employee.group)" class="badge badge-info">{{emp.Employee.group}}</span>
+                    <span ng-click="sortBy(emp.Employee.group_one)" class="badge badge-info">{{emp.Employee.group_one}}</span>
+                    <span ng-click="sortBy(emp.Employee.group_two)" class="badge badge-info">{{emp.Employee.group_two}}</span>
+                    <span ng-click="sortBy(emp.Employee.group_three)" class="badge badge-info">{{emp.Employee.group_three}}</span>
+                </h5>
+
             </div>
         </div>
     </div>

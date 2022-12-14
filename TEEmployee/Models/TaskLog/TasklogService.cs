@@ -284,6 +284,22 @@ namespace TEEmployee.Models.TaskLog
 
 
         //=============================
+        // Insert User From txt file
+        //=============================
+
+        public bool InsertUser()
+        {
+            var userTxtRepository = new UserTxtRepository();            
+            var users = userTxtRepository.GetAll();
+
+            var ret = (_userRepository as UserRepository).InsertUser(users);
+
+            return ret;
+        }
+
+
+
+        //=============================
         // Insert UserExtra 
         //=============================
         public bool InsertUserExtra(List<User> users)

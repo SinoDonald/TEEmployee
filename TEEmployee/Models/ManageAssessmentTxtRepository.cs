@@ -179,6 +179,11 @@ namespace TEEmployee.Models
                         manageAssessment.Content = subs[2];
                         
                         string unescapedValue = subs[3].Replace("\\n", "\n");
+
+                        // replace slash
+                        if (manageAssessment.Content == "建議")
+                            unescapedValue = SaveSlash(unescapedValue);
+
                         manageAssessment.Choice = unescapedValue;
                         //manageAssessment.Choice = subs[3];
 
@@ -242,6 +247,10 @@ namespace TEEmployee.Models
 
                 foreach (var item in assessments)
                 {
+                    // replace slash
+                    if (item.Content == "建議")
+                        item.Choice = SaveSlash(item.Choice);
+
                     // 0912: escaped break line \n
                     string original = $"{item.Id}/{item.CategoryId}/{item.Content}/{item.Choice}";
                     string escapedValue = original.Replace("\n", "\\n");
@@ -311,6 +320,11 @@ namespace TEEmployee.Models
                         manageAssessment.Content = subs[2];
 
                         string unescapedValue = subs[3].Replace("\\n", "\n");
+
+                        // replace slash
+                        if (manageAssessment.Content == "建議")
+                            unescapedValue = SaveSlash(unescapedValue);
+
                         manageAssessment.Choice = unescapedValue;
                         //manageAssessment.Choice = subs[3];                    
 
@@ -363,7 +377,22 @@ namespace TEEmployee.Models
             return ret;
         }
 
+        private string SaveSlash(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+                return s;
 
+            if (s.Contains("/"))
+            {
+                s = s.Replace("/", "slash");
+            }
+            else if (s.Contains("slash"))
+            {
+                s = s.Replace("slash", "/");
+            }
+
+            return s;
+        }
 
         public void Dispose()
         {

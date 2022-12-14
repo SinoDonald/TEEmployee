@@ -74,10 +74,16 @@ namespace TEEmployee.Filters
 
                     filterContext.HttpContext.Session["role"] = null;
                     filterContext.HttpContext.Session["leader"] = null;
+                    filterContext.HttpContext.Session["group_leader"] = null;
 
                     if (ret.department_manager)
                     {
                         filterContext.HttpContext.Session["leader"] = true;
+                    }
+
+                    if (ret.group_manager)
+                    {
+                        filterContext.HttpContext.Session["group_leader"] = true;
                     }
 
                     if (ret.project_manager)

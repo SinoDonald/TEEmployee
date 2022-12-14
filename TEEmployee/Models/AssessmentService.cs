@@ -64,7 +64,9 @@ namespace TEEmployee.Models
             return (_assessmentRepository as SelfAssessmentTxtRepository).UpdateMResponse(assessments, empId, user);
         }
 
-        // 0729: Feedback for all categories
+        // 0729: Feedback of all categories for employer himself
+        
+
         public Feedback GetFeedback(string empno, string manno)
         {
             var name = _userRepository.Get(manno).name;
@@ -73,7 +75,24 @@ namespace TEEmployee.Models
             return new Feedback() { State = res.Item1, Text = res.Item2 };
         }
 
-        // 0729: Feedback for all categories
+        // 1208: Get all other manager feedbacks based on duty
+
+        public List<Feedback> GetAllOtherFeedbacks(string empno, string manno)
+        {
+            var feedbacks = GetAllFeedbacks(empno, Utilities.DayStr());
+
+            var user = _userRepository.Get(manno);
+            var depart_manager = _userRepository.GetAll().Where(x => x.department_manager).FirstOrDefault();
+
+            if (user.group_manager)
+                feedbacks.RemoveAll(x => x.Name == depart_manager.name);
+            feedbacks.RemoveAll(x => x.Name == user.name);
+          
+            return feedbacks;
+        }
+
+
+        // 0729: Feedback of all categories for employee
         public List<Feedback> GetAllFeedbacks(string user, string year)
         {
 

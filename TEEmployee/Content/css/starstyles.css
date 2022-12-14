@@ -3515,11 +3515,11 @@ textarea.form-control-lg {
   overflow: hidden;
   transition: height 0.35s ease;
 }
-@media (prefers-reduced-motion: reduce) {
+/*@media (prefers-reduced-motion: reduce) {
   .collapsing {
     transition: none;
   }
-}
+}*/
 .collapsing.collapse-horizontal {
   width: 0;
   height: auto;

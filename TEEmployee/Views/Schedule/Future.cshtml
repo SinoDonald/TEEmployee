@@ -1,0 +1,22 @@
+﻿<div ng-controller="FutureCtrl">
+
+    <h3>Future</h3>
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Project No.</th>
+                <th scope="col">Content</th>
+                <th scope="col">Members</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="row in data.Owned.Future">
+                <td ng-bind="row.projno"></td>
+                <td ng-bind="row.content"></td>
+                <td ng-bind="row.member"></td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
