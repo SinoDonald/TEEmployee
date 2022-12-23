@@ -56,15 +56,15 @@ namespace TEEmployee.Models.TaskLog
                     ProjectItem projectItem = new ProjectItem();
 
                     projectItem.empno = subs[0];
-                    projectItem.projno = subs[1];
-                    projectItem.itemno = subs[2];
-                    projectItem.yymm = subs[3];
+                    projectItem.projno = subs[2];
+                    projectItem.itemno = subs[3];
+                    projectItem.yymm = subs[4];
 
                     // work type
-                    if (Convert.ToInt32(subs[5]) == 0)
-                        projectItem.overtime = Convert.ToInt32(subs[4]);
+                    if (Convert.ToInt32(subs[6]) == 0)
+                        projectItem.overtime = Convert.ToInt32(subs[5]);
                     else
-                        projectItem.workHour = Convert.ToInt32(subs[4]);
+                        projectItem.workHour = Convert.ToInt32(subs[5]);
 
                     var ret = projectItems.Find(x =>
                                                 x.empno == projectItem.empno &&
@@ -135,6 +135,11 @@ namespace TEEmployee.Models.TaskLog
         }
 
         public bool Insert(List<ProjectItem> projectItem)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Upsert(List<ProjectItem> projectItem)
         {
             throw new NotImplementedException();
         }

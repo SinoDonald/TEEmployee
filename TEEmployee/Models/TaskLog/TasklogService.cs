@@ -44,6 +44,10 @@ namespace TEEmployee.Models.TaskLog
         {
             return _projectItemRepository.Upsert(projectItem);
         }
+        public bool UpsertProjectItem(List<ProjectItem> projectItem)
+        {
+            return _projectItemRepository.Upsert(projectItem);
+        }
 
         public List<ProjectItem> GetAllProjectItem()
         {

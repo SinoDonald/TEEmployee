@@ -25,6 +25,51 @@ namespace TEEmployee.Models.Schedule
             throw new NotImplementedException();
         }
 
+        public bool Delete(List<int> schedules, List<int> milestones)
+        {
+            if (_conn.State == 0)
+                _conn.Open();
+
+            int ret = 0;
+
+            
+            //ret = _conn.Execute(sql, new { id = id, empno = empno });
+
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                try
+                {
+                    string sql = @"DELETE FROM Schedule WHERE id=@id;";
+
+                    schedules?.ForEach(id =>
+                    {
+                        ret += _conn.Execute(sql, new { id }, tran);
+                    });
+
+                    string sql2 = @"DELETE FROM Milestone WHERE id=@id;";
+
+                    milestones?.ForEach(id =>
+                    {
+                        ret += _conn.Execute(sql2, new { id }, tran);
+                    });
+
+                    tran.Commit();
+
+
+                }
+                catch
+                {
+                    ret = 0;
+                }              
+
+            }
+
+
+            return ret > 0;
+
+        }
+
         public void Dispose()
         {
             _conn.Close();
@@ -152,6 +197,143 @@ namespace TEEmployee.Models.Schedule
         public bool Update(Schedule schedule)
         {
             throw new NotImplementedException();
+        }
+
+        public bool Insert(List<Schedule> schedules)
+        {
+
+            //List<Milestone> milestones = new List<Milestone>();
+            //foreach (var sc in schedules)
+            //    milestones.AddRange(sc.milestones);
+
+            if(_conn.State == 0)
+                _conn.Open();
+
+            int ret = 0;
+
+            using (var tran = _conn.BeginTransaction())
+            {
+
+                string sql = @"INSERT INTO Schedule (empno, member, type, content, start_date, end_date, percent_complete, last_percent_complete, parent_id, history, projno) 
+                        VALUES(@empno, @member, @type, @content, @start_date, @end_date, @percent_complete, @last_percent_complete, @parent_id, @history, @projno) 
+                        RETURNING id";
+
+                //var ids = _conn.Query<int>(sql, schedules, tran).ToList();
+                //ret += ids.Count;
+
+                List<Milestone> milestones = new List<Milestone>();
+
+                for (int i = 0; i < schedules.Count; i++)
+                {
+                    var id = _conn.QuerySingle<int>(sql, schedules[i], tran);
+                    ret++;
+
+                    if (schedules[i].milestones != null)
+                    {
+                        schedules[i].milestones.ForEach(x => x.schedule_id = id);
+                        milestones.AddRange(schedules[i].milestones);
+                    }
+                }
+
+                string sql2 = @"INSERT INTO Milestone (content, date, schedule_id) 
+                        VALUES(@content, @date, @schedule_id) 
+                        ";
+
+                ret += _conn.Execute(sql2, milestones, tran);
+
+
+                tran.Commit();
+
+                return ret > 0;
+
+            }
+        }
+        public bool Update(List<Schedule> schedules)
+        {
+            
+            List<Milestone> new_milestones = new List<Milestone>();
+            List<Milestone> update_milestones = new List<Milestone>();
+
+            foreach (var sc in schedules)
+            {
+                if(sc.milestones is object)
+                {
+                    foreach (var m in sc.milestones)
+                    {
+                        if (m.id != 0)
+                            update_milestones.Add(m);
+                        else
+                            new_milestones.Add(m);
+                    }
+                }
+                    
+            }
+                
+               
+            _conn.Open();
+
+            int ret = 0;
+
+            using (var tran = _conn.BeginTransaction())
+            {
+
+                string sql = @"UPDATE Schedule SET member=@member, content=@content, start_date=@start_date, end_date=@end_date, percent_complete=@percent_complete, last_percent_complete=@last_percent_complete, projno=@projno WHERE id=@id";
+
+                ret = _conn.Execute(sql, schedules, tran);
+
+                string sql2 = @"UPDATE Milestone SET content=@content, date=@date WHERE id=@id";
+
+                ret += _conn.Execute(sql2, update_milestones, tran);
+
+                string sql3 = @"INSERT INTO Milestone (content, date, schedule_id) 
+                        VALUES(@content, @date, @schedule_id) 
+                        ";
+
+                ret += _conn.Execute(sql3, new_milestones, tran);
+
+                tran.Commit();
+
+                return ret > 0;
+
+            }
+        }
+
+        public bool Upsert(List<Schedule> schedules)
+        {
+
+            List<Milestone> milestones = new List<Milestone>();
+            foreach (var sc in schedules)
+                milestones.AddRange(sc.milestones);
+
+            _conn.Open();
+
+            int ret = 0;
+
+            using (var tran = _conn.BeginTransaction())
+            {              
+
+                string sql = @"INSERT INTO Schedule (id, empno, member, type, content, start_date, end_date, percent_complete, last_percent_complete, parent_id, history, projno) 
+                        VALUES(@id, @empno, @member, @type, @content, @start_date, @end_date, @percent_complete, @last_percent_complete, @parent_id, @history, @projno) 
+                        ON CONFLICT(id) 
+                        DO UPDATE SET member=@member, content=@content, start_date=@start_date, end_date=@end_date, percent_complete=@percent_complete, last_percent_complete=@last_percent_complete, projno=@projno";
+
+
+                ret = _conn.Execute(sql, schedules, tran);
+
+                string sql2 = @"INSERT INTO Milestone (id, content, date, schedule_id) 
+                        VALUES(@id, @content, @date, @schedule_id) 
+                        ON CONFLICT(id) 
+                        DO UPDATE SET content=@content, date=@date";
+
+
+                ret += _conn.Execute(sql2, milestones, tran);
+
+
+                tran.Commit();
+
+                return ret > 0;
+
+            }
         }
     }
 }

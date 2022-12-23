@@ -1,6 +1,15 @@
 ﻿<div ng-controller="GroupCtrl">
 
-    <h3>Group</h3>
+    <div>
+        <h3>Group</h3>
+        <button ng-click="UpdateSchedules()" type="button" class="btn btn-primary">
+            Save
+        </button>
+        <button ng-click="addSchedule()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+            Add
+        </button>
+    </div>
+
 
     <table class="table">
         <thead class="thead-dark">
@@ -9,38 +18,57 @@
                 <th scope="col">Project No.</th>
                 <th scope="col">Content</th>
                 <th scope="col">Members</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Data</th>
+                <th scope="col">% Complete</th>
+                <th scope="col">Last % Complete</th>
             </tr>
         </thead>
-        <tbody ng-repeat="schedule in data.Owned.Group">
+        <tbody ng-repeat="schedule in data.Owned.Group | orderBy:'-start_date'">
             <tr>
                 <td>
-                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample{{$index}}" aria-expanded="false" aria-controls="collapseExample">
                         Button
                     </button>
+
+                    @*Button trigger modal*@
+                    <button ng-click="$parent.modal = schedule; passChosen()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+                        Launch demo modal
+                    </button>
+
+                    @*Method 2 : save change in modal*@
+                    @*<button ng-click="ModifySchedule(schedule)" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+                            Launch demo modal
+                        </button>*@
                 </td>
                 <td ng-bind="schedule.projno"></td>
                 <td ng-bind="schedule.content"></td>
-                <td ng-bind="schedule.member"></td>                
+                <td ng-bind="schedule.member"></td>
+                <td ng-bind="schedule.start_date"></td>
+                <td ng-bind="schedule.end_date"></td>
+                <td ng-bind="schedule.percent_complete"></td>
+                <td ng-bind="schedule.last_percent_complete"></td>
             </tr>
             <tr>
                 <td>
-                   
                 </td>
                 <td colspan="3">
-                    <div class="collapse" id="collapseExample">
+                    <div class="collapse" id="collapseExample{{$index}}">
                         <table class="table mb-0">
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">Content</th>
+                                    <th scope="col">Date</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr ng-repeat="milestone in schedule.milestones">
                                     <td ng-bind="milestone.content"></td>
+                                    <td ng-bind="milestone.date"></td>
                                 </tr>
                             </tbody>
                         </table>
-                    </div>                    
+                    </div>
                 </td>
 
             </tr>
@@ -48,27 +76,152 @@
 
 
         @*<tbody>
-            <tr ng-repeat="row in data.Owned.Group">
-                <td ng-bind="row.projno"></td>
-                <td ng-bind="row.content"></td>
-                <td ng-bind="row.member"></td>
-                <td>
-                    <table class="table mb-0">
-                        <thead class="thead-light">
-                            <tr>
-                                <th scope="col">Content</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="milestone in data.milestones">
-                                <td ng-bind="milestone.content"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
+                <tr ng-repeat="row in data.Owned.Group">
+                    <td ng-bind="row.projno"></td>
+                    <td ng-bind="row.content"></td>
+                    <td ng-bind="row.member"></td>
+                    <td>
+                        <table class="table mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Content</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="milestone in data.milestones">
+                                    <td ng-bind="milestone.content"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
 
-            </tr>
-        </tbody>*@
+                </tr>
+            </tbody>*@
     </table>
 
+
+    
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                @*<div class="modal-body">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Content</span>
+                            </div>
+                            <input ng-model="copy.content" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                        <div ng-repeat="milestone in copy.milestones" class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Content</span>
+                            </div>
+                            <input ng-model="milestone.content" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                    </div>*@
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Content</span>
+                    </div>
+                    <input ng-model="modal.content" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+                <div ng-dropdown-multiselect="" options="employees" events="yourEvents" selected-model="example1model"></div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Projno</span>
+                    </div>
+                    <input ng-model="modal.projno" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Complete</span>
+                    </div>
+                    <input ng-model="modal.percent_complete" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Last % Complete</span>
+                    </div>
+                    <input ng-model="modal.last_percent_complete" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+
+
+
+                <div class="input-group mb-3 w-25 p-3"
+                     moment-picker="modal.start_date"
+                     format="YYYY-MM-DD"
+                     locale="zh-tw">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text material-icons" id="basic-addon1">calendar_month</span>
+                    </div>
+                    <input class="form-control"
+                           placeholder="Select a date"
+                           ng-model="modal.start_date"
+                           ng-model-options="{ updateOn: 'blur' }">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">開始日期</span>
+                    </div>
+                </div>
+                <div class="input-group mb-3 w-25 p-3"
+                     moment-picker="modal.end_date"
+                     format="YYYY-MM-DD"
+                     locale="zh-tw">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text material-icons" id="basic-addon1">calendar_month</span>
+                    </div>
+                    <input class="form-control"
+                           placeholder="Select a date"
+                           ng-model="modal.end_date"
+                           ng-model-options="{ updateOn: 'blur' }">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">結束日期</span>
+                    </div>
+                </div>
+                <button ng-click="addMilestone()" type="button" class="btn btn-primary">
+                    Add milestone
+                </button>
+
+                <div ng-repeat="milestone in modal.milestones" class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Content</span>
+                    </div>
+                    <input ng-model="milestone.content" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                    <div class="input-group mb-3 w-25 p-3"
+                         moment-picker="milestone.date"
+                         format="YYYY-MM-DD"
+                         locale="zh-tw">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text material-icons" id="basic-addon1">calendar_month</span>
+                        </div>
+                        <input class="form-control"
+                               placeholder="Select a date"
+                               ng-model="milestone.date"
+                               ng-model-options="{ updateOn: 'blur' }">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">請選擇年月份</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" name="removeMilestone" ng-click="removeMilestone($index)">
+                        <span class="material-icons">delete</span>
+                    </button>
+                </div>
+
+            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="removeSchedule()">Delete</button>
+                    @*<button ng-click="SaveChange()" type="button" class="btn btn-primary">Save changes</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

@@ -5,14 +5,44 @@
 
 
 @section Styles {
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/css/angular-moment-picker.min.css">    <
     <style>
         header {
             margin-top: 100px;
         }
+
+        div[ng-dropdown-multiselect] > div > ul > li.divider {
+            margin-top: 5px !important;
+            margin-bottom: 5px !important;
+            height: 1px;
+            background-color: #e5e5e5;
+        }
+
+        div[ng-dropdown-multiselect] > div > ul > li > a:hover {
+            text-decoration: none;
+        }
+
+        div[ng-dropdown-multiselect] > div > ul > li > a {
+            display: block;
+            padding: 3px 20px;
+            clear: both;
+            font-weight: 400;
+            line-height: 1.428571429;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        div[ng-dropdown-multiselect] > div > ul > li:hover {
+            background-color: #F5F5F5;
+        }
+        span.fa-check {
+            color: #f4623a;
+        }
+
     </style>
 }
-
-
 
 
 <div ng-controller="ScheduleCtrl" class="container">
@@ -50,4 +80,7 @@
 
 @section Scripts {
     <script src="~/Scripts/WebApp/Schedule/ScheduleCtrl.js"></script>
+    <script src="~/Scripts/moment-with-locales.js"></script>
+    <script src="~/Scripts/angular-moment-picker.min.js"></script>
+    <script src="~/Scripts/angularjs-dropdown-multiselect.min.js"></script>
 }

@@ -60,5 +60,31 @@ namespace TEEmployee.Controllers
             var ret = _service.GetAllReferredSchedules(Session["empno"].ToString());
             return Json(ret);
         }
+
+        [HttpPost]
+        public JsonResult GetAllEmployeesByRole()
+        {
+            var ret = _service.GetAllEmployeesByRole(Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateOwnedSchedules(List<Schedule> schedules)
+        {
+            var ret = _service.UpdateOwnedSchedules(schedules, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteOwnedSchedules(List<int> schedules, List<int> milestones)
+        {
+            var ret = _service.DeleteOwnedSchedules(schedules, milestones);
+            return Json(ret);
+        }
+        protected override void Dispose(bool disposing)
+        {
+            _service.Dispose();
+            base.Dispose(disposing);
+        }
     }
 }

@@ -14,8 +14,8 @@ namespace TEEmployee.Models.Schedule
         public string content { get; set; }
         public string start_date { get; set; }
         public string end_date { get; set; }
-        public int current_progress { get; set; }
-        public int last_progress { get; set; }
+        public int percent_complete { get; set; }
+        public int last_percent_complete { get; set; }
         public int parent_id { get; set; }
         public string history { get; set; }
         public string projno { get; set; }
@@ -28,7 +28,7 @@ namespace TEEmployee.Models.Schedule
         public int id { get; set; }        
         public string content { get; set; }
         public string date { get; set; }        
-        //public int schedule_id { get; set; }
+        public int schedule_id { get; set; }
 
     }
 }

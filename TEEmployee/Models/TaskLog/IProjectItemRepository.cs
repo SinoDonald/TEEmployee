@@ -13,6 +13,7 @@ namespace TEEmployee.Models.TaskLog
         bool Insert(ProjectItem projectItem);
         bool Insert(List<ProjectItem> projectItem);
         bool Upsert(ProjectItem projectItem);
+        bool Upsert(List<ProjectItem> projectItem);
         bool Update(ProjectItem projectItem);
         bool Delete(ProjectItem projectItem);        
         void Dispose();
