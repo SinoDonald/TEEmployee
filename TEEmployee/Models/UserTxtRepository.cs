@@ -131,14 +131,31 @@ namespace TEEmployee.Models
                     string[] subs = item.Split('\t');
                     User user = new User();
 
+                    //user.empno = subs[0];
+                    //user.name = subs[1];
+                    //user.gid = subs[2];
+                    //user.profTitle = subs[3];
+                    //user.duty = subs[4];                    
+                    //user.dutyName = subs[5];
+                    //user.tel = subs[6];
+                    //user.email = subs[7];
+
                     user.empno = subs[0];
                     user.name = subs[1];
                     user.gid = subs[2];
                     user.profTitle = subs[3];
-                    user.duty = subs[4];                    
-                    user.dutyName = subs[5];
-                    user.tel = subs[6];
-                    user.email = subs[7];
+                    user.duty = subs[4];
+
+                    if (user.duty == "461")
+                        user.dutyName = "計畫副經理";
+                    else if (user.duty == "481")
+                        user.dutyName = "技術經理";
+                    else if (user.duty == "491")
+                        user.dutyName = "協理";                    
+
+                    user.tel = subs[5];
+                    user.email = subs[6];
+
 
                     users.Add(user);
                 }

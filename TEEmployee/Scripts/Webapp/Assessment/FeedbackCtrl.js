@@ -200,11 +200,12 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
 
                     let count = 0;
 
-                    for (var i = 0; i < $scope.Responses.length; i++) {
+                    for (let i = 0; i < $scope.Responses.length; i++) {
                         if ($scope.Responses[i].Content === '意見回饋') {
                             $scope.Responses[i].Choice = '';
                             for (let fed of ret.data) {
-                                $scope.Responses[i].Choice += ('\n' + fed.Name + ':\n' + fed.Text[count] + '\n');
+                                if (fed.Text[count])
+                                    $scope.Responses[i].Choice += ('\n' + fed.Name + ':\n' + fed.Text[count] + '\n');
                             }
                             
                             count++;
@@ -212,7 +213,8 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
                     }
 
                     $scope.feedback = ''
-                    for (let fed of ret.data) {                        
+                    for (let fed of ret.data) {
+                        if (fed.Text[count])
                         $scope.feedback += ('\n' + fed.Name + ':\n' + fed.Text[count] + '\n');
                     }
                     
@@ -290,7 +292,7 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
                 feedbacks.push($scope.Responses[i].Choice);
             }
         }
-
+        var a = 0;
         feedbacks.push($scope.feedback);
 
         appService.UpdateFeedback({ feedbacks: feedbacks, state: state, empno: myFactory.get().EmployeeInfo.Employee.empno })

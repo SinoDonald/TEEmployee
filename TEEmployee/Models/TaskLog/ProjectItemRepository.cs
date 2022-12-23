@@ -121,5 +121,32 @@ namespace TEEmployee.Models.TaskLog
 
             return ret > 0 ? true : false;
         }
+
+
+        public bool Upsert(List<ProjectItem> projectItem)
+        {
+            _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+
+                int ret;
+
+                string sql = @"INSERT INTO ProjectItem (empno, depno, yymm, projno, itemno, workhour, overtime) 
+                        VALUES(@empno, @depno, @yymm, @projno, @itemno, @workhour, @overtime) 
+                        ON CONFLICT(empno, yymm, projno, itemno) 
+                        DO UPDATE SET workhour=@workhour, overtime=@overtime";
+
+                ret = _conn.Execute(sql, projectItem);
+
+
+                tran.Commit();
+
+                return ret > 0 ? true : false;
+
+            }
+
+        }
+
     }
 }

@@ -152,8 +152,10 @@ namespace TEEmployee.Controllers
 
                 using (TasklogService service = new TasklogService())
                 {                    
-                        service.InsertProjectItem(projectItems);
-                        //service.UpsertMonthlyRecord(monthlyRecords);
+                        
+                    service.UpsertProjectItem(projectItems);
+                    //service.InsertProjectItem(projectItems);
+                    //service.UpsertMonthlyRecord(monthlyRecords);
                 }
 
             }

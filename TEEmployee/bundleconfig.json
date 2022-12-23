@@ -24,6 +24,12 @@
     ]
   },
   {
+    "outputFileName": "Scripts/Webapp/Schedule/ScheduleCtrl.min.js",
+    "inputFiles": [
+      "Scripts/Webapp/Schedule/ScheduleCtrl.js"
+    ]
+  },
+  {
     "outputFileName": "Scripts/Webapp/Assessment/FeedbackCtrl.min.js",
     "inputFiles": [
       "Scripts/Webapp/Assessment/FeedbackCtrl.js"

@@ -222,7 +222,9 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\angular-animate.min.js" />
     <Content Include="Scripts\angular-mocks.js" />
+    <Content Include="Scripts\angular-moment-picker.min.js" />
     <Content Include="Scripts\angular-route.js" />
     <Content Include="Scripts\angular-route.min.js" />
     <Content Include="Scripts\angular-ui-router.js" />
@@ -298,6 +300,9 @@
     </Content>
     <Content Include="Scripts\Webapp\Home\AdminCtrl.js" />
     <Content Include="Scripts\Webapp\Schedule\ScheduleCtrl.js" />
+    <Content Include="Scripts\Webapp\Schedule\ScheduleCtrl.min.js">
+      <DependentUpon>ScheduleCtrl.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\Webapp\Tasklog\TasklogCtrl.js" />
     <Content Include="Scripts\Webapp\Tasklog\TasklogCtrl.min.js">
       <DependentUpon>TasklogCtrl.js</DependentUpon>

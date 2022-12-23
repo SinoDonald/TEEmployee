@@ -102,5 +102,11 @@ namespace TEEmployee.Controllers
         //    return Json(ret);
         //}
 
+        protected override void Dispose(bool disposing)
+        {
+            _service.Dispose();
+            base.Dispose(disposing);
+        }
+
     }
 }
