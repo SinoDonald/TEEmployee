@@ -13,7 +13,7 @@ namespace TEEmployee.Models
         public static HtmlString Versioned(this UrlHelper helper, string target)
         {
             
-            if (true/*!HttpContext.Current.IsDebuggingEnabled*/)
+            if (!HttpContext.Current.IsDebuggingEnabled)
             {
                 var minTarget = target.Substring(0, target.Length - 2) + "min.js";
 
