@@ -35,6 +35,15 @@ namespace TEEmployee.Controllers
         {
             return PartialView();
         }
+        public ActionResult Test()
+        {
+            return PartialView();
+        }
+
+        public ActionResult TF2()
+        {
+            return PartialView();
+        }
 
 
         /*........................  Web api  ...........................*/

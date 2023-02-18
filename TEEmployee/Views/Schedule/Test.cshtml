@@ -1,29 +1,15 @@
-﻿<div ng-controller="IndividualCtrl">
-    
+﻿
+<div ng-controller="TestCtrl">
+
     <div>
-        <h3>個人行事曆</h3>
+        <h3>群組行事曆</h3>
         <button ng-click="UpdateSchedules()" type="button" class="btn btn-primary">
             儲存
-        </button>        
+        </button>
+        <button ng-click="addSchedule()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+            新增
+        </button>
     </div>
-
-
-    @*<table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Project No.</th>
-                    <th scope="col">Content</th>
-                    <th scope="col">Members</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="row in data.Owned.Individual">
-                    <td ng-bind="row.projno"></td>
-                    <td ng-bind="row.content"></td>
-                    <td ng-bind="row.member"></td>
-                </tr>
-            </tbody>
-        </table>*@
 
     <table class="table">
         <thead class="thead-dark">
@@ -32,94 +18,94 @@
                 <th scope="col">計畫編號</th>
                 <th scope="col">工作項目</th>
                 <th scope="col">主要人員/使用人時</th>
-                <th scope="col">開始日期</th>
-                <th scope="col">結束日期</th>
+                @*<th scope="col">開始日期</th>
+                <th scope="col">結束日期</th>*@
+                <th scope="col">Chart</th>
                 <th scope="col">本月累計進度(%)</th>
                 <th scope="col">上月累計進度(%)</th>
             </tr>
         </thead>
-        <tbody ng-repeat="rschedule in data.Referred.Group | orderBy:'-start_date'">
+        <tbody ng-repeat="schedule in data.Owned.Group | orderBy:'start_date'" on-finish-render="ngRepeatFinished">
             <tr>
                 <td>
-                    <button ng-click="addSchedule(rschedule.id)" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
-                        新增
+                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample{{$index}}" aria-expanded="false" aria-controls="collapseExample">
+                        展開
                     </button>
 
                     @*Button trigger modal*@
-                    <!--<button ng-click="$parent.modal = schedule; passChosen()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
-                        Launch demo modal
-                    </button>-->
+                    <button ng-click="$parent.modal = schedule; passChosen()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+                        編輯項目
+                    </button>
 
+                    @*Method 2 : save change in modal*@
+                    @*<button ng-click="ModifySchedule(schedule)" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+                            Launch demo modal
+                        </button>*@
                 </td>
-                <td ng-bind="rschedule.projno"></td>
-                <td ng-bind="rschedule.content"></td>
-                <td ng-bind="rschedule.member"></td>
-                <td ng-bind="rschedule.start_date"></td>
-                <td ng-bind="rschedule.end_date"></td>
-                <td ng-bind="rschedule.percent_complete"></td>
-                <td ng-bind="rschedule.last_percent_complete"></td>
+                <td ng-bind="schedule.projno"></td>
+                <td ng-bind="schedule.content"></td>
+                <td ng-bind="schedule.member"></td>
+                @*<td ng-bind="schedule.start_date"></td>*@
+                <td>
+                    <svg id="svg{{$index}}" width="800" , height="80"></svg>
+                </td>
+                @*<td ng-bind="schedule.end_date"></td>*@
+                <td ng-bind="schedule.percent_complete"></td>
+                <td ng-bind="schedule.last_percent_complete"></td>
             </tr>
             <tr>
-                <td colspan="8">
-                    <table class="table mb-0">
-                        <tbody ng-repeat="oschedule in data.Owned.Individual | filter :{'parent_id' : rschedule.id}">
-                            <tr>
-                                <td>
-                                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample{{$parent.$index}}-{{$index}}" aria-expanded="false" aria-controls="collapseExample">
-                                        展開
-                                    </button>
-
-                                    @*Button trigger modal*@
-                                    <button ng-click="$parent.$parent.modal = oschedule" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
-                                        編輯
-                                    </button>
-
-                                    @*Method 2 : save change in modal*@
-                                    @*<button ng-click="ModifySchedule(schedule)" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
-                                            Launch demo modal
-                                        </button>*@
-                                </td>
-
-                                <td ng-bind="oschedule.projno"></td>
-                                <td ng-bind="oschedule.content"></td>
-
-                                <td ng-bind="oschedule.start_date"></td>
-                                <td ng-bind="oschedule.end_date"></td>
-                                <td ng-bind="oschedule.percent_complete"></td>
-                                <td ng-bind="oschedule.last_percent_complete"></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                </td>
-                                <td colspan="3">
-                                    <div class="collapse" id="collapseExample{{$parent.$index}}-{{$index}}">
-                                        <table class="table mb-0">
-                                            <thead class="thead-light">
-                                                <tr>
-                                                    <th scope="col">內容</th>
-                                                    <th scope="col">日期</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr ng-repeat="milestone in oschedule.milestones">
-                                                    <td ng-bind="milestone.content"></td>
-                                                    <td ng-bind="milestone.date"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </td>
-
-                            </tr>
-                        </tbody>
-                    </table>
-
+                <td>
+                </td>
+                <td colspan="3">
+                    <div class="collapse" id="collapseExample{{$index}}">
+                        <table class="table mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">內容</th>
+                                    <th scope="col">日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="milestone in schedule.milestones">
+                                    <td ng-bind="milestone.content"></td>
+                                    <td ng-bind="milestone.date"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </td>
 
             </tr>
         </tbody>
 
+
+        @*<tbody>
+                <tr ng-repeat="row in data.Owned.Group">
+                    <td ng-bind="row.projno"></td>
+                    <td ng-bind="row.content"></td>
+                    <td ng-bind="row.member"></td>
+                    <td>
+                        <table class="table mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Content</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="milestone in data.milestones">
+                                    <td ng-bind="milestone.content"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+
+                </tr>
+            </tbody>*@
     </table>
+
+
+
+
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -131,7 +117,20 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-
+                @*<div class="modal-body">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Content</span>
+                            </div>
+                            <input ng-model="copy.content" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                        <div ng-repeat="milestone in copy.milestones" class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Content</span>
+                            </div>
+                            <input ng-model="milestone.content" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                    </div>*@
                 <div class="modal-body">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
@@ -139,7 +138,13 @@
                         </div>
                         <input ng-model="modal.content" type="text" class="form-control" placeholder="請輸入工作項目" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
-
+                    <div ng-dropdown-multiselect="" options="employees" events="yourEvents" selected-model="example1model"></div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">計畫編號</span>
+                        </div>
+                        <input ng-model="modal.projno" type="text" class="form-control" placeholder="請輸入計畫編號" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">本月累計進度(%)</span>
@@ -206,23 +211,21 @@
                                    ng-model="milestone.date"
                                    ng-model-options="{ updateOn: 'blur' }">
                             @*<div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1">請選擇年月份</span>
-                            </div>*@
+                                    <span class="input-group-text" id="basic-addon1">請選擇年月份</span>
+                                </div>*@
                         </div>
                         <button type="button" class="btn btn-primary" name="removeMilestone" ng-click="removeMilestone($index)">
-                            <span class="material-icons">delete</span>
+                            <span class="material-icons">刪除</span>
                         </button>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="removeSchedule()">刪除</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="updatePlot()">關閉</button>
                     @*<button ng-click="SaveChange()" type="button" class="btn btn-primary">Save changes</button>*@
                 </div>
             </div>
         </div>
     </div>
-
-
 </div>

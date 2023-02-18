@@ -14,6 +14,7 @@ namespace TEEmployee.Controllers
     {
         public ActionResult Index()
         {
+            InsertProjectItem();
             return View();
         }
 
@@ -115,7 +116,7 @@ namespace TEEmployee.Controllers
                 }
 
                 if (projectItems.Count != 0) ret = true;
-
+                else return false;
                 //List<MonthlyRecord> monthlyRecords = new List<MonthlyRecord>();
                 //foreach (var item in projectItems)
                 //{

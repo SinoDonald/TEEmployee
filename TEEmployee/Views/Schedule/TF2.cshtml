@@ -1,10 +1,10 @@
-﻿<div ng-controller="IndividualCtrl">
-    
+﻿<div ng-controller="TF2Ctrl">
+
     <div>
         <h3>個人行事曆</h3>
         <button ng-click="UpdateSchedules()" type="button" class="btn btn-primary">
             儲存
-        </button>        
+        </button>
     </div>
 
 
@@ -28,17 +28,18 @@
     <table class="table">
         <thead class="thead-dark">
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">計畫編號</th>
-                <th scope="col">工作項目</th>
-                <th scope="col">主要人員/使用人時</th>
-                <th scope="col">開始日期</th>
-                <th scope="col">結束日期</th>
+                <th scope="col" style="width: 8%">#</th>
+                <th scope="col" style="width: 8%">計畫編號</th>
+                <th scope="col" style="width: 8%">工作項目</th>
+                <th scope="col" style="width: 8%">主要人員/使用人時</th>
+                @*<th scope="col">開始日期</th>
+                    <th scope="col">結束日期</th>*@
+                <th scope="col">CHART</th>
                 <th scope="col">本月累計進度(%)</th>
                 <th scope="col">上月累計進度(%)</th>
             </tr>
         </thead>
-        <tbody ng-repeat="rschedule in data.Referred.Group | orderBy:'-start_date'">
+        <tbody ng-repeat="rschedule in data.Referred.Group | orderBy:'start_date'" on-finish-render="ngRepeatFinished">
             <tr>
                 <td>
                     <button ng-click="addSchedule(rschedule.id)" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
@@ -54,17 +55,20 @@
                 <td ng-bind="rschedule.projno"></td>
                 <td ng-bind="rschedule.content"></td>
                 <td ng-bind="rschedule.member"></td>
-                <td ng-bind="rschedule.start_date"></td>
-                <td ng-bind="rschedule.end_date"></td>
+                @*<td ng-bind="rschedule.start_date"></td>
+                    <td ng-bind="rschedule.end_date"></td>*@
+                <td>
+                    <svg id="svg{{$index}}" width="800" , height="80"></svg>
+                </td>
                 <td ng-bind="rschedule.percent_complete"></td>
                 <td ng-bind="rschedule.last_percent_complete"></td>
             </tr>
             <tr>
-                <td colspan="8">
+                <td style="padding: 0.5rem 0 " colspan="8">
                     <table class="table mb-0">
                         <tbody ng-repeat="oschedule in data.Owned.Individual | filter :{'parent_id' : rschedule.id}">
                             <tr>
-                                <td>
+                                <td style="width: 8%">
                                     <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample{{$parent.$index}}-{{$index}}" aria-expanded="false" aria-controls="collapseExample">
                                         展開
                                     </button>
@@ -80,11 +84,14 @@
                                         </button>*@
                                 </td>
 
-                                <td ng-bind="oschedule.projno"></td>
-                                <td ng-bind="oschedule.content"></td>
-
-                                <td ng-bind="oschedule.start_date"></td>
-                                <td ng-bind="oschedule.end_date"></td>
+                                <td ng-bind="oschedule.projno" style="width: 8%"></td>
+                                <td ng-bind="oschedule.content" style="width: 8%"></td>
+                                <td style="width: 8%"></td>
+                                @*<td ng-bind="oschedule.start_date"></td>
+                                    <td ng-bind="oschedule.end_date"></td>*@
+                                <td>
+                                    <svg id="svgChild{{$parent.$index}}-{{$index}}" width="800" , height="80"></svg>
+                                </td>
                                 <td ng-bind="oschedule.percent_complete"></td>
                                 <td ng-bind="oschedule.last_percent_complete"></td>
                             </tr>
@@ -206,8 +213,8 @@
                                    ng-model="milestone.date"
                                    ng-model-options="{ updateOn: 'blur' }">
                             @*<div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1">請選擇年月份</span>
-                            </div>*@
+                                    <span class="input-group-text" id="basic-addon1">請選擇年月份</span>
+                                </div>*@
                         </div>
                         <button type="button" class="btn btn-primary" name="removeMilestone" ng-click="removeMilestone($index)">
                             <span class="material-icons">delete</span>
@@ -217,7 +224,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="removeSchedule()">刪除</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="updatePlot()">關閉</button>
                     @*<button ng-click="SaveChange()" type="button" class="btn btn-primary">Save changes</button>*@
                 </div>
             </div>
@@ -226,3 +233,4 @@
 
 
 </div>
+

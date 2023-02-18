@@ -37,15 +37,21 @@
         div[ng-dropdown-multiselect] > div > ul > li:hover {
             background-color: #F5F5F5;
         }
+
         span.fa-check {
             color: #f4623a;
         }
 
+        .x-axis line, .x-axis path {
+            fill: none;
+            stroke: rgba(0,0,0,.1);
+        }
+      
     </style>
 }
 
 
-<div ng-controller="ScheduleCtrl" class="container">
+<div ng-controller="ScheduleCtrl" class="container-fluid">
 
     <header>
         <h2>年度行事曆目標</h2>
@@ -56,13 +62,15 @@
             <a class="nav-item nav-link" ui-sref="Group">群組行事曆</a>
             <a class="nav-item nav-link" ui-sref="Individual">個人行事曆</a>
             <a class="nav-item nav-link" ui-sref="Future">未來3年數位轉型規劃</a>
+            <a class="nav-item nav-link" ui-sref="Test">群組行事曆甘特</a>
+            <a class="nav-item nav-link" ui-sref="TF2">個人行事曆甘特</a>
         </div>
     </nav>
 
 
 
     <div ui-view></div>
-    <ul>
+    @*<ul>
         <li ng-repeat="schedule in data">
             schedule [{{schedule.id}}] is owned by {{schedule.empno}}. Members are {{schedule.member}} Content: {{schedule.content}}
             <ul>
@@ -71,7 +79,7 @@
                 </li>
             </ul>
         </li>
-    </ul>
+    </ul>*@
 
 
 
@@ -79,6 +87,9 @@
 
 
 @section Scripts {
+    <script src="https://unpkg.com/d3@7.8.2/dist/d3.min.js"></script>
+    @*<script src="~/Scripts/WebApp/Schedule/ScatterPlot.js"></script>*@
+    <script src="~/Scripts/WebApp/Schedule/GanttPlot.js"></script>
     <script src="~/Scripts/WebApp/Schedule/ScheduleCtrl.js"></script>
     <script src="~/Scripts/moment-with-locales.js"></script>
     <script src="~/Scripts/angular-moment-picker.min.js"></script>

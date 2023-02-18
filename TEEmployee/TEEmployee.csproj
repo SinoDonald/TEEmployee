@@ -299,6 +299,8 @@
       <DependentUpon>SelfCtrl.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Webapp\Home\AdminCtrl.js" />
+    <Content Include="Scripts\Webapp\Schedule\GanttPlot.js" />
+    <Content Include="Scripts\Webapp\Schedule\ScatterPlot.js" />
     <Content Include="Scripts\Webapp\Schedule\ScheduleCtrl.js" />
     <Content Include="Scripts\Webapp\Schedule\ScheduleCtrl.min.js">
       <DependentUpon>ScheduleCtrl.js</DependentUpon>
@@ -362,6 +364,8 @@
     <Content Include="Views\Schedule\Group.cshtml" />
     <Content Include="Views\Schedule\Individual.cshtml" />
     <Content Include="Views\Schedule\Future.cshtml" />
+    <Content Include="Views\Schedule\Test.cshtml" />
+    <Content Include="Views\Schedule\TF2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Response\" />
