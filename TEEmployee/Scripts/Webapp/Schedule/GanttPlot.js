@@ -10,46 +10,66 @@ const ganttPlot = () => {
     let margin;
     let radius;
     let type;
+    let year;
+    let startMonth;
 
     const my = (selection) => {
 
-        const start = new Date(2022, 0, 1);
-        const end = new Date(2022, 11, 31);
+        //const start = new Date(year, 0, 1);
+        //const end = new Date(year, 11, 31);
+
+        const start = startMonth;
+        const end = moment(startMonth).add(1, 'y').toDate();
 
         const x = scaleTime()
             .domain(extent([start, end]))
             .range([margin.left, width - margin.right]);
 
-        console.log(start);
+        const markstart = x(start);
+        const markend = x(end);
+
+        const t = transition()
+            .duration(2000)
+
+        //console.log(start);
 
         // parsed data transformed to data on svg through scale 
         const marks = data.map(d => ({
             x1: x(x1Value(d)),
             x2: x(x2Value(d)),
             y: height / 3,
-            cxy: d.milestones.map(i => ({
-                cx: x(i.date),
+            cxy: d.milestones?.map(i => ({
+                //cx: x(i.date),
+                cx: x(new Date(i.date)),
                 cy: height / 3
             })),
-            wxy: d.milestones.map(i => ({
-                wx: x(i.date),
+            wxy: d.milestones?.map(i => ({
+            /* wx: x(i.date),*/
+                wx: x(new Date(i.date)),
                 wy: height / 4,
                 content: i.content
             }))
         }));
-
-
-        
 
         // rect
         const rects = selection
             .selectAll('rect')
             .data(marks)
             .join('rect')
-            .attr("x", d => d.x1)
-            .attr("y", d => d.y)
+            .transition(t)
+            //.attr("x", d => d.x1)
+            .attr("x", d => {
+                return (d.x1 > markstart) ? d.x1 : markstart;
+            })
+            .attr("y", d => d.y)            
+            //.attr("width", d => {               
+            //    const w = Math.round(d.x2 - d.x1);
+            //    return w > 0 ? w : 0;
+            //})
             .attr("width", d => {
-                const w = Math.round(d.x2 - d.x1);
+                const x1 = (d.x1 > markstart) ? d.x1 : markstart;
+                const x2 = (d.x2 < markend) ? d.x2 : markend;
+                const w = Math.round(x2 - x1);
                 return w > 0 ? w : 0;
             })
             // {
@@ -77,6 +97,7 @@ const ganttPlot = () => {
         groups.selectAll('circle')
             .data((d) => d.cxy)
             .join('circle')
+            .transition(t)
             .attr('cx', d => d.cx)
             .attr('cy', d => d.cy + 0.5 * height / 3)
             .attr('r', radius);
@@ -85,6 +106,7 @@ const ganttPlot = () => {
         groups.selectAll('text')
             .data((d) => d.wxy)
             .join('text')
+            .transition(t)
             .attr('x', d => d.wx)
             .attr('y', d => d.wy)
             .text(d => d.content);
@@ -95,6 +117,7 @@ const ganttPlot = () => {
             .join('g')
             .attr('class', 'x-axis')
             .attr('transform', `translate(0, ${height - margin.bottom})`)
+            .transition(t)
             .call(axisBottom(x).ticks(12).tickFormat(timeFormat('%m')).tickSize(-0.5 * height, 0));
         
     };
@@ -125,6 +148,11 @@ const ganttPlot = () => {
     my.type = function (_) {
         return arguments.length ? ((type = _), my) : type;
     }
-
+    my.year = function (_) {
+        return arguments.length ? ((year = +_), my) : year;
+    }
+    my.startMonth = function (_) {
+        return arguments.length ? ((startMonth = _), my) : startMonth;
+    }
     return my;
 }

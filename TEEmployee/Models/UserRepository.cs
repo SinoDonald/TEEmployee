@@ -126,6 +126,47 @@ namespace TEEmployee.Models
         }
 
 
+        // GET the group one name list owned by the manager
+        public List<string> GetSubGroups(string manno)
+        {
+            List<string> groups = new List<string>();
+            User user = this.Get(manno);
+
+            // department manager or group manager
+
+            if ((user.group_manager && user.group == "設計") || user.department_manager)
+            {
+                groups.AddRange(new List<string> { "地工組", "界面整合管理組", "BIM暨程式開發組", "智慧軌道創新小組" });
+            }
+
+            if ((user.group_manager && user.group == "規劃") || user.department_manager)
+            {
+                groups.AddRange(new List<string> { "土木組", "規劃組" });
+            }
+
+            if ((user.group_manager && user.group == "專管") || user.department_manager)
+            {
+                groups.AddRange(new List<string> { "工程管理組", "成本/契約組", "工務組" });
+            }
+
+            if (user.department_manager)
+            {
+                groups.AddRange(new List<string> { "計畫管理組", "行政組" });
+            }
+
+            // sub group manager
+            if (user.group_one_manager) groups.Add(user.group_one);
+            if (user.group_two_manager) groups.Add(user.group_two);
+            if (user.group_three_manager) groups.Add(user.group_three);
+
+            // remove duplicates from special case
+            groups = groups.Distinct().ToList();
+
+            return groups;
+        }
+
+
+
 
         //public bool DeleteUserExtra()
         //{

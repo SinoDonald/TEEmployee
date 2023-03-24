@@ -103,7 +103,7 @@ namespace TEEmployee.Controllers
         {
             bool ret = false;
 
-            if (Session["Admin"] is object)
+            if (/*Session["Admin"] is object*/ true)
             {               
 
                 // read new project items from txt file

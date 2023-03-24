@@ -25,6 +25,43 @@ namespace TEEmployee.Models.Schedule
             throw new NotImplementedException();
         }
 
+        public bool Delete(List<Schedule> schedules)
+        {
+            if (_conn.State == 0)
+                _conn.Open();
+
+            int ret = 0;
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                string deleteScheduleSql = @"DELETE FROM Schedule WHERE id=@id;";
+                string deleteMilestoneSql = @"DELETE FROM Milestone WHERE id=@id;";
+
+                try
+                {
+                    schedules?.ForEach(schedule =>
+                    {
+                        ret = _conn.Execute(deleteScheduleSql, schedule, tran);
+
+                        schedule.milestones?.ForEach(milestone =>
+                        {
+                            ret = _conn.Execute(deleteMilestoneSql, milestone, tran);
+                        });
+
+                    });
+                    
+                    tran.Commit();
+                }
+                catch
+                {
+                    ret = 0;
+                }
+
+            }
+
+            return ret > 0;
+        }
+
         public bool Delete(List<int> schedules, List<int> milestones)
         {
             if (_conn.State == 0)
@@ -163,6 +200,54 @@ namespace TEEmployee.Models.Schedule
             return resultList.ToList();
         }
 
+        public List<Schedule> GetAllGroupSchedules(string role)
+        {
+            var lookup = new Dictionary<int, Schedule>();
+            _conn.Query<Schedule, Milestone, Schedule>(@"
+                SELECT s.*, m.*
+                FROM Schedule AS s
+                LEFT JOIN Milestone AS m ON s.id = m.schedule_id
+                WHERE s.role=@role AND s.type = 2
+                ", (s, m) => {
+                Schedule schedule;
+                if (!lookup.TryGetValue(s.id, out schedule))
+                    lookup.Add(s.id, schedule = s);
+                if (schedule.milestones == null)
+                    schedule.milestones = new List<Milestone>();
+                if (m != null)
+                    schedule.milestones.Add(m); /* Add locations to course */
+                return schedule;
+            }, new { role }).AsQueryable();
+            var resultList = lookup.Values;
+
+
+            return resultList.ToList();
+        }
+
+        public List<Schedule> GetAllIndividualSchedules(string empno)
+        {
+            var lookup = new Dictionary<int, Schedule>();
+            _conn.Query<Schedule, Milestone, Schedule>(@"
+                SELECT s.*, m.*
+                FROM Schedule AS s
+                LEFT JOIN Milestone AS m ON s.id = m.schedule_id
+                WHERE s.empno=@empno  
+                ", (s, m) => {
+                Schedule schedule;
+                if (!lookup.TryGetValue(s.id, out schedule))
+                    lookup.Add(s.id, schedule = s);
+                if (schedule.milestones == null)
+                    schedule.milestones = new List<Milestone>();
+                if (m != null)
+                    schedule.milestones.Add(m); /* Add locations to course */
+                return schedule;
+            }, new { empno }).AsQueryable();
+            var resultList = lookup.Values;
+
+
+            return resultList.ToList();
+        }
+
         public List<Schedule> GetAllReferredSchedules(string name)
         {            
             var lookup = new Dictionary<int, Schedule>();
@@ -188,17 +273,104 @@ namespace TEEmployee.Models.Schedule
         }
 
 
-
-        public bool Insert(Schedule schedule)
+        // return schedule in service layer; return boolean or new ids in repository
+        public Schedule Insert(Schedule schedule)
         {
-            throw new NotImplementedException();
+            if (_conn.State == 0)
+                _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                string sql = @"INSERT INTO Schedule (empno, member, type, content, start_date, end_date, percent_complete, last_percent_complete, parent_id, history, projno, role) 
+                        VALUES(@empno, @member, @type, @content, @start_date, @end_date, @percent_complete, @last_percent_complete, @parent_id, @history, @projno, @role) 
+                        RETURNING id";
+                try
+                {
+                    int schedule_id = _conn.QuerySingle<int>(sql, schedule, tran);
+                    schedule.id = schedule_id;
+
+                    if (schedule.milestones != null)
+                    {
+                        string insertMilestoneSql = @"INSERT INTO Milestone (content, date, schedule_id) 
+                        VALUES(@content, @date, @schedule_id) 
+                        RETURNING id";
+
+                        foreach (Milestone milestone in schedule.milestones)
+                        {
+                            milestone.schedule_id = schedule_id;
+                            milestone.id = _conn.Execute(insertMilestoneSql, milestone, tran);
+                        }
+                    }
+
+                    tran.Commit();
+                    return schedule;
+                }
+                catch(Exception e)
+                {
+                    return null;
+                }
+
+            }
+
         }
 
-        public bool Update(Schedule schedule)
+        public Schedule Update(Schedule schedule, List<int> deletedMilestones)
         {
-            throw new NotImplementedException();
-        }
+            if (_conn.State == 0)
+                _conn.Open();
 
+            int ret;
+
+            using (var tran = _conn.BeginTransaction())
+            {                
+                string sql = @"UPDATE Schedule SET member=@member, content=@content, start_date=@start_date, end_date=@end_date, percent_complete=@percent_complete, last_percent_complete=@last_percent_complete, projno=@projno WHERE id=@id";
+
+                try
+                {
+                    ret = _conn.Execute(sql, schedule, tran);
+
+                    // update or insert milestones
+                    if (schedule.milestones != null)
+                    {
+                        string insertMilestoneSql = @"INSERT INTO Milestone (content, date, schedule_id) 
+                        VALUES(@content, @date, @schedule_id) 
+                        RETURNING id";
+
+                        string updateMilestoneSql = @"UPDATE Milestone SET content=@content, date=@date WHERE id=@id";
+
+                        foreach (Milestone milestone in schedule.milestones)
+                        {
+                            if(milestone.id != 0)
+                            {
+                                ret = _conn.Execute(updateMilestoneSql, milestone, tran);
+                            }
+                            else
+                            {
+                                milestone.schedule_id = schedule.id;
+                                milestone.id = _conn.Execute(insertMilestoneSql, milestone, tran);
+                            }                            
+                        }
+                    }
+
+                    // delete milestones
+                    string deletedMilestoneSql = @"DELETE FROM Milestone WHERE id=@id;";
+
+                    deletedMilestones?.ForEach(id =>
+                    {
+                        ret = _conn.Execute(deletedMilestoneSql, new { id }, tran);
+                    });
+
+
+                    tran.Commit();
+                    return schedule;
+                }
+                catch
+                {
+                    return null;
+                }
+            }            
+        }
+               
         public bool Insert(List<Schedule> schedules)
         {
 

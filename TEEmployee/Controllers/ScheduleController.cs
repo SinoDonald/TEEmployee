@@ -45,6 +45,10 @@ namespace TEEmployee.Controllers
             return PartialView();
         }
 
+        public ActionResult ShowTime()
+        {
+            return PartialView();
+        }
 
         /*........................  Web api  ...........................*/
 
@@ -78,9 +82,38 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllOwnedSubGroups()
+        {
+            var ret = _service.GetAllOwnedSubGroups(Session["empno"].ToString());
+            return Json(ret);
+        }
+        
+
+        [HttpPost]
         public JsonResult UpdateOwnedSchedules(List<Schedule> schedules)
         {
             var ret = _service.UpdateOwnedSchedules(schedules, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult InsertSingleSchedule(Schedule schedule)
+        {
+            var ret = _service.InsertSingleSchedule(schedule, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateSingleSchedule(Schedule schedule, List<int> deletedMilestones)
+        {
+            var ret = _service.UpdateSingleSchedule(schedule, deletedMilestones, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteSingleSchedule(Schedule schedule)
+        {
+            var ret = _service.DeleteSingleSchedule(schedule, Session["empno"].ToString());
             return Json(ret);
         }
 

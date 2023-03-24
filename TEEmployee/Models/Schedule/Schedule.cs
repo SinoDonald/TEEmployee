@@ -8,7 +8,9 @@ namespace TEEmployee.Models.Schedule
     public class Schedule
     {
         public int id { get; set; }
+        // group schedule owned by manager role (group one name), individual schedule owned by empno
         public string empno { get; set; }
+        public string role { get; set; }
         public string member { get; set; }
         public int type { get; set; }
         public string content { get; set; }

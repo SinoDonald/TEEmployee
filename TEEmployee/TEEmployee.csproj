@@ -366,6 +366,7 @@
     <Content Include="Views\Schedule\Future.cshtml" />
     <Content Include="Views\Schedule\Test.cshtml" />
     <Content Include="Views\Schedule\TF2.cshtml" />
+    <Content Include="Views\Schedule\ShowTime.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Response\" />
