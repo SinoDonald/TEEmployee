@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -92,6 +93,28 @@ namespace TEEmployee.Controllers
         public JsonResult GetUserByGuid(string guid)
         {
             var ret = _service.GetUserByGuid(guid);
+            return Json(ret);
+        }
+
+        // 匯入上月資料 <-- 培文
+        [HttpPost]
+        public JsonResult GetLastMonthData(string empno, string yymm)
+        {
+            int insertIndex = yymm.Length - 2;
+            // 轉換年月, format加上"-"
+            yymm = yymm.Insert(insertIndex, "-");
+
+            // 民國年轉西元, 並減一個月
+            CultureInfo culture = new CultureInfo("zh-TW");
+            culture.DateTimeFormat.Calendar = new System.Globalization.TaiwanCalendar();
+            DateTime dateTime = DateTime.Parse(yymm, culture).AddMonths(-1);
+            
+            // 將西元年轉成民國
+            culture = new CultureInfo("zh-TW");
+            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+            yymm = dateTime.ToString("yyy-MM", culture).Replace("-", "");            
+
+            var ret = _service.GetTasklogData(Session["empno"].ToString(), yymm);
             return Json(ret);
         }
 

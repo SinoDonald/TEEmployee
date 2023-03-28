@@ -199,7 +199,8 @@
                 </a>
             </div>
 
-            @if (Session["Admin"] is object)
+            @*@if (Session["Admin"] is object)*@
+            @if (Session["empno"] is "6846") // 以婕才能匯入組織表
             {
                 <div class="col-lg-4 col-sm-6">
                     <a class="portfolio-box" href="@Url.Action("Admin")">

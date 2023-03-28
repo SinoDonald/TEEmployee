@@ -33,6 +33,9 @@ app.service('appService', ['$http', function ($http) {
     this.GetUserByGuid = (o) => {
         return $http.post('Tasklog/GetUserByGuid', o);
     };
+    this.GetLastMonthData = (o) => {
+        return $http.post('Tasklog/GetLastMonthData', o);
+    };
 
 }]);
 
@@ -468,8 +471,77 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
     $scope.GetTasklogData();
 
-    
 
+    // 匯入上月資料 <-- 培文
+    $scope.GetLastMonthData = () => {
+        let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`;
+        appService.GetLastMonthData({ yymm: yymm }).then((ret) => {
+            $scope.projects = [];
+            const projectItems = ret.data.ProjectItems;
+            const projectTasks = ret.data.ProjectTasks;
+
+            // add task first
+            for (let task of projectTasks) {
+                let projidx = $scope.projects.findIndex(x => x.projno === task.projno);
+                if (projidx < 0) {
+                    $scope.projects.push({ logs: [], projno: task.projno, realHour: task.realHour });
+                    projidx = $scope.projects.length - 1;
+                }
+                $scope.projects[projidx].logs.push({ id: task.id, content: task.content, endDate: task.endDate, note: task.note });
+            }
+
+            // fill in project item
+            for (let item of projectItems) {
+                let projidx = $scope.projects.findIndex(x => x.projno === item.projno);
+
+                if (projidx < 0) {
+                    $scope.projects.push({ logs: [{}], projno: item.projno });
+                    projidx = $scope.projects.length - 1;
+                }
+
+                if ($scope.projects[projidx].itemno) {
+                    $scope.projects[projidx].itemno += `${item.itemno}, `;
+                    $scope.projects[projidx].workHour += item.workHour;
+                    $scope.projects[projidx].overtime += item.overtime;
+                }
+                else {
+                    $scope.projects[projidx].itemno = `${item.itemno}, `;
+                    $scope.projects[projidx].workHour = item.workHour;
+                    $scope.projects[projidx].overtime = item.overtime;
+                }
+            }
+
+            for (let i = 0; i < $scope.projects.length; i++) {
+
+                if ($scope.projects[i].workHour || $scope.projects[i].overtime) {
+
+                    $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();
+
+                    if (!$scope.projects[i].realHour) {
+                        $scope.projects[i].realHour = $scope.projects[i].workHour + $scope.projects[i].overtime;
+                    }
+                }
+
+                if ($scope.projects[i].itemno)
+                    $scope.projects[i].itemno = $scope.projects[i].itemno.slice(0, $scope.projects[i].itemno.length - 2);
+            }
+
+            if ($scope.projects.length === 0)
+                $scope.projects.push({ logs: [{}] });
+
+            $timeout(function () {
+
+                var pp = document.querySelectorAll(".autoExpand");
+                for (var elm of pp) {
+                    elm.style.height = "";
+                    elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+                }
+
+            }, 0);
+        });
+    }
+
+    $scope.GetLastMonthData();
 
 
     function onExpandableTextareaInput({ target: elm }) {

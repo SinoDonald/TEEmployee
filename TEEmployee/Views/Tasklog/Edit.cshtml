@@ -40,9 +40,13 @@
 
 <div ng-controller="EditCtrl" class="container">
 
-
     <header>
-        <h2>@ViewBag.Title</h2>
+        <div class="form-group d-flex justify-content-between">
+            <h2>@ViewBag.Title</h2>
+            <button type="button" class="btn btn-warning btn-lg mr-2" name="GetLastMonthData" ng-click="GetLastMonthData()">
+                <span>匯入上月資料</span>
+            </button>
+        </div>
     </header>
     @*<div class="month-select">
             <div>
@@ -120,9 +124,9 @@
                     </button>
                 </td>
                 @*<td>
-            <input type="button" value="+" name="addRow" ng-click="addLogRow($parent.$index, $index)">
-            <input type="button" value="-" name="removeRow" ng-click="removeLogRow($parent.$index, $index)">
-        </td>*@
+                        <input type="button" value="+" name="addRow" ng-click="addLogRow($parent.$index, $index)">
+                        <input type="button" value="-" name="removeRow" ng-click="removeLogRow($parent.$index, $index)">
+                    </td>*@
 
 
                 @*<td><input type="text" ng-model="log.content"></td>*@
@@ -139,7 +143,7 @@
                         <span class="material-icons">delete</span>
                     </button>
                 </td>
-</tbody>
+        </tbody>
     </table>
 
 
