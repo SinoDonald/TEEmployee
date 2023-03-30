@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Filters;
 using TEEmployee.Models.TaskLog;
+using static TEEmployee.Models.TaskLog.TasklogService;
 
 namespace TEEmployee.Controllers
 {
@@ -102,19 +103,31 @@ namespace TEEmployee.Controllers
         {
             int insertIndex = yymm.Length - 2;
             // 轉換年月, format加上"-"
-            yymm = yymm.Insert(insertIndex, "-");
+            string lastMonth = yymm.Insert(insertIndex, "-");
 
             // 民國年轉西元, 並減一個月
             CultureInfo culture = new CultureInfo("zh-TW");
             culture.DateTimeFormat.Calendar = new System.Globalization.TaiwanCalendar();
-            DateTime dateTime = DateTime.Parse(yymm, culture).AddMonths(-1);
+            DateTime dateTime = DateTime.Parse(lastMonth, culture).AddMonths(-1);
             
             // 將西元年轉成民國
             culture = new CultureInfo("zh-TW");
             culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-            yymm = dateTime.ToString("yyy-MM", culture).Replace("-", "");            
+            lastMonth = dateTime.ToString("yyy-MM", culture).Replace("-", "");
 
-            var ret = _service.GetTasklogData(Session["empno"].ToString(), yymm);
+            TasklogData ret = _service.GetTasklogData(Session["empno"].ToString(), lastMonth);
+            // 
+            // 更新撈回來的id與月份
+            foreach(ProjectItem projectItem in ret.ProjectItems)
+            {
+                projectItem.yymm = yymm;
+            }
+            foreach (ProjectTask projectTask in ret.ProjectTasks)
+            {
+                projectTask.id = 0;
+                projectTask.yymm = yymm;
+            }
+
             return Json(ret);
         }
 
