@@ -131,6 +131,13 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        // 多人詳細內容 <-- 培文
+        public JsonResult GetMemberContent(string CheckBox)
+        {
+            var ret = 1;
+            return Json(ret);
+        }
+
         //[HttpPost]
         //public JsonResult GetProjectTask(string yymm)
         //{            

@@ -33,8 +33,14 @@ app.service('appService', ['$http', function ($http) {
     this.GetUserByGuid = (o) => {
         return $http.post('Tasklog/GetUserByGuid', o);
     };
+
+    // 匯入上月資料 <-- 培文
     this.GetLastMonthData = (o) => {
         return $http.post('Tasklog/GetLastMonthData', o);
+    };
+    // 多人詳細內容 <-- 培文
+    this.GetMemberContent = (o) => {
+        return $http.post('Tasklog/GetMemberContent', o);
     };
 
 }]);
@@ -85,6 +91,13 @@ app.controller('ListCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
    
     $scope.GetAllMonthlyRecordData();
 
+    // 多人詳細內容 <-- 培文
+    $scope.GetMemberContent = function (CheckBox) {
+        appService.GetMemberContent({ CheckBox: CheckBox })
+            .then(function (ret) {
+                    $window.location.href = 'Assessment';
+            });
+    }
 }]);
 
 app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
@@ -103,6 +116,8 @@ app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 
 
         const projectItems = ret.data.ProjectItems;
         const projectTasks = ret.data.ProjectTasks;
+
+        $scope.yymm = projectTasks[0].yymm;
 
         // add task first
         for (let task of projectTasks) {
