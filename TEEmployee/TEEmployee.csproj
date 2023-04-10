@@ -164,6 +164,7 @@
     <Compile Include="Controllers\AssessmentController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\GScheduleController.cs" />
     <Compile Include="Controllers\ScheduleController.cs" />
     <Compile Include="Controllers\TasklogController.cs" />
     <Compile Include="Filters\MyAuthorizeAttribute.cs" />
@@ -172,6 +173,10 @@
     </Compile>
     <Compile Include="Models\AssessmentService.cs" />
     <Compile Include="Models\CategorySelfAssessmentChart.cs" />
+    <Compile Include="Models\GSchedule\IGScheduleRepository.cs" />
+    <Compile Include="Models\GSchedule\Schedule.cs" />
+    <Compile Include="Models\GSchedule\GScheduleRepository.cs" />
+    <Compile Include="Models\GSchedule\GScheduleService.cs" />
     <Compile Include="Models\HtmlHelperExtensions.cs" />
     <Compile Include="Models\IAssessmentRepository.cs" />
     <Compile Include="Models\Assessment.cs" />
@@ -311,6 +316,7 @@
     <Content Include="Scripts\Webapp\Assessment\SelfCtrl.min.js">
       <DependentUpon>SelfCtrl.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Webapp\GSchedule\ScheduleCtrl.js" />
     <Content Include="Scripts\Webapp\Home\AdminCtrl.js" />
     <Content Include="Scripts\Webapp\Schedule\GanttPlot.js" />
     <Content Include="Scripts\Webapp\Schedule\ScatterPlot.js" />
@@ -380,6 +386,9 @@
     <Content Include="Views\Schedule\Test.cshtml" />
     <Content Include="Views\Schedule\TF2.cshtml" />
     <Content Include="Views\Schedule\ShowTime.cshtml" />
+    <Content Include="Views\GSchedule\Index.cshtml" />
+    <Content Include="Views\GSchedule\Group.cshtml" />
+    <Content Include="Views\GSchedule\Personal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Response\" />

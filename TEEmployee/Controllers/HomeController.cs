@@ -14,7 +14,7 @@ namespace TEEmployee.Controllers
     {
         public ActionResult Index()
         {
-            InsertProjectItem();
+            //InsertProjectItem();
             return View();
         }
 

@@ -298,7 +298,9 @@ namespace TEEmployee.Models.Schedule
                         foreach (Milestone milestone in schedule.milestones)
                         {
                             milestone.schedule_id = schedule_id;
-                            milestone.id = _conn.Execute(insertMilestoneSql, milestone, tran);
+                            //milestone.id = _conn.Execute(insertMilestoneSql, milestone, tran);
+                            milestone.id = _conn.QuerySingle<int>(insertMilestoneSql, milestone, tran);
+                            
                         }
                     }
 
@@ -347,7 +349,8 @@ namespace TEEmployee.Models.Schedule
                             else
                             {
                                 milestone.schedule_id = schedule.id;
-                                milestone.id = _conn.Execute(insertMilestoneSql, milestone, tran);
+                                //milestone.id = _conn.Execute(insertMilestoneSql, milestone, tran);
+                                milestone.id = _conn.QuerySingle<int>(insertMilestoneSql, milestone, tran);
                             }                            
                         }
                     }

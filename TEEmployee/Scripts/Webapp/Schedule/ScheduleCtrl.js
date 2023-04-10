@@ -330,7 +330,7 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
             .type('group');
 
 
-    $scope.ganttStartMonth = moment({ day: 1 });;
+    $scope.ganttStartMonth = moment({ day: 1 });
 
     //$scope.selectedYear = (new Date()).getFullYear();
     $scope.selectedYear = moment().locale('zh-tw').format('YYYY');
@@ -359,7 +359,7 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
     $scope.passChosen = () => {
         $scope.example1model = [];
         for (let emp of $scope.employees) {
-            if ($scope.modal.member.includes(emp.label))
+            if ($scope.modal.member?.includes(emp.label))
                 $scope.example1model.push(emp);
         }
     }
@@ -372,7 +372,36 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
 
     $scope.deletedIds = { schedule_ids: [], milestones_ids: [] };
 
-    appService.GetAllEmployeesByRole({}).then((ret) => {
+    $scope.employees;
+    $scope.filteredEmployees;
+    $scope.filterEmployees = () => {
+        $scope.filteredEmployees = $scope.employees.filter(emp => (
+            emp.group_one === $scope.selectedGroup ||
+            emp.group_two === $scope.selectedGroup ||
+            emp.group_three === $scope.selectedGroup));
+    }
+
+
+    //// get member list
+    //appService.GetAllEmployeesByRole({}).then((ret) => {
+    //    $scope.employees = ret.data;
+    //    let count = 1;
+    //    for (let emp of $scope.employees) {
+    //        emp.id = count;
+    //        emp.label = emp.name;
+    //        count++;
+    //    }
+    //})
+
+    //// get sub groups
+    //appService.GetAllOwnedSubGroups({}).then((ret) => {
+    //    $scope.groups = ret.data;
+    //    $scope.selectedGroup = $scope.groups[0];
+    //})
+
+    // async member and group
+    // get member list
+    let promiseMember = appService.GetAllEmployeesByRole({}).then((ret) => {
         $scope.employees = ret.data;
         let count = 1;
         for (let emp of $scope.employees) {
@@ -383,10 +412,16 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
     })
 
     // get sub groups
-    appService.GetAllOwnedSubGroups({}).then((ret) => {
+    let promiseGroup = appService.GetAllOwnedSubGroups({}).then((ret) => {
         $scope.groups = ret.data;
         $scope.selectedGroup = $scope.groups[0];
     })
+
+    $q.all([promiseMember, promiseGroup]).then((ret) => {
+        $scope.filterEmployees();
+    });
+
+
 
     // deep clone schedule object to modal
     $scope.cloneDeepToModal = (schedule, idx) => {
@@ -397,11 +432,11 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
 
         // clear selected milestones to be removed last time
         selectedRemovedMilestones = [];
-    };   
+    };
 
     $scope.updateSingleSchedule = () => {
 
-        appService.UpdateSingleSchedule({ schedule: $scope.modal, deletedMilestones: selectedRemovedMilestones}).then((ret) => {
+        appService.UpdateSingleSchedule({ schedule: $scope.modal, deletedMilestones: selectedRemovedMilestones }).then((ret) => {
 
             if (ret.data) {
 
@@ -415,18 +450,18 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
                 // to draw new gantt chart 
                 // 1). draw after ng-repeat (timeout function or ng-repeat finish event)
                 // 2). assign new properies value to original object as belowed                
-                
+
                 for (const property in $scope.modal.origin) {
                     $scope.modal.origin[property] = ret.data[property];
                 }
-                
+
                 calMemberHours($scope.data.Owned.Group[originIdx]);
 
                 // update gantt
                 const svg = select('#svg' + originIdx.toString())
                     .call(plot.data([$scope.data.Owned.Group[originIdx]]));
-                
-            }            
+
+            }
         })
     }
 
@@ -435,7 +470,7 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
 
         $scope.modal = {
             type: 2,
-            member:'',
+            member: '',
             milestones: [],
             start_date: moment().locale('zh-tw').format('YYYY-MM-DD'),
             end_date: moment().locale('zh-tw').format('YYYY-MM-DD'),
@@ -444,7 +479,7 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
 
         $scope.example1model = []
         $scope.modal.createMode = true;
-    };  
+    };
 
     $scope.createSingleSchedule = () => {
 
@@ -461,9 +496,9 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
 
                 // create gantt with timeout
                 $timeout(function () {
-                     const svg = select('#svg' + idx.toString())
-                         .call(plot.data([$scope.data.Owned.Group[idx]]));
-                }, 0);                
+                    const svg = select('#svg' + idx.toString())
+                        .call(plot.data([$scope.data.Owned.Group[idx]]));
+                }, 0);
 
             }
         })
@@ -472,7 +507,7 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
     // Deletion
     // 1. Update schedule, delete selected milestones
     let selectedRemovedMilestones = [];
-    
+
     $scope.removeSelectedMilestone = (milestone) => {
 
         if (milestone.id) {
@@ -490,11 +525,19 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
         let id = $scope.modal.id;
         if ($scope.modal.id) {
 
+            console.log($scope.data.Owned.Group.indexOf($scope.modal));
+
             appService.DeleteSingleSchedule($scope.modal).then((ret) => {
-                if(ret.data)
-                    $scope.data.Owned.Group.splice($scope.data.Owned.Group.indexOf($scope.modal), 1);                
+                if (ret.data) {
+                    $scope.data.Owned.Group.splice($scope.data.Owned.Group.indexOf($scope.modal.origin), 1);
+                    // draw all gantt at first
+                    $timeout(function () {
+                        $scope.newUpdatePlot();
+                    }, 0);
+                }
+
             })
-        }        
+        }
     };
 
 
@@ -540,7 +583,7 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
         $scope.data.Owned.Group.splice($scope.data.Owned.Group.length, 0, {
             type: 2, milestones: [],
             start_date: moment().locale('zh-tw').format('YYYY-MM-DD'),
-            end_date: moment().locale('zh-tw').format('YYYY-MM-DD'),            
+            end_date: moment().locale('zh-tw').format('YYYY-MM-DD'),
         });
         $scope.modal = $scope.data.Owned.Group[$scope.data.Owned.Group.length - 1];
     };
@@ -585,7 +628,7 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
     //    }
     //);
 
-    
+
 
 
     //$scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
@@ -704,8 +747,6 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
     // old
     $scope.updatePlot = () => {
 
-        console.log('i was called');
-
         plot.year($scope.selectedYear);
 
         const parsed = $scope.data.Owned.Group
@@ -720,7 +761,7 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
             }))
             .sort((a, b) => a.start_date - b.start_date)
             .filter((x) => (x.start_date.getFullYear() == $scope.selectedYear || x.end_date.getFullYear() == $scope.selectedYear));
-                
+
         for (let i = 0; i !== parsed.length; i++) {
 
             const svg = select('#svg' + i.toString())
@@ -745,7 +786,7 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
 
         /*plot.year($scope.selectedYear);*/
         plot.startMonth($scope.ganttStartMonth.toDate());
-        
+
         for (let i = 0; i !== groupSchedules.length; i++) {
 
             //const svg = select('#svg' + i.toString())
@@ -781,10 +822,10 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
         if (!schedule.start_date || !schedule.end_date)
             return true;
 
-       
+
         // end before startMonth or start after endMonth not showing
         if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate())
-            return false;        
+            return false;
 
         if (new Date(schedule.end_date) < moment($scope.ganttStartMonth).toDate())
             return false;
@@ -818,7 +859,7 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
 
             const projectHours = $scope.data.Owned.Projects.find(x => x.projno === project.projno);
 
-            
+
             let memberHours = '';
             let monthlyHours = 0;
             let totalHours = 0;
@@ -835,14 +876,14 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
 
                 // monthly hours
                 monthlyHours = projectHours.manHours
-                        .filter(x => x.yymm === yymm)
-                        .reduce((a, c) => a + c.hours, 0);
-                
+                    .filter(x => x.yymm === yymm)
+                    .reduce((a, c) => a + c.hours, 0);
+
                 // total hours
                 totalHours = projectHours.manHours
                     .reduce((a, c) => a + c.hours, 0);
 
-            }            
+            }
 
             project.memberHours = memberHours;
             project.monthlyHours = monthlyHours;
@@ -859,7 +900,7 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
         const mm = yymm.slice(4);
         yymm = `${yy}${mm}`;
 
-        
+
         const projectHours = $scope.data.Owned.Projects.find(x => x.projno === project.projno);
 
         let memberHours = '';
@@ -880,7 +921,7 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
             monthlyHours = projectHours?.manHours
                 .filter(x => x.yymm === yymm)
                 .reduce((a, c) => a + c.hours, 0) ?? 0;
-            
+
             // total hours
             totalHours = projectHours?.manHours
                 .reduce((a, c) => a + c.hours, 0) ?? 0;
@@ -889,7 +930,7 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
 
         project.memberHours = memberHours;
         project.monthlyHours = monthlyHours;
-        project.totalHours = totalHours;       
+        project.totalHours = totalHours;
 
     }
 
@@ -1073,7 +1114,7 @@ app.controller('TF2Ctrl', ['$scope', '$location', 'appService', '$rootScope', '$
             })
             .radius(5)
 
-    
+
     let parsedParent;
 
 
@@ -1148,7 +1189,7 @@ app.controller('TF2Ctrl', ['$scope', '$location', 'appService', '$rootScope', '$
 
     //$scope.$on('ngRepeatChildFinished', function (ngRepeatFinishedEvent) {
 
-        
+
     //    console.log('childfinished!');
 
     //    $scope.getSchedulesByYear();
@@ -1172,7 +1213,7 @@ app.controller('TF2Ctrl', ['$scope', '$location', 'appService', '$rootScope', '$
         return (schedule.start_date.includes($scope.selectedYear) || schedule.end_date.includes($scope.selectedYear));
     }
 
-    
+
 
     $scope.getSchedulesByYear = () => {
 
@@ -1209,7 +1250,7 @@ app.controller('TF2Ctrl', ['$scope', '$location', 'appService', '$rootScope', '$
         $scope.updatePlot();
     }
 
-    
+
 
 
 }]);

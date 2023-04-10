@@ -38,7 +38,7 @@
         </div>
         <div>
             <label for="SelectGroup">請選擇組別</label>
-            <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" aria-label="Select the Group">
+            <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="filterEmployees()" aria-label="Select the Group">
                 <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
             </select>
         </div>
@@ -102,7 +102,7 @@
                 <td ng-bind="schedule.monthlyHours"></td>
                 <td ng-bind="schedule.totalHours"></td>
             </tr>
-            <tr>
+            <tr ng-show="scheduleFilter(schedule)">
                 <td>
                 </td>
                 <td colspan="3">
@@ -151,7 +151,8 @@
                         </div>
                         <input ng-model="modal.content" type="text" class="form-control" placeholder="請輸入工作項目" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
-                    <div ng-dropdown-multiselect="" options="employees" events="yourEvents" selected-model="example1model"></div>
+                    <!-- member selection -->
+                    <div ng-dropdown-multiselect="" options="filteredEmployees" events="yourEvents" selected-model="example1model"></div>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">計畫編號</span>
@@ -224,15 +225,15 @@
                                    ng-model="milestone.date"
                                    ng-model-options="{ updateOn: 'blur' }">
                             @*<div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1">請選擇年月份</span>
-                                </div>*@
+                    <span class="input-group-text" id="basic-addon1">請選擇年月份</span>
+                </div>*@
                         </div>
                         <button type="button" class="btn btn-primary" name="removeMilestone" ng-click="removeSelectedMilestone(milestone)">
                             <span class="material-icons">刪除里程碑</span>
                         </button>
                         @*<button type="button" class="btn btn-primary" name="removeMilestone" ng-click="removeMilestone($index)">
-                                <span class="material-icons">刪除里程碑</span>
-                            </button>*@
+                <span class="material-icons">刪除里程碑</span>
+            </button>*@
                     </div>
 
                 </div>

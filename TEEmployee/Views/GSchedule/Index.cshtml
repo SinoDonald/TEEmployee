@@ -1,0 +1,93 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@section Styles {
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/css/angular-moment-picker.min.css">    <
+    <style>
+        header {
+            margin-top: 100px;
+        }
+
+        div[ng-dropdown-multiselect] > div > ul > li.divider {
+            margin-top: 5px !important;
+            margin-bottom: 5px !important;
+            height: 1px;
+            background-color: #e5e5e5;
+        }
+
+        div[ng-dropdown-multiselect] > div > ul > li > a:hover {
+            text-decoration: none;
+        }
+
+        div[ng-dropdown-multiselect] > div > ul > li > a {
+            display: block;
+            padding: 3px 20px;
+            clear: both;
+            font-weight: 400;
+            line-height: 1.428571429;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        div[ng-dropdown-multiselect] > div > ul > li:hover {
+            background-color: #F5F5F5;
+        }
+
+        span.fa-check {
+            color: #f4623a;
+        }
+
+        .x-axis line, .x-axis path {
+            fill: none;
+            stroke: rgba(0,0,0,.1);
+        }
+    </style>
+}
+
+
+<div ng-controller="ScheduleCtrl" class="container-fluid">
+
+    <header>
+        <h2>年度行事曆目標</h2>
+    </header>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" ui-sref="Group">群組行事曆</a>
+            <a class="nav-item nav-link" ui-sref="Personal">個人行事曆</a>
+            <a class="nav-item nav-link" ui-sref="Future">未來3年數位轉型規劃</a>           
+        </div>
+    </nav>
+
+
+
+    <div ui-view></div>
+    @*<ul>
+            <li ng-repeat="schedule in data">
+                schedule [{{schedule.id}}] is owned by {{schedule.empno}}. Members are {{schedule.member}} Content: {{schedule.content}}
+                <ul>
+                    <li ng-repeat="milestone in schedule.milestones">
+                        Milestone {{milestone.id}} is {{milestone.content}}
+                    </li>
+                </ul>
+            </li>
+        </ul>*@
+
+
+
+</div>
+
+
+@section Scripts {
+    <script src="https://unpkg.com/d3@7.8.2/dist/d3.min.js"></script>
+    <script src="~/Scripts/WebApp/Schedule/GanttPlot.js"></script>
+    <script src="~/Scripts/WebApp/GSchedule/ScheduleCtrl.js"></script>
+    <script src="~/Scripts/moment-with-locales.js"></script>
+    <script src="~/Scripts/angular-moment-picker.min.js"></script>
+    <script src="~/Scripts/angularjs-dropdown-multiselect.min.js"></script>
+}
