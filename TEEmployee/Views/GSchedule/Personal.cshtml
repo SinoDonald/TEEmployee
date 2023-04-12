@@ -27,28 +27,20 @@
     <table class="table">
         <thead class="thead-dark">
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">計畫編號</th>
-                <th scope="col">工作項目</th>
-                <th scope="col">主要人員/使用人時</th>
-                <th scope="col">Chart</th>
-                <th scope="col">本月累計進度(%)</th>
-                <th scope="col">上月累計進度(%)</th>
-                <th scope="col">當月人時</th>
-                <th scope="col">總人時</th>
+                <th scope="col" style="width: 8%">#</th>
+                <th scope="col" style="width: 8%">計畫編號</th>
+                <th scope="col" style="width: 8%">工作項目</th>
+                <th scope="col" style="width: 8%">主要人員/使用人時</th>
+                <th scope="col" style="width: 8%">甘特圖</th>
+                <th scope="col" style="width: 8%">本月累計進度(%)</th>
+                <th scope="col" style="width: 8%">上月累計進度(%)</th>               
             </tr>
         </thead>
 
         <tbody ng-repeat="groupSchedule in data">
             <tr ng-show="scheduleFilter(groupSchedule.Group)">
                 <td>
-                    @*<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample{{$index}}" aria-expanded="false" aria-controls="collapseExample">
-                            展開
-                        </button>*@
-
-                    @*<button ng-click="cloneDeepToModal(schedule, $index); passChosen()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
-                            編輯項目
-                        </button>*@
+                   
                 </td>
                 <td ng-bind="groupSchedule.Group.projno"></td>
                 <td ng-bind="groupSchedule.Group.content"></td>
@@ -58,15 +50,13 @@
                 </td>
                 <td ng-bind="groupSchedule.Group.percent_complete"></td>
                 <td ng-bind="groupSchedule.Group.last_percent_complete"></td>
-                <td ng-bind="groupSchedule.Group.monthlyHours"></td>
-                <td ng-bind="groupSchedule.Group.totalHours"></td>
             </tr>
             <tr ng-show="scheduleFilter(groupSchedule.Group)">
-                <td colspan="8">
+                <td colspan="7" style="padding: 0">
                     <table class="table mb-0">
                         <tbody ng-repeat="detailSchedule in groupSchedule.Details">
                             <tr ng-show="scheduleFilter(detailSchedule.Detail)">
-                                <td>
+                                <td style="width: 8%">
                                     @*<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample{{$parent.$index}}-{{$index}}" aria-expanded="false" aria-controls="collapseExample">
                                             展開
                                         </button>
@@ -88,20 +78,21 @@
 
                                 </td>
 
-                                <td ng-bind="detailSchedule.Detail.projno"></td>
-                                <td ng-bind="detailSchedule.Detail.content"></td>
-                                <td>
+                                <td style="width: 8%" ng-bind="detailSchedule.Detail.projno"></td>
+                                <td style="width: 8%" ng-bind="detailSchedule.Detail.content"></td>
+                                <td style="width: 8%" ng-bind="detailSchedule.Detail.member"></td>
+                                <td style="width: 8%">
                                     <svg id="svgChild{{$parent.$index}}-{{$index}}" width="800" , height="80"></svg>
                                 </td>
-                                <td ng-bind="detailSchedule.Detail.percent_complete"></td>
-                                <td ng-bind="detailSchedule.Detail.last_percent_complete"></td>
+                                <td style="width: 8%" ng-bind="detailSchedule.Detail.percent_complete"></td>
+                                <td style="width: 8%" ng-bind="detailSchedule.Detail.last_percent_complete"></td>
                             </tr>
                             <tr ng-show="scheduleFilter(detailSchedule.Detail)">
-                                <td colspan="8">
+                                <td colspan="7" style="padding: 0">
                                     <table class="table mb-0">
                                         <tbody ng-repeat="personalSchedule in detailSchedule.Personals">
                                             <tr ng-show="personalFilter(personalSchedule)">
-                                                <td>
+                                                <td style="width: 8%">
                                                     @*<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample{{$parent.$index}}-{{$index}}" aria-expanded="false" aria-controls="collapseExample">
                                                             展開
                                                         </button>*@
@@ -117,15 +108,16 @@
                                                     </button>
                                                 </td>
 
-                                                <td ng-bind="personalSchedule.projno"></td>
-                                                <td ng-bind="personalSchedule.content"></td>
-                                                <td>
+                                                <td style="width: 8%" ng-bind="personalSchedule.projno"></td>
+                                                <td style="width: 8%" ng-bind="personalSchedule.content"></td>
+                                                <td style="width: 8%" ng-bind="personalSchedule.member"></td>
+                                                <td style="width: 8%">
                                                     <svg id="svgGrandChild{{$parent.$parent.$index}}-{{$parent.$index}}-{{$index}}" width="800" , height="80"></svg>
                                                 </td>
-                                                <td ng-bind="personalSchedule.percent_complete"></td>
-                                                <td ng-bind="personalSchedule.last_percent_complete"></td>
+                                                <td style="width: 8%" ng-bind="personalSchedule.percent_complete"></td>
+                                                <td style="width: 8%" ng-bind="personalSchedule.last_percent_complete"></td>
                                             </tr>
-                                            <tr ng-show="personalFilter(personalSchedule)">
+                                            @*<tr ng-show="personalFilter(personalSchedule)">
                                                 <td>
                                                 </td>
                                                 <td colspan="3">
@@ -147,7 +139,7 @@
                                                     </div>
                                                 </td>
 
-                                            </tr>
+                                            </tr>*@
                                         </tbody>
                                     </table>
 
@@ -174,20 +166,22 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">工作項目</span>
-                        </div>
-                        <input ng-model="modal.content" type="text" class="form-control" placeholder="請輸入工作項目" aria-label="Username" aria-describedby="basic-addon1">
-                    </div>
-                    <!-- member selection -->
-                    @*<div ng-dropdown-multiselect="" options="filteredMembers" events="yourEvents" selected-model="multiselectedmodel"></div>*@
+
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">計畫編號</span>
                         </div>
                         <input ng-disabled="modal.type !== 1" ng-model="modal.projno" type="text" class="form-control" placeholder="請輸入計畫編號" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">工作項目</span>
+                        </div>
+                        <input ng-model="modal.content" type="text" class="form-control" placeholder="請輸入工作項目" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+
+
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">本月累計進度(%)</span>
@@ -203,38 +197,60 @@
 
 
 
-                    <div class="input-group mb-3 w-25 p-3"
+                    <div class="input-group mb-3"
                          moment-picker="modal.start_date"
                          format="YYYY-MM-DD"
                          locale="zh-tw">
                         <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">開始日期</span>
                             <span class="input-group-text material-icons" id="basic-addon1">calendar_month</span>
                         </div>
                         <input class="form-control"
                                placeholder="請選擇日期"
                                ng-model="modal.start_date"
                                ng-model-options="{ updateOn: 'blur' }">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">開始日期</span>
-                        </div>
                     </div>
-                    <div class="input-group mb-3 w-25 p-3"
+                    <div class="input-group mb-3"
                          moment-picker="modal.end_date"
                          format="YYYY-MM-DD"
                          locale="zh-tw">
                         <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">結束日期</span>
                             <span class="input-group-text material-icons" id="basic-addon1">calendar_month</span>
                         </div>
                         <input class="form-control"
                                placeholder="請選擇日期"
                                ng-model="modal.end_date"
                                ng-model-options="{ updateOn: 'blur' }">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">結束日期</span>
-                        </div>
                     </div>
-                    <button ng-click="addMilestone()" type="button" class="btn btn-primary">
-                        Add milestone
+                    @*<button ng-click="addMilestone()" type="button" class="btn btn-primary">
+            Add milestone
+        </button>
+
+        <div ng-repeat="milestone in modal.milestones" class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">工作內容</span>
+            </div>
+            <input ng-model="milestone.content" type="text" class="form-control" placeholder="工作內容" aria-label="Username" aria-describedby="basic-addon1">
+            <div class="input-group mb-3 w-25 p-3"
+                 moment-picker="milestone.date"
+                 format="YYYY-MM-DD"
+                 locale="zh-tw">
+                <div class="input-group-prepend">
+                    <span class="input-group-text material-icons" id="basic-addon1">calendar_month</span>
+                </div>
+                <input class="form-control"
+                       placeholder="請選擇年月份"
+                       ng-model="milestone.date"
+                       ng-model-options="{ updateOn: 'blur' }">
+            </div>
+            <button type="button" class="btn btn-primary" name="removeMilestone" ng-click="removeMilestone($index)">
+                <span class="material-icons">刪除里程碑</span>
+            </button>
+        </div>*@
+
+                    <button ng-click="addMilestone()" type="button" class="btn btn-primary mb-3">
+                        新增里程碑
                     </button>
 
                     <div ng-repeat="milestone in modal.milestones" class="input-group mb-3">
@@ -242,7 +258,7 @@
                             <span class="input-group-text" id="basic-addon1">工作內容</span>
                         </div>
                         <input ng-model="milestone.content" type="text" class="form-control" placeholder="工作內容" aria-label="Username" aria-describedby="basic-addon1">
-                        <div class="input-group mb-3 w-25 p-3"
+                        <div class="input-group-prepend"
                              moment-picker="milestone.date"
                              format="YYYY-MM-DD"
                              locale="zh-tw">
@@ -254,9 +270,11 @@
                                    ng-model="milestone.date"
                                    ng-model-options="{ updateOn: 'blur' }">
                         </div>
-                        <button type="button" class="btn btn-primary" name="removeMilestone" ng-click="removeMilestone($index)">
-                            <span class="material-icons">刪除里程碑</span>
-                        </button>
+                        <div class=" input-group-prepend">
+                            <button type="button" class="btn btn-primary" name="removeMilestone" ng-click="removeMilestone($index)">
+                                刪除里程碑
+                            </button>
+                        </div>
                     </div>
 
                 </div>
@@ -281,7 +299,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    此項目刪除後亦會刪除相關行事曆與里程碑
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>

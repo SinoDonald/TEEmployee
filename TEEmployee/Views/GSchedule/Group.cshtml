@@ -24,21 +24,21 @@
     <table class="table">
         <thead class="thead-dark">
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">計畫編號</th>
-                <th scope="col">工作項目</th>
-                <th scope="col">主要人員/使用人時</th>               
-                <th scope="col">Chart</th>
-                <th scope="col">本月累計進度(%)</th>
-                <th scope="col">上月累計進度(%)</th>
-                <th scope="col">當月人時</th>
-                <th scope="col">總人時</th>
+                <th style="width: 8%" scope="col">#</th>
+                <th style="width: 8%" scope="col">計畫編號</th>
+                <th style="width: 8%" scope="col">工作項目</th>
+                <th style="width: 8%" scope="col">主要人員(人時)</th>               
+                <th style="width: 8%" scope="col">甘特圖</th>
+                <th style="width: 8%" scope="col">本月累計進度(%)</th>
+                <th style="width: 8%" scope="col">上月累計進度(%)</th>
+                <th style="width: 8%" scope="col">當月人時</th>
+                <th style="width: 8%" scope="col">總人時</th>
             </tr>
         </thead>
 
-        <tbody ng-repeat="groupSchedule in data">
+        <tbody ng-repeat="groupSchedule in data" class="schedulehead">
             <tr ng-show="scheduleFilter(groupSchedule.Group)">
-                <td>
+                <td style="width: 8%">
                     <button ng-show="editFilter" ng-click="createDetailScheduleModal(groupSchedule.Group)" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
                         新增細項
                     </button>
@@ -48,8 +48,8 @@
                     </button>
                 </td>
                 <td ng-bind="groupSchedule.Group.projno"></td>
-                <td ng-bind="groupSchedule.Group.content"></td>
-                <td ng-bind="groupSchedule.Group.memberHours"></td>
+                <td style="width: 8%"><p ng-bind="groupSchedule.Group.content"></p></td>
+                <td><p ng-bind="groupSchedule.Group.memberHours"></p></td>
                 <td>
                     <svg id="svg{{$index}}" width="800" , height="80"></svg>
                 </td>                
@@ -59,29 +59,32 @@
                 <td ng-bind="groupSchedule.Group.totalHours"></td>
             </tr>
             <tr ng-show="scheduleFilter(groupSchedule.Group)">
-                <td colspan="8">
+                <td colspan="9" style="padding-left: 0; border:none">
                     <table class="table mb-0">
                         <tbody ng-repeat="detailSchedule in groupSchedule.Details">
                             <tr>
-                                <td>
+                                <td style="width: 8%">
                                     @*<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample{{$parent.$index}}-{{$index}}" aria-expanded="false" aria-controls="collapseExample">
-                                        展開
-                                    </button>*@
+                展開
+            </button>*@
 
                                     <button ng-show="editFilter" ng-click="cloneDeepToModal(detailSchedule.Detail, $index); passChosen()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
                                         編輯
                                     </button>
                                 </td>
 
-                                <td ng-bind="detailSchedule.Detail.projno"></td>
-                                <td ng-bind="detailSchedule.Detail.content"></td>
-                                <td>
+                                <td style="width: 8%" ng-bind="detailSchedule.Detail.projno"></td>
+                                <td style="width: 8%" ><p ng-bind="detailSchedule.Detail.content"></p></td>
+                                <td style="width: 8%" ><p ng-bind="detailSchedule.Detail.member"></p></td>
+                                <td style="width: 8%">
                                     <svg id="svgChild{{$parent.$index}}-{{$index}}" width="800" , height="80"></svg>
-                                </td>                                
-                                <td ng-bind="detailSchedule.Detail.percent_complete"></td>
-                                <td ng-bind="detailSchedule.Detail.last_percent_complete"></td>
+                                </td>
+                                <td style="width: 8%" ng-bind="detailSchedule.Detail.percent_complete"></td>
+                                <td style="width: 8%" ng-bind="detailSchedule.Detail.last_percent_complete"></td>
+                                <td style="width: 8%"></td>
+                                <td style="width: 8%"></td>
                             </tr>
-                            <tr>
+                            @*<tr>
                                 <td>
                                 </td>
                                 <td colspan="3">
@@ -103,7 +106,7 @@
                                     </div>
                                 </td>
 
-                            </tr>
+                            </tr>*@
                         </tbody>
                     </table>
 
@@ -240,7 +243,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    此項目刪除後亦會刪除相關行事曆與里程碑
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>

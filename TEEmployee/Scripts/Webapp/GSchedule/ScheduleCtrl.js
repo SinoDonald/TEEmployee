@@ -16,7 +16,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             url: '/Future',
             templateUrl: 'GSchedule/Future'
         })
-        
+
 }]);
 
 
@@ -29,7 +29,7 @@ app.service('appService', ['$http', function ($http) {
 
     this.GetAllSchedules = (o) => {
         return $http.post('GSchedule/GetAllSchedules', o);
-    }; 
+    };
     this.UpdateSchedule = (o) => {
         return $http.post('GSchedule/UpdateSchedule', o);
     };
@@ -59,7 +59,7 @@ app.factory('dataservice', function () {
     function set(data) {
         scheduleData = data;
     }
-   
+
     function get() {
         return scheduleData;
     }
@@ -75,7 +75,7 @@ app.factory('dataservice', function () {
 
 
 app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', function ($scope, $location, appService, $rootScope, $q, dataservice) {
-    
+
     appService.GetAllSchedules({}).then((ret) => {
         dataservice.set(ret.data);
     })
@@ -96,7 +96,7 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
 }]);
 
 app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$timeout', function ($scope, $location, appService, $rootScope, $q, dataservice, $timeout) {
-       
+
 
     $scope.data = dataservice.get();
     $scope.auth = dataservice.getAuth();
@@ -104,7 +104,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     // default group
     $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
     $scope.filteredMembers = $scope.auth.GroupAuthorities[0].Members
-    
+
 
     // gantt
 
@@ -137,15 +137,15 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         for (let i = 0; i !== groupSchedules.length; i++) {
 
             const svg = select('#svg' + i.toString())
-                .call(plot.data([groupSchedules[i].Group]));
+                .call(plot.type('group').data([groupSchedules[i].Group]));
 
             // detail schedule
             const detailSchedules = groupSchedules[i].Details;
 
             for (let j = 0; j !== detailSchedules.length; j++) {
-                               
+
                 const svgChild = select(`#svgChild${i}-${j}`)
-                    .call(plot.data([detailSchedules[j].Detail]));
+                    .call(plot.type('detail').data([detailSchedules[j].Detail]));
             }
 
         }
@@ -153,7 +153,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     }
 
     // multi-select
-    $scope.multiselectedmodel = [];   
+    $scope.multiselectedmodel = [];
     $scope.yourEvents = {
         onSelectionChanged: function () {
             let names = "";
@@ -163,7 +163,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
                 if (i !== $scope.multiselectedmodel.length - 1)
                     names += ", ";
                 $scope.modal.member = names;
-            }            
+            }
         },
         onDeselectAll: function () {
             $scope.modal.member = "";
@@ -196,7 +196,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
             if (ret.data) {
 
-                ret.data.milestones = ret.data.milestones ?? []; 
+                ret.data.milestones = ret.data.milestones ?? [];
 
                 // pass modal value back to origin
                 for (const property in $scope.modal.origin) {
@@ -211,18 +211,18 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
                     //const svg = select('#svg' + groupIndex.toString())
                     //    .call(plot.data([$scope.data[groupIndex].Group])); // update Group gantt
                     const svg = select('#svg' + groupIndex.toString())
-                        .call(plot.data([$scope.modal.origin])); // update Group gantt
+                        .call(plot.type('group').data([$scope.modal.origin])); // update Group gantt
                 }
                 else if (ret.data.type === 2) {
 
                     let groupIndex = $scope.data.findIndex(x => x.Group.id === ret.data.parent_id);
                     let detailIndex = $scope.modal.originidx;
-                    
+
                     //const svgChild = select(`#svgChild${groupIndex}-${detailIndex}`)
                     //    .call(plot.data([$scope.data[groupIndex].Details[detailIndex].Detail])); // update Detail gantt
 
                     const svgChild = select(`#svgChild${groupIndex}-${detailIndex}`)
-                        .call(plot.data([$scope.modal.origin])); // update Detail gantt
+                        .call(plot.type('detail').data([$scope.modal.origin])); // update Detail gantt
 
                 }
 
@@ -272,7 +272,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
             if (ret.data) {
 
                 // create empty milestone list
-                ret.data.milestones = ret.data.milestones ?? [];                
+                ret.data.milestones = ret.data.milestones ?? [];
 
                 // group or detail
                 if (ret.data.type === 1) {
@@ -288,11 +288,11 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
                     calMemberHours($scope.data[groupIndex]);
 
                     $timeout(function () {
-                     const svg = select('#svg' + groupIndex.toString())
-                        .call(plot.data([$scope.data[groupIndex].Group])); // update Group gantt
+                        const svg = select('#svg' + groupIndex.toString())
+                            .call(plot.type('group').data([$scope.data[groupIndex].Group])); // update Group gantt
                     }, 0);
 
-                   
+
 
                 }
                 else if (ret.data.type === 2) {
@@ -308,11 +308,11 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
                     $timeout(function () {
                         const svgChild = select(`#svgChild${groupIndex}-${detailIndex}`)
-                            .call(plot.data([parent.Details[detailIndex].Detail])); // update Detail gantt
+                            .call(plot.type('detail').data([parent.Details[detailIndex].Detail])); // update Detail gantt
                     }, 0);
-                    
+
                 }
-                
+
             }
         })
     };
@@ -321,7 +321,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         $scope.modal.milestones.splice($scope.modal.milestones.length, 0, { schedule_id: $scope.modal.id });
     };
 
-    $scope.removeMilestone = (idx) => {        
+    $scope.removeMilestone = (idx) => {
         $scope.modal.milestones.splice(idx, 1);
     };
 
@@ -337,13 +337,13 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
                 if ($scope.modal.type === 1) {
 
                     let idx = $scope.data.findIndex(x => x.Group.id === $scope.modal.id);
-                    $scope.data.splice(idx, 1);                    
+                    $scope.data.splice(idx, 1);
                 }
                 else {
 
                     let parent = $scope.data.find(x => x.Group.id === $scope.modal.parent_id);
                     let idx = parent.Details.findIndex(x => x.Detail.id === $scope.modal.id);
-                    parent.Details.splice(idx, 1);                    
+                    parent.Details.splice(idx, 1);
                 }
 
                 // redraw all gantt
@@ -353,7 +353,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
             }
 
         })
-        
+
     };
 
 
@@ -387,7 +387,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
     // transform all member hours
     $scope.data.forEach(calMemberHours);
-        
+
     function calMemberHours(groupSchedule) {
 
         let yymm = moment().add(-1, 'months').locale('zh-tw').format('YYYYMM');
@@ -410,11 +410,12 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
             for (let name of names) {
                 const manHour = projectHours.find(x => x.name === name && x.yymm === yymm);
                 let hour = (manHour) ? manHour.hours : 0;
-                memberHours += `${name}(${hour}), `;
+                memberHours += `${name}(${hour})\n`
+                ;
             }
 
             if (memberHours)
-                memberHours = memberHours.slice(0, memberHours.length - 2);
+                memberHours = memberHours.slice(0, memberHours.length - 1);
 
             // monthly hours
             monthlyHours = projectHours
@@ -458,7 +459,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     $scope.filterMembers();
 
     // draw all gantt at first
-    $timeout(function () {        
+    $timeout(function () {
         $scope.UpdateAllPlots();
     }, 0);
 
@@ -505,7 +506,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
         for (let i = 0; i !== groupSchedules.length; i++) {
 
             const svg = select('#svg' + i.toString())
-                .call(plot.data([groupSchedules[i].Group]));
+                .call(plot.type('group').data([groupSchedules[i].Group]));
 
             // detail schedule
             const detailSchedules = groupSchedules[i].Details;
@@ -513,7 +514,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
             for (let j = 0; j !== detailSchedules.length; j++) {
 
                 const svgChild = select(`#svgChild${i}-${j}`)
-                    .call(plot.data([detailSchedules[j].Detail]));
+                    .call(plot.type('detail').data([detailSchedules[j].Detail]));
 
                 // personal schedule
                 const personalSchedules = detailSchedules[j].Personals;
@@ -521,7 +522,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
                 for (let k = 0; k !== personalSchedules.length; k++) {
 
                     const svgGrandChild = select(`#svgGrandChild${i}-${j}-${k}`)
-                        .call(plot.data([personalSchedules[k]]));
+                        .call(plot.type('personal').data([personalSchedules[k]]));
 
                 }
             }
@@ -547,7 +548,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
                 $timeout(function () {
                     const svg = select(`#svgGrandChild${$scope.modal.groupIndex}-${$scope.modal.detailIndex}-${personalIndex}`)
-                        .call(plot.data([$scope.modal.origin])); // update Group gantt
+                        .call(plot.type('personal').data([$scope.modal.origin])); // update Group gantt
                 }, 0);
 
                 //if (ret.data.type === 1) {
@@ -566,7 +567,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
                 //    let groupIndex = $scope.data.findIndex(x => x.Group.id === ret.data.parent_id);
                 //    let detailIndex = $scope.modal.originidx;
 
-                   
+
 
                 //}
 
@@ -617,16 +618,16 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
                 ret.data.milestones = ret.data.milestones ?? [];
 
                 // group or detail
-              
+
 
                 let personals = $scope.data[$scope.modal.groupIndex].Details[$scope.modal.detailIndex].Personals;
                 let personalIndex = personals.length;
 
-                personals.splice(personalIndex, 0, ret.data);                    
+                personals.splice(personalIndex, 0, ret.data);
 
                 $timeout(function () {
                     const svg = select(`#svgGrandChild${$scope.modal.groupIndex}-${$scope.modal.detailIndex}-${personalIndex}`)
-                        .call(plot.data([personals[personalIndex]])); // update Group gantt
+                        .call(plot.type('personal').data([personals[personalIndex]])); // update Group gantt
                 }, 0);
 
             }
@@ -640,7 +641,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
         appService.DeleteSchedule($scope.modal).then((ret) => {
             if (ret.data) {
-                                
+
                 let personals = $scope.data[$scope.modal.groupIndex].Details[$scope.modal.detailIndex].Personals;
                 personals.splice($scope.modal.originidx, 1);
 
@@ -665,7 +666,16 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
     $scope.filterMembers = () => {
         let group = $scope.auth.GroupAuthorities.find(x => x.GroupName === $scope.selectedGroup)
         $scope.filteredMembers = group.Members
-        $scope.selectedMember = $scope.filteredMembers[0].label;
+
+        let user = $scope.filteredMembers.find(x => x.label === $scope.auth.User.name);
+
+        if (user) {
+            $scope.selectedMember = user.label;
+        }
+        else {
+            $scope.selectedMember = $scope.filteredMembers[0].label;
+        }
+
         $scope.changeMember();
     }
 
@@ -723,7 +733,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
         return outputObject;
     }
 
-    $scope.filterMembers(); 
+    $scope.filterMembers();
 
     // draw all gantt at first
     $timeout(function () {

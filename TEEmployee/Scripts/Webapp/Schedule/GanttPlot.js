@@ -78,21 +78,31 @@ const ganttPlot = () => {
             // })
             .attr("height", height / 3)
             /*.attr("fill", "Orange")*/
-            .attr("opacity", 0.3)
+            .attr("opacity", 0.4)
 
+        // color
         if (type === 'group')
-            rects.attr("fill", "Orange");
-        else
-            rects.attr("fill", "LightGreen");
-        
+            rects.attr("fill", "#003262");
+        else if (type === 'detail')
+            rects.attr("fill", "#90cef1");
+        else 
+            rects.attr("fill", "#ffc20e");
+        //// color
+        //if (type === 'group')
+        //    rects.attr("fill", "Orange");
+        //else
+        //    rects.attr("fill", "LightGreen");
+
         // group
         const groups = selection
             .selectAll('g')
             .data(marks)
             .join('g');
 
-
-
+        //1b5faa
+        //90cef1
+        //ffc20e
+        //003262
         // circle
         groups.selectAll('circle')
             .data((d) => d.cxy)
