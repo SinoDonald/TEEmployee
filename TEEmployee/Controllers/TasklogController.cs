@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Filters;
+using TEEmployee.Models;
 using TEEmployee.Models.TaskLog;
 using static TEEmployee.Models.TaskLog.TasklogService;
 
@@ -132,9 +133,10 @@ namespace TEEmployee.Controllers
         }
 
         // 多人詳細內容 <-- 培文
-        public JsonResult GetMemberContent(string CheckBox)
+        public JsonResult GetMemberContent(List<MonthlyRecord> monthlyRecord, List<User> users)
         {
-            var ret = 1;
+            var ret = monthlyRecord;
+            var ret1 = users;
             return Json(ret);
         }
 

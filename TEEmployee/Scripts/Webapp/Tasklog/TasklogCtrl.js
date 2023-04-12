@@ -92,12 +92,23 @@ app.controller('ListCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
     $scope.GetAllMonthlyRecordData();
 
     // 多人詳細內容 <-- 培文
-    $scope.GetMemberContent = function (CheckBox) {
-        appService.GetMemberContent({ CheckBox: CheckBox })
-            .then(function (ret) {
-                    $window.location.href = 'Assessment';
+    $scope.GetMemberContent = () => {
+        let selectedUsers = $scope.data.filter(x => x.selected === true);
+        let monthlyRecord = [];
+        let users = [];
+        for (let i = 0; i < selectedUsers.length; i++) {
+            monthlyRecord.push(selectedUsers[i].MonthlyRecord);
+            users.push(selectedUsers[i].User);
+        }
+        appService.GetMemberContent({ monthlyRecord: monthlyRecord, users: users })
+            .then((ret) => {
+                $window.location.href = 'Assessment/Manage';
+            })
+            .catch((ret) => {
+                alert('Error');
             });
     }
+
 }]);
 
 app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
