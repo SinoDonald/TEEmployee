@@ -135,8 +135,15 @@ namespace TEEmployee.Controllers
         // 多人詳細內容 <-- 培文
         public JsonResult GetMemberContent(List<MonthlyRecord> monthlyRecord, List<User> users)
         {
-            var ret = monthlyRecord;
-            var ret1 = users;
+            var yymm = monthlyRecord[0].yymm;
+            List<TasklogData> userTasklogDataList = new List<TasklogData>();
+            foreach (User user in users)
+            {
+                userTasklogDataList.Add(_service.GetTasklogData(user.empno, yymm));
+            }
+
+            var ret = userTasklogDataList[0];
+            
             return Json(ret);
         }
 
