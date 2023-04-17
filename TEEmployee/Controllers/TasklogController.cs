@@ -43,6 +43,11 @@ namespace TEEmployee.Controllers
             return View();
         }
 
+        public ActionResult UsersDetails()
+        {
+            return View();
+        }
+
         /*........................  Web api  ...........................*/
 
         [HttpPost]
@@ -144,6 +149,13 @@ namespace TEEmployee.Controllers
 
             var ret = userTasklogDataList[0];
             
+            return Json(userTasklogDataList);
+        }
+
+        [HttpPost]
+        public JsonResult Test(List<TasklogData> userTasklogDataList)
+        {
+            var ret = "";
             return Json(ret);
         }
 

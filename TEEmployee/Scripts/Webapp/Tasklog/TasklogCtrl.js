@@ -42,6 +42,9 @@ app.service('appService', ['$http', function ($http) {
     this.GetMemberContent = (o) => {
         return $http.post('Tasklog/GetMemberContent', o);
     };
+    this.Test = (o) => {
+        return $http.post('Tasklog/Test', o);
+    };
 
 }]);
 
@@ -102,12 +105,21 @@ app.controller('ListCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
         }
         appService.GetMemberContent({ monthlyRecord: monthlyRecord, users: users })
             .then((ret) => {
-                $window.location.href = 'Assessment/Manage';
+                $window.location.href = 'Tasklog/UsersDetails';
             })
             .catch((ret) => {
                 alert('Error');
             });
     }
+
+}]);
+
+app.controller('UsersDetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
+
+    appService.Test({}).then((ret) => {
+        $scope.user = ret.data;
+        document.title = $scope.user.name + "-工作紀錄管控表"
+    })
 
 }]);
 

@@ -1,0 +1,60 @@
+﻿@using TEEmployee.Models;
+@{
+    ViewBag.Title = "UsersDetails";
+    ViewBag.Title = "工作紀錄管控表詳細內容";
+}
+
+@section Styles {
+    <style>
+        header {
+            margin-top: 100px;
+        }
+
+        table td p {
+            white-space: pre-line;
+        }
+    </style>
+}
+
+<div ng-controller="UsersDetailsCtrl" class="container-fluid">
+
+    <header>
+        <h2>詳細內容-{{user.name}}-{{yymm}}</h2>
+    </header>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>計畫編號</th>
+                <th>工作項目</th>
+                <th>填報時數</th>
+                <th>實際時數</th>
+                <th>詳細工作內容</th>
+                <th>(預計)完成日期</th>
+                <th>備註</th>
+            </tr>
+        </thead>
+
+        <tbody ng-repeat="project in projects">
+            <tr ng-repeat="log in project.logs">
+                <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.projno"></td>
+                <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.itemno"></td>
+                @*<td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.workHour"></td>*@
+                <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.hourStr"></td>
+                <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.realHour"></td>
+                <td><p ng-bind="log.content"></p></td>
+                <td ng-bind="log.endDate"></td>
+                <td ng-bind="log.note"></td>
+        </tbody>
+    </table>
+
+</div>
+
+@section Scripts {
+    <script>
+        var guid = '@ViewBag.id';
+    </script>
+    <script src="@Url.Versioned("~/Scripts/WebApp/Tasklog/TasklogCtrl.js")"></script>
+    <script src="~/Scripts/moment-with-locales.js"></script>
+    <script src="~/Scripts/angular-moment-picker.min.js"></script>
+}
