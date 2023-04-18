@@ -36,10 +36,12 @@ namespace TEEmployee.Controllers
         {
             ViewBag.Message = "Hello there!!";
 
-            if (Session["Admin"] is object)
-                return View();
-            else
-                return RedirectToAction("Index");
+            return View();
+
+            //if (Session["Admin"] is object)
+            //    return View();
+            //else
+            //    return RedirectToAction("Index");
         }
 
         public ActionResult Document()
@@ -171,15 +173,24 @@ namespace TEEmployee.Controllers
 
             bool ret = false;
 
-            if (Session["Admin"] is object)
-            {
-                List<User> users = new List<User>();
+            //if (Session["Admin"] is object)
+            //{
+            //    List<User> users = new List<User>();
 
-                using (TasklogService service = new TasklogService())
-                {
-                    ret = service.InsertUser();
-                }
+            //    using (TasklogService service = new TasklogService())
+            //    {
+            //        ret = service.InsertUser();
+            //    }
+            //}
+
+          
+            List<User> users = new List<User>();
+
+            using (TasklogService service = new TasklogService())
+            {
+                ret = service.InsertUser();
             }
+            
 
             return ret;
         }
@@ -190,13 +201,20 @@ namespace TEEmployee.Controllers
         {
             bool ret = false;
 
-            if (Session["Admin"] is object)
-            {               
-                using (TasklogService service = new TasklogService())
-                {
-                    ret = service.InsertUserExtra(users);
-                }
+            //if (Session["Admin"] is object)
+            //{               
+            //    using (TasklogService service = new TasklogService())
+            //    {
+            //        ret = service.InsertUserExtra(users);
+            //    }
+            //}
+
+            
+            using (TasklogService service = new TasklogService())
+            {
+                ret = service.InsertUserExtra(users);
             }
+            
 
             return ret;
         }
@@ -207,14 +225,20 @@ namespace TEEmployee.Controllers
         {
             bool ret = false;
 
-            if (Session["Admin"] is object)
-            {            
-                using (TasklogService service = new TasklogService())
-                {
-                    ret = service.CreateMonthlyRecord();
-                }
+            //if (Session["Admin"] is object)
+            //{            
+            //    using (TasklogService service = new TasklogService())
+            //    {
+            //        ret = service.CreateMonthlyRecord();
+            //    }
 
-            }
+            //}
+
+            
+            using (TasklogService service = new TasklogService())
+            {
+                ret = service.CreateMonthlyRecord();
+            }            
 
             return ret;
         }
