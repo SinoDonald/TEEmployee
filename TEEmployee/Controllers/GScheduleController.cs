@@ -31,6 +31,10 @@ namespace TEEmployee.Controllers
         {
             return PartialView();
         }
+        public ActionResult Future()
+        {
+            return PartialView();
+        }
         /*........................  Web api  ...........................*/
 
         [HttpPost]
@@ -66,6 +70,21 @@ namespace TEEmployee.Controllers
         public JsonResult DeleteSchedule(Schedule schedule)
         {
             var ret = _service.DeleteSchedule(schedule, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateAllPercentComplete()
+        {
+            var ret = _service.UpdateAllPercentComplete();
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllFutures()
+        {
+            // get the record base on the role
+            var ret = _service.GetAllFutures(Session["empno"].ToString());
             return Json(ret);
         }
 

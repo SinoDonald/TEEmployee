@@ -7,7 +7,7 @@
 @section Styles {
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="~/Content/css/angular-moment-picker.min.css">    <
+    <link rel="stylesheet" href="~/Content/css/angular-moment-picker.min.css">
     <style>
         header {
             margin-top: 100px;
@@ -57,23 +57,23 @@
         }
 
         .table td {
-            border-top:none;
+            border-top: none;
         }
 
-       /* thead, tbody, tfoot, tr, td, th {
-            border-color: inherit;
-            border-style: solid;
-            border-width: 0;
-        }*/
+        /* thead, tbody, tfoot, tr, td, th {
+                    border-color: inherit;
+                    border-style: solid;
+                    border-width: 0;
+                }*/
 
         /*.schedulehead{
-            border-bottom: 2px solid black;
-        }
-*/
+                    border-bottom: 2px solid black;
+                }
+        */
         /*.schedulehead {
-            border-width: 2px;
-        }
-*/
+                    border-width: 2px;
+                }
+        */
     </style>
 }
 
@@ -88,7 +88,7 @@
         <div class="navbar-nav">
             <a class="nav-item nav-link" ui-sref="Group">群組行事曆</a>
             <a class="nav-item nav-link" ui-sref="Personal">個人行事曆</a>
-            <a class="nav-item nav-link" ui-sref="Future">未來3年數位轉型規劃</a>           
+            <a class="nav-item nav-link" ui-sref="Future">未來3年數位轉型規劃</a>
         </div>
     </nav>
 
@@ -114,8 +114,12 @@
 @section Scripts {
     <script src="https://unpkg.com/d3@7.8.2/dist/d3.min.js"></script>
     <script src="~/Scripts/WebApp/Schedule/GanttPlot.js"></script>
+    <script src="~/Scripts/WebApp/GSchedule/HistoryLineChart.js"></script>
     <script src="~/Scripts/WebApp/GSchedule/ScheduleCtrl.js"></script>
+    <script src="~/Scripts/chart.min.js"></script>
     <script src="~/Scripts/moment-with-locales.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-moment/1.0.0/chartjs-adapter-moment.min.js"></script>
     <script src="~/Scripts/angular-moment-picker.min.js"></script>
     <script src="~/Scripts/angularjs-dropdown-multiselect.min.js"></script>
+
 }

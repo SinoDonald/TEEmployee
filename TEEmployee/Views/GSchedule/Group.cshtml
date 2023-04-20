@@ -8,6 +8,7 @@
         <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'M'); UpdateAllPlots()"><</button>
         <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'M'); UpdateAllPlots()">></button>
         <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'y'); UpdateAllPlots()">>></button>
+        @*<button type="button" class="btn btn-primary" ng-click="niceNoah()">ba</button>*@
         <p ng-bind="ganttStartMonth.local('zh-tw').format('YYYY-MM')"></p>
     </div>
 
@@ -20,24 +21,31 @@
         </div>
     </div>
 
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" ng-model="checkboxModel.value" id="defaultCheck1" ng-change="UpdateAllPlots()">
+        <label class="form-check-label" for="defaultCheck1">
+            隱藏已完成細項
+        </label>
+    </div>
+
 
     <table class="table">
         <thead class="thead-dark">
             <tr>
-                <th style="width: 8%" scope="col">#</th>
+                <th style="width: 8%" scope="col">&nbsp</th>
                 <th style="width: 8%" scope="col">計畫編號</th>
                 <th style="width: 8%" scope="col">工作項目</th>
-                <th style="width: 8%" scope="col">主要人員(人時)</th>               
-                <th style="width: 8%" scope="col">甘特圖</th>
+                <th style="width: 8%" scope="col">主要人員(人時)</th>
+                <th style="width: 8%; padding-left:3em" scope="col">甘特圖</th>
                 <th style="width: 8%" scope="col">本月累計進度(%)</th>
                 <th style="width: 8%" scope="col">上月累計進度(%)</th>
-                <th style="width: 8%" scope="col">當月人時</th>
-                <th style="width: 8%" scope="col">總人時</th>
+                <th style="width: 5%" scope="col">當月人時</th>
+                <th style="width: 5%" scope="col">總人時</th>
             </tr>
         </thead>
 
         <tbody ng-repeat="groupSchedule in data" class="schedulehead">
-            <tr ng-show="scheduleFilter(groupSchedule.Group)">
+            <tr ng-show="scheduleFilter(groupSchedule.Group)" style="background-color: rgb(193,191,181)">
                 <td style="width: 8%">
                     <button ng-show="editFilter" ng-click="createDetailScheduleModal(groupSchedule.Group)" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
                         新增細項
@@ -51,62 +59,73 @@
                 <td style="width: 8%"><p ng-bind="groupSchedule.Group.content"></p></td>
                 <td><p ng-bind="groupSchedule.Group.memberHours"></p></td>
                 <td>
-                    <svg id="svg{{$index}}" width="800" , height="80"></svg>
-                </td>                
-                <td ng-bind="groupSchedule.Group.percent_complete"></td>
+                    <svg id="svg{{$index}}" width="800" , height="110"></svg>
+                </td>
+                <td>
+                    <p ng-bind="groupSchedule.Group.percent_complete"></p>
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#chartModal" ng-click="createHistoryLineChart(groupSchedule.Group)">
+                        <span class="material-icons">show_chart</span>
+                    </button>
+                </td>
                 <td ng-bind="groupSchedule.Group.last_percent_complete"></td>
                 <td ng-bind="groupSchedule.Group.monthlyHours"></td>
                 <td ng-bind="groupSchedule.Group.totalHours"></td>
             </tr>
             <tr ng-show="scheduleFilter(groupSchedule.Group)">
-                <td colspan="9" style="padding-left: 0; border:none">
+                <td colspan="9" style="padding: 0; border:none">
                     <table class="table mb-0">
                         <tbody ng-repeat="detailSchedule in groupSchedule.Details">
-                            <tr>
+                            <tr ng-show="scheduleFilter(detailSchedule.Detail)" style="background-color: rgb(219,218,211)">
                                 <td style="width: 8%">
                                     @*<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample{{$parent.$index}}-{{$index}}" aria-expanded="false" aria-controls="collapseExample">
-                展開
-            </button>*@
+                                            展開
+                                        </button>*@
 
-                                    <button ng-show="editFilter" ng-click="cloneDeepToModal(detailSchedule.Detail, $index); passChosen()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+                                    <button ng-show="editFilter" ng-click="cloneDeepToModal(detailSchedule.Detail, $index, groupSchedule.Group.content); passChosen()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
                                         編輯
                                     </button>
                                 </td>
 
-                                <td style="width: 8%" ng-bind="detailSchedule.Detail.projno"></td>
-                                <td style="width: 8%" ><p ng-bind="detailSchedule.Detail.content"></p></td>
-                                <td style="width: 8%" ><p ng-bind="detailSchedule.Detail.member"></p></td>
+                                @*<td style="width: 8%" ng-bind="detailSchedule.Detail.projno"></td>*@
+                                <td style="width: 8%"></td>
+                                <td style="width: 8%"><p ng-bind="detailSchedule.Detail.content"></p></td>
+                                <td style="width: 8%"><p ng-bind="detailSchedule.Detail.member"></p></td>
                                 <td style="width: 8%">
-                                    <svg id="svgChild{{$parent.$index}}-{{$index}}" width="800" , height="80"></svg>
+                                    <svg id="svgChild{{$parent.$index}}-{{$index}}" width="800" , height="110"></svg>
                                 </td>
-                                <td style="width: 8%" ng-bind="detailSchedule.Detail.percent_complete"></td>
+                                <td style="width: 8%">
+                                    <p ng-bind="detailSchedule.Detail.percent_complete"></p>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#chartModal" ng-click="createHistoryLineChart(detailSchedule.Detail)">
+                                        <span class="material-icons">show_chart</span>
+                                    </button>
+                                </td>
                                 <td style="width: 8%" ng-bind="detailSchedule.Detail.last_percent_complete"></td>
-                                <td style="width: 8%"></td>
-                                <td style="width: 8%"></td>
+                                <td style="width: 5%"></td>
+                                <td style="width: 5%"></td>
                             </tr>
                             @*<tr>
-                                <td>
-                                </td>
-                                <td colspan="3">
-                                    <div class="collapse" id="collapseExample{{$parent.$index}}-{{$index}}">
-                                        <table class="table mb-0">
-                                            <thead class="thead-light">
-                                                <tr>
-                                                    <th scope="col">內容</th>
-                                                    <th scope="col">日期</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr ng-repeat="milestone in oschedule.milestones">
-                                                    <td ng-bind="milestone.content"></td>
-                                                    <td ng-bind="milestone.date"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </td>
+                                    <td>
+                                    </td>
+                                    <td colspan="3">
+                                        <div class="collapse" id="collapseExample{{$parent.$index}}-{{$index}}">
+                                            <table class="table mb-0">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th scope="col">內容</th>
+                                                        <th scope="col">日期</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="milestone in oschedule.milestones">
+                                                        <td ng-bind="milestone.content"></td>
+                                                        <td ng-bind="milestone.date"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
 
-                            </tr>*@
+                                </tr>*@
                         </tbody>
                     </table>
 
@@ -121,7 +140,12 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">編輯項目</h5>
+                    @*<h5 class="modal-title" id="exampleModalLongTitle">編輯項目</h5>*@
+                    <h5 ng-if="modal.type === 1 && modal.createMode" class="modal-title" id="exampleModalLongTitle">新增主要工作項目</h5>
+                    <h5 ng-if="modal.type === 1 && !modal.createMode" class="modal-title" id="exampleModalLongTitle">編輯主要工作項目</h5>
+                    <h5 ng-if="modal.type !== 1 && modal.createMode" class="modal-title" id="exampleModalLongTitle">新增工作細項</h5>
+                    <h5 ng-if="modal.type !== 1 && !modal.createMode" class="modal-title" id="exampleModalLongTitle">編輯工作細項</h5>
+
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -134,9 +158,21 @@
                         </div>
                         <input ng-disabled="modal.type !== 1" ng-model="modal.projno" type="text" class="form-control" placeholder="請輸入計畫編號" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
+
+                    <!--fake-->
+                    <div ng-if="modal.type !== 1" class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">主要工作項目</span>
+                        </div>
+                        <input ng-model="modal.parentContent" type="text" class="form-control" placeholder="請輸入計畫編號" aria-label="Username" aria-describedby="basic-addon1" disabled>
+                    </div>
+
+
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">工作項目</span>
+                            @*<span class="input-group-text" id="basic-addon1">工作項目</span>*@
+                            <span ng-if="modal.type === 1" class="input-group-text" id="basic-addon1">主要工作項目</span>
+                            <span ng-if="modal.type !== 1" class="input-group-text" id="basic-addon1">工作細項</span>
                         </div>
                         <input ng-model="modal.content" type="text" class="form-control" placeholder="請輸入工作項目" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
@@ -172,8 +208,8 @@
                             <span class="input-group-text material-icons" id="basic-addon1">calendar_month</span>
                         </div>
                         @*<div class="input-group-prepend">
-                <span class="input-group-text material-icons" id="basic-addon1">calendar_month</span>
-            </div>*@
+                                <span class="input-group-text material-icons" id="basic-addon1">calendar_month</span>
+                            </div>*@
                         <input class="form-control"
                                placeholder="請選擇日期"
                                ng-model="modal.start_date"
@@ -218,7 +254,7 @@
                             <button type="button" class="btn btn-primary" name="removeMilestone" ng-click="removeMilestone($index)">
                                 刪除里程碑
                             </button>
-                        </div>                        
+                        </div>
                     </div>
 
                 </div>
@@ -254,6 +290,33 @@
     </div>
 
 
+    <!-- Button trigger modal -->
+    <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#chartModal" ng-click="createHistoryLineChart()">
+        Launch demo modal
+    </button>-->
+
+    <!-- Chart Modal -->
+    <div class="modal fade" id="chartModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chartModalLongTitle" ng-bind="lineChartName"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <canvas id="myChart"></canvas>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
 

@@ -18,7 +18,7 @@ namespace TEEmployee.Models.GSchedule
             string scheduleConnection = ConfigurationManager.ConnectionStrings["GScheduleConnection"].ConnectionString;
             _conn = new SQLiteConnection(scheduleConnection);
         }
-       
+
         public List<Schedule> GetAll()
         {
             var lookup = new Dictionary<int, Schedule>();
@@ -26,7 +26,8 @@ namespace TEEmployee.Models.GSchedule
                 SELECT s.*, m.*
                 FROM Schedule AS s
                 LEFT JOIN Milestone AS m ON s.id = m.schedule_id                   
-                ", (s, m) => {
+                ", (s, m) =>
+            {
                 Schedule schedule;
                 if (!lookup.TryGetValue(s.id, out schedule))
                     lookup.Add(s.id, schedule = s);
@@ -49,7 +50,8 @@ namespace TEEmployee.Models.GSchedule
                 FROM Schedule AS s
                 LEFT JOIN Milestone AS m ON s.id = m.schedule_id
                 WHERE s.role=@role
-                ", (s, m) => {
+                ", (s, m) =>
+            {
                 Schedule schedule;
                 if (!lookup.TryGetValue(s.id, out schedule))
                     lookup.Add(s.id, schedule = s);
@@ -64,7 +66,7 @@ namespace TEEmployee.Models.GSchedule
             return resultList.ToList();
         }
 
-        
+
         public Schedule Update(Schedule schedule)
         {
             if (_conn.State == 0)
@@ -74,7 +76,7 @@ namespace TEEmployee.Models.GSchedule
 
             using (var tran = _conn.BeginTransaction())
             {
-                string sql = @"UPDATE Schedule SET member=@member, content=@content, start_date=@start_date, end_date=@end_date, percent_complete=@percent_complete, last_percent_complete=@last_percent_complete WHERE id=@id";
+                string sql = @"UPDATE Schedule SET member=@member, content=@content, start_date=@start_date, end_date=@end_date, percent_complete=@percent_complete, last_percent_complete=@last_percent_complete, history=@history WHERE id=@id";
 
                 try
                 {
@@ -85,14 +87,14 @@ namespace TEEmployee.Models.GSchedule
 
                     // update or insert milestones
                     if (schedule.milestones != null)
-                    {                  
+                    {
                         foreach (Milestone milestone in schedule.milestones)
                         {
                             if (MilestoneIDsInDb.Contains(milestone.id))
                             {
                                 Update(milestone, tran);
                                 MilestoneIDsInDb.Remove(milestone.id);
-                            }                               
+                            }
                             else
                             {
                                 milestone.id = Insert(milestone, tran);
@@ -112,8 +114,8 @@ namespace TEEmployee.Models.GSchedule
                     tran.Commit();
                     return schedule;
                 }
-                catch(Exception)
-                {                   
+                catch (Exception e)
+                {
                     return null;
                 }
             }
@@ -137,10 +139,10 @@ namespace TEEmployee.Models.GSchedule
                     schedule.id = schedule_id;
 
                     if (schedule.milestones != null)
-                    {                      
+                    {
                         foreach (Milestone milestone in schedule.milestones)
                         {
-                            milestone.schedule_id = schedule_id;                            
+                            milestone.schedule_id = schedule_id;
                             milestone.id = Insert(milestone, tran);
                         }
                     }
@@ -154,7 +156,25 @@ namespace TEEmployee.Models.GSchedule
                 }
 
             }
-            
+
+        }
+
+        // update percent complete
+        public bool Update(List<Schedule> schedules)
+        {
+            _conn.Open();
+
+            int ret = 0;
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                string sql = @"UPDATE Schedule SET percent_complete=@percent_complete, last_percent_complete=@last_percent_complete WHERE id=@id";
+                ret = _conn.Execute(sql, schedules, tran);
+                tran.Commit();
+
+                return ret > 0;
+
+            }
         }
 
         private List<Milestone> GetMilestones(int schedule_id)
@@ -228,6 +248,6 @@ namespace TEEmployee.Models.GSchedule
             return;
         }
 
-        
+
     }
 }

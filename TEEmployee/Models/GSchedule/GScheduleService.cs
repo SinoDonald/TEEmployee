@@ -123,6 +123,8 @@ namespace TEEmployee.Models.GSchedule
                 allGroupSchedules.AddRange(groupSchedules);
             }
 
+            allGroupSchedules = allGroupSchedules.OrderByDescending(x => x.Group).ToList();
+
             return allGroupSchedules;
         }
 
@@ -154,7 +156,7 @@ namespace TEEmployee.Models.GSchedule
             List<Schedule> schedules = _scheduleRepository.GetAllGroupSchedules(schedule.role);
             schedules = schedules.Where(x => x.parent_id == schedule.id).ToList();
 
-            if (schedule.type == 1)
+            if (schedule.type == 1 || schedule.type == 4) // group and future main schedule
             {
                 deletedSchedules.AddRange(schedules.Where(x => x.parent_id == schedule.id).ToList());
 
@@ -171,6 +173,20 @@ namespace TEEmployee.Models.GSchedule
             bool ret = _scheduleRepository.Delete(deletedSchedules);
 
             return ret;
+        }
+
+        public bool UpdateAllPercentComplete()
+        {
+            var schedules = _scheduleRepository.GetAll()
+                .Where(x => x.type < 4)
+                .Where(x => x.percent_complete != 100).ToList();
+
+            foreach(var schedule in schedules)
+            {
+                schedule.last_percent_complete = schedule.percent_complete;                
+            }            
+
+            return _scheduleRepository.Update(schedules);
         }
 
         public Authorization GetAuthorization(string empno)
@@ -197,6 +213,45 @@ namespace TEEmployee.Models.GSchedule
             }
 
             return authorization;
+        }
+
+        public List<GroupSchedule> GetAllFutures(string empno)
+        {
+            // get user information
+            User user = _userRepository.Get(empno);
+
+            var managerGroups = GetManagerGroups(empno);
+            var employeeGroups = GetEmployeeGroups(empno);
+            var groups = managerGroups.Concat(employeeGroups).Distinct();            
+
+            var allGroupFutureSchedules = new List<GroupSchedule>();
+
+            foreach (var group in groups)
+            {
+                var schedules = _scheduleRepository.GetAllGroupSchedules(group);
+
+                var groupFutureSchedules = new List<GroupSchedule>();
+
+                groupFutureSchedules = schedules.Where(x => x.type == 4).Select(x => new GroupSchedule() { Group = x }).ToList();
+                var detailFutureSchedules = schedules.Where(x => x.type == 5);
+                
+
+                var groupMembers = GetGroupMembers(group);
+                var groupMemberEmpnos = groupMembers.Select(x => x.empno);
+
+                foreach (var groupFutureSchedule in groupFutureSchedules)
+                {
+                    groupFutureSchedule.Details = detailFutureSchedules
+                        .Where(x => x.parent_id == groupFutureSchedule.Group.id)
+                        .Select(x => new DetailSchedule() { Detail = x })
+                        .ToList();
+                }
+
+
+                allGroupFutureSchedules.AddRange(groupFutureSchedules);
+            }
+                        
+            return allGroupFutureSchedules;
         }
 
         private List<string> GetManagerGroups(string empno)

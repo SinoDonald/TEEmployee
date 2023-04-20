@@ -1,5 +1,12 @@
 ﻿const { scaleLinear, extent, axisLeft, axisBottom, symbol, scaleTime, scaleOrdinal, transition, timeFormat } = d3;
 
+d3.json("https://cdn.jsdelivr.net/npm/d3-time-format@3.0.0/locale/zh-TW.json").then(locale => {
+    d3.timeFormatDefaultLocale(locale);
+
+});
+
+
+
 const ganttPlot = () => {
 
     let width;
@@ -19,7 +26,11 @@ const ganttPlot = () => {
         //const end = new Date(year, 11, 31);
 
         const start = startMonth;
-        const end = moment(startMonth).add(1, 'y').toDate();
+        let end = moment(startMonth).add(1, 'y').toDate();
+
+        // future
+        if (type === 'future')
+            end = moment(startMonth).add(3, 'y').toDate();
 
         const x = scaleTime()
             .domain(extent([start, end]))
@@ -37,18 +48,21 @@ const ganttPlot = () => {
         const marks = data.map(d => ({
             x1: x(x1Value(d)),
             x2: x(x2Value(d)),
-            y: height / 3,
+            //y: height / 3,
+            y: height / 2,
             cxy: d.milestones?.map(i => ({
                 //cx: x(i.date),
                 cx: x(new Date(i.date)),
-                cy: height / 3
-            })),
+                //cy: height / 3,
+                cy: height / 2 + height / 10,
+            })).sort((a, b) => a.cx - b.cx),
             wxy: d.milestones?.map(i => ({
             /* wx: x(i.date),*/
                 wx: x(new Date(i.date)),
-                wy: height / 4,
+                //wy: height / 4,
+                wy: height / 2 + height / 5,
                 content: i.content
-            }))
+            })).sort((a, b) => a.wx - b.wx)
         }));
 
         // rect
@@ -61,7 +75,7 @@ const ganttPlot = () => {
             .attr("x", d => {
                 return (d.x1 > markstart) ? d.x1 : markstart;
             })
-            .attr("y", d => d.y)            
+            .attr("y", d => d.y)
             //.attr("width", d => {               
             //    const w = Math.round(d.x2 - d.x1);
             //    return w > 0 ? w : 0;
@@ -76,17 +90,22 @@ const ganttPlot = () => {
             //   const w = Math.round(d.end_date - d.start_date);
             //   return w < rectProps.minWidth || isNaN(w) ? rectProps.minWidth : w;
             // })
-            .attr("height", height / 3)
+            .attr("height", height / 5)
+            //.attr("height", height / 4)
             /*.attr("fill", "Orange")*/
-            .attr("opacity", 0.4)
+            /*.attr("opacity", 0.4)*/
+            .attr("fill", "rgb(142, 177, 199)");
+
 
         // color
-        if (type === 'group')
-            rects.attr("fill", "#003262");
-        else if (type === 'detail')
-            rects.attr("fill", "#90cef1");
-        else 
-            rects.attr("fill", "#ffc20e");
+        //if (type === 'group')
+        //    rects.attr("fill", "#003262");
+        //else if (type === 'detail')
+        //    rects.attr("fill", "#90cef1");
+        //else 
+        //    rects.attr("fill", "#ffc20e");
+
+
         //// color
         //if (type === 'group')
         //    rects.attr("fill", "Orange");
@@ -103,32 +122,97 @@ const ganttPlot = () => {
         //90cef1
         //ffc20e
         //003262
+        //(142,177,199)  
+
         // circle
         groups.selectAll('circle')
             .data((d) => d.cxy)
             .join('circle')
             .transition(t)
             .attr('cx', d => d.cx)
-            .attr('cy', d => d.cy + 0.5 * height / 3)
+            //.attr('cy', d => d.cy + 0.5 * height / 3)
+            .attr('cy', d => d.cy)
             .attr('r', radius);
+
+        
+
+        // text
+        //groups.selectAll('text')
+        //    .data((d) => d.wxy)
+        //    .join('text')
+        //    .transition(t)
+        //    .attr('x', d => d.wx)
+        //    .attr('y', d => d.wy)
+        //    .text(d => d.content);
+
+        let labelRightBounds = [];
+
+        // text
+        groups.selectAll('text')
+            .data((d) => d.wxy)
+            .join('text')            
+            .text(d => d.content)
+            .style("font-size", "14px")            
+            .attr('y', function (d) {
+                //labelRightBounds.push([d.wx, this.getComputedTextLength()]);
+                labelRightBounds.push([d.wx, this.getBBox().width]);
+                
+                return d.wy;
+            })
+            .transition(t)
+            .attr('x', d => d.wx)
+
+        console.log(labelRightBounds);
+
+        let labelHeights = []
+        let labelLeft = 0;
+        let prevRightBound = -labelLeft;
+
+        function getLabelHeight(i) {
+
+            if (labelRightBounds.length === 0)
+                return;                
+
+            if (i === labelRightBounds.length - 1) {
+                labelHeights[i] = -2;
+                return -2;
+            } else if (labelRightBounds[i][0] + labelRightBounds[i][1] + labelLeft > labelRightBounds[i + 1][0]) {
+                labelRightBounds[i + 1][0] = labelRightBounds[i][0] + labelRightBounds[i][1] + labelLeft;
+                let nextHeight = getLabelHeight(i + 1);
+                let thisHeight = nextHeight - 1;
+                labelHeights[i] = thisHeight;
+                return thisHeight;
+            } else {
+                getLabelHeight(i + 1);
+                labelHeights[i] = -2;
+                return -2;
+            }
+        }
+
+        getLabelHeight(0);
 
         // text
         groups.selectAll('text')
             .data((d) => d.wxy)
             .join('text')
-            .transition(t)
-            .attr('x', d => d.wx)
-            .attr('y', d => d.wy)
-            .text(d => d.content);
+            .attr('y', (d, i) => (labelHeights[i]) * 16 + d.wy);
+            
+
+
+        //console.log(labelRightBounds);
 
         selection
             .selectAll('g.x-axis')
             .data([null])
             .join('g')
+            .style("font", "10px times")
             .attr('class', 'x-axis')
             .attr('transform', `translate(0, ${height - margin.bottom})`)
             .transition(t)
-            .call(axisBottom(x).ticks(12).tickFormat(timeFormat('%m')).tickSize(-0.5 * height, 0));
+            //.call(axisBottom(x).ticks(12).tickFormat(timeFormat('%m')).tickSize(-0.5 * height, 0));
+            //.call(axisBottom(x).ticks(12).tickSize(-0.5 * height, 0));
+            .call(axisBottom(x).ticks(12).tickSize(-0.4 * height, 0));
+
         
     };
 

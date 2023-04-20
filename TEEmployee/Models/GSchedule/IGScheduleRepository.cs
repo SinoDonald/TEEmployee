@@ -11,6 +11,7 @@ namespace TEEmployee.Models.GSchedule
         List<Schedule> GetAll();
         List<Schedule> GetAllGroupSchedules(string role);
         Schedule Update(Schedule schedule);
+        bool Update(List<Schedule> schedules);
         Schedule Insert(Schedule schedule);
         bool Delete(List<Schedule> schedules);
         void Dispose();

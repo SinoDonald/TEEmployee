@@ -42,6 +42,16 @@ app.service('appService', ['$http', function ($http) {
     this.DeleteSchedule = (o) => {
         return $http.post('GSchedule/DeleteSchedule', o);
     };
+    this.HistoryStringTest = (o) => {
+        return $http.post('GSchedule/HistoryStringTest', o);
+    };
+    this.UpdateAllPercentComplete = (o) => {
+        return $http.post('GSchedule/UpdateAllPercentComplete', o);
+    }
+    this.GetAllFutures = (o) => {
+        return $http.post('GSchedule/GetAllFutures', o);
+    };
+
 }]);
 
 app.factory('dataservice', function () {
@@ -76,6 +86,8 @@ app.factory('dataservice', function () {
 
 app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', function ($scope, $location, appService, $rootScope, $q, dataservice) {
 
+
+
     appService.GetAllSchedules({}).then((ret) => {
         dataservice.set(ret.data);
     })
@@ -98,6 +110,33 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
 app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$timeout', function ($scope, $location, appService, $rootScope, $q, dataservice, $timeout) {
 
 
+    $scope.niceNoah = () => {
+
+        appService.UpdateAllPercentComplete({}).then((ret) => {
+
+            if (ret.data) {
+                console.log("succeed");
+            }
+
+        });
+    }
+
+    // checkbox
+    $scope.checkboxModel = {
+        value: false
+    };
+
+    // line chart
+    $scope.lineChartName = "";
+    const ctx = document.getElementById('myChart');
+    const lineChart = new Chart(ctx, config);
+
+    $scope.createHistoryLineChart = (schedule) => {
+        $scope.lineChartName = schedule.content
+        createHistoryLineChart(lineChart, JSON.parse(schedule.history));
+    }
+
+
     $scope.data = dataservice.get();
     $scope.auth = dataservice.getAuth();
 
@@ -113,7 +152,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     const plot =
         ganttPlot()
             .width(800)
-            .height(80)
+            .height(110)
             .x1Value((d) => new Date(d.start_date))
             .x2Value((d) => new Date(d.end_date))
             .margin({
@@ -125,7 +164,10 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
             .radius(5)
             .type('group');
 
-    $scope.UpdateAllPlots = () => {
+
+
+
+    const UpdateAllPlots = () => {
 
         const groupSchedules = $scope.data;
 
@@ -151,6 +193,13 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         }
 
     }
+
+    $scope.UpdateAllPlots = () => {
+        $timeout(function () {
+            UpdateAllPlots();
+        }, 0);
+    }
+
 
     // multi-select
     $scope.multiselectedmodel = [];
@@ -181,16 +230,20 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
 
     // deep clone schedule object to modal
-    $scope.cloneDeepToModal = (schedule, idx) => {
+    $scope.cloneDeepToModal = (schedule, idx, parentContent) => {
 
         $scope.modal = deepCopyFunction(schedule);
         $scope.modal.origin = schedule;
         $scope.modal.originidx = idx;
         $scope.modal.createMode = false;
+        //$scope.modal.history = JSON.stringify(sData);
+        $scope.modal.parentContent = parentContent;
 
     };
 
     $scope.updateSchedule = () => {
+
+        transHistory();
 
         appService.UpdateSchedule({ schedule: $scope.modal }).then((ret) => {
 
@@ -261,11 +314,14 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
         $scope.multiselectedmodel = []
         $scope.modal.createMode = true;
+        $scope.modal.parentContent = groupSchedule.content;
     };
 
 
 
     $scope.createSchedule = () => {
+
+        transHistory();
 
         appService.InsertSchedule($scope.modal).then((ret) => {
 
@@ -347,9 +403,10 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
                 }
 
                 // redraw all gantt
-                $timeout(function () {
-                    $scope.UpdateAllPlots();
-                }, 0);
+                //$timeout(function () {
+                //    $scope.UpdateAllPlots();
+                //}, 0);
+                $scope.UpdateAllPlots();
             }
 
         })
@@ -362,6 +419,9 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         $scope.filteredMembers = group.Members
 
         $scope.editFilter = group.Editable;
+
+        // overlapping gantt text must be redraw
+        $scope.UpdateAllPlots();
     }
 
     $scope.scheduleFilter = function (schedule) {
@@ -373,13 +433,21 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         if (!schedule.start_date || !schedule.end_date)
             return true;
 
+        // (Detail only) if checkbox is true, hide completed detail schedule
 
-        // end before startMonth or start after endMonth not showing
-        if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate())
-            return false;
+        if (schedule.type === 2) {
+            if ($scope.checkboxModel.value && schedule.percent_complete === 100)
+                return false;
+        }
 
-        if (new Date(schedule.end_date) < moment($scope.ganttStartMonth).toDate())
-            return false;
+        // (Group only) end before startMonth or start after endMonth not showing
+        if (schedule.type === 1) {
+            if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate())
+                return false;
+
+            if (new Date(schedule.end_date) < moment($scope.ganttStartMonth).toDate())
+                return false;
+        }
 
         return true;
     }
@@ -411,7 +479,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
                 const manHour = projectHours.find(x => x.name === name && x.yymm === yymm);
                 let hour = (manHour) ? manHour.hours : 0;
                 memberHours += `${name}(${hour})\n`
-                ;
+                    ;
             }
 
             if (memberHours)
@@ -431,6 +499,66 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         project.memberHours = memberHours;
         project.monthlyHours = monthlyHours;
         project.totalHours = totalHours;
+
+    }
+
+    function transHistory() {
+
+        let historyObj;
+        $scope.modal.percent_complete = Number($scope.modal.percent_complete);
+        $scope.modal.last_percent_complete = Number($scope.modal.last_percent_complete);
+
+        if (!$scope.modal.history) {
+            historyObj = { time: [], percent: [] };
+        }
+        else {
+            historyObj = JSON.parse($scope.modal.history);
+        }
+
+        if ($scope.modal.last_percent_complete) {
+
+            let yymm = moment({ day: 1 }).subtract(1, 'M').format('YYYY-MM');
+            let hIdx = historyObj?.time.indexOf(yymm);
+            if (hIdx >= 0)
+                historyObj.percent[hIdx] = $scope.modal.last_percent_complete;
+            else {
+                historyObj.time.push(yymm);
+                historyObj.percent.push($scope.modal.last_percent_complete);
+            }
+        }
+
+        if ($scope.modal.percent_complete) {
+
+            let yymm = moment({ day: 1 }).format('YYYY-MM');
+            let hIdx = historyObj?.time.indexOf(yymm);
+            if (hIdx >= 0)
+                historyObj.percent[hIdx] = $scope.modal.percent_complete;
+            else {
+                historyObj.time.push(yymm);
+                historyObj.percent.push($scope.modal.percent_complete);
+            }
+        }
+
+        // sort again 
+
+        //1) combine the arrays:
+        let templist = [];
+        for (let j = 0; j < historyObj.time.length; j++)
+            templist.push({ 'time': historyObj.time[j], 'percent': historyObj.percent[j] });
+
+        //2) sort:
+        templist.sort(function (a, b) {
+            return ((a.time < b.time) ? -1 : ((a.time === b.time) ? 0 : 1));
+        });
+
+        //3) separate them back out:
+        for (let k = 0; k < templist.length; k++) {
+            historyObj.time[k] = templist[k].time;
+            historyObj.percent[k] = templist[k].percent;
+        }
+
+
+        $scope.modal.history = JSON.stringify(historyObj);
 
     }
 
@@ -459,13 +587,31 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     $scope.filterMembers();
 
     // draw all gantt at first
-    $timeout(function () {
-        $scope.UpdateAllPlots();
-    }, 0);
+
+    //$timeout(function () {
+    //    $scope.UpdateAllPlots();
+    //}, 0);
+    $scope.UpdateAllPlots();
 
 }]);
 
 app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$timeout', function ($scope, $location, appService, $rootScope, $q, dataservice, $timeout) {
+
+
+    // checkbox
+    $scope.checkboxModel = {
+        value: false
+    };
+
+    // line chart
+    $scope.lineChartName = "";
+    const ctx = document.getElementById('myChart');
+    const lineChart = new Chart(ctx, config);
+
+    $scope.createHistoryLineChart = (schedule) => {
+        $scope.lineChartName = schedule.content
+        createHistoryLineChart(lineChart, JSON.parse(schedule.history));
+    }
 
 
     $scope.data = dataservice.get();
@@ -482,7 +628,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
     const plot =
         ganttPlot()
             .width(800)
-            .height(80)
+            .height(110)
             .x1Value((d) => new Date(d.start_date))
             .x2Value((d) => new Date(d.end_date))
             .margin({
@@ -494,7 +640,9 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
             .radius(5)
             .type('group');
 
-    $scope.UpdateAllPlots = () => {
+
+
+    const UpdateAllPlots = () => {
 
         const groupSchedules = $scope.data;
 
@@ -531,7 +679,15 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
     }
 
+    $scope.UpdateAllPlots = () => {
+        $timeout(function () {
+            UpdateAllPlots();
+        }, 0);
+    }
+
     $scope.updateSchedule = () => {
+
+        transHistory();
 
         appService.UpdateSchedule({ schedule: $scope.modal }).then((ret) => {
 
@@ -610,6 +766,8 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
     $scope.createSchedule = () => {
 
+        transHistory();
+
         appService.InsertSchedule($scope.modal).then((ret) => {
 
             if (ret.data) {
@@ -646,9 +804,10 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
                 personals.splice($scope.modal.originidx, 1);
 
                 // redraw all gantt
-                $timeout(function () {
-                    $scope.UpdateAllPlots();
-                }, 0);
+                //$timeout(function () {
+                //    $scope.UpdateAllPlots();
+                //}, 0);
+                $scope.UpdateAllPlots();
             }
 
         })
@@ -681,6 +840,8 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
     $scope.changeMember = () => {
         $scope.editFilter = $scope.selectedMember === $scope.auth.User.name;
+
+        $scope.UpdateAllPlots();
     }
 
     $scope.scheduleFilter = function (schedule) {
@@ -688,7 +849,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
         if (schedule.role !== $scope.selectedGroup)
             return false;
 
-        if (!schedule.member.includes($scope.selectedMember))
+        if (!schedule.member?.includes($scope.selectedMember))
             return false;
 
         // if the start/end date is not set, show it
@@ -696,12 +857,22 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
             return true;
 
 
-        // end before startMonth or start after endMonth not showing
-        if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate())
-            return false;
+        // (Group only) end before startMonth or start after endMonth not showing
+        if (schedule.type === 1) {
+            if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate())
+                return false;
 
-        if (new Date(schedule.end_date) < moment($scope.ganttStartMonth).toDate())
-            return false;
+            if (new Date(schedule.end_date) < moment($scope.ganttStartMonth).toDate())
+                return false;
+        }
+
+
+        // end before startMonth or start after endMonth not showing
+        //if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate())
+        //    return false;
+
+        //if (new Date(schedule.end_date) < moment($scope.ganttStartMonth).toDate())
+        //    return false;
 
         return true;
     }
@@ -711,7 +882,73 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
         if (schedule.member !== $scope.selectedMember)
             return false;
 
+        // (Personal only) if checkbox is true, hide completed detail schedule
+
+
+        if ($scope.checkboxModel.value && schedule.percent_complete === 100)
+            return false;
+
+
         return true;
+    }
+
+    function transHistory() {
+
+        let historyObj;
+        $scope.modal.percent_complete = Number($scope.modal.percent_complete);
+        $scope.modal.last_percent_complete = Number($scope.modal.last_percent_complete);
+
+        if (!$scope.modal.history) {
+            historyObj = { time: [], percent: [] };
+        }
+        else {
+            historyObj = JSON.parse($scope.modal.history);
+        }
+
+        if ($scope.modal.last_percent_complete) {
+
+            let yymm = moment({ day: 1 }).subtract(1, 'M').format('YYYY-MM');
+            let hIdx = historyObj?.time.indexOf(yymm);
+            if (hIdx >= 0)
+                historyObj.percent[hIdx] = $scope.modal.last_percent_complete;
+            else {
+                historyObj.time.push(yymm);
+                historyObj.percent.push($scope.modal.last_percent_complete);
+            }
+        }
+
+        if ($scope.modal.percent_complete) {
+
+            let yymm = moment({ day: 1 }).format('YYYY-MM');
+            let hIdx = historyObj?.time.indexOf(yymm);
+            if (hIdx >= 0)
+                historyObj.percent[hIdx] = $scope.modal.percent_complete;
+            else {
+                historyObj.time.push(yymm);
+                historyObj.percent.push($scope.modal.percent_complete);
+            }
+        }
+
+        // sort again 
+
+        //1) combine the arrays:
+        let templist = [];
+        for (let j = 0; j < historyObj.time.length; j++)
+            templist.push({ 'time': historyObj.time[j], 'percent': historyObj.percent[j] });
+
+        //2) sort:
+        templist.sort(function (a, b) {
+            return ((a.time < b.time) ? -1 : ((a.time === b.time) ? 0 : 1));
+        });
+
+        //3) separate them back out:
+        for (let k = 0; k < templist.length; k++) {
+            historyObj.time[k] = templist[k].time;
+            historyObj.percent[k] = templist[k].percent;
+        }
+
+        $scope.modal.history = JSON.stringify(historyObj);
+
     }
 
     function deepCopyFunction(inputObject) {
@@ -736,8 +973,327 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
     $scope.filterMembers();
 
     // draw all gantt at first
-    $timeout(function () {
+    //$timeout(function () {
+    //    $scope.UpdateAllPlots();
+    //}, 0);
+    $scope.UpdateAllPlots();
+
+
+}]);
+
+
+app.controller('FutureCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$timeout', function ($scope, $location, appService, $rootScope, $q, dataservice, $timeout) {
+
+    appService.GetAllFutures({}).then((ret) => {
+        $scope.data = ret.data;
         $scope.UpdateAllPlots();
-    }, 0);
+    })
+
+    $scope.auth = dataservice.getAuth();
+
+    // default group
+    $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+    $scope.filteredMembers = $scope.auth.GroupAuthorities[0].Members
+
+    // gantt
+
+    $scope.ganttStartMonth = moment({ month: 0, day: 1 });
+
+    const plot =
+        ganttPlot()
+            .width(1200)
+            .height(80)
+            .x1Value((d) => new Date(d.start_date))
+            .x2Value((d) => new Date(d.end_date))
+            .margin({
+                top: 10,
+                right: 10,
+                bottom: 20,
+                left: 50
+            })
+            .radius(5)
+            .type('future');
+
+
+    const UpdateAllPlots = () => {
+
+        const groupSchedules = $scope.data;
+
+        plot.startMonth($scope.ganttStartMonth.toDate());
+
+        // parse date in gantt.js
+
+        // group schedule
+        for (let i = 0; i !== groupSchedules.length; i++) {
+
+            const svg = select('#svg' + i.toString())
+                .call(plot.data([groupSchedules[i].Group]));
+
+            // detail schedule
+            const detailSchedules = groupSchedules[i].Details;
+
+            for (let j = 0; j !== detailSchedules.length; j++) {
+
+                const svgChild = select(`#svgChild${i}-${j}`)
+                    .call(plot.data([detailSchedules[j].Detail]));
+            }
+
+        }
+
+    }
+
+    $scope.UpdateAllPlots = () => {
+        $timeout(function () {
+            UpdateAllPlots();
+        }, 0);
+    }
+
+
+    // multi-select
+    $scope.multiselectedmodel = [];
+    $scope.yourEvents = {
+        onSelectionChanged: function () {
+            let names = "";
+            $scope.multiselectedmodel.sort((a, b) => a.id - b.id);
+            for (let i = 0; i !== $scope.multiselectedmodel.length; i++) {
+                names += $scope.multiselectedmodel[i].label;
+                if (i !== $scope.multiselectedmodel.length - 1)
+                    names += ", ";
+                $scope.modal.member = names;
+            }
+        },
+        onDeselectAll: function () {
+            $scope.modal.member = "";
+        }
+    };
+
+    // trasform members string into checkbox array object
+    $scope.passChosen = () => {
+        $scope.multiselectedmodel = [];
+        for (let emp of $scope.filteredMembers) {
+            if ($scope.modal.member?.includes(emp.label))
+                $scope.multiselectedmodel.push(emp);
+        }
+    }
+
+
+    // deep clone schedule object to modal
+    $scope.cloneDeepToModal = (schedule, idx, parentContent) => {
+
+        $scope.modal = deepCopyFunction(schedule);
+        $scope.modal.origin = schedule;
+        $scope.modal.originidx = idx;
+        $scope.modal.createMode = false;
+        $scope.modal.parentContent = parentContent;
+
+    };
+
+    $scope.filterMembers = () => {
+        let group = $scope.auth.GroupAuthorities.find(x => x.GroupName === $scope.selectedGroup)
+        $scope.filteredMembers = group.Members
+
+        $scope.editFilter = group.Editable;
+
+        // overlapping gantt text must be redraw
+        //$scope.UpdateAllPlots();
+    }
+
+    $scope.updateSchedule = () => {
+
+        appService.UpdateSchedule({ schedule: $scope.modal }).then((ret) => {
+
+            if (ret.data) {
+
+                ret.data.milestones = ret.data.milestones ?? [];
+
+                // pass modal value back to origin
+                for (const property in $scope.modal.origin) {
+                    $scope.modal.origin[property] = ret.data[property];
+                }
+
+                // lazy 
+                $scope.UpdateAllPlots();
+
+            }
+        })
+    }
+
+    // create empty group schedule object to modal
+    $scope.createGroupScheduleModal = () => {
+
+        $scope.modal = {
+            type: 4,
+            member: '',
+            milestones: [],
+            start_date: moment().locale('zh-tw').format('YYYY-MM-DD'),
+            end_date: moment().locale('zh-tw').format('YYYY-MM-DD'),
+            role: $scope.selectedGroup,
+        };
+
+        $scope.multiselectedmodel = []
+        $scope.modal.createMode = true;
+    };
+
+    $scope.createDetailScheduleModal = (groupSchedule) => {
+
+        $scope.modal = {
+            type: 5,
+            member: '',
+            milestones: [],
+            start_date: moment().locale('zh-tw').format('YYYY-MM-DD'),
+            end_date: moment().locale('zh-tw').format('YYYY-MM-DD'),
+            role: $scope.selectedGroup,
+            parent_id: groupSchedule.id,
+        };
+
+        $scope.multiselectedmodel = []
+        $scope.modal.createMode = true;
+        $scope.modal.parentContent = groupSchedule.content;
+    };
+
+
+
+    $scope.createSchedule = () => {
+
+
+        appService.InsertSchedule($scope.modal).then((ret) => {
+
+            if (ret.data) {
+
+                // create empty milestone list
+                ret.data.milestones = ret.data.milestones ?? [];
+
+                // group or detail
+                if (ret.data.type === 4) {
+
+                    let groupIndex = $scope.data.length;
+
+                    $scope.data.splice(groupIndex, 0, {
+                        Group: ret.data,
+                        Details: [],
+                    });
+                                        
+                    // lazy 
+                    $scope.UpdateAllPlots();
+
+                    //$timeout(function () {
+                    //    const svg = select('#svg' + groupIndex.toString())
+                    //        .call(plot.type('group').data([$scope.data[groupIndex].Group])); // update Group gantt
+                    //}, 0);
+
+
+
+                }
+                else if (ret.data.type === 5) {
+                    let parent = $scope.data.find(x => x.Group.id === ret.data.parent_id);
+
+                    let groupIndex = $scope.data.findIndex(x => x.Group.id === ret.data.parent_id);
+                    let detailIndex = parent.Details.length;
+
+                    parent.Details.splice(detailIndex, 0, {
+                        Detail: ret.data,
+                    });
+
+                    // lazy 
+                    $scope.UpdateAllPlots();
+
+                    //$timeout(function () {
+                    //    const svgChild = select(`#svgChild${groupIndex}-${detailIndex}`)
+                    //        .call(plot.type('detail').data([parent.Details[detailIndex].Detail])); // update Detail gantt
+                    //}, 0);
+
+                }
+
+            }
+        })
+    };
+
+    // delete all corresponding sub schedules and milestones
+    $scope.deleteSchedule = () => {
+
+        $('#exampleModalLong').modal('hide')
+
+        appService.DeleteSchedule($scope.modal).then((ret) => {
+            if (ret.data) {
+
+                // group or detail
+                if ($scope.modal.type === 4) {
+
+                    let idx = $scope.data.findIndex(x => x.Group.id === $scope.modal.id);
+                    $scope.data.splice(idx, 1);
+                }
+                else {
+
+                    let parent = $scope.data.find(x => x.Group.id === $scope.modal.parent_id);
+                    let idx = parent.Details.findIndex(x => x.Detail.id === $scope.modal.id);
+                    parent.Details.splice(idx, 1);
+                }
+
+                // lazy 
+                $scope.UpdateAllPlots();
+
+                // redraw all gantt
+                //$timeout(function () {
+                //    $scope.UpdateAllPlots();
+                //}, 0);
+                //$scope.UpdateAllPlots();
+            }
+
+        })
+
+    };
+
+    $scope.scheduleFilter = function (schedule) {
+
+        if (schedule.role !== $scope.selectedGroup)
+            return false;
+
+        // if the start/end date is not set, show it
+        if (!schedule.start_date || !schedule.end_date)
+            return true;
+
+        //// (Detail only) if checkbox is true, hide completed detail schedule
+
+        //if (schedule.type === 2) {
+        //    if ($scope.checkboxModel.value && schedule.percent_complete === 100)
+        //        return false;
+        //}
+
+        // (Group only) end before startMonth or start after endMonth not showing
+        if (schedule.type === 4) {
+            if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate())
+                return false;
+
+            if (new Date(schedule.end_date) < moment($scope.ganttStartMonth).toDate())
+                return false;
+        }
+
+        return true;
+    }
+
+
+
+    function deepCopyFunction(inputObject) {
+        // Return the value if inputObject is not an Object data
+        // Need to notice typeof null is 'object'
+        if (typeof inputObject !== 'object' || inputObject === null) {
+            return inputObject;
+        }
+
+        // Create an array or object to hold the values
+        const outputObject = Array.isArray(inputObject) ? [] : {};
+
+        // Recursively deep copy for nested objects, including arrays
+        for (let key in inputObject) {
+            const value = inputObject[key];
+            outputObject[key] = deepCopyFunction(value);
+        }
+
+        return outputObject;
+    }
+
+    // filter 
+    $scope.filterMembers();
+    
 
 }]);

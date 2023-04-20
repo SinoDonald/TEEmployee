@@ -303,6 +303,7 @@
     <Content Include="Scripts\Webapp\Assessment\SelfCtrl.min.js">
       <DependentUpon>SelfCtrl.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Webapp\GSchedule\HistoryLineChart.js" />
     <Content Include="Scripts\Webapp\GSchedule\ScheduleCtrl.js" />
     <Content Include="Scripts\Webapp\Home\AdminCtrl.js" />
     <Content Include="Scripts\Webapp\Schedule\GanttPlot.js" />
@@ -376,6 +377,7 @@
     <Content Include="Views\GSchedule\Index.cshtml" />
     <Content Include="Views\GSchedule\Group.cshtml" />
     <Content Include="Views\GSchedule\Personal.cshtml" />
+    <Content Include="Views\GSchedule\Future.cshtml" />
     <Content Include="Views\Tasklog\UsersDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
