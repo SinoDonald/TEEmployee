@@ -42,10 +42,14 @@ namespace TEEmployee.Controllers
             ViewBag.id = id;
             return View();
         }
+        public ActionResult UserList()
+        {
+            return PartialView();
+        }
 
         public ActionResult UsersDetails()
         {
-            return View();
+            return PartialView();
         }
 
         /*........................  Web api  ...........................*/
@@ -150,13 +154,6 @@ namespace TEEmployee.Controllers
             var ret = userTasklogDataList[0];
             
             return Json(userTasklogDataList);
-        }
-
-        [HttpPost]
-        public JsonResult Test(List<TasklogData> userTasklogDataList)
-        {
-            var ret = "";
-            return Json(ret);
         }
 
         //[HttpPost]
