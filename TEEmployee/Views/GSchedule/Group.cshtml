@@ -2,14 +2,40 @@
 <div ng-controller="GroupCtrl">
 
 
-    <div>
+    <div class="chartmenu mb-5">
+
+        <div>
+            <button ng-show="editFilter" ng-click="createGroupScheduleModal()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">新增</button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'y'); UpdateAllPlots()"><<</button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'M'); UpdateAllPlots()"><</button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'M'); UpdateAllPlots()">></button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'y'); UpdateAllPlots()">>></button>
+            @*<button type="button" class="btn btn-primary" ng-click="niceNoah()">ba</button>*@
+            <span ng-bind="ganttStartMonth.local('zh-tw').format('YYYY-MM')"></span>
+        </div>
+        <div>
+            @*<label for="SelectGroup">請選擇組別</label>*@
+            <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="filterMembers()" aria-label="Select the Group">
+                <option ng-repeat="group in auth.GroupAuthorities" value="{{group.GroupName}}">{{group.GroupName}}</option>
+            </select>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" ng-model="checkboxModel.value" id="defaultCheck1" ng-change="UpdateAllPlots()">
+            <label class="form-check-label" for="defaultCheck1">
+                隱藏已完成細項
+            </label>
+        </div>
+    </div>
+
+
+    <!--<div>
         <button ng-show="editFilter" ng-click="createGroupScheduleModal()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">新增</button>
         <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'y'); UpdateAllPlots()"><<</button>
         <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'M'); UpdateAllPlots()"><</button>
         <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'M'); UpdateAllPlots()">></button>
-        <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'y'); UpdateAllPlots()">>></button>
-        @*<button type="button" class="btn btn-primary" ng-click="niceNoah()">ba</button>*@
-        <p ng-bind="ganttStartMonth.local('zh-tw').format('YYYY-MM')"></p>
+        <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'y'); UpdateAllPlots()">>></button>-->
+    @*<button type="button" class="btn btn-primary" ng-click="niceNoah()">ba</button>*@
+    <!--<p ng-bind="ganttStartMonth.local('zh-tw').format('YYYY-MM')"></p>
     </div>
 
     <div class="chartmenu mb-5">
@@ -26,7 +52,7 @@
         <label class="form-check-label" for="defaultCheck1">
             隱藏已完成細項
         </label>
-    </div>
+    </div>-->
 
 
     <table class="table">
@@ -156,7 +182,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">計畫編號</span>
                         </div>
-                        <input ng-disabled="modal.type !== 1" ng-model="modal.projno" type="text" class="form-control" placeholder="請輸入計畫編號" aria-label="Username" aria-describedby="basic-addon1">
+                        <input ng-disabled="modal.type !== 1 || !modal.createMode" ng-model="modal.projno" type="text" class="form-control" placeholder="請輸入計畫編號" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
 
                     <!--fake-->
@@ -294,7 +320,6 @@
     <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#chartModal" ng-click="createHistoryLineChart()">
         Launch demo modal
     </button>-->
-
     <!-- Chart Modal -->
     <div class="modal fade" id="chartModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">

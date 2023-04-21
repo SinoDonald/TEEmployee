@@ -1,35 +1,63 @@
 ﻿
 <div ng-controller="PersonalCtrl">
 
-    <div>
-        <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'y'); UpdateAllPlots()"><<</button>
-        <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'M'); UpdateAllPlots()"><</button>
-        <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'M'); UpdateAllPlots()">></button>
-        <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'y'); UpdateAllPlots()">>></button>
-        <p ng-bind="ganttStartMonth.local('zh-tw').format('YYYY-MM')"></p>
-    </div>
-
     <div class="chartmenu mb-5">
+
         <div>
-            <label for="SelectGroup">組別</label>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'y'); UpdateAllPlots()"><<</button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'M'); UpdateAllPlots()"><</button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'M'); UpdateAllPlots()">></button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'y'); UpdateAllPlots()">>></button>
+            <span ng-bind="ganttStartMonth.local('zh-tw').format('YYYY-MM')"></span>
+        </div>
+        <div>
             <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="filterMembers()" aria-label="Select the Group">
                 <option ng-repeat="group in auth.GroupAuthorities" value="{{group.GroupName}}">{{group.GroupName}}</option>
             </select>
         </div>
         <div>
-            <label for="SelectGroup">組員</label>
             <select class="form-select" id="SelectMember" name="SelectMember" ng-model="selectedMember" ng-change="changeMember()" aria-label="Select the Group">
                 <option ng-repeat="member in filteredMembers" value="{{member.label}}">{{member.label}}</option>
             </select>
         </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" ng-model="checkboxModel.value" id="defaultCheck1" ng-change="UpdateAllPlots()">
+            <label class="form-check-label" for="defaultCheck1">
+                隱藏已完成個人細項
+            </label>
+        </div>
     </div>
 
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" ng-model="checkboxModel.value" id="defaultCheck1" ng-change="UpdateAllPlots()">
-        <label class="form-check-label" for="defaultCheck1">
-            隱藏已完成個人細項
-        </label>
-    </div>
+
+    @*<div>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'y'); UpdateAllPlots()"><<</button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'M'); UpdateAllPlots()"><</button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'M'); UpdateAllPlots()">></button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'y'); UpdateAllPlots()">>></button>
+            <p ng-bind="ganttStartMonth.local('zh-tw').format('YYYY-MM')"></p>
+        </div>
+
+        <div class="chartmenu mb-5">
+            <div>
+                <label for="SelectGroup">組別</label>
+                <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="filterMembers()" aria-label="Select the Group">
+                    <option ng-repeat="group in auth.GroupAuthorities" value="{{group.GroupName}}">{{group.GroupName}}</option>
+                </select>
+            </div>
+            <div>
+                <label for="SelectGroup">組員</label>
+                <select class="form-select" id="SelectMember" name="SelectMember" ng-model="selectedMember" ng-change="changeMember()" aria-label="Select the Group">
+                    <option ng-repeat="member in filteredMembers" value="{{member.label}}">{{member.label}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" ng-model="checkboxModel.value" id="defaultCheck1" ng-change="UpdateAllPlots()">
+            <label class="form-check-label" for="defaultCheck1">
+                隱藏已完成個人細項
+            </label>
+        </div>*@
 
     <table class="table">
         <thead class="thead-dark">

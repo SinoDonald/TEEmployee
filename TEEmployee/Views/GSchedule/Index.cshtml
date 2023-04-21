@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="~/Content/css/angular-moment-picker.min.css">
     <style>
         header {
-            margin-top: 100px;
+            margin-top: 160px;
         }
 
         div[ng-dropdown-multiselect] > div > ul > li.divider {
@@ -60,6 +60,35 @@
             border-top: none;
         }
 
+        .schedule-fixed-top {
+            position: fixed;
+            top: 72px;
+            right: 0;
+            left: 0;
+            z-index: 998;
+        }
+
+        .chartmenu {
+            display: flex;
+            position: fixed;
+            top: 80px;
+            right: 0;
+            left: 0;
+            z-index: 999;
+            margin-left: 35em;
+            align-items:center;
+        }
+
+        .chartmenu div {
+            flex: 1;
+            margin: 0 20px;
+            
+        }
+
+        #mainNav, #mainNav.navbar-shrink {
+            box-shadow: none;
+        }
+
         /* thead, tbody, tfoot, tr, td, th {
                     border-color: inherit;
                     border-style: solid;
@@ -81,15 +110,21 @@
 <div ng-controller="ScheduleCtrl" class="container-fluid">
 
     <header>
-        <h2>年度行事曆目標</h2>
+        @*<h2>年度行事曆目標</h2>*@
     </header>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="navbar-nav">
-            <a class="nav-item nav-link" ui-sref="Group">群組行事曆</a>
-            <a class="nav-item nav-link" ui-sref="Personal">個人行事曆</a>
-            <a class="nav-item nav-link" ui-sref="Future">未來3年數位轉型規劃</a>
-        </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light schedule-fixed-top">
+        <a class="navbar-brand" href="">年度行事曆目標</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" ui-sref="Group">群組行事曆</a>
+                <a class="nav-item nav-link" ui-sref="Personal">個人行事曆</a>
+                <a class="nav-item nav-link" ui-sref="Future">未來3年數位轉型規劃</a>
+            </div>
+        </div>            
     </nav>
 
 

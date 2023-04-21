@@ -162,7 +162,7 @@ const ganttPlot = () => {
             .transition(t)
             .attr('x', d => d.wx)
 
-        console.log(labelRightBounds);
+        //console.log(labelRightBounds);
 
         let labelHeights = []
         let labelLeft = 0;
