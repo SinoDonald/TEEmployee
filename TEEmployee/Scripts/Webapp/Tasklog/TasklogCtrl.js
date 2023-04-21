@@ -1,4 +1,18 @@
-﻿var app = angular.module('app', ['moment-picker', 'ngAnimate']);
+﻿var app = angular.module('app', ['moment-picker', 'ui.router', 'ngAnimate']);
+
+app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+
+    $stateProvider
+        .state('UserList', {
+            url: '/UserList',
+            templateUrl: 'Tasklog/UserList'
+        })
+        .state('UsersDetails', {
+            url: '/UsersDetails',
+            templateUrl: 'Tasklog/UsersDetails'
+        })
+
+}]);
 
 app.run(['$http', '$window', function ($http, $window) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -42,13 +56,35 @@ app.service('appService', ['$http', function ($http) {
     this.GetMemberContent = (o) => {
         return $http.post('Tasklog/GetMemberContent', o);
     };
-    this.Test = (o) => {
-        return $http.post('Tasklog/Test', o);
-    };
 
 }]);
 
-app.controller('ListCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
+app.factory('myFactory', function () {
+
+    var savedData = {}
+
+    function set(data) {
+        savedData.users = data;
+    }
+
+    function get() {
+        return savedData;
+    }
+
+    return {
+        set: set,
+        get: get,
+    }
+
+});
+
+app.controller('ListCtrl', ['$scope', '$window', 'appService', '$rootScope', '$location', function ($scope, $window, appService, $rootScope, $location) {
+
+    $location.path('/UserList');
+
+}]);
+
+app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'myFactory', function ($scope, $location, $window, appService, $rootScope, $q, myFactory) {
 
     // select year and month
     $scope.months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
@@ -63,7 +99,6 @@ app.controller('ListCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
     $scope.selectedYear = $scope.years[0];
     $scope.selectedMonth = $scope.months[month];
-
     
     $scope.data = [];
 
@@ -78,24 +113,19 @@ app.controller('ListCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
         $scope.propertyName = propertyName;
     };
 
-
-
     $scope.GetAllMonthlyRecordData = () => {
-
         //let yymm = `${Number($scope.selectedYear) - 1911}${$scope.selectedMonth}`;
         let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`;
 
         appService.GetAllMonthlyRecordData({yymm: yymm}).then((ret) => {
-
             $scope.data = ret.data;
         })
-    }   
-
-   
+    }
+    
     $scope.GetAllMonthlyRecordData();
 
     // 多人詳細內容 <-- 培文
-    $scope.GetMemberContent = () => {
+    $scope.GetMemberContent = function (data) {
         let selectedUsers = $scope.data.filter(x => x.selected === true);
         let monthlyRecord = [];
         let users = [];
@@ -104,19 +134,23 @@ app.controller('ListCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
             users.push(selectedUsers[i].User);
         }
         appService.GetMemberContent({ monthlyRecord: monthlyRecord, users: users })
-            .then((ret) => {
-                $window.location.href = 'Tasklog/UsersDetails';
+            .then(function (ret) {
+                myFactory.set(ret.data);
+                //$scope.users = myFactory.get().users;
+                $location.path('/UsersDetails');
+                //$window.location.href = 'Tasklog/UsersDetails';
             })
-            .catch((ret) => {
+            .catch(function (ret) {
                 alert('Error');
             });
     }
 
 }]);
 
-app.controller('UsersDetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
+app.controller('UsersDetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', function ($scope, $window, appService, $rootScope, myFactory) {
 
-    appService.Test({}).then((ret) => {
+    $scope.users = myFactory.get().users;
+    appService.GetUserByGuid({ guid: $window.guid }).then((ret) => {
         $scope.user = ret.data;
         document.title = $scope.user.name + "-工作紀錄管控表"
     })
@@ -124,13 +158,11 @@ app.controller('UsersDetailsCtrl', ['$scope', '$window', 'appService', '$rootSco
 }]);
 
 app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
-
     
     appService.GetUserByGuid({ guid: $window.guid }).then((ret) => {
         $scope.user = ret.data;
         document.title = $scope.user.name + "-工作紀錄管控表"
     })
-
 
     appService.GetTasklogDataByGuid({ guid: $window.guid }).then((ret) => {
 
@@ -149,8 +181,6 @@ app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 
             // 1109 update: show all project even if it dosent'n own 
             //if (projectItems.findIndex(x => x.projno === task.projno) < 0)
             //    continue;
-
-            
 
             let projidx = $scope.projects.findIndex(x => x.projno === task.projno);
 
@@ -192,17 +222,13 @@ app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 
         for (let i = 0; i < $scope.projects.length; i++) {
 
             if ($scope.projects[i].workHour || $scope.projects[i].overtime) {
-
-                $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();
-                               
+                $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();                               
             }
 
             if ($scope.projects[i].itemno)
                 $scope.projects[i].itemno = $scope.projects[i].itemno.slice(0, $scope.projects[i].itemno.length - 2);
 
-
         }
-
 
         //if ($scope.projects.length === 0)
         //    $scope.projects.push = { logs: [{}] };
@@ -224,7 +250,6 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
     const date = new Date();
     const [month, year] = [date.getMonth(), date.getFullYear()];
 
-
     var limit = 250; // textarea height limit
 
     for (let i = year; i !== 2019; i--) {
@@ -233,7 +258,6 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
     $scope.selectedYear = $scope.years[0];
     $scope.selectedMonth = $scope.months[month];
-
 
     $scope.data = [];
     $scope.deletedIds = [];
@@ -306,11 +330,8 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                     id: log.id, yymm: yymm, projno: project.projno, realHour: project.realHour,
                     content: log.content, endDate: log.endDate, note: log.note
                 });
-                
-
 
             }
-
         }
 
         //if ($scope.deletedIds.length !== 0) {
@@ -365,9 +386,6 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
         //    $scope.succeed = false;
         //}, 2000);
 
-        
-
-
         $q.all([promiseA, promiseB]).then((ret) => {
 
             $scope.GetTasklogData();
@@ -377,7 +395,6 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 $scope.succeed = false;
             }, 2000);
         });
-
 
         //alert('已儲存');
 
@@ -396,7 +413,6 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
         //let yymm = `${Number($scope.selectedYear) - 1911}${$scope.selectedMonth}`;
 
         let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`;
-
 
         appService.GetTasklogData({ yymm: yymm }).then((ret) => {
 
@@ -441,19 +457,14 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                     $scope.projects[projidx].overtime = item.overtime;
                 }
 
-                
-
                 //if ($scope.projects[projidx].workHour > 0 || $scope.projects[projidx].overtime > 0)
-                //    $scope.projects[projidx].hourStr = $scope.projects[projidx].workHour.toString() + ' + ' + $scope.projects[projidx].overtime.toString();
-                
+                //    $scope.projects[projidx].hourStr = $scope.projects[projidx].workHour.toString() + ' + ' + $scope.projects[projidx].overtime.toString();                
 
                 //if (!$scope.projects[projidx].realHour) {
                 //    $scope.projects[projidx].realHour = $scope.projects[projidx].workHour + $scope.projects[projidx].overtime;
                 //}
 
             }
-
-            
 
             for (let i = 0; i < $scope.projects.length; i++) {
 
@@ -464,7 +475,6 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                     if (!$scope.projects[i].realHour) {
                         $scope.projects[i].realHour = $scope.projects[i].workHour + $scope.projects[i].overtime;
                     }
-
                 }
 
                 if ($scope.projects[i].itemno)
@@ -472,24 +482,17 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 
             }
 
-
              //if ($scope.projects[projidx].workHour > 0 || $scope.projects[projidx].overtime > 0)
                 //    $scope.projects[projidx].hourStr = $scope.projects[projidx].workHour.toString() + ' + ' + $scope.projects[projidx].overtime.toString();
-
 
                 //if (!$scope.projects[projidx].realHour) {
                 //    $scope.projects[projidx].realHour = $scope.projects[projidx].workHour + $scope.projects[projidx].overtime;
                 //}
 
-
-
-
             if ($scope.projects.length === 0)
                 $scope.projects.push({ logs: [{}] });
 
-
             // modify textarea height in the beginning
-            
            
             $timeout(function () {
 
@@ -501,14 +504,10 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
             }, 0);
 
-
-
         });
     }
 
-
     $scope.GetTasklogData();
-
 
     // 匯入上月資料 <-- 培文
     $scope.GetLastMonthData = () => {
@@ -581,7 +580,6 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
     $scope.GetLastMonthData();
 
-
     function onExpandableTextareaInput({ target: elm }) {
 
         if (!elm.classList.contains('autoExpand') || !elm.nodeName === 'TEXTAREA') return
@@ -592,6 +590,5 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
     // global delegated event listener
     document.addEventListener('input', onExpandableTextareaInput)
-
 
 }]);
