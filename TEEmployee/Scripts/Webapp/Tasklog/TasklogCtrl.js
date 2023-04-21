@@ -63,8 +63,9 @@ app.factory('myFactory', function () {
 
     var savedData = {}
 
-    function set(data) {
+    function set(data, data1) {
         savedData.users = data;
+        savedData.monthlyRecord = data1;
     }
 
     function get() {
@@ -133,27 +134,24 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
             monthlyRecord.push(selectedUsers[i].MonthlyRecord);
             users.push(selectedUsers[i].User);
         }
-        appService.GetMemberContent({ monthlyRecord: monthlyRecord, users: users })
-            .then(function (ret) {
-                myFactory.set(ret.data);
-                //$scope.users = myFactory.get().users;
-                $location.path('/UsersDetails');
-                //$window.location.href = 'Tasklog/UsersDetails';
-            })
-            .catch(function (ret) {
-                alert('Error');
-            });
+
+        myFactory.set(users, selectedUsers[0].MonthlyRecord.yymm);
+        $location.path('/UsersDetails');
     }
 
 }]);
 
 app.controller('UsersDetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', function ($scope, $window, appService, $rootScope, myFactory) {
 
+    $scope.monthlyRecord = myFactory.get().monthlyRecord;
     $scope.users = myFactory.get().users;
-    appService.GetUserByGuid({ guid: $window.guid }).then((ret) => {
-        $scope.user = ret.data;
-        document.title = $scope.user.name + "-工作紀錄管控表"
-    })
+    appService.GetMemberContent({ yymm: $scope.monthlyRecord, users: $scope.users })
+        .then(function (ret) {
+            myFactory.set(ret.data);
+        })
+        .catch(function (ret) {
+            alert('Error');
+        });
 
 }]);
 
