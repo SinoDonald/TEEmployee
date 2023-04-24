@@ -148,6 +148,55 @@ app.controller('UsersDetailsCtrl', ['$scope', '$window', 'appService', '$rootSco
     appService.GetMemberContent({ yymm: $scope.monthlyRecord, users: $scope.users })
         .then(function (ret) {
             myFactory.set(ret.data);
+
+            $scope.projectList = [];
+
+            for (let data of ret.data) {
+
+                $scope.projects = [];
+                $scope.projects.user = data.User;
+                $scope.projects.yymm = data.yymm;
+                const projectItems = data.ProjectItems;
+                const projectTasks = data.ProjectTasks;
+
+                // add task first
+                for (let task of projectTasks) {
+                    let projidx = $scope.projects.findIndex(x => x.projno === task.projno);
+                    if (projidx < 0) {
+                        $scope.projects.push({ logs: [], projno: task.projno, realHour: task.realHour });
+                        projidx = $scope.projects.length - 1;
+                    }
+                    $scope.projects[projidx].logs.push({ user: data.User, yymm: data.yymm, id: task.id, content: task.content, endDate: task.endDate, note: task.note });
+                }
+
+                // fill in project item
+                for (let item of projectItems) {
+                    let projidx = $scope.projects.findIndex(x => x.projno === item.projno);
+                    if (projidx < 0) {
+                        $scope.projects.push({ logs: [{}], projno: item.projno });
+                        projidx = $scope.projects.length - 1;
+                    }
+                    if ($scope.projects[projidx].itemno) {
+                        $scope.projects[projidx].itemno += `${item.itemno}, `;
+                        $scope.projects[projidx].workHour += item.workHour;
+                        $scope.projects[projidx].overtime += item.overtime;
+                    }
+                    else {
+                        $scope.projects[projidx].itemno = `${item.itemno}, `;
+                        $scope.projects[projidx].workHour = item.workHour;
+                        $scope.projects[projidx].overtime = item.overtime;
+                    }
+                }
+
+                for (let i = 0; i < $scope.projects.length; i++) {
+                    if ($scope.projects[i].workHour || $scope.projects[i].overtime) {
+                        $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();
+                    }
+                    if ($scope.projects[i].itemno)
+                        $scope.projects[i].itemno = $scope.projects[i].itemno.slice(0, $scope.projects[i].itemno.length - 2);
+                }
+                $scope.projectList.push({projects: $scope.projects });
+            }
         })
         .catch(function (ret) {
             alert('Error');

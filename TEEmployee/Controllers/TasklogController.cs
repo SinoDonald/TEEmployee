@@ -144,10 +144,10 @@ namespace TEEmployee.Controllers
         // 多人詳細內容 <-- 培文
         public JsonResult GetMemberContent(string yymm, List<User> users)
         {
-            List<TasklogData> ret = new List<TasklogData>();
+            List<MultiTasklogData> ret = new List<MultiTasklogData>();
             foreach (User user in users)
             {
-                ret.Add(_service.GetTasklogData(user.empno, yymm));
+                ret.Add(_service.GetMultiTasklogData(user, yymm));
             }
             
             return Json(ret);

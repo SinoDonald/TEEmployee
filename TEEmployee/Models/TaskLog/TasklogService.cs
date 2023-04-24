@@ -287,6 +287,24 @@ namespace TEEmployee.Models.TaskLog
         }
 
 
+        // 多人詳細內容 <-- 培文
+        public MultiTasklogData GetMultiTasklogData(User user, string yymm)
+        {
+            string empno = user.empno;
+            List<ProjectItem> projectItems = new List<ProjectItem>();
+
+            var ret = _projectItemRepository.GetAll();
+            projectItems = ret.Where(x => x.empno == empno && x.yymm == yymm)
+                            .OrderBy(x => x.projno).ThenBy(x => x.itemno).ToList();
+
+            List<ProjectTask> projectTasks = new List<ProjectTask>();
+
+            var ret2 = _projectTaskRepository.GetAll();
+            projectTasks = ret2.Where(x => x.empno == empno && x.yymm == yymm)
+                            .OrderBy(x => x.projno).ThenBy(x => x.id).ToList();
+
+            return new MultiTasklogData() {User = user.name, yymm = yymm, ProjectItems = projectItems, ProjectTasks = projectTasks };
+        }
         //=============================
         // Insert User From txt file
         //=============================
@@ -342,6 +360,13 @@ namespace TEEmployee.Models.TaskLog
             public User User { get; set; }
         }
 
-
+        // 多人詳細內容 <-- 培文
+        public class MultiTasklogData
+        {
+            public string User { get;set; }
+            public string yymm { get;set; }
+            public List<ProjectItem> ProjectItems { get; set; }
+            public List<ProjectTask> ProjectTasks { get; set; }
+        }
     }
 }
