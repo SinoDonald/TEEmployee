@@ -147,8 +147,8 @@ app.controller('UsersDetailsCtrl', ['$scope', '$window', 'appService', '$rootSco
     $scope.users = myFactory.get().users;
     appService.GetMemberContent({ yymm: $scope.monthlyRecord, users: $scope.users })
         .then(function (ret) {
-            myFactory.set(ret.data);
 
+            $scope.yymm = ret.data[0].yymm;
             $scope.projectList = [];
 
             for (let data of ret.data) {
@@ -195,6 +195,7 @@ app.controller('UsersDetailsCtrl', ['$scope', '$window', 'appService', '$rootSco
                     if ($scope.projects[i].itemno)
                         $scope.projects[i].itemno = $scope.projects[i].itemno.slice(0, $scope.projects[i].itemno.length - 2);
                 }
+
                 $scope.projectList.push({projects: $scope.projects });
             }
         })

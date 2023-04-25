@@ -17,13 +17,13 @@
 }
 
 <div ng-controller="UsersDetailsCtrl" class="container-fluid">
-    <div ng-repeat="projects in projectList">
-
+    <header>
+        <h2>詳細內容-{{yymm}}</h2>
+    </header>
+    <div ng-repeat="item in projectList">
         <header>
-            @*<h2>@ViewBag.Title</h2>*@
-            <h2>詳細內容-{{projects.projects.user}}-{{projects.projects.yymm}}</h2>
+            <h2>{{item.projects.user}}</h2>
         </header>
-
         <table class="table">
             <thead>
                 <tr>
@@ -37,7 +37,7 @@
                 </tr>
             </thead>
 
-            <tbody ng-repeat="project in projects.projects">
+            <tbody ng-repeat="project in item.projects">
                 <tr ng-repeat="log in project.logs">
                     <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.projno"></td>
                     <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.itemno"></td>
@@ -49,19 +49,11 @@
                     <td ng-bind="log.note"></td>
             </tbody>
         </table>
-
     </div>
-
 </div>
 
 @section Scripts {
-    @*<script>
-        var guid = '@ViewBag.id';
-    </script>*@
-    @*<script src="~/Scripts/WebApp/Tasklog/TasklogCtrl.js"></script>*@
     <script src="@Url.Versioned("~/Scripts/WebApp/Tasklog/TasklogCtrl.js")"></script>
-    @*<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment-with-locales.js"></script>*@
-    @*<script src="//cdn.rawgit.com/indrimuska/angular-moment-picker/master/dist/angular-moment-picker.min.js"></script>*@
     <script src="~/Scripts/moment-with-locales.js"></script>
     <script src="~/Scripts/angular-moment-picker.min.js"></script>
 }
