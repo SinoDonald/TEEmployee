@@ -107,7 +107,7 @@
                                             展開
                                         </button>*@
 
-                                    <button ng-show="editFilter" ng-click="cloneDeepToModal(detailSchedule.Detail, $index, groupSchedule.Group.content); passChosen()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+                                    <button ng-show="editFilter" ng-click="cloneDeepToModal(detailSchedule.Detail, $index, groupSchedule.Group); passChosen()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
                                         編輯
                                     </button>
                                 </td>
@@ -207,7 +207,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">主要人員</span>
                         </div>
-                        <div ng-dropdown-multiselect="" options="filteredMembers" events="yourEvents" selected-model="multiselectedmodel"></div>
+                        <div ng-dropdown-multiselect="" options="selectionFilteredMembers" events="yourEvents" selected-model="multiselectedmodel"></div>
                     </div>
                     @*<div ng-dropdown-multiselect="" options="filteredMembers" events="yourEvents" selected-model="multiselectedmodel"></div>*@
                     <div class="input-group mb-3">
@@ -259,7 +259,7 @@
                         新增里程碑
                     </button>
 
-                    <div ng-repeat="milestone in modal.milestones" class="input-group mb-3">
+                    <div ng-repeat="milestone in modal.milestones | orderBy: '+date'" class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">工作內容</span>
                         </div>
@@ -277,7 +277,7 @@
                                    ng-model-options="{ updateOn: 'blur' }">
                         </div>
                         <div class=" input-group-prepend">
-                            <button type="button" class="btn btn-primary" name="removeMilestone" ng-click="removeMilestone($index)">
+                            <button type="button" class="btn btn-primary" name="removeMilestone" ng-click="removeMilestone(milestone)">
                                 刪除里程碑
                             </button>
                         </div>

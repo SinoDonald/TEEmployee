@@ -42,6 +42,8 @@
                 <th style="width: 8%" scope="col">數位轉型規劃專業項目</th>
                 <th style="width: 8%" scope="col">主要人員</th>
                 <th style="width: 8%; padding-left:3em" scope="col">甘特圖</th>
+                <th style="width: 8%" scope="col">本次半年累積進度(%)</th>
+                <th style="width: 8%" scope="col">上次半年累積進度(%)</th>
             </tr>
         </thead>
 
@@ -63,16 +65,18 @@
                 <td>
                     <svg id="svg{{$index}}" width="1200" , height="80"></svg>
                 </td>
+                <td ng-bind="groupSchedule.Group.percent_complete"></td>
+                <td ng-bind="groupSchedule.Group.last_percent_complete"></td>
             </tr>
             <tr ng-show="scheduleFilter(groupSchedule.Group)">
-                <td colspan="4" style="padding: 0; border:none">
+                <td colspan="6" style="padding: 0; border:none">
                     <table class="table mb-0">
                         <tbody ng-repeat="detailSchedule in groupSchedule.Details">
                             <tr @*ng-show="scheduleFilter(detailSchedule.Detail)"*@ style="background-color: rgb(239,239,237)">
                                 <td style="width: 8%">
                                     @*<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample{{$parent.$index}}-{{$index}}" aria-expanded="false" aria-controls="collapseExample">
-                                            展開
-                                        </button>*@
+                展開
+            </button>*@
 
                                     <button ng-show="editFilter" ng-click="cloneDeepToModal(detailSchedule.Detail, $index, groupSchedule.Group.content); passChosen()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
                                         編輯
@@ -86,6 +90,8 @@
                                 <td style="width: 8%">
                                     <svg id="svgChild{{$parent.$index}}-{{$index}}" width="1200" , height="80"></svg>
                                 </td>
+                                <td style="width: 8%" ng-bind="detailSchedule.Detail.percent_complete"></td>
+                                <td style="width: 8%" ng-bind="detailSchedule.Detail.last_percent_complete"></td>
 
                             </tr>
                         </tbody>
@@ -140,18 +146,31 @@
                         <div ng-dropdown-multiselect="" options="filteredMembers" events="yourEvents" selected-model="multiselectedmodel"></div>
                     </div>
 
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">本次半年累計進度(%)</span>
+                        </div>
+                        <input ng-model="modal.percent_complete" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">上次半年累計進度(%)</span>
+                        </div>
+                        <input ng-model="modal.last_percent_complete" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
 
                     <div class="input-group mb-3"
                          moment-picker="modal.start_date"
-                         format="YYYY-MM-DD"
+                         @*format="YYYY-MM-DD"*@
+                         format="YYYY-MM"
                          locale="zh-tw">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">開始日期</span>
                             <span class="input-group-text material-icons" id="basic-addon1">calendar_month</span>
                         </div>
                         @*<div class="input-group-prepend">
-                                <span class="input-group-text material-icons" id="basic-addon1">calendar_month</span>
-                            </div>*@
+                <span class="input-group-text material-icons" id="basic-addon1">calendar_month</span>
+            </div>*@
                         <input class="form-control"
                                placeholder="請選擇日期"
                                ng-model="modal.start_date"
@@ -159,7 +178,7 @@
                     </div>
                     <div class="input-group mb-3"
                          moment-picker="modal.end_date"
-                         format="YYYY-MM-DD"
+                         format="YYYY-MM"
                          locale="zh-tw">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">結束日期</span>

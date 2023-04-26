@@ -1,9 +1,9 @@
 ﻿const { scaleLinear, extent, axisLeft, axisBottom, symbol, scaleTime, scaleOrdinal, transition, timeFormat } = d3;
 
-d3.json("https://cdn.jsdelivr.net/npm/d3-time-format@3.0.0/locale/zh-TW.json").then(locale => {
-    d3.timeFormatDefaultLocale(locale);
+//d3.json("https://cdn.jsdelivr.net/npm/d3-time-format@3.0.0/locale/zh-TW.json").then(locale => {
+//    d3.timeFormatDefaultLocale(locale);
 
-});
+//});
 
 
 
@@ -42,6 +42,10 @@ const ganttPlot = () => {
         const t = transition()
             .duration(2000)
 
+        const lineX = x(moment().toDate());
+        //const p = d3.line()([[lineX, height / 2 - height / 16], [lineX, height - height / 8]]);
+        const p = d3.line()([[lineX, height - margin.bottom - 0.4 * height], [lineX, height - margin.bottom]]);
+        
         //console.log(start);
 
         // parsed data transformed to data on svg through scale 
@@ -55,9 +59,10 @@ const ganttPlot = () => {
                 cx: x(new Date(i.date)),
                 //cy: height / 3,
                 cy: height / 2 + height / 10,
+                content: `${i.content} - ${i.date}`,
             })).sort((a, b) => a.cx - b.cx),
             wxy: d.milestones?.map(i => ({
-            /* wx: x(i.date),*/
+                /* wx: x(i.date),*/
                 wx: x(new Date(i.date)),
                 //wy: height / 4,
                 wy: height / 2 + height / 5,
@@ -125,16 +130,48 @@ const ganttPlot = () => {
         //(142,177,199)  
 
         // circle
+        //groups.selectAll('circle')
+        //    .data((d) => d.cxy)
+        //    .join('circle')
+        //    .transition(t)
+        //    .attr('cx', d => d.cx)
+        //    //.attr('cy', d => d.cy + 0.5 * height / 3)
+        //    .attr('cy', d => d.cy)
+        //    .attr('r', radius)
+
+
         groups.selectAll('circle')
             .data((d) => d.cxy)
-            .join('circle')
-            .transition(t)
-            .attr('cx', d => d.cx)
-            //.attr('cy', d => d.cy + 0.5 * height / 3)
-            .attr('cy', d => d.cy)
-            .attr('r', radius);
+            .join(
+                (enter) => {
+                    enter
+                        .append('circle')
+                        .attr('r', radius)
+                        .call((enter) =>
+                            enter
+                                .transition(t)
+                                .attr('cx', d => d.cx)
+                                .attr('cy', d => d.cy)
+                        )
+                        .append('title')
+                        .text((d) => d.content)
+                },
+                (update) => {
+                    update
+                        .call((update) =>
+                            update
+                                .transition(t)
+                                .attr('cx', d => d.cx)
+                                .attr('cy', d => d.cy)
+                        )
 
-        
+                }
+            )
+
+
+
+
+
 
         // text
         //groups.selectAll('text')
@@ -150,13 +187,13 @@ const ganttPlot = () => {
         // text
         groups.selectAll('text')
             .data((d) => d.wxy)
-            .join('text')            
+            .join('text')
             .text(d => d.content)
-            .style("font-size", "14px")            
+            .style("font-size", "14px")
             .attr('y', function (d) {
                 //labelRightBounds.push([d.wx, this.getComputedTextLength()]);
                 labelRightBounds.push([d.wx, this.getBBox().width]);
-                
+
                 return d.wy;
             })
             .transition(t)
@@ -171,7 +208,7 @@ const ganttPlot = () => {
         function getLabelHeight(i) {
 
             if (labelRightBounds.length === 0)
-                return;                
+                return;
 
             if (i === labelRightBounds.length - 1) {
                 labelHeights[i] = -2;
@@ -196,7 +233,17 @@ const ganttPlot = () => {
             .data((d) => d.wxy)
             .join('text')
             .attr('y', (d, i) => (labelHeights[i]) * 16 + d.wy);
-            
+
+
+        // line 
+        selection.selectAll('path')
+            .data([null])
+            .join('path')
+            .attr("stroke", "rgb(80, 71, 70)")
+            //.attr("stroke", "#885A5A")
+            .attr("stroke-width", 3)
+            .transition(t)
+            .attr('d', p);
 
 
         //console.log(labelRightBounds);
@@ -211,9 +258,16 @@ const ganttPlot = () => {
             .transition(t)
             //.call(axisBottom(x).ticks(12).tickFormat(timeFormat('%m')).tickSize(-0.5 * height, 0));
             //.call(axisBottom(x).ticks(12).tickSize(-0.5 * height, 0));
-            .call(axisBottom(x).ticks(12).tickSize(-0.4 * height, 0));
+            //.call(axisBottom(x).ticks(12).tickSize(-0.4 * height, 0));
+            .call(axisBottom(x).ticks(12).tickFormat(function (date) {
+                if (d3.timeYear(date) < date) {
+                    return d3.timeFormat('%m')(date);
+                } else {
+                    return d3.timeFormat('%Y')(date) + '.' + d3.timeFormat('%m')(date);
+                }
+            }).tickSize(-0.4 * height, 0));
 
-        
+
     };
 
     // Function object & property
