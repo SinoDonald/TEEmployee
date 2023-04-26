@@ -296,7 +296,7 @@
                         新增里程碑
                     </button>
 
-                    <div ng-repeat="milestone in modal.milestones" class="input-group mb-3">
+                    <div ng-repeat="milestone in modal.milestones | orderBy: '+date'" class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">工作內容</span>
                         </div>
@@ -314,7 +314,7 @@
                                    ng-model-options="{ updateOn: 'blur' }">
                         </div>
                         <div class=" input-group-prepend">
-                            <button type="button" class="btn btn-primary" name="removeMilestone" ng-click="removeMilestone($index)">
+                            <button type="button" class="btn btn-primary" name="removeMilestone" ng-click="removeMilestone(milestone)">
                                 刪除里程碑
                             </button>
                         </div>

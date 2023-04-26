@@ -230,14 +230,32 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
 
     // deep clone schedule object to modal
-    $scope.cloneDeepToModal = (schedule, idx, parentContent) => {
+    $scope.cloneDeepToModal = (schedule, idx, groupSchedule) => {
 
         $scope.modal = deepCopyFunction(schedule);
         $scope.modal.origin = schedule;
         $scope.modal.originidx = idx;
         $scope.modal.createMode = false;
         //$scope.modal.history = JSON.stringify(sData);
-        $scope.modal.parentContent = parentContent;
+
+        if (groupSchedule)
+            $scope.modal.parentContent = groupSchedule.content;        
+
+        // MEMBER FILTER
+
+        if (schedule.type === 1) {
+            $scope.selectionFilteredMembers = $scope.filteredMembers;
+        }
+        else {
+            $scope.selectionFilteredMembers = [];
+
+            for (let emp of $scope.filteredMembers) {
+                if (groupSchedule.member?.includes(emp.label))
+                    $scope.selectionFilteredMembers.push(emp);
+            }
+        }      
+
+        
 
     };
 
@@ -297,6 +315,10 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
         $scope.multiselectedmodel = []
         $scope.modal.createMode = true;
+
+        // MEMBER FILTER
+        $scope.selectionFilteredMembers = $scope.filteredMembers;
+
     };
 
     $scope.createDetailScheduleModal = (groupSchedule) => {
@@ -315,6 +337,15 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         $scope.multiselectedmodel = []
         $scope.modal.createMode = true;
         $scope.modal.parentContent = groupSchedule.content;
+
+        // MEMBER FILTER
+        $scope.selectionFilteredMembers = [];
+
+        for (let emp of $scope.filteredMembers) {
+            if (groupSchedule.member?.includes(emp.label))
+                $scope.selectionFilteredMembers.push(emp);
+        }
+
     };
 
 
@@ -377,7 +408,8 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         $scope.modal.milestones.splice($scope.modal.milestones.length, 0, { schedule_id: $scope.modal.id });
     };
 
-    $scope.removeMilestone = (idx) => {
+    $scope.removeMilestone = (milestone) => {
+        const idx = $scope.modal.milestones.indexOf(milestone);
         $scope.modal.milestones.splice(idx, 1);
     };
 
@@ -417,6 +449,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     $scope.filterMembers = () => {
         let group = $scope.auth.GroupAuthorities.find(x => x.GroupName === $scope.selectedGroup)
         $scope.filteredMembers = group.Members
+        $scope.selectionFilterMembers = $scope.filteredMembers;
 
         $scope.editFilter = group.Editable;
 
@@ -817,8 +850,9 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
     $scope.addMilestone = () => {
         $scope.modal.milestones.splice($scope.modal.milestones.length, 0, { schedule_id: $scope.modal.id });
     };
-
-    $scope.removeMilestone = (idx) => {
+       
+    $scope.removeMilestone = (milestone) => {
+        const idx = $scope.modal.milestones.indexOf(milestone);
         $scope.modal.milestones.splice(idx, 1);
     };
 

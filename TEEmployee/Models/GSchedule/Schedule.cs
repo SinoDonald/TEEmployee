@@ -28,6 +28,12 @@ namespace TEEmployee.Models.GSchedule
             if (other == null)
                 return 1;
 
+            if (other.projno == null)
+                return 1;
+
+            if (this.projno == null)
+                return -1;
+
             List<string> engOrder = new List<string> { "N", "Z", "B", "E", "C", "D" };
 
             int engIdxA = engOrder.IndexOf(this.projno.Substring(4));
