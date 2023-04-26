@@ -560,6 +560,8 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
     // 匯入上月資料 <-- 培文
     $scope.GetLastMonthData = () => {
         let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`;
+
+        // 撈取本月與上月資料
         appService.GetLastMonthData({ yymm: yymm }).then((ret) => {
             $scope.projects = [];
             const projectItems = ret.data.ProjectItems;

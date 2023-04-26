@@ -113,30 +113,55 @@ namespace TEEmployee.Controllers
         {
             int insertIndex = yymm.Length - 2;
             // 轉換年月, format加上"-"
+            string thisMonth = yymm.Insert(insertIndex, "-");
             string lastMonth = yymm.Insert(insertIndex, "-");
 
             // 民國年轉西元, 並減一個月
             CultureInfo culture = new CultureInfo("zh-TW");
             culture.DateTimeFormat.Calendar = new System.Globalization.TaiwanCalendar();
-            DateTime dateTime = DateTime.Parse(lastMonth, culture).AddMonths(-1);
+            DateTime thisMonthDateTime = DateTime.Parse(lastMonth, culture);
+            DateTime lastMonthDateTime = DateTime.Parse(lastMonth, culture).AddMonths(-1);
             
             // 將西元年轉成民國
             culture = new CultureInfo("zh-TW");
             culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-            lastMonth = dateTime.ToString("yyy-MM", culture).Replace("-", "");
+            thisMonth = thisMonthDateTime.ToString("yyy-MM", culture).Replace("-", "");
+            lastMonth = lastMonthDateTime.ToString("yyy-MM", culture).Replace("-", "");
 
-            TasklogData ret = _service.GetTasklogData(Session["empno"].ToString(), lastMonth);
-            // 
-            // 更新撈回來的id與月份
-            foreach(ProjectItem projectItem in ret.ProjectItems)
+            // 儲存上月與本月的資料
+            List<ProjectItem> projectItems = new List<ProjectItem>();
+            List<ProjectTask> projectTasks = new List<ProjectTask>();
+
+            TasklogData thisMonthData = _service.GetTasklogData(Session["empno"].ToString(), thisMonth);
+            foreach (ProjectItem projectItem in thisMonthData.ProjectItems)
             {
-                projectItem.yymm = yymm;
+                projectItems.Add(projectItem);
             }
-            foreach (ProjectTask projectTask in ret.ProjectTasks)
+            foreach (ProjectTask projectTask in thisMonthData.ProjectTasks)
+            {
+                projectTasks.Add(projectTask);
+            }
+
+            // 更新抓取回來的id與月份
+            TasklogData lastMonthData = _service.GetTasklogData(Session["empno"].ToString(), lastMonth);
+            foreach(ProjectItem projectItem in lastMonthData.ProjectItems)
+            {
+                // 上月與本月有同計畫編號時, 只留存本月的
+                ProjectItem samePrjName = projectItems.Where(x => x.projno.Equals(projectItem.projno)).FirstOrDefault();
+                if(samePrjName == null)
+                {
+                    projectItem.yymm = yymm;
+                    projectItems.Add(projectItem);
+                }
+            }
+            foreach (ProjectTask projectTask in lastMonthData.ProjectTasks)
             {
                 projectTask.id = 0;
                 projectTask.yymm = yymm;
+                projectTasks.Add(projectTask);
             }
+
+            TasklogData ret = new TasklogData() { ProjectItems = projectItems, ProjectTasks = projectTasks };
 
             return Json(ret);
         }
