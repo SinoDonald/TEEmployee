@@ -42,7 +42,7 @@
 
     <header>
         <div class="form-group d-flex justify-content-between">
-            <h2>@ViewBag.Title</h2>
+            <h2>@ViewBag.Title <font size="6" color="orange">({{selectedMonth}}月)</font></h2>
             <button type="button" class="btn btn-warning btn-lg mr-2" name="GetLastMonthData" ng-click="GetLastMonthData()">
                 <span>匯入上月資料</span>
             </button>
@@ -84,8 +84,6 @@
             <span class="input-group-text" id="basic-addon1">請選擇年月份</span>
         </div>
     </div>
-
-
 
     <table class="table">
         <thead>
