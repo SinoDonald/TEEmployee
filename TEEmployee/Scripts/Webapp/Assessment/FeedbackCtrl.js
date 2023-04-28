@@ -11,6 +11,10 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             url: '/AssessEmployee',
             templateUrl: 'Assessment/AssessEmployee'
         })
+        .state('ReviewEmployee', {
+            url: '/ReviewEmployee',
+            templateUrl: 'Assessment/ReviewEmployee'
+        })
 
 }]);
 
@@ -76,10 +80,25 @@ app.service('appService', ['$http', function ($http) {
     this.UpdateFeedbackNotification = (o) => {
         return $http.post('Assessment/UpdateFeedbackNotification', o);
     };
+
+    this.GetReviewByYear = (o) => {
+        return $http.post('Assessment/GetReviewByYear', o);
+    };
+
+    this.GetYearList = (o) => {
+        return $http.post('Assessment/GetChartYearList', o);
+    };
+
+    this.GetAllFeedbacksForManager = (o) => {
+        return $http.post('Assessment/GetAllFeedbacksForManager', o);
+    };
+
+    
 }]);
 
 app.factory('myFactory', function () {
     var savedData = {}
+    var reviewData = {}
     //function set(data, data2) {
     //    savedData.employee = data;
     //    savedData.mixResponse = data2;
@@ -94,9 +113,19 @@ app.factory('myFactory', function () {
         return savedData;
     }
 
+    function setReview(data) {
+        reviewData.EmployeeInfo = data;
+    }
+
+    function getReview(data) {
+        return reviewData;
+    }
+
     return {
         set: set,
         get: get,
+        setReview: setReview,
+        getReview: getReview,
     }
 
 });
@@ -156,6 +185,12 @@ app.controller('EmployeeListCtrl', ['$scope', '$location', 'appService', '$rootS
            //$window.location.path = '/Review'
 
     }
+
+    $scope.ReviewEmployee = function (data) {
+        $location.path('/ReviewEmployee');
+        myFactory.setReview(data)
+    }
+
 
 }]);
 
@@ -356,3 +391,73 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
 
 }]);
 
+
+app.controller('ReviewEmployeeCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', '$timeout', '$q', function ($scope, $window, appService, $rootScope, myFactory, $timeout, $q) {
+
+    const optionText = ['優良', '普通', '尚可', '待加強', 'N/A'];
+
+    $scope.empData = myFactory.getReview();
+    $scope.name = $scope.empData.EmployeeInfo.Employee.name;
+
+    appService.GetYearList({ isManagerResponse: false }).then((ret) => {
+
+        $scope.years = ret.data;
+        $scope.selectedYear = $scope.years[0];
+
+        $scope.GetReviewByYear($scope.selectedYear);
+    });
+
+
+
+    $scope.GetReviewByYear = function (year) {
+                
+        let promiseA = appService.GetReviewByYear({ year: year, empno: $scope.empData.EmployeeInfo.Employee.empno }); 
+        let promiseB = appService.GetAllFeedbacksForManager({ year: year, empno: $scope.empData.EmployeeInfo.Employee.empno });
+
+        $q.all([promiseA, promiseB]).then((ret) => {
+
+            $scope.data = ret[0].data;
+            $scope.feedbacks = ret[1].data;
+
+            // transform option
+            for (let m = 0; m !== $scope.data.Responses.length; m++) {
+                if ($scope.data.Responses[m].Choice.includes('option'))
+                    $scope.data.Responses[m].Choice = optionText[Number($scope.data.Responses[m].Choice.slice(6)) - 1];
+            }
+
+            // insert feedback
+            for (var i = 0; i < $scope.data.Responses.length; i++) {
+                if ($scope.data.Responses[i].Content === '自評摘要') {
+                    $scope.data.Responses.splice(i + 1, 0, { CategoryId: $scope.data.Responses[i].CategoryId, Content: '意見回饋' });
+                }
+            }
+
+          
+
+            let count = 0;
+
+            for (let i = 0; i < $scope.data.Responses.length; i++) {
+                if ($scope.data.Responses[i].Content === '意見回饋') {
+                    $scope.data.Responses[i].Choice = '';
+                    for (let fed of $scope.feedbacks) {
+                        if (fed.Text[count])
+                            $scope.data.Responses[i].Choice += ('\n' + fed.Name + ':\n' + fed.Text[count] + '\n');
+                    }
+
+                    count++;
+                }
+            }
+
+            $scope.feedback = ''
+            for (let fed of $scope.feedbacks) {
+                if (fed.Text[count])
+                    $scope.feedback += ('\n' + fed.Name + ':\n' + fed.Text[count] + '\n');
+            }
+
+        });
+
+
+
+    }    
+
+}]);

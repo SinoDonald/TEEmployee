@@ -1,0 +1,88 @@
+﻿@{
+    ViewBag.Title = "Review";
+}
+
+
+<div ng-controller="ReviewEmployeeCtrl" class="container">
+
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
+        <a ng-bind="name + ' 【自我評估表】'" class="navbar-brand" href=""></a>
+      
+        <form class="form-inline">
+            <a class="btn btn-outline-secondary" ui-sref="EmployeeList">返回員工列表</a>
+
+            @*<button class="btn btn-outline-success" type="button">Main button</button>*@
+        </form>
+
+    </nav>
+
+    <div class="chartmenu mb-5">
+        <div>
+            <label for="SelectYear">請選擇年份</label>
+            <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" ng-change="GetReviewByYear(selectedYear)" aria-label="Select the Year">
+                <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+            </select>
+        </div>
+    </div>
+
+    <table class="table table-borderless table-hover">
+
+        <thead class="thead-dark">
+            <tr>
+                @*<th>Content</th>
+                    <th>Choice</th>*@
+                <th>題目</th>
+                <th>選項</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr ng-repeat="item in data.Responses">
+
+                @*category name*@
+                <td ng-if="item.Id == 0" ng-bind="item.Content" colspan="2" class="table-warning"></td>
+                @*content and choice*@
+                <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Content != '意見回饋' && item.Content != '自我總評'" ng-bind="item.Content"></td>
+
+                <td ng-if="item.Content != '自評摘要' && item.Id != 0 && item.Content != '意見回饋' && item.Content != '自我總評'" ng-bind="item.Choice" class="w-25"></td>
+
+                <td ng-if="item.Content =='自評摘要'" colspan="2">
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">自評摘要</label>
+                        <p ng-bind="item.Choice"></p>
+                    </div>
+                </td>
+                <td ng-if="item.Content =='自我總評'" colspan="2">
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">自我總評</label>
+                        <p ng-bind="item.Choice"></p>
+                    </div>
+                </td>
+                <td ng-if="item.Content =='意見回饋'" colspan="2">
+                    <div class="form-group">
+                        @*<label for="exampleFormControlTextarea1">意見回饋</label>
+                            <textarea class="form-control assesstext" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>*@
+                        <label for="exampleFormControlTextarea1">意見回饋</label>
+                        <p class="lbk" ng-bind="item.Choice"></p>
+                    </div>
+                </td>
+
+            </tr>
+        </tbody>
+
+    </table>
+
+    <form name="textForm">
+        <div>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">整體意見回饋【必填】</label>
+                <p ng-bind="feedback" class="lbk"></p>
+            </div>
+        </div>
+    </form>
+
+
+</div>
+
+

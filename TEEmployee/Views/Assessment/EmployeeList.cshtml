@@ -79,10 +79,15 @@
                 <button class="btn btn-warning btn-lg" ng-if="emp.State == 'submit'" ng-click="Review(emp, false)">已填寫</button>
                 <button class="btn btn-success btn-lg" ng-if="emp.State == 'complete' " ng-click="Review(emp, false)">已回饋</button>
                 <button class="btn btn-secondary btn-lg" disabled ng-if="emp.State == 'unfinished'">未完成</button>
-                @if (Session["leader"] is object || Session["group_leader"] is object)
-                {
-                    <button class="btn btn-light btn-lg" ng-if="emp.State != 'unfinished'" ng-click="Review(emp, true)">其他回饋</button>
-                }
+                @*<button class="btn btn-light btn-lg" ng-click="ReviewEmployee(emp)">查看回饋</button>*@
+                <button class="btn btn-light btn-lg" ng-click="ReviewEmployee(emp)">
+                    <span class="material-icons">history</span>
+                </button>
+
+                @*@if (Session["leader"] is object || Session["group_leader"] is object)
+        {
+            <button class="btn btn-light btn-lg" ng-if="emp.State != 'unfinished'" ng-click="Review(emp, true)">其他回饋</button>
+        }*@
 
 
                 @*<a ui-sref="Review">Click</a>*@

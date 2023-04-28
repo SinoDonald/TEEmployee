@@ -76,7 +76,7 @@ namespace TEEmployee.Models
         }
 
         // 1208: Get all other manager feedbacks based on duty
-
+        
         public List<Feedback> GetAllOtherFeedbacks(string empno, string manno)
         {
             var feedbacks = GetAllFeedbacks(empno, Utilities.DayStr());
@@ -88,6 +88,27 @@ namespace TEEmployee.Models
                 feedbacks.RemoveAll(x => x.Name == depart_manager.name);
             feedbacks.RemoveAll(x => x.Name == user.name);
           
+            return feedbacks;
+        }
+
+        // 0428: Get all manager feedbacks based on duty for manager
+        public List<Feedback> GetAllFeedbacksForManager(string year, string empno, string manno)
+        {
+            var feedbacks = GetAllFeedbacks(empno, year);
+
+            var user = _userRepository.Get(manno);
+            var depart_manager = _userRepository.GetAll().Where(x => x.department_manager).FirstOrDefault();
+
+            if (user.department_manager) { }
+            else if (user.group_manager)
+            {
+                feedbacks.RemoveAll(x => x.Name == depart_manager.name);
+            }
+            else
+            {
+                feedbacks.RemoveAll(x => x.Name != user.name);
+            }                
+            
             return feedbacks;
         }
 
@@ -445,6 +466,14 @@ namespace TEEmployee.Models
             var assessYearList = (_assessmentRepository as ManageAssessmentTxtRepository).GetManageYearList(user);
             return assessYearList;
         }
+
+
+        public SelfAssessResponse GetReviewByYear(string year, string empno, string manno)
+        {
+            var ret = this.GetSelfAssessmentResponse(empno, year);
+            return ret;
+        }
+
 
         // chart
 

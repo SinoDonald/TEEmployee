@@ -79,6 +79,10 @@ namespace TEEmployee.Controllers
         {
             return PartialView();
         }
+        public ActionResult ReviewEmployee()
+        {
+            return PartialView();
+        }
         public ActionResult ChartMenu()
         {
             return View();
@@ -286,6 +290,13 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllFeedbacksForManager(string year, string empno)
+        {
+            var ret = _service.GetAllFeedbacksForManager(year, empno, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
         public JsonResult GetAllFeedbacks(string year)
         {
             var ret = _service.GetAllFeedbacks(Session["empno"].ToString(), year);
@@ -297,6 +308,13 @@ namespace TEEmployee.Controllers
         {
            bool ret = _service.UpdateFeedback(feedbacks, state, empno, Session["empno"].ToString());
             return ret;
+        }
+
+        [HttpPost]
+        public JsonResult GetReviewByYear(string year, string empno)
+        {
+            var ret = _service.GetReviewByYear(year, empno, Session["empno"].ToString());
+            return Json(ret);
         }
 
         //==============

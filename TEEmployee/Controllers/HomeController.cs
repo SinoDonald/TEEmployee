@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using TEEmployee.Filters;
 using TEEmployee.Models;
 using TEEmployee.Models.TaskLog;
+using TEEmployee.Models.GSchedule;
 
 namespace TEEmployee.Controllers
 {
@@ -243,6 +244,16 @@ namespace TEEmployee.Controllers
             return ret;
         }
 
+
+        [HttpPost]
+        public JsonResult UpdateAllPercentComplete()
+        {
+            using (GScheduleService service = new GScheduleService())
+            {
+                var ret = service.UpdateAllPercentComplete();
+                return Json(ret);
+            }                
+        }
 
     }
 }

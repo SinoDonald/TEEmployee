@@ -110,16 +110,16 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
 app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$timeout', function ($scope, $location, appService, $rootScope, $q, dataservice, $timeout) {
 
 
-    $scope.niceNoah = () => {
+    //$scope.niceNoah = () => {
 
-        appService.UpdateAllPercentComplete({}).then((ret) => {
+    //    appService.UpdateAllPercentComplete({}).then((ret) => {
 
-            if (ret.data) {
-                console.log("succeed");
-            }
+    //        if (ret.data) {
+    //            console.log("succeed");
+    //        }
 
-        });
-    }
+    //    });
+    //}
 
     // checkbox
     $scope.checkboxModel = {

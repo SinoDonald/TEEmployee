@@ -164,7 +164,8 @@ const ganttPlot = () => {
                                 .attr('cx', d => d.cx)
                                 .attr('cy', d => d.cy)
                         )
-
+                        .select('title')
+                        .text((d) => d.content)
                 }
             )
 
@@ -228,12 +229,30 @@ const ganttPlot = () => {
 
         getLabelHeight(0);
 
+
+        let key = -2;
+
+        for (let i = 0; i !== labelHeights.length; i++) {
+
+            if (labelHeights[i] !== key) {
+
+                let count = key - labelHeights[i];
+
+                for (let j = 0; j !== Math.floor(((count + 1) / 2)); j++) {
+                    [labelHeights[i + j], labelHeights[i + count - j]] = [labelHeights[i + count - j], labelHeights[i + j]];                    
+                }
+
+                i = i + count;
+
+            }
+        }
+
         // text
         groups.selectAll('text')
             .data((d) => d.wxy)
             .join('text')
             .attr('y', (d, i) => (labelHeights[i]) * 16 + d.wy);
-
+            
 
         // line 
         selection.selectAll('path')

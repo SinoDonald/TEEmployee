@@ -380,6 +380,7 @@
     <Content Include="Views\GSchedule\Future.cshtml" />
     <Content Include="Views\Tasklog\UsersDetails.cshtml" />
     <Content Include="Views\Tasklog\UserList.cshtml" />
+    <Content Include="Views\Assessment\ReviewEmployee.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Response\" />

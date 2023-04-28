@@ -27,6 +27,11 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Home/UpdateUser', o);
     };
 
+    this.UpdateAllPercentComplete = function (o) {
+        return $http.post('Home/UpdateAllPercentComplete', o);
+    };
+
+    
 }]);
 
 app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
@@ -156,5 +161,16 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
             });
     }   
 
+
+    $scope.UpdateAllPercentComplete = () => {
+
+        appService.UpdateAllPercentComplete({}).then((ret) => {
+
+            if (ret.data) {
+                console.log("succeed");
+            }
+
+        });
+    }
 
 }]);
