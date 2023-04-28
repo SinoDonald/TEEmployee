@@ -461,7 +461,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
         //let yymm = `${Number($scope.selectedYear) - 1911}${$scope.selectedMonth}`;
 
         let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`;
-
+        $scope.selectedMonth = $scope.ctrl.datepicker.slice(5, 7);
         appService.GetTasklogData({ yymm: yymm }).then((ret) => {
 
             //$scope.ptdata = ret.data;
