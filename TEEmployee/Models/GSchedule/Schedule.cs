@@ -23,16 +23,25 @@ namespace TEEmployee.Models.GSchedule
         public List<Milestone> milestones { get; set; }
 
         public int CompareTo(Schedule other)
-        {            
+        {
             // A null value means that this object is greater.
-            if (other == null)
-                return 1;
+            //if (other == null)
+            //    return 1;
 
-            if (other.projno == null)
-                return 1;
 
             if (this.projno == null)
+            {
+                if (other.projno == null)
+                    return 0;
+                else
+                    return 1;                
+            }
+
+            if (other.projno == null)
+            {
                 return -1;
+            }
+
 
             List<string> engOrder = new List<string> { "N", "Z", "B", "E", "C", "D" };
 
