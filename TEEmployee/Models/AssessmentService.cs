@@ -471,6 +471,11 @@ namespace TEEmployee.Models
         public SelfAssessResponse GetReviewByYear(string year, string empno, string manno)
         {
             var ret = this.GetSelfAssessmentResponse(empno, year);
+            if (ret.State != "submit")
+            {
+                ret.Responses = new List<Assessment>();
+            }
+
             return ret;
         }
 
