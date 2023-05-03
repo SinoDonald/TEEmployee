@@ -68,13 +68,16 @@
         <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
         <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
         <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>*@
-                    <li class="nav-item dropdown">
-                        <a class="fa fa-bell dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 9</a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="Assessment">自評表與考核</a>
-                            <a class="dropdown-item" href="Tasklog">工作紀錄管控表</a>
-                        </div>
-                    </li>
+                    @if ((int)Session["notify"] > 0)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="fa fa-bell dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @Session["notify"].ToString()</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" href="Assessment">自評表與考核</a>
+                                <a class="dropdown-item" href="Tasklog">工作紀錄管控表</a>
+                            </div>
+                        </li>
+                    }
                     <li class="nav-item"><a class="nav-link" href="@Url.Action("Document", "Home")">說明文件</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
