@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Services.Description;
 
 namespace TEEmployee.Models
 {
@@ -45,6 +46,36 @@ namespace TEEmployee.Models
             manageAssessments = manageAssessments.OrderBy(a => a.CategoryId).ThenBy(a => a.Id).ToList();
 
             return manageAssessments;
+        }
+
+        // 首頁通知 <-- 培文
+        public int GetNotify(string empno)
+        {
+            int ret = 0;
+
+            // 先確認當月為5、11月
+            DateTime now = DateTime.Now;
+            int year = now.Year;
+            int month = now.Month;
+            if (month == 5 || month == 11)
+            {
+                string season = string.Empty;
+                if (month == 5)
+                    season = year + "H1";
+                else
+                    season = year + "H2";
+
+                // 查詢是否已填寫自評表
+                HttpContext.Current.Server.MapPath("~/App_Data");
+                string fn = Path.Combine(_appData, "Response", season , empno + ".txt");
+                //string[] fileText = File.ReadAllLines(fn);
+                if (File.Exists(fn))
+                {
+                    ret = 1;
+                }
+            }
+
+            return ret;
         }
         public List<User> GetScorePeople()
         {

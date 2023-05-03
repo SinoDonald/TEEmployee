@@ -77,7 +77,7 @@ namespace TEEmployee.Filters
                     filterContext.HttpContext.Session["leader"] = null;
                     filterContext.HttpContext.Session["group_leader"] = null;
 
-                    // 首頁通知
+                    // 首頁通知 <-- 培文
                     filterContext.HttpContext.Session["notify"] = 0;
 
                     if (ret.department_manager)

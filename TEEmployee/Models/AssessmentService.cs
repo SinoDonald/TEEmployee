@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Services.Description;
 
 namespace TEEmployee.Models
 {
@@ -28,6 +29,13 @@ namespace TEEmployee.Models
         {
             var selfAssessments = _assessmentRepository.GetAll();
             return selfAssessments;
+        }
+
+        // 首頁通知 <-- 培文
+        public int GetNotify(string empno)
+        {
+            int ret = (_assessmentRepository as ManageAssessmentTxtRepository).GetNotify(empno);
+            return ret;
         }
 
         public SelfAssessResponse GetAllManageAssessments(string year, User manager, string user)

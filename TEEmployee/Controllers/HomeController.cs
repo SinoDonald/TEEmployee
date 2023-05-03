@@ -7,6 +7,7 @@ using TEEmployee.Filters;
 using TEEmployee.Models;
 using TEEmployee.Models.TaskLog;
 using TEEmployee.Models.GSchedule;
+using System.Web.Services.Description;
 
 namespace TEEmployee.Controllers
 {
@@ -15,6 +16,7 @@ namespace TEEmployee.Controllers
     {
         public ActionResult Index()
         {
+            Notify(); // 重要通知
             InsertProjectItem();
             return View();
         }
@@ -100,6 +102,20 @@ namespace TEEmployee.Controllers
             return RedirectToAction("Index");
         }
 
+        // 首頁通知 <-- 培文
+        [HttpPost]
+        public JsonResult Notify()
+        {
+            AssessmentService _service = new AssessmentService("manage");
+            string empno = Session["empno"].ToString();
+            Session["notify"] = _service.GetNotify(empno);
+            bool ret = false;
+            if ((int)Session["notify"] > 0)
+            {
+                ret = true;
+            }
+            return Json(ret);
+        }
 
         [HttpPost]
         public bool InsertProjectItem()
