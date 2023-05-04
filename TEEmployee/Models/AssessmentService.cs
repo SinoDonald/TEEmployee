@@ -32,9 +32,9 @@ namespace TEEmployee.Models
         }
 
         // 首頁通知 <-- 培文
-        public int GetNotify(string empno)
+        public List<bool> GetNotify(string empno)
         {
-            int ret = (_assessmentRepository as ManageAssessmentTxtRepository).GetNotify(empno);
+            List<bool> ret = (_assessmentRepository as ManageAssessmentTxtRepository).GetNotify(empno);
             return ret;
         }
 

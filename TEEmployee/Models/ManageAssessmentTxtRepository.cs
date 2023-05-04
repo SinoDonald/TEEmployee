@@ -49,9 +49,10 @@ namespace TEEmployee.Models
         }
 
         // 首頁通知 <-- 培文
-        public int GetNotify(string empno)
+        public List<bool> GetNotify(string empno)
         {
-            int ret = 0;
+            List<bool> bools = new List<bool>();
+            bool ret = false;
 
             // 先確認當月為5、11月
             DateTime now = DateTime.Now;
@@ -65,18 +66,81 @@ namespace TEEmployee.Models
                 else
                     season = year + "H2";
 
-                // 查詢是否已填寫自評表
+                // 是否已填寫自我評估表
                 HttpContext.Current.Server.MapPath("~/App_Data");
-                string fn = Path.Combine(_appData, "Response", season , empno + ".txt");
-                //string[] fileText = File.ReadAllLines(fn);
-                if (File.Exists(fn))
+                string path = Path.Combine(_appData, "Response", season , empno + ".txt");
+                if (!File.Exists(path))
                 {
-                    ret = 1;
+                    ret = true;
+                }                
+                else if (File.Exists(path))
+                {
+                    string state = File.ReadAllLines(path)[0].Split(';')[0];
+                    string isRead = File.ReadAllLines(path)[0].Split(';')[2];
+                    // 未寄出需提醒
+                    if (!state.Equals("submit"))
+                    {
+                        ret = true;
+                    }
+                    // 已寄出看是否有新回饋
+                    else
+                    {
+                        if (isRead.Equals("unread"))
+                        {
+                            ret = true;
+                        }
+                    }
                 }
+                bools.Add(ret);
+
+                // 是否已填寫給予主管建議評估表
+                ret = true;
+                path = Path.Combine(_appData, "ManageResponse", season);
+                string[] directories = Directory.GetDirectories(path);
+                foreach(string directory in directories)
+                {
+                    string fileName = Path.Combine(directory, empno + ".txt");
+                    if (File.Exists(fileName))
+                    {
+                        ret = false;
+                        break;
+                    }
+                }
+                bools.Add(ret);
+
+                // 主管給予員工建議
+                ret = false;
+                path = Path.Combine(_appData, "Feedback", season);
+                directories = Directory.GetDirectories(path);
+                foreach (string directory in directories)
+                {
+                    string fileName = Path.Combine(directory, empno + ".txt");
+                    if (File.Exists(fileName))
+                    {
+                        ret = false;
+                        break;
+                    }
+                }
+                bools.Add(ret);
             }
 
-            return ret;
+            return bools;
         }
+        public static IEnumerable<string> EnumerateSubDirectories(string path, int depth)
+        {
+            if (!Directory.Exists(path)) return new List<string>();
+
+            var result = new List<string>();
+            depth--;
+
+            foreach (var subPath in Directory.EnumerateDirectories(path, "*", SearchOption.TopDirectoryOnly))
+            {
+                result.AddRange(depth == 0 ? new List<string> { subPath } : EnumerateSubDirectories(subPath, depth));
+            }
+
+            return result;
+        }
+
         public List<User> GetScorePeople()
         {
             IUserRepository _userRepository = new UserRepository();

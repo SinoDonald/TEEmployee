@@ -68,15 +68,38 @@
         <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
         <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
         <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>*@
-                    @if ((int)Session["notify"] > 0)
+                    @if (Session["notify"] is object)
                     {
-                        <li class="nav-item dropdown">
-                            <a class="fa fa-bell dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @Session["notify"].ToString()</a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="dropdown-item" href="Assessment">自評表與考核</a>
-                                <a class="dropdown-item" href="Tasklog">工作紀錄管控表</a>
-                            </div>
-                        </li>
+                        List<bool> notify = (List<bool>)Session["notify"];
+                        int trueCount = notify.Where(x => x == true).Count();
+                        if (trueCount > 0)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="fa fa-bell dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @Session["notify_count"].ToString()</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    @if (notify[0] == true)
+                                    {
+                                        <a class="dropdown-item" href="Assessment/Self">自我評估表</a>
+                                    }
+                                    @if (notify[1] == true)
+                                    {
+                                        <a class="dropdown-item" href="Assessment/Manage">給予主管建議表</a>
+                                    }
+                                    @*@if (notify[2] == true)
+                                    {
+                                        <a class="dropdown-item" href="Assessment/Feedback">主管給予員工建議</a>
+                                    }
+                                    @if (notify[3] == true)
+                                    {
+                                        <a class="dropdown-item" href="Tasklog">個人行事曆</a>
+                                    }
+                                    @if (notify[4] == true)
+                                    {
+                                        <a class="dropdown-item" href="Tasklog">未來3年數位轉型規劃</a>
+                                    }*@
+                                </div>
+                            </li>
+                        }
                     }
                     <li class="nav-item"><a class="nav-link" href="@Url.Action("Document", "Home")">說明文件</a></li>
                     <li class="nav-item dropdown">
