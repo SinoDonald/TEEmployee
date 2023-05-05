@@ -62,11 +62,16 @@ namespace TEEmployee.Models.TaskLog
         }
 
         // 1109: Create monthlyRecord by All users
-        public bool CreateMonthlyRecord()
+        public bool CreateMonthlyRecord(string yymm)
         {
             var users = _userRepository.GetAll();
             List<MonthlyRecord> monthlyRecords = new List<MonthlyRecord>();
-            string yymm = (DateTime.Now.Year - 1911).ToString() + DateTime.Now.ToString("MM");
+
+            if (String.IsNullOrEmpty(yymm))
+            {
+                yymm = (DateTime.Now.Year - 1911).ToString() + DateTime.Now.ToString("MM");
+            }
+           
 
             foreach (var item in users)
             {

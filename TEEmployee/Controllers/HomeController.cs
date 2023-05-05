@@ -235,7 +235,7 @@ namespace TEEmployee.Controllers
 
 
         [HttpPost]
-        public bool CreateMonthlyRecord()
+        public bool CreateMonthlyRecord(string yymm)
         {
             bool ret = false;
 
@@ -251,7 +251,7 @@ namespace TEEmployee.Controllers
             
             using (TasklogService service = new TasklogService())
             {
-                ret = service.CreateMonthlyRecord();
+                ret = service.CreateMonthlyRecord(yymm);
             }            
 
             return ret;
