@@ -108,17 +108,56 @@ namespace TEEmployee.Models
                 }
                 bools.Add(ret);
 
-                // 主管給予員工建議
+                // 檢查是否為主管
+                IUserRepository _userRepository = new UserRepository();
+                User user = _userRepository.Get(empno);
                 ret = false;
-                path = Path.Combine(_appData, "Feedback", season);
-                directories = Directory.GetDirectories(path);
-                foreach (string directory in directories)
+                if (user != null)
                 {
-                    string fileName = Path.Combine(directory, empno + ".txt");
-                    if (File.Exists(fileName))
+                    if(user.department_manager.Equals(true) || user.project_manager.Equals(true))
                     {
-                        ret = false;
-                        break;
+                        // 檢查有sent的人
+                        List<string> sentEmpnos = new List<string>();
+                        path = Path.Combine(_appData, "ManageResponse", season, empno);
+                        string[] files = Directory.GetFiles(path);
+                        foreach(string file in files)
+                        {
+                            string state = File.ReadAllLines(file)[0].Split(';')[0];
+                            if (state.Equals("sent"))
+                            {
+                                sentEmpnos.Add(Path.GetFileName(file).Replace(".txt", ""));
+                            }
+                        }
+
+                        if(sentEmpnos.Count > 0)
+                        {
+                            // 檢查主管是否已回饋
+                            path = Path.Combine(_appData, "Feedback", season);
+                            foreach(string sentEmpno in sentEmpnos)
+                            {
+                                ret = true;
+                                string fileName = Path.Combine(path, sentEmpno + ".txt");
+                                if (File.Exists(fileName))
+                                {
+                                    string[] lines = File.ReadAllLines(fileName);
+                                    foreach(string line in lines)
+                                    {
+                                        if (line.Split('\t')[1].Equals(empno))
+                                        {
+                                            if (line.Split('\t')[2].Equals("submit"))
+                                            {
+                                                ret = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (ret.Equals(true))
+                                {
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
                 bools.Add(ret);
