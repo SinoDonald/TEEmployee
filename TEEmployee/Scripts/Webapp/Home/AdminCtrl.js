@@ -14,7 +14,7 @@ app.service('appService', ['$http', function ($http) {
     this.GetAllEmployees = function (o) {
         return $http.post('Assessment/GetAllEmployees', o);
     };
-    
+
     this.InsertUserExtra = function (o) {
         return $http.post('Home/InsertUserExtra', o);
     };
@@ -31,14 +31,14 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Home/UpdateAllPercentComplete', o);
     };
 
-    
+
 }]);
 
 app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
 
-    
+
     $scope.InsertProjectItem = () => {
-                
+
         appService.InsertProjectItem({})
             .then((ret) => {
                 if (ret.data === 'True') alert('Update succeed')
@@ -48,7 +48,7 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
             .catch((ret) => {
                 alert('Error');
             });
-    }   
+    }
 
     $scope.UpdateUser = () => {
 
@@ -61,7 +61,7 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
             .catch((ret) => {
                 alert('Error');
             });
-    }   
+    }
 
     $scope.dada = [];
 
@@ -81,7 +81,7 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
                 //empno
                 if (Number.isInteger(row[0])) row[0] = row[0].toString();
                 newdata.empno = row[0];
-                               
+
 
                 //group one two three
                 row[9] = (row[9] && row[9].length >= 2) ? row[9] : '';
@@ -99,7 +99,7 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
                 //manager
                 row[8] = (row[8] === 'Y') ? true : false;
                 newdata.department_manager = row[8];
-                
+
                 row[10] = (row[10] === 'Y') ? true : false;
                 newdata.group_manager = row[10];
 
@@ -108,7 +108,7 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
 
                 row[14] = (row[14] === 'Y') ? true : false;
                 newdata.group_two_manager = row[14];
-                
+
                 row[16] = (row[16] === 'Y') ? true : false;
                 newdata.group_three_manager = row[16];
 
@@ -148,9 +148,9 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
     //    });
 
 
-    $scope.CreateMonthlyRecord = () => {
+    $scope.CreateMonthlyRecord = (yymm) => {
 
-        appService.CreateMonthlyRecord({})
+        appService.CreateMonthlyRecord({ yymm: yymm })
             .then((ret) => {
                 if (ret.data === 'True') alert('Successfully created')
                 else alert('No data found')
@@ -159,7 +159,7 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
             .catch((ret) => {
                 alert('Error');
             });
-    }   
+    }
 
 
     $scope.UpdateAllPercentComplete = () => {

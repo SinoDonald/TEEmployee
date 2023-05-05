@@ -27,8 +27,7 @@ namespace TEEmployee.Models.GSchedule
             // A null value means that this object is greater.
             //if (other == null)
             //    return 1;
-
-
+            
             if (this.projno == null)
             {
                 if (other.projno == null)
@@ -47,9 +46,6 @@ namespace TEEmployee.Models.GSchedule
 
             int engIdxA = engOrder.IndexOf(this.projno.Substring(4));
             int engIdxB = engOrder.IndexOf(other.projno.Substring(4));
-
-            if (engIdxA == -1) return 1;
-            if (engIdxB == -1) return -1;
 
             if (engIdxA < engIdxB)
             {
