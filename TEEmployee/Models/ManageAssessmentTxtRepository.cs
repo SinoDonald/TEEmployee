@@ -109,27 +109,61 @@ namespace TEEmployee.Models
                 bools.Add(ret);
 
                 // 檢查是否為主管
+                ret = false;
                 IUserRepository _userRepository = new UserRepository();
                 User user = _userRepository.Get(empno);
-                ret = false;
                 if (user != null)
                 {
-                    if(user.department_manager.Equals(true) || user.project_manager.Equals(true))
+                    // 檢驗有哪些group為manager
+                    List<string> groupManagers = new List<string>();
+                    if (user.group_manager.Equals(true)) { groupManagers.Add(user.group); }                        
+                    if (user.group_one_manager.Equals(true)) { groupManagers.Add(user.group_one); }                        
+                    if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }                        
+                    if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }                        
+
+                    if (groupManagers.Count > 0 || empno.Equals("4125"))
                     {
-                        // 檢查有sent的人
+                        // 檢查有sent自評表的user
                         List<string> sentEmpnos = new List<string>();
-                        path = Path.Combine(_appData, "ManageResponse", season, empno);
-                        string[] files = Directory.GetFiles(path);
-                        foreach(string file in files)
+
+                        // 找到同group的user
+                        List<User> users = _userRepository.GetAll();
+                        List<User> sameGroupUsers = new List<User>(); 
+                        if (empno.Equals("4125"))
+                        { 
+                            sameGroupUsers = users;
+                        }
+                        else
                         {
-                            string state = File.ReadAllLines(file)[0].Split(';')[0];
-                            if (state.Equals("sent"))
+                            foreach (string groupManager in groupManagers)
                             {
-                                sentEmpnos.Add(Path.GetFileName(file).Replace(".txt", ""));
+                                foreach(User sameGroupUser in users.Where(x => x.group.Equals(groupManager) || x.group_one.Equals(groupManager) || x.group_two.Equals(groupManager) || x.group_three.Equals(groupManager)).ToList())
+                                {
+                                    sameGroupUsers.Add(sameGroupUser);
+                                }
+                            }
+                            sameGroupUsers = sameGroupUsers.Distinct().ToList();
+                        }
+
+                        foreach (User sameGroupUser in sameGroupUsers)
+                        {
+                            path = Path.Combine(_appData, "Response", season);
+                            string fileName = Path.Combine(path, sameGroupUser.empno + ".txt");
+                            if (File.Exists(fileName))
+                            {
+                                string state = File.ReadAllLines(fileName)[0].Split(';')[0];
+                                // user已寄出需提醒
+                                if (state.Equals("submit"))
+                                {
+                                    if (!sameGroupUser.empno.Equals(empno))
+                                    {
+                                        sentEmpnos.Add(sameGroupUser.empno);
+                                    }
+                                }
                             }
                         }
 
-                        if(sentEmpnos.Count > 0)
+                        if (sentEmpnos.Count > 0)
                         {
                             // 檢查主管是否已回饋
                             path = Path.Combine(_appData, "Feedback", season);
