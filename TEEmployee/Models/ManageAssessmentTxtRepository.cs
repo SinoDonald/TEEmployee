@@ -122,6 +122,10 @@ namespace TEEmployee.Models
                     }
                 }
                 bools.Add(ret);
+
+                // 未來3年數位轉型規劃
+                ret = true;
+                bools.Add(ret);
             }
 
             return bools;
