@@ -1,2 +1,0 @@
-賴建名	4125	save	A	B	C	D	E	77999	GG
-陳柏愷	5526	submit	GG	FF	EE	DD	BB	AA	Hello World!!
