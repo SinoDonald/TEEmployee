@@ -68,15 +68,16 @@ namespace TEEmployee.Models
 
                 // 是否已填寫自我評估表
                 HttpContext.Current.Server.MapPath("~/App_Data");
-                string path = Path.Combine(_appData, "Response", season , empno + ".txt");
-                if (!File.Exists(path))
+                string path = Path.Combine(_appData, "Response", season);
+                string filePath = Path.Combine(path, empno + ".txt");
+                if (!File.Exists(filePath))
                 {
                     ret = true;
                 }                
-                else if (File.Exists(path))
+                else if (File.Exists(filePath))
                 {
-                    string state = File.ReadAllLines(path)[0].Split(';')[0];
-                    string isRead = File.ReadAllLines(path)[0].Split(';')[2];
+                    string state = File.ReadAllLines(filePath)[0].Split(';')[0];
+                    string isRead = File.ReadAllLines(filePath)[0].Split(';')[2];
                     // 未寄出需提醒
                     if (!state.Equals("submit"))
                     {
@@ -96,14 +97,23 @@ namespace TEEmployee.Models
                 // 是否已填寫給予主管建議評估表
                 ret = true;
                 path = Path.Combine(_appData, "ManageResponse", season);
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
                 string[] directories = Directory.GetDirectories(path);
                 foreach(string directory in directories)
                 {
-                    string fileName = Path.Combine(directory, empno + ".txt");
-                    if (File.Exists(fileName))
+                    filePath = Path.Combine(directory, empno + ".txt");
+                    if (File.Exists(filePath))
                     {
-                        ret = false;
-                        break;
+                        string state = File.ReadAllLines(filePath)[0].Split(';')[0];
+                        // user已寄出不需提醒
+                        if (state.Equals("sent"))
+                        {
+                            ret = false;
+                            break;
+                        }
                     }
                 }
                 bools.Add(ret);
@@ -148,10 +158,10 @@ namespace TEEmployee.Models
                         foreach (User sameGroupUser in sameGroupUsers)
                         {
                             path = Path.Combine(_appData, "Response", season);
-                            string fileName = Path.Combine(path, sameGroupUser.empno + ".txt");
-                            if (File.Exists(fileName))
+                            filePath = Path.Combine(path, sameGroupUser.empno + ".txt");
+                            if (File.Exists(filePath))
                             {
-                                string state = File.ReadAllLines(fileName)[0].Split(';')[0];
+                                string state = File.ReadAllLines(filePath)[0].Split(';')[0];
                                 // user已寄出需提醒
                                 if (state.Equals("submit"))
                                 {
@@ -170,10 +180,10 @@ namespace TEEmployee.Models
                             foreach(string sentEmpno in sentEmpnos)
                             {
                                 ret = true;
-                                string fileName = Path.Combine(path, sentEmpno + ".txt");
-                                if (File.Exists(fileName))
+                                filePath = Path.Combine(path, sentEmpno + ".txt");
+                                if (File.Exists(filePath))
                                 {
-                                    string[] lines = File.ReadAllLines(fileName);
+                                    string[] lines = File.ReadAllLines(filePath);
                                     foreach(string line in lines)
                                     {
                                         if (line.Split('\t')[1].Equals(empno))
