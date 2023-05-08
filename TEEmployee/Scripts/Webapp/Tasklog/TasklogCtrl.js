@@ -628,8 +628,6 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
         });
     }
 
-    $scope.GetLastMonthData();
-
     function onExpandableTextareaInput({ target: elm }) {
 
         if (!elm.classList.contains('autoExpand') || !elm.nodeName === 'TEXTAREA') return

@@ -151,6 +151,8 @@ namespace TEEmployee.Controllers
                 if(samePrjName == null)
                 {
                     projectItem.yymm = yymm;
+                    projectItem.workHour = 0; // 工時不要帶入
+                    projectItem.overtime = 0; // 加班不要帶入
                     projectItems.Add(projectItem);
                 }
             }
@@ -158,6 +160,7 @@ namespace TEEmployee.Controllers
             {
                 projectTask.id = 0;
                 projectTask.yymm = yymm;
+                projectTask.realHour = 0; // 實際時數不要帶入
                 projectTasks.Add(projectTask);
             }
 

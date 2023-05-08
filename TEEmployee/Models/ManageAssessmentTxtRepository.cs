@@ -119,8 +119,8 @@ namespace TEEmployee.Models
                     if (user.group_manager.Equals(true)) { groupManagers.Add(user.group); }                        
                     if (user.group_one_manager.Equals(true)) { groupManagers.Add(user.group_one); }                        
                     if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }                        
-                    if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }                        
-
+                    if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
+                    // 主管才會收到通知
                     if (groupManagers.Count > 0 || empno.Equals("4125"))
                     {
                         // 檢查有sent自評表的user
@@ -197,7 +197,21 @@ namespace TEEmployee.Models
                 bools.Add(ret);
 
                 // 未來3年數位轉型規劃
-                ret = true;
+                ret = false;
+                if (user != null)
+                {
+                    // 檢驗有哪些group為manager
+                    List<string> groupManagers = new List<string>();
+                    if (user.group_manager.Equals(true)) { groupManagers.Add(user.group); }
+                    if (user.group_one_manager.Equals(true)) { groupManagers.Add(user.group_one); }
+                    if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }
+                    if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
+                    // 主管才會收到通知
+                    if(groupManagers.Count() > 0 || user.department_manager.Equals(true) || user.project_manager.Equals(true))
+                    {
+                        ret= true;
+                    }
+                }
                 bools.Add(ret);
             }
 
