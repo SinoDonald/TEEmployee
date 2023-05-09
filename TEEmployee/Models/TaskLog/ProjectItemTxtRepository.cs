@@ -89,8 +89,8 @@ namespace TEEmployee.Models.TaskLog
 
                 // Delete the resource after reading it
 
-                File.Delete(fn);
-
+                //File.Delete(fn);
+                
 
 
             }
