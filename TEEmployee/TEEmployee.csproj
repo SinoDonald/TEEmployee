@@ -185,6 +185,7 @@
     <Compile Include="Models\TaskLog\MonthlyRecord.cs" />
     <Compile Include="Models\TaskLog\MonthlyRecordRepository.cs" />
     <Compile Include="Models\TaskLog\ProjectItem.cs" />
+    <Compile Include="Models\TaskLog\ProjectItemEqualityComparer.cs" />
     <Compile Include="Models\TaskLog\ProjectItemRepository.cs" />
     <Compile Include="Models\TaskLog\ProjectItemTxtRepository.cs" />
     <Compile Include="Models\TaskLog\ProjectTask.cs" />

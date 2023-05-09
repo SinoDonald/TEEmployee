@@ -125,7 +125,8 @@ namespace TEEmployee.Models.TaskLog
 
         public bool Upsert(List<ProjectItem> projectItem)
         {
-            _conn.Open();
+            if (_conn.State == 0)
+                _conn.Open();
 
             using (var tran = _conn.BeginTransaction())
             {
@@ -146,6 +147,33 @@ namespace TEEmployee.Models.TaskLog
 
             }
 
+        }
+
+        public bool Delete(List<ProjectItem> projectItems)
+        {
+            if (_conn.State == 0)
+                _conn.Open();
+
+            int ret = 0;
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                string deleteProjectItemSql = @"DELETE FROM ProjectItem WHERE empno=@empno AND yymm=@yymm AND projno=@projno;";
+                
+                try
+                {
+                    ret = _conn.Execute(deleteProjectItemSql, projectItems, tran);
+
+                    tran.Commit();
+                }
+                catch
+                {
+                    ret = 0;
+                }
+
+            }
+
+            return ret > 0;
         }
 
     }

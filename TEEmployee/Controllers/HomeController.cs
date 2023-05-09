@@ -17,7 +17,7 @@ namespace TEEmployee.Controllers
         public ActionResult Index()
         {
             Notify(); // 重要通知
-            InsertProjectItem();
+            //InsertProjectItem();
             return View();
         }
 
@@ -125,6 +125,7 @@ namespace TEEmployee.Controllers
                 // read new project items from txt file
 
                 List<ProjectItem> projectItems = new List<ProjectItem>();
+                List<ProjectItem> DBprojectItems = new List<ProjectItem>();
 
                 using (TasklogService service = new TasklogService(false))
                 {
@@ -168,8 +169,13 @@ namespace TEEmployee.Controllers
                 // insert new project items into database
 
                 using (TasklogService service = new TasklogService())
-                {                    
-                        
+                {
+                    DBprojectItems = service.GetAllProjectItem().Where(x => x.yymm == projectItems[0].yymm).ToList();
+
+                    List<ProjectItem> intersectProjectItems = DBprojectItems.Intersect(projectItems, new ProjectItemEqualityComparer()).ToList();
+                    List<ProjectItem> exceptProjectItems = DBprojectItems.Except(intersectProjectItems, new ProjectItemEqualityComparer()).ToList();
+
+                    service.DeleteProjectItem(exceptProjectItems);
                     service.UpsertProjectItem(projectItems);
                     //service.InsertProjectItem(projectItems);
                     //service.UpsertMonthlyRecord(monthlyRecords);

@@ -227,6 +227,25 @@ namespace TEEmployee.Models.TaskLog
 
         }
 
+        public bool DeleteProjectItem(List<ProjectItem> projectItems)
+        {
+            bool ret = true;
+
+            try
+            {
+                _projectItemRepository.Delete(projectItems);
+
+            }
+            catch
+            {
+                ret = false;
+            }
+
+            return ret;
+
+        }
+
+
 
         //----------------------------------------------------------------------------
 

@@ -15,7 +15,8 @@ namespace TEEmployee.Models.TaskLog
         bool Upsert(ProjectItem projectItem);
         bool Upsert(List<ProjectItem> projectItem);
         bool Update(ProjectItem projectItem);
-        bool Delete(ProjectItem projectItem);        
+        bool Delete(ProjectItem projectItem);
+        bool Delete(List<ProjectItem> projectItems);
         void Dispose();
     }
 }
