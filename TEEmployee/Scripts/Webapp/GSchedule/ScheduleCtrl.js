@@ -146,8 +146,8 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
 
     // gantt
-
-    $scope.ganttStartMonth = moment({ day: 1 });
+    //$scope.ganttStartMonth = moment({ day: 1 });
+    $scope.ganttStartMonth = moment({ day: 1 }).subtract(5, 'M');
 
     const plot =
         ganttPlot()
@@ -656,7 +656,8 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
     // gantt
 
-    $scope.ganttStartMonth = moment({ day: 1 });
+    //$scope.ganttStartMonth = moment({ day: 1 });
+    $scope.ganttStartMonth = moment({ day: 1 }).subtract(5, 'M');
 
     const plot =
         ganttPlot()

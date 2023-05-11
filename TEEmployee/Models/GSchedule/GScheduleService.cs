@@ -123,7 +123,18 @@ namespace TEEmployee.Models.GSchedule
                 allGroupSchedules.AddRange(groupSchedules);
             }
 
-            allGroupSchedules = allGroupSchedules.OrderByDescending(x => x.Group).ToList();
+            //allGroupSchedules = allGroupSchedules.OrderByDescending(x => x.Group).ToList();
+
+            List<string> engOrder = new List<string> { "D", "C", "E", "B", "Z", "N" };
+
+            allGroupSchedules = allGroupSchedules
+                .OrderByDescending(x => {
+
+                int engIdx = engOrder.IndexOf(x.Group.projno?.Substring(4));
+
+                return engIdx;})
+                .ThenByDescending(x => x.Group.projno?.Substring(0, 4)).ToList();
+
 
             return allGroupSchedules;
         }

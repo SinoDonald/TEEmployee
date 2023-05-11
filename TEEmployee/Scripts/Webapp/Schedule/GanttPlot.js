@@ -232,6 +232,7 @@ const ganttPlot = () => {
 
         let key = -2;
 
+        // right to left ascending => left to right ascending
         for (let i = 0; i !== labelHeights.length; i++) {
 
             if (labelHeights[i] !== key) {
@@ -246,6 +247,44 @@ const ganttPlot = () => {
 
             }
         }
+
+        // get the index of point which is the closest to today
+
+        //if (marks[0].wxy) {
+        //    console.log(marks.wxy.length);
+        //}
+
+        let closestIdx;
+
+        for (let i = 0; i !== marks[0].wxy.length; i++) {
+            
+            if (marks[0].wxy[i].wx >= lineX) {
+                closestIdx = i;
+                break;
+            }            
+            
+        }
+
+        if (closestIdx && labelHeights[closestIdx] !== -2) {
+            let numBefore = -2 - labelHeights[closestIdx];
+
+            // before idx, send it to the outer space
+            for (let i = 1; i <= numBefore; i++) {
+                labelHeights[closestIdx - i] = -5;
+            }
+
+            // first three after index, assign -2 -3 -4 if not equal to -2
+            for (let i = 0; i !== 3; i++) {
+                if (labelHeights[closestIdx + i]) {
+                    labelHeights[closestIdx + i] = -2 - i;
+                }
+
+            }
+        }
+
+
+        console.log(labelHeights);
+        console.log('close idx is :' + closestIdx);
 
         // text
         groups.selectAll('text')
@@ -271,14 +310,15 @@ const ganttPlot = () => {
             .selectAll('g.x-axis')
             .data([null])
             .join('g')
-            .style("font", "10px times")
+            //.style("font", "10px times")
+            .style("font", "12px Verdana")
             .attr('class', 'x-axis')
             .attr('transform', `translate(0, ${height - margin.bottom})`)
             .transition(t)
             //.call(axisBottom(x).ticks(12).tickFormat(timeFormat('%m')).tickSize(-0.5 * height, 0));
             //.call(axisBottom(x).ticks(12).tickSize(-0.5 * height, 0));
             //.call(axisBottom(x).ticks(12).tickSize(-0.4 * height, 0));
-            .call(axisBottom(x).ticks(14).tickFormat(function (date) {
+            .call(axisBottom(x).ticks(12).tickFormat(function (date) {
                 if (d3.timeYear(date) < date) {
                     return d3.timeFormat('%m')(date);
                 } else {
