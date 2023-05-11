@@ -33,7 +33,7 @@
                     <td ng-if="item.Content != '建議' && item.Id != 0 && item.Id == 44">
                         <input type="text" ng-model="item.Content" placeholder="自訂問題">
                     </td>
-                    <td ng-if="data.model == '2022H2' && item.Content != '建議' && item.Id != 0">
+                    <td ng-if="model == 0 && item.Content != '建議' && item.Id != 0">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1{{$index}}" value="option1" required>
                             <label class="form-check-label" for="inlineRadio1{{$index}}">同意</label>
@@ -54,7 +54,7 @@
                             未填寫
                         </span>
                     </td>
-                    <td ng-if="data.model != '2022H2' && item.Content != '建議' && item.Id != 0">
+                    <td ng-if="model == 1 && item.Content != '建議' && item.Id != 0">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1{{$index}}" value="option1" required>
                             <label class="form-check-label" for="inlineRadio1{{$index}}">非常同意</label>
@@ -99,7 +99,7 @@
                     <td ng-if="item.Content != '建議' && item.Id != 0 && item.Id == 44">
                         <input type="text" ng-model="item.Content" placeholder="自訂問題">
                     </td>
-                    <td ng-if="data.model == '2022H2' && item.Content != '建議' && item.Id != 0">
+                    <td ng-if="model == 0 && item.Content != '建議' && item.Id != 0">
                         <div class="form-check form-check-inline">
                             <input ng-disabled="true" class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1" value="option1" required>
                             <label class="form-check-label" for="inlineRadio1">同意</label>
@@ -117,7 +117,7 @@
                             <label class="form-check-label" for="inlineRadio4">N/A</label>
                         </div>
                     </td>
-                    <td ng-if="data.model != '2022H2' && item.Content != '建議' && item.Id != 0">
+                    <td ng-if="model == 1 && item.Content != '建議' && item.Id != 0">
                         <div class="form-check form-check-inline">
                             <input ng-disabled="true" class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1" value="option1" required>
                             <label class="form-check-label" for="inlineRadio1">非常同意</label>
