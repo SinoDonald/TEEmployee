@@ -26,7 +26,7 @@ function DrawEmployeeBarChart(data, selectedCategory) {
     //    titles.push(selectedSample.Content)
     //    choices.push([]);
     //} 
-        
+
 
     let startidx = selectedSample[0].Id - 1;
     let count = selectedSample.length;
@@ -57,7 +57,7 @@ function DrawEmployeeBarChart(data, selectedCategory) {
     }
 
     painting.innerHTML = '';
-    
+
 
     for (let i = 0; i !== count; i++) {
 
@@ -87,7 +87,7 @@ function DrawEmployeeBarChart(data, selectedCategory) {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: {                    
+                scales: {
                     y: {
                         beginAtZero: true,
                         ticks: {
@@ -96,7 +96,7 @@ function DrawEmployeeBarChart(data, selectedCategory) {
                                 return grades[value];
                             }
                         }
-                    }                     
+                    }
                 },
                 //scales: {
                 //    x: {
@@ -116,10 +116,10 @@ function DrawEmployeeBarChart(data, selectedCategory) {
                     },
                     title: {
                         display: true,
-                        text: titles[i],                        
+                        text: titles[i],
                         font: {
                             size: 24
-                        }                        
+                        }
                     }
                 }
             },
@@ -151,7 +151,7 @@ function DrawManagerBarChart(data, selectedManager, selectedCategory) {
 
     for (const item of selectedAssessments) {
         titles.push(item.Content)
-        votes.push([[],[],[],[]]);
+        votes.push([[], [], [], []]);
     }
 
     //for (let i = 0; i !== selectedSample.length; i++) {
@@ -180,7 +180,7 @@ function DrawManagerBarChart(data, selectedManager, selectedCategory) {
 
                 votes[j][k].push(rdata[i].Votes[startidx + j][k]);
             }
-                        
+
         }
 
     }
@@ -269,7 +269,7 @@ function DrawManagerBarChart(data, selectedManager, selectedCategory) {
                 }
             },
         };
-        
+
         chartSet.push(new Chart(document.getElementById('myChart' + i), config));
 
     }
@@ -322,7 +322,7 @@ function DrawManagerRadarChart(data, selectedManager, categories) {
     }
 
     let score = [];
-    let names = [];    
+    let names = [];
     let rdata = data.ChartManagerResponses;
 
     painting.innerHTML = '';
@@ -330,7 +330,7 @@ function DrawManagerRadarChart(data, selectedManager, categories) {
     if (selectedManager !== 'All') {
         rdata = data.ChartManagerResponses.filter(item => item.Manager.name === selectedManager);
     }
-        
+
 
 
     // loop name
@@ -353,15 +353,15 @@ function DrawManagerRadarChart(data, selectedManager, categories) {
             for (let j = idx; j !== (idx + num); j++) {
 
                 const votes = rdata[i].Votes[j]
-                sum += (votes[0] * 2 + votes[1] * 1);    
+                sum += (votes[0] * 2 + votes[1] * 1);
                 numOfInvalid += votes[3];
-                
+
             }
             //score[i].push((sum / numOfVotes /(num * 2) * 5)); 
 
-            score[i].push((sum / ((num * numOfVotes - numOfInvalid) * 2) * 5));            
+            score[i].push((sum / ((num * numOfVotes - numOfInvalid) * 2) * 5));
 
-            idx += num;           
+            idx += num;
 
         }
 
@@ -393,7 +393,7 @@ function DrawManagerRadarChart(data, selectedManager, categories) {
         const config = {
             type: 'radar',
             data: chartData,
-            options: {             
+            options: {
                 elements: {
                     line: {
                         borderWidth: 3
@@ -425,7 +425,286 @@ function DrawManagerRadarChart(data, selectedManager, categories) {
         };
 
         chartSet.push(new Chart(document.getElementById('myChart' + i), config));
-        
+
+    }
+    painting.className = 'radar d-flex flex-wrap justify-content-center';
+    //painting.className = 'radar';
+}
+
+function DrawNewManagerBarChart(data, selectedManager, selectedCategory) {
+
+    let names = [];
+    let titles = [];
+    let votes = [];
+    let rdata = data.ChartManagerResponses;
+
+    painting.innerHTML = '';
+
+    //if (data.length === 0) return;
+
+    const selectedAssessments = data.ManagerAssessments.filter(assessment => assessment.CategoryId === Number(selectedCategory));
+
+    if (selectedManager !== 'All')
+        rdata = data.ChartManagerResponses.filter(item => item.Manager.name === selectedManager);
+
+    for (const item of selectedAssessments) {
+        titles.push(item.Content)
+        votes.push([[], [], [], [], [], []]);
+    }
+
+    let startidx = selectedAssessments[0].Id - 1;
+    let count = selectedAssessments.length;
+
+    // loop name
+    for (let i = 0; i !== rdata.length; i++) {
+
+        names.push(rdata[i].Manager.name);
+
+        // push [vote,vote,vote]  
+        for (let j = 0; j !== count; j++) {
+
+            // 6 option
+            for (let k = 0; k !== 6; k++) {
+
+                votes[j][k].push(rdata[i].Votes[startidx + j][k]);
+            }
+
+        }
+
+    }
+
+    painting.innerHTML = '';
+
+
+    for (let i = 0; i !== count; i++) {
+
+        AddRow(i);
+
+        const chartData = {
+            labels: names,
+            datasets: [{
+                label: '非常同意',
+                data: votes[i][0],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)'
+                ],
+                borderColor: [
+                    'rgb(255, 99, 132)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: '同意',
+                data: votes[i][1],
+                backgroundColor: [
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgb(255, 159, 64)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: '普通',
+                data: votes[i][2],
+                backgroundColor: [
+                    'rgba(255, 205, 86, 0.2)'
+                ],
+                borderColor: [
+                    'rgb(255, 205, 86)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: '不同意',
+                data: votes[i][3],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)'
+                ],
+                borderColor: [
+                    'rgb(75, 192, 192)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: '非常不同意',
+                data: votes[i][4],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.2)'
+                ],
+                borderColor: [
+                    'rgb(54, 162, 235)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: '無法觀察',
+                data: votes[i][5],
+                backgroundColor: [
+                    'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(153, 102, 255)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        const config = {
+            type: 'bar',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '人數'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: titles[i],
+                        font: {
+                            size: 24
+                        }
+                    }
+                }
+            },
+        };
+
+        chartSet.push(new Chart(document.getElementById('myChart' + i), config));
+
+    }
+
+    painting.className = 'bar';
+
+}
+
+
+function DrawNewManagerRadarChart(data, selectedManager, categories) {
+
+    let numOfQuestions = [];
+    let labels = [];
+
+    for (const item of categories) {
+        let num = data.ManagerAssessments.filter(assessment => assessment.CategoryId === Number(item.id)).length;
+        numOfQuestions.push(num);
+        labels.push(item.name);
+    }
+
+    let score = [];
+    let names = [];
+    let rdata = data.ChartManagerResponses;
+
+    painting.innerHTML = '';
+
+    if (selectedManager !== 'All') {
+        rdata = data.ChartManagerResponses.filter(item => item.Manager.name === selectedManager);
+    }
+
+
+
+    // loop name
+    for (let i = 0; i !== rdata.length; i++) {
+
+        names.push(rdata[i].Manager.name);
+        score.push([]);
+
+        let idx = 0;
+        const numOfVotes = rdata[i].Votes[0].reduce((previousValue, currentValue) => previousValue + currentValue);
+        if (!numOfVotes) continue;
+
+        // sum up score
+
+        for (let num of numOfQuestions) {
+
+            let sum = 0;
+            let numOfInvalid = 0;
+
+            for (let j = idx; j !== (idx + num); j++) {
+
+                const votes = rdata[i].Votes[j]
+                sum += (votes[0] * 4 + votes[1] * 3 + votes[2] * 2 + votes[3] * 1);
+                numOfInvalid += votes[3];
+
+            }
+            
+
+            score[i].push((sum / ((num * numOfVotes - numOfInvalid) * 4) * 5));
+
+            idx += num;
+
+        }
+
+    }
+
+    painting.innerHTML = '';
+
+    // draw radar per manager
+
+    for (let i = 0; i !== names.length; i++) {
+
+        AddRow(i);
+
+        const chartData = {
+            labels: labels,
+            datasets: [{
+                label: '表現',
+                data: score[i],
+                fill: true,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgb(255, 99, 132)',
+                pointBackgroundColor: 'rgb(255, 99, 132)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(255, 99, 132)'
+            }]
+        };
+
+        const config = {
+            type: 'radar',
+            data: chartData,
+            options: {
+                elements: {
+                    line: {
+                        borderWidth: 3
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        pointLabels: {
+                            font: {
+                                size: 20
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: names[i],
+                        font: {
+                            size: 24
+                        }
+                    }
+                }
+            },
+        };
+
+        chartSet.push(new Chart(document.getElementById('myChart' + i), config));
+
     }
     painting.className = 'radar d-flex flex-wrap justify-content-center';
     //painting.className = 'radar';
