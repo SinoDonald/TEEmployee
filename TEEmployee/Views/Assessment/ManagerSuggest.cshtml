@@ -77,7 +77,7 @@
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio6{{$index}}" value="option6" required>
-                            <label class="form-check-label" for="inlineRadio6{{$index}}">觀察</label>
+                            <label class="form-check-label" for="inlineRadio6{{$index}}">無法觀察</label>
                         </div>
                         <span ng-show="optionForm.{{'inlineRadioOptions'+ $index}}.$error.required && clicked" class="err">
                             未填寫
@@ -140,7 +140,7 @@
                         </div>
                         <div class="form-check form-check-inline">
                             <input ng-disabled="true" class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio6" value="option6">
-                            <label class="form-check-label" for="inlineRadio6">觀察</label>
+                            <label class="form-check-label" for="inlineRadio6">無法觀察</label>
                         </div>
                     </td>
                     <td ng-if="item.Content=='建議'" colspan="2" style="width:80%">

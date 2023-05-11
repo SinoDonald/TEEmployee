@@ -76,7 +76,7 @@
                 小組3
                 <span class="sortorder" ng-show="propertyName === 'User.group_three'" ng-class="{reverse: reverse}"></span>
             </th>
-            <th>內容</th>
+            @*<th>內容</th>*@
             <th>選取</th>
         </tr>
 
@@ -88,9 +88,9 @@
             <td ng-bind="item.User.group_one"></td>
             <td ng-bind="item.User.group_two"></td>
             <td ng-bind="item.User.group_three"></td>
-            <td>
+            @*<td>
                 <a target="_blank" href="~/Tasklog/Details/{{item.MonthlyRecord.guid}}">詳細內容</a>
-            </td>
+            </td>*@
             <td>
                 <input class="form-check-input" type="checkbox" ng-model="item.selected" id="gridCheck{{$index}}">
                 <label class="form-check-label" ng-bind="item.name" for="gridCheck{{$index}}"></label>

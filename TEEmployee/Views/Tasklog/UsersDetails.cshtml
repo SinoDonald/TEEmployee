@@ -20,6 +20,26 @@
     <header>
         <h2>詳細內容-{{yymm}}</h2>
     </header>
+
+    <div class="input-group mb-3 w-25 p-3"
+         moment-picker="ctrl.datepicker"
+         format="YYYY-MM"
+         locale="zh-tw"
+         change="GetMemberAllMonthlyRecordData()">
+        @*<span class="input-group-addon">
+            </span>*@
+        <div class="input-group-prepend">
+            <span class="input-group-text material-icons" id="basic-addon1">calendar_month</span>
+        </div>
+        <input class="form-control"
+               placeholder="Select a date"
+               ng-model="ctrl.datepicker"
+               ng-model-options="{ updateOn: 'blur' }">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">請選擇年月份</span>
+        </div>
+    </div>
+
     <div ng-repeat="item in projectList">
         <header>
             <h2>{{item.projects.user}}</h2>
