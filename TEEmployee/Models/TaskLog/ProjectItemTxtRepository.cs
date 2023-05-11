@@ -143,5 +143,10 @@ namespace TEEmployee.Models.TaskLog
         {
             throw new NotImplementedException();
         }
+
+        public bool Delete(List<ProjectItem> projectItems)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
