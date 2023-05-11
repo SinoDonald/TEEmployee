@@ -621,6 +621,7 @@ namespace TEEmployee.Models
         //    return names;
         //}
 
+        // 20230511 - Add num of options variable 
         public ChartManagerData GetChartManagerData(string manno, string year)
         {
             User user = _userRepository.Get(manno);
@@ -654,6 +655,10 @@ namespace TEEmployee.Models
 
             // Collect user data and chart data
 
+            int numOfOptions; // old:4 new:6
+            numOfOptions = (year.CompareTo("2022H2") > 0) ? 6 : 4;
+
+
             foreach (var empno in empnos)
             {
                 User manager = _userRepository.Get(empno);
@@ -667,7 +672,8 @@ namespace TEEmployee.Models
                 List<List<string>> Responses = new List<List<string>>();
 
                 for (int i = 0; i != numOfQuestion; i++)
-                    Votes.Add(Enumerable.Repeat(0, 4).ToList());
+                    Votes.Add(Enumerable.Repeat(0, numOfOptions).ToList());
+                //Votes.Add(Enumerable.Repeat(0, 4).ToList());
 
                 for (int i = 0; i != numOfCategory; i++)
                     Responses.Add(new List<string>());

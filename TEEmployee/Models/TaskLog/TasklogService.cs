@@ -264,6 +264,8 @@ namespace TEEmployee.Models.TaskLog
                             .OrderBy(x => x.projno).ThenBy(x => x.id).ToList();
 
             return new TasklogData() { ProjectItems = projectItems, ProjectTasks = projectTasks };
+
+            List<string> st = new List<string> { "1" };
         }
 
         public TasklogData GetTasklogDataByGuid(string guid)

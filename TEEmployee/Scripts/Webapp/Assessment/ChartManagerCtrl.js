@@ -117,21 +117,46 @@ app.controller('ChartManagerCtrl', ['$scope', '$window', 'appService', '$rootSco
     //    //$scope.DrawChart();
     //}
 
+    //$scope.DrawChart = () => {
+
+    //    switch ($scope.mode) {
+    //        case 'bar':
+    //            DrawManagerBarChart($scope.data, $scope.selectedManager, $scope.selectedCategory);
+    //            break;
+    //        case 'comment':
+    //            ShowComment($scope.data, $scope.selectedManager, $scope.selectedCategory);
+    //            break;
+    //        case 'radar':
+    //            DrawManagerRadarChart($scope.data, $scope.selectedManager, $scope.categories);
+    //            break;
+    //    }
+        
+    //}
+
+
+    // 20230511 Draw New Manager Chart (6 options)
     $scope.DrawChart = () => {
 
         switch ($scope.mode) {
             case 'bar':
-                DrawManagerBarChart($scope.data, $scope.selectedManager, $scope.selectedCategory);
+                if ($scope.selectedYear > '2022H2')
+                    DrawNewManagerBarChart($scope.data, $scope.selectedManager, $scope.selectedCategory);
+                else
+                    DrawManagerBarChart($scope.data, $scope.selectedManager, $scope.selectedCategory);
                 break;
             case 'comment':
                 ShowComment($scope.data, $scope.selectedManager, $scope.selectedCategory);
                 break;
             case 'radar':
-                DrawManagerRadarChart($scope.data, $scope.selectedManager, $scope.categories);
+                if ($scope.selectedYear > '2022H2')
+                    DrawNewManagerRadarChart($scope.data, $scope.selectedManager, $scope.categories);
+                else
+                    DrawManagerRadarChart($scope.data, $scope.selectedManager, $scope.categories);
                 break;
         }
-        
+
     }
+
 
     $scope.GetChartData = () => {
 

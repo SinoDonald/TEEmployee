@@ -278,7 +278,7 @@ const ganttPlot = () => {
             //.call(axisBottom(x).ticks(12).tickFormat(timeFormat('%m')).tickSize(-0.5 * height, 0));
             //.call(axisBottom(x).ticks(12).tickSize(-0.5 * height, 0));
             //.call(axisBottom(x).ticks(12).tickSize(-0.4 * height, 0));
-            .call(axisBottom(x).ticks(12).tickFormat(function (date) {
+            .call(axisBottom(x).ticks(14).tickFormat(function (date) {
                 if (d3.timeYear(date) < date) {
                     return d3.timeFormat('%m')(date);
                 } else {
