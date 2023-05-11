@@ -11,12 +11,12 @@
 
     <h4>給予主管建議評估表 - {{manager.name}}&nbsp;{{manager.dutyName}}</h4>
 
-    @*<form name="yearForm">
-            <label for="repeatSelect"> Select year: </label>
+    <form name="yearForm">
+            <label for="repeatSelect"> 請選擇年份： </label>
             <select name="repeatSelect" id="repeatSelect" ng-model="data.model" class="custom-select custom-select-lg mb-3" ng-change="GetAllManageAssessments(data.model)">
                 <option ng-repeat="option in data.availableOptions" value="{{option.id}}">{{option.name}}</option>
             </select>
-        </form>*@
+        </form>
 
     <form name="optionForm">
         <table class="table table-borderless table-hover">
@@ -33,7 +33,7 @@
                     <td ng-if="item.Content != '建議' && item.Id != 0 && item.Id == 44">
                         <input type="text" ng-model="item.Content" placeholder="自訂問題">
                     </td>
-                    <td ng-if="item.Content != '建議' && item.Id != 0">
+                    <td ng-if="data.model == '2022H2' && item.Content != '建議' && item.Id != 0">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1{{$index}}" value="option1" required>
                             <label class="form-check-label" for="inlineRadio1{{$index}}">同意</label>
@@ -49,6 +49,35 @@
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio4{{$index}}" value="option4" required>
                             <label class="form-check-label" for="inlineRadio4{{$index}}">N/A</label>
+                        </div>
+                        <span ng-show="optionForm.{{'inlineRadioOptions'+ $index}}.$error.required && clicked" class="err">
+                            未填寫
+                        </span>
+                    </td>
+                    <td ng-if="data.model != '2022H2' && item.Content != '建議' && item.Id != 0">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1{{$index}}" value="option1" required>
+                            <label class="form-check-label" for="inlineRadio1{{$index}}">非常同意</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio2{{$index}}" value="option2" required>
+                            <label class="form-check-label" for="inlineRadio2{{$index}}">同意</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio3{{$index}}" value="option3" required>
+                            <label class="form-check-label" for="inlineRadio3{{$index}}">普通</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio4{{$index}}" value="option4" required>
+                            <label class="form-check-label" for="inlineRadio4{{$index}}">不同意</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio5{{$index}}" value="option5" required>
+                            <label class="form-check-label" for="inlineRadio5{{$index}}">非常不同意</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio6{{$index}}" value="option6" required>
+                            <label class="form-check-label" for="inlineRadio6{{$index}}">觀察</label>
                         </div>
                         <span ng-show="optionForm.{{'inlineRadioOptions'+ $index}}.$error.required && clicked" class="err">
                             未填寫
@@ -70,7 +99,7 @@
                     <td ng-if="item.Content != '建議' && item.Id != 0 && item.Id == 44">
                         <input type="text" ng-model="item.Content" placeholder="自訂問題">
                     </td>
-                    <td ng-if="item.Content != '建議' && item.Id != 0">
+                    <td ng-if="data.model == '2022H2' && item.Content != '建議' && item.Id != 0">
                         <div class="form-check form-check-inline">
                             <input ng-disabled="true" class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1" value="option1" required>
                             <label class="form-check-label" for="inlineRadio1">同意</label>
@@ -88,10 +117,36 @@
                             <label class="form-check-label" for="inlineRadio4">N/A</label>
                         </div>
                     </td>
+                    <td ng-if="data.model != '2022H2' && item.Content != '建議' && item.Id != 0">
+                        <div class="form-check form-check-inline">
+                            <input ng-disabled="true" class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio1" value="option1" required>
+                            <label class="form-check-label" for="inlineRadio1">非常同意</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input ng-disabled="true" class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio2" value="option2">
+                            <label class="form-check-label" for="inlineRadio2">同意</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input ng-disabled="true" class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio3" value="option3">
+                            <label class="form-check-label" for="inlineRadio3">普通</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input ng-disabled="true" class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio4" value="option4">
+                            <label class="form-check-label" for="inlineRadio4">不同意</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input ng-disabled="true" class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio5" value="option5">
+                            <label class="form-check-label" for="inlineRadio5">非常不同意</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input ng-disabled="true" class="form-check-input" type="radio" ng-model="item.Choice" name="inlineRadioOptions{{$index}}" id="inlineRadio6" value="option6">
+                            <label class="form-check-label" for="inlineRadio6">觀察</label>
+                        </div>
+                    </td>
                     <td ng-if="item.Content=='建議'" colspan="2" style="width:80%">
                         <div class="form-group">
                             @*<label for="exampleFormControlTextarea1">建議</label>
-                                <textarea class="form-control" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>*@
+                <textarea class="form-control" ng-model="item.Choice" id="exampleFormControlTextarea1" rows="3"></textarea>*@
                             <h5 class="mb-1">建議</h5>
                             <p ng-bind="item.Choice" class="mb-1 lbk"></p>
                         </div>

@@ -38,7 +38,7 @@ namespace TEEmployee.Filters
             }
 
             string loginUser = filterContext.HttpContext.User.Identity.Name;
-            Match m = Regex.Match(loginUser, @"\\{0,1}(\d{4})@{0,1}");      
+            Match m = Regex.Match(loginUser, @"\\{0,1}(\d{4})@{0,1}");
             if (m.Success)
                 loginUser = m.Groups[1].ToString();
             //loginUser = "7291";
