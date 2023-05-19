@@ -56,6 +56,10 @@ app.service('appService', ['$http', function ($http) {
     this.GetLastMonthData = (o) => {
         return $http.post('Tasklog/GetLastMonthData', o);
     };
+    // 取得使用者群組 <-- 培文
+    this.GetGroups = (o) => {
+        return $http.post('Tasklog/GetGroups', o);
+    };
     // 個人詳細內容 <-- 培文
     this.GetUserContent = (o) => {
         return $http.post('Tasklog/GetUserContent', o);
@@ -147,9 +151,12 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
 
         appService.GetAllMonthlyRecordData({yymm: yymm}).then((ret) => {
             $scope.data = ret.data;
+            // 取得使用者群組 <-- 培文
+            appService.GetGroups({ monthlyRecordData: $scope.data }).then((ret) => {
+                $scope.groups = ret.data;
+            })
         })
-    }
-    
+    }    
     $scope.GetAllMonthlyRecordData();
 
     // 個人詳細內容 <-- 培文

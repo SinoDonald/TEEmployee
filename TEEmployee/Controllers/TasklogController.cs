@@ -174,6 +174,35 @@ namespace TEEmployee.Controllers
 
             return Json(ret);
         }
+        // 取得使用者群組 <-- 培文
+        public JsonResult GetGroups(List<MonthlyRecordData> monthlyRecordData)
+        {
+            List<string> ret = new List<string>();
+            List<string> groups = monthlyRecordData.Where(x => x.User.group != "").Select(x => x.User.group).Distinct().OrderBy(x => x).ToList();
+            foreach(string group in groups)
+            {
+                ret.Add(group);
+            }
+            groups = monthlyRecordData.Where(x => x.User.group_one != "").Select(x => x.User.group_one).Distinct().OrderBy(x => x).ToList();
+            foreach (string group in groups)
+            {
+                ret.Add(group);
+            }
+            groups = monthlyRecordData.Where(x => x.User.group_two != "").Select(x => x.User.group_two).Distinct().OrderBy(x => x).ToList();
+            foreach (string group in groups)
+            {
+                ret.Add(group);
+            }
+            groups = monthlyRecordData.Where(x => x.User.group_three != "").Select(x => x.User.group_three).Distinct().OrderBy(x => x).ToList();
+            foreach (string group in groups)
+            {
+                ret.Add(group);
+            }
+
+            ret = ret.OrderBy(x => x.Length).ToList();
+
+            return Json(ret);
+        }
         // 個人詳細內容 <-- 培文
         public JsonResult GetUserContent(string startMonth, string endMonth, User user)
         {
