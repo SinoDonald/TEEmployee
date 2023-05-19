@@ -7,6 +7,10 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             url: '/UserList',
             templateUrl: 'Tasklog/UserList'
         })
+        .state('UserDetails', {
+            url: '/UserDetails',
+            templateUrl: 'Tasklog/UserDetails'
+        })
         .state('UsersDetails', {
             url: '/UsersDetails',
             templateUrl: 'Tasklog/UsersDetails'
@@ -52,6 +56,10 @@ app.service('appService', ['$http', function ($http) {
     this.GetLastMonthData = (o) => {
         return $http.post('Tasklog/GetLastMonthData', o);
     };
+    // 個人詳細內容 <-- 培文
+    this.GetUserContent = (o) => {
+        return $http.post('Tasklog/GetUserContent', o);
+    };
     // 多人詳細內容 <-- 培文
     this.GetMemberContent = (o) => {
         return $http.post('Tasklog/GetMemberContent', o);
@@ -79,13 +87,32 @@ app.factory('myFactory', function () {
 
 });
 
+app.factory('UserDetailsFactory', function () {
+
+    var savedData = {}
+
+    function set(data, data1) {
+        savedData.yymms = data;
+        savedData.user = data1;
+    }
+
+    function get() {
+        return savedData;
+    }
+
+    return {
+        set: set,
+        get: get,
+    }
+
+});
 app.controller('ListCtrl', ['$scope', '$window', 'appService', '$rootScope', '$location', function ($scope, $window, appService, $rootScope, $location) {
 
     $location.path('/UserList');
 
 }]);
 
-app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'myFactory', function ($scope, $location, $window, appService, $rootScope, $q, myFactory) {
+app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'myFactory', 'UserDetailsFactory', function ($scope, $location, $window, appService, $rootScope, $q, myFactory, UserDetailsFactory) {
 
     // select year and month
     $scope.months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
@@ -125,6 +152,21 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
     
     $scope.GetAllMonthlyRecordData();
 
+    // 個人詳細內容 <-- 培文
+    $scope.GetUserContent = function (data) {
+
+        // 近三個月
+        let yymms = [];
+        for (let i = 1; i < 4; i++) {
+            yymm = moment().add(-i, 'months').locale('zh-tw').format('YYYY-MM');
+            yymm = `${Number(yymm.slice(0, 4)) - 1911}${yymm.slice(5, 7)}`;
+            yymms.push(yymm);
+        }
+
+        UserDetailsFactory.set(yymms, data);
+        $location.path('/UserDetails');
+    }
+
     // 多人詳細內容 <-- 培文
     $scope.GetMemberContent = function (data) {
         let selectedUsers = $scope.data.filter(x => x.selected === true);
@@ -135,9 +177,84 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
             users.push(selectedUsers[i].User);
         }
 
-        myFactory.set(users, selectedUsers[0].MonthlyRecord.yymm);
-        $location.path('/UsersDetails');
+        try {
+            myFactory.set(users, selectedUsers[0].MonthlyRecord.yymm);
+            $location.path('/UsersDetails');
+        }
+        catch {
+            alert('請選取要查詢的人員');
+        }
     }
+
+}]);
+app.controller('UserDetailsCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'myFactory', 'UserDetailsFactory', function ($scope, $location, $window, appService, $rootScope, $q, myFactory, UserDetailsFactory) {
+
+    $scope.data = [];
+    $scope.ctrl = {};
+    $scope.ctrl.datepicker = moment().add(-3, 'months').locale('zh-tw').format('YYYY-MM');
+    $scope.ctrl.datepicker1 = moment().add(-1, 'months').locale('zh-tw').format('YYYY-MM');
+    $scope.user = UserDetailsFactory.get().user;
+
+    $scope.GetUserAllMonthlyRecordData = () => {
+        // 取得個人各月詳細工作項目
+        appService.GetUserContent({ startMonth: $scope.ctrl.datepicker, endMonth: $scope.ctrl.datepicker1, user: $scope.user }).then((ret) => {
+            $scope.data = ret.data;
+            $scope.projectList = [];
+
+            for (let data of ret.data) {
+
+                $scope.projects = [];
+                $scope.projects.user = data.User;
+                $scope.projects.yymm = data.yymm;
+                const projectItems = data.ProjectItems;
+                const projectTasks = data.ProjectTasks;
+
+                // add task first
+                for (let task of projectTasks) {
+                    let projidx = $scope.projects.findIndex(x => x.projno === task.projno);
+                    if (projidx < 0) {
+                        $scope.projects.push({ logs: [], projno: task.projno, realHour: task.realHour });
+                        projidx = $scope.projects.length - 1;
+                    }
+                    $scope.projects[projidx].logs.push({ user: data.User, yymm: data.yymm, id: task.id, content: task.content, endDate: task.endDate, note: task.note });
+                }
+
+                // fill in project item
+                for (let item of projectItems) {
+                    let projidx = $scope.projects.findIndex(x => x.projno === item.projno);
+                    if (projidx < 0) {
+                        $scope.projects.push({ logs: [{}], projno: item.projno });
+                        projidx = $scope.projects.length - 1;
+                    }
+                    if ($scope.projects[projidx].itemno) {
+                        $scope.projects[projidx].itemno += `${item.itemno}, `;
+                        $scope.projects[projidx].workHour += item.workHour;
+                        $scope.projects[projidx].overtime += item.overtime;
+                    }
+                    else {
+                        $scope.projects[projidx].itemno = `${item.itemno}, `;
+                        $scope.projects[projidx].workHour = item.workHour;
+                        $scope.projects[projidx].overtime = item.overtime;
+                    }
+                }
+
+                for (let i = 0; i < $scope.projects.length; i++) {
+                    if ($scope.projects[i].workHour || $scope.projects[i].overtime) {
+                        $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();
+                    }
+                    if ($scope.projects[i].itemno)
+                        $scope.projects[i].itemno = $scope.projects[i].itemno.slice(0, $scope.projects[i].itemno.length - 2);
+                }
+
+                $scope.projectList.push({ projects: $scope.projects });
+            }
+        })
+            .catch(function (ret) {
+                alert('Error');
+            });
+    }
+
+    $scope.GetUserAllMonthlyRecordData();
 
 }]);
 
@@ -218,7 +335,7 @@ app.controller('UsersDetailsCtrl', ['$scope', '$window', 'appService', '$rootSco
 }]);
 
 app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
-    
+
     appService.GetUserByGuid({ guid: $window.guid }).then((ret) => {
         $scope.user = ret.data;
         document.title = $scope.user.name + "-工作紀錄管控表"

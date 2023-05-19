@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using TEEmployee.Filters;
 using TEEmployee.Models;
 using TEEmployee.Models.TaskLog;
@@ -43,6 +44,11 @@ namespace TEEmployee.Controllers
             return View();
         }
         public ActionResult UserList()
+        {
+            return PartialView();
+        }
+
+        public ActionResult UserDetails()
         {
             return PartialView();
         }
@@ -168,7 +174,42 @@ namespace TEEmployee.Controllers
 
             return Json(ret);
         }
+        // 個人詳細內容 <-- 培文
+        public JsonResult GetUserContent(string startMonth, string endMonth, User user)
+        {
+            // 月份差距
+            List<string> yymms = new List<string>();
+            DateTime sDate = new DateTime();
+            DateTime eDate = DateTime.Now;
+            if (startMonth != null)
+            {
+                sDate = DateTime.Parse(startMonth);
+            }
+            if (endMonth != null)
+            {
+                eDate = DateTime.Parse(endMonth);
+            }
+            if (sDate > eDate)
+            {
+                sDate = DateTime.Parse(endMonth);
+                eDate = DateTime.Parse(startMonth);
+            }
+            int monthsSpan = eDate.Year * 12 + eDate.Month - sDate.Year * 12 - sDate.Month; // 相差幾個月
+            TaiwanCalendar tc = new TaiwanCalendar(); // 使用民國
+            for (int i = 0; i <= monthsSpan; i++)
+            {
+                DateTime dt = eDate.AddMonths(-i);
+                yymms.Add(tc.GetYear(dt).ToString("000") + tc.GetMonth(dt).ToString("00"));
+            }
 
+            List<MultiTasklogData> ret = new List<MultiTasklogData>();
+            foreach (string yymm in yymms)
+            {
+                ret.Add(_service.GetMultiTasklogData(user, yymm));
+            }
+
+            return Json(ret);
+        }
         // 多人詳細內容 <-- 培文
         public JsonResult GetMemberContent(string yymm, List<User> users)
         {

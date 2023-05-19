@@ -311,9 +311,7 @@ namespace TEEmployee.Models.TaskLog
 
             return filtered_employees;
         }
-
-
-        // 多人詳細內容 <-- 培文
+        // 個人or多人詳細內容 <-- 培文
         public MultiTasklogData GetMultiTasklogData(User user, string yymm)
         {
             string empno = user.empno;
