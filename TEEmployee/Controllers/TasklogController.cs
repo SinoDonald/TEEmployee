@@ -179,7 +179,7 @@ namespace TEEmployee.Controllers
         {
             List<string> ret = new List<string>();
             List<string> groups = monthlyRecordData.Where(x => x.User.group != "").Select(x => x.User.group).Distinct().OrderBy(x => x).ToList();
-            foreach(string group in groups)
+            foreach (string group in groups)
             {
                 ret.Add(group);
             }
@@ -200,6 +200,23 @@ namespace TEEmployee.Controllers
             }
 
             ret = ret.OrderBy(x => x.Length).ToList();
+            ret.Insert(0, "全部顯示");
+
+            return Json(ret);
+        }
+        // 群組篩選 <-- 培文
+        public JsonResult GetGroupByName(List<MonthlyRecordData> monthlyRecordData, string groupName)
+        {
+            List<MonthlyRecordData> ret = new List<MonthlyRecordData>();
+            if (groupName.Equals("全部顯示"))
+            {
+                ret = monthlyRecordData;
+            }
+            else
+            {
+                ret = monthlyRecordData.Where(x => x.User.group.Equals(groupName) || x.User.group_one.Equals(groupName) ||
+                                                                        x.User.group_two.Equals(groupName) || x.User.group_three.Equals(groupName)).ToList();
+            }
 
             return Json(ret);
         }

@@ -60,6 +60,10 @@ app.service('appService', ['$http', function ($http) {
     this.GetGroups = (o) => {
         return $http.post('Tasklog/GetGroups', o);
     };
+    // 群組篩選 <-- 培文
+    this.GetGroupByName = (o) => {
+        return $http.post('Tasklog/GetGroupByName', o);
+    };
     // 個人詳細內容 <-- 培文
     this.GetUserContent = (o) => {
         return $http.post('Tasklog/GetUserContent', o);
@@ -78,6 +82,24 @@ app.factory('myFactory', function () {
     function set(data, data1) {
         savedData.users = data;
         savedData.monthlyRecord = data1;
+    }
+
+    function get() {
+        return savedData;
+    }
+
+    return {
+        set: set,
+        get: get,
+    }
+
+});
+app.factory('groupsFactory', function () {
+
+    var savedData = {}
+
+    function set(data) {
+        savedData.monthlyRecordData = data;
     }
 
     function get() {
@@ -116,7 +138,7 @@ app.controller('ListCtrl', ['$scope', '$window', 'appService', '$rootScope', '$l
 
 }]);
 
-app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'myFactory', 'UserDetailsFactory', function ($scope, $location, $window, appService, $rootScope, $q, myFactory, UserDetailsFactory) {
+app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'myFactory', 'groupsFactory', 'UserDetailsFactory', function ($scope, $location, $window, appService, $rootScope, $q, myFactory, groupsFactory, UserDetailsFactory) {
 
     // select year and month
     $scope.months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
@@ -133,6 +155,7 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
     $scope.selectedMonth = $scope.months[month];
     
     $scope.data = [];
+    $scope.groups = [];
 
     $scope.ctrl = {};
     $scope.ctrl.datepicker = moment().add(-1, 'months').locale('zh-tw').format('YYYY-MM');
@@ -151,13 +174,44 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
 
         appService.GetAllMonthlyRecordData({yymm: yymm}).then((ret) => {
             $scope.data = ret.data;
+            groupsFactory.set(ret.data);
             // 取得使用者群組 <-- 培文
             appService.GetGroups({ monthlyRecordData: $scope.data }).then((ret) => {
-                $scope.groups = ret.data;
+                //$scope.groups = ret.data;
+                ret.data.forEach(function (item) {
+                    $scope.groups.push({ id: item, name: item })
+                });
+                $scope.group = $scope.groups[0].name;
             })
         })
     }    
-    $scope.GetAllMonthlyRecordData();
+    //$scope.GetAllMonthlyRecordData();
+
+    // 全選
+    $(document).ready(function () {
+        $("#CheckAll").click(function () {
+            if ($("#CheckAll").prop("checked")) {
+                $("input[name='checkboxs']").prop("checked", true);
+                $scope.data.forEach(function (item) {
+                    item.selected = true;
+                });
+            } else {
+                $("input[name='checkboxs']").prop("checked", false);
+                $scope.data.forEach(function (item) {
+                    item.selected = false;
+                });
+            }
+        })
+    })
+
+    // 群組篩選 <-- 培文
+    $scope.GetGroupByName = function (name) {
+        appService.GetGroupByName({ monthlyRecordData: groupsFactory.get().monthlyRecordData, groupName: name })
+            .then(function (ret) {
+                $("#CheckAll").prop("checked", false); // 預設取消全選
+                $scope.data = ret.data;
+            });
+    }
 
     // 個人詳細內容 <-- 培文
     $scope.GetUserContent = function (data) {
