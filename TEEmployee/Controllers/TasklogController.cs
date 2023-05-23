@@ -178,28 +178,32 @@ namespace TEEmployee.Controllers
         public JsonResult GetGroups(List<MonthlyRecordData> monthlyRecordData)
         {
             List<string> ret = new List<string>();
-            List<string> groups = monthlyRecordData.Where(x => x.User.group != "").Select(x => x.User.group).Distinct().OrderBy(x => x).ToList();
-            foreach (string group in groups)
+            if(monthlyRecordData != null && monthlyRecordData.Count > 0)
             {
-                ret.Add(group);
-            }
-            groups = monthlyRecordData.Where(x => x.User.group_one != "").Select(x => x.User.group_one).Distinct().OrderBy(x => x).ToList();
-            foreach (string group in groups)
-            {
-                ret.Add(group);
-            }
-            groups = monthlyRecordData.Where(x => x.User.group_two != "").Select(x => x.User.group_two).Distinct().OrderBy(x => x).ToList();
-            foreach (string group in groups)
-            {
-                ret.Add(group);
-            }
-            groups = monthlyRecordData.Where(x => x.User.group_three != "").Select(x => x.User.group_three).Distinct().OrderBy(x => x).ToList();
-            foreach (string group in groups)
-            {
-                ret.Add(group);
+                List<string> groups = monthlyRecordData.Where(x => x.User.group != "").Select(x => x.User.group).Distinct().OrderBy(x => x).ToList();
+                foreach (string group in groups)
+                {
+                    ret.Add(group);
+                }
+                groups = monthlyRecordData.Where(x => x.User.group_one != "").Select(x => x.User.group_one).Distinct().OrderBy(x => x).ToList();
+                foreach (string group in groups)
+                {
+                    ret.Add(group);
+                }
+                groups = monthlyRecordData.Where(x => x.User.group_two != "").Select(x => x.User.group_two).Distinct().OrderBy(x => x).ToList();
+                foreach (string group in groups)
+                {
+                    ret.Add(group);
+                }
+                groups = monthlyRecordData.Where(x => x.User.group_three != "").Select(x => x.User.group_three).Distinct().OrderBy(x => x).ToList();
+                foreach (string group in groups)
+                {
+                    ret.Add(group);
+                }
+
+                ret = ret.OrderBy(x => x.Length).ToList();
             }
 
-            ret = ret.OrderBy(x => x.Length).ToList();
             ret.Insert(0, "全部顯示");
 
             return Json(ret);
@@ -208,7 +212,11 @@ namespace TEEmployee.Controllers
         public JsonResult GetGroupByName(List<MonthlyRecordData> monthlyRecordData, string groupName)
         {
             List<MonthlyRecordData> ret = new List<MonthlyRecordData>();
-            if (groupName.Equals("全部顯示"))
+            if (groupName == null)
+            {
+                ret = monthlyRecordData;
+            }
+            else if (groupName.Equals("全部顯示"))
             {
                 ret = monthlyRecordData;
             }

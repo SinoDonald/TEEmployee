@@ -154,7 +154,6 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
     $scope.selectedMonth = $scope.months[month];
     
     $scope.data = [];
-    $scope.groups = [];
 
     $scope.ctrl = {};
     $scope.ctrl.datepicker = moment().add(-1, 'months').locale('zh-tw').format('YYYY-MM');
@@ -170,7 +169,8 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
     $scope.GetAllMonthlyRecordData = () => {
         let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`;
 
-        appService.GetAllMonthlyRecordData({yymm: yymm}).then((ret) => {
+        appService.GetAllMonthlyRecordData({ yymm: yymm }).then((ret) => {
+            $scope.groups = []; // 重置groups
             $scope.data = ret.data;
             groupsFactory.set(ret.data);
             // 取得使用者群組 <-- 培文
