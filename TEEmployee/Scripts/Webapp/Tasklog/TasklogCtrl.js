@@ -174,9 +174,9 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
             $scope.data = ret.data;
             groupsFactory.set(ret.data);
             // 取得使用者群組 <-- 培文
-            appService.GetGroups({ monthlyRecordData: $scope.data }).then((ret) => {
+            appService.GetGroups({ json: angular.toJson($scope.data) }).then((ret) => {
                 ret.data.forEach(function (item) {
-                    $scope.groups.push({ id: item, name: item })
+                    $scope.groups.push({ id: item, name: item });
                 });
                 $scope.group = $scope.groups[0].name;
             })
@@ -203,7 +203,7 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
 
     // 群組篩選 <-- 培文
     $scope.GetGroupByName = function (name) {
-        appService.GetGroupByName({ monthlyRecordData: groupsFactory.get().monthlyRecordData, groupName: name })
+        appService.GetGroupByName({ json: angular.toJson(groupsFactory.get().monthlyRecordData), groupName: name })
             .then(function (ret) {
                 $("#CheckAll").prop("checked", false); // 預設取消全選
                 $scope.data = ret.data;

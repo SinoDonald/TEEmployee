@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using TEEmployee.Filters;
@@ -115,7 +118,7 @@ namespace TEEmployee.Controllers
 
         // 匯入上月資料 <-- 培文
         [HttpPost]
-        public JsonResult GetLastMonthData(string empno, string yymm)
+        public JsonResult GetLastMonthData(string yymm)
         {
             int insertIndex = yymm.Length - 2;
             // 轉換年月, format加上"-"
@@ -175,8 +178,9 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
         // 取得使用者群組 <-- 培文
-        public JsonResult GetGroups(List<MonthlyRecordData> monthlyRecordData)
+        public JsonResult GetGroups(string json)
         {
+            List<MonthlyRecordData> monthlyRecordData = JsonConvert.DeserializeObject<List<MonthlyRecordData>>(json); //反序列化
             List<string> ret = new List<string>();
             if(monthlyRecordData != null && monthlyRecordData.Count > 0)
             {
@@ -201,7 +205,7 @@ namespace TEEmployee.Controllers
                     ret.Add(group);
                 }
 
-                ret = ret.OrderBy(x => x.Length).ToList();
+                ret = ret.OrderBy(x => x.Length).Distinct().ToList();
             }
 
             ret.Insert(0, "全部顯示");
@@ -209,8 +213,9 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
         // 群組篩選 <-- 培文
-        public JsonResult GetGroupByName(List<MonthlyRecordData> monthlyRecordData, string groupName)
+        public JsonResult GetGroupByName(string json, string groupName)
         {
+            List<MonthlyRecordData> monthlyRecordData = JsonConvert.DeserializeObject<List<MonthlyRecordData>>(json); //反序列化
             List<MonthlyRecordData> ret = new List<MonthlyRecordData>();
             if (groupName == null)
             {
