@@ -51,8 +51,8 @@
         </div>
 
         <div class="input-group mb-3 w-25 p-3">
-            <label for="repeatSelect">請選擇群組：</label>
-            <select name="repeatSelect" id="repeatSelect" ng-model="group" class="custom-select custom-select-lg mb-3" ng-change="GetGroupByName(group)">
+            <span for="repeatSelect" class="input-group-text" id="basic-addon1">請選擇群組</span>
+            <select name="repeatSelect" id="repeatSelect" ng-model="group" class="custom-select custom-select-lg mb-0" ng-change="GetGroupByName(group)">
                 <option ng-repeat="item in groups" value="{{item.id}}">{{item.name}}</option>
             </select>
         </div>
