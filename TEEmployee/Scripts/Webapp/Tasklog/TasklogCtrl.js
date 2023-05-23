@@ -112,8 +112,7 @@ app.factory('groupsFactory', function () {
     }
 
 });
-
-app.factory('UserDetailsFactory', function () {
+app.factory('userDetailsFactory', function () {
 
     var savedData = {}
 
@@ -132,13 +131,13 @@ app.factory('UserDetailsFactory', function () {
     }
 
 });
+
 app.controller('ListCtrl', ['$scope', '$window', 'appService', '$rootScope', '$location', function ($scope, $window, appService, $rootScope, $location) {
 
     $location.path('/UserList');
 
 }]);
-
-app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'myFactory', 'groupsFactory', 'UserDetailsFactory', function ($scope, $location, $window, appService, $rootScope, $q, myFactory, groupsFactory, UserDetailsFactory) {
+app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'myFactory', 'groupsFactory', 'userDetailsFactory', function ($scope, $location, $window, appService, $rootScope, $q, myFactory, groupsFactory, userDetailsFactory) {
 
     // select year and month
     $scope.months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
@@ -169,7 +168,6 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
     };
 
     $scope.GetAllMonthlyRecordData = () => {
-        //let yymm = `${Number($scope.selectedYear) - 1911}${$scope.selectedMonth}`;
         let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`;
 
         appService.GetAllMonthlyRecordData({yymm: yymm}).then((ret) => {
@@ -177,7 +175,6 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
             groupsFactory.set(ret.data);
             // 取得使用者群組 <-- 培文
             appService.GetGroups({ monthlyRecordData: $scope.data }).then((ret) => {
-                //$scope.groups = ret.data;
                 ret.data.forEach(function (item) {
                     $scope.groups.push({ id: item, name: item })
                 });
@@ -215,7 +212,6 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
 
     // 個人詳細內容 <-- 培文
     $scope.GetUserContent = function (data) {
-
         // 近三個月
         let yymms = [];
         for (let i = 1; i < 4; i++) {
@@ -224,7 +220,7 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
             yymms.push(yymm);
         }
 
-        UserDetailsFactory.set(yymms, data);
+        userDetailsFactory.set(yymms, data);
         $location.path('/UserDetails');
     }
 
@@ -246,15 +242,14 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
             alert('請選取要查詢的人員');
         }
     }
-
 }]);
-app.controller('UserDetailsCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'myFactory', 'UserDetailsFactory', function ($scope, $location, $window, appService, $rootScope, $q, myFactory, UserDetailsFactory) {
+app.controller('UserDetailsCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'myFactory', 'userDetailsFactory', function ($scope, $location, $window, appService, $rootScope, $q, myFactory, userDetailsFactory) {
 
     $scope.data = [];
     $scope.ctrl = {};
     $scope.ctrl.datepicker = moment().add(-3, 'months').locale('zh-tw').format('YYYY-MM');
     $scope.ctrl.datepicker1 = moment().add(-1, 'months').locale('zh-tw').format('YYYY-MM');
-    $scope.user = UserDetailsFactory.get().user;
+    $scope.user = userDetailsFactory.get().user;
 
     $scope.GetUserAllMonthlyRecordData = () => {
         // 取得個人各月詳細工作項目
@@ -318,7 +313,6 @@ app.controller('UserDetailsCtrl', ['$scope', '$location', '$window', 'appService
     $scope.GetUserAllMonthlyRecordData();
 
 }]);
-
 app.controller('UsersDetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', function ($scope, $window, appService, $rootScope, myFactory) {
 
     $scope.ctrl = {};
@@ -394,7 +388,6 @@ app.controller('UsersDetailsCtrl', ['$scope', '$window', 'appService', '$rootSco
     $scope.GetMemberAllMonthlyRecordData();
 
 }]);
-
 app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
 
     appService.GetUserByGuid({ guid: $window.guid }).then((ret) => {
@@ -474,7 +467,6 @@ app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 
     })
 
 }]);
-
 app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', '$timeout', function ($scope, $window, appService, $rootScope, $q, $timeout) {
 
     // select year and month
