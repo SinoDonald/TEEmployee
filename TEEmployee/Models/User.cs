@@ -45,4 +45,14 @@ namespace TEEmployee.Models
         public string email { get; set; }
         
     }
+    // 首頁通知
+    public class UserNotify
+    {
+        public string empno { get; set; }
+        public string date { get; set; }
+        public int self { get; set; }
+        public int freeback { get; set; }
+        public int manager_suggest { get; set; }
+        public int future { get; set; }
+    }
 }

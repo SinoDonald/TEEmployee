@@ -30,14 +30,6 @@ namespace TEEmployee.Models
             var selfAssessments = _assessmentRepository.GetAll();
             return selfAssessments;
         }
-
-        // 首頁通知 <-- 培文
-        public List<bool> GetNotify(string empno)
-        {
-            List<bool> ret = (_assessmentRepository as ManageAssessmentTxtRepository).GetNotify(empno);
-            return ret;
-        }
-
         public SelfAssessResponse GetAllManageAssessments(string year, User manager, string user)
         {
             string state = (_assessmentRepository as ManageAssessmentTxtRepository).GetStateOfResponse(year, manager.empno, user);
@@ -790,8 +782,6 @@ namespace TEEmployee.Models
             //_responseRepository.Dispose();
         }
     }
-
-    
 
     public class SelfAssessResponse
     {

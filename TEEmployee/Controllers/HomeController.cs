@@ -106,7 +106,7 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult Notify()
         {
-            AssessmentService _service = new AssessmentService("manage");
+            NotifyService _service = new NotifyService();
             List<bool> ret = _service.GetNotify(Session["empno"].ToString());
             Session["notify"] = ret;
             Session["notify_count"] = ret.Where(x => x==true).Count();
@@ -273,6 +273,5 @@ namespace TEEmployee.Controllers
                 return Json(ret);
             }                
         }
-
     }
 }

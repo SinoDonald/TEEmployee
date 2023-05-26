@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Web;
+using System.Xml.Linq;
 using Dapper;
 
 namespace TEEmployee.Models
 {
     public class UserRepository : IUserRepository, IDisposable
-    {
-        
+    {        
         private IDbConnection _conn;
-
         public UserRepository()
         {
             string userConnection = ConfigurationManager.ConnectionStrings["UserConnection"].ConnectionString;
@@ -25,8 +25,7 @@ namespace TEEmployee.Models
             _conn.Close();
             _conn.Dispose();
             return;
-        }
-               
+        }               
        
         public List<User> GetAll()
         {
@@ -96,7 +95,6 @@ namespace TEEmployee.Models
             
         }
 
-
         // 1206: insert "User" (Delete all first)
         public bool InsertUser(List<User> users)
         {
@@ -165,9 +163,6 @@ namespace TEEmployee.Models
             return groups;
         }
 
-
-
-
         //public bool DeleteUserExtra()
         //{
         //    int ret;
@@ -177,6 +172,5 @@ namespace TEEmployee.Models
 
         //    return ret > 0;
         //}
-
     }
 }

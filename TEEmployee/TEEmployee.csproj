@@ -158,6 +158,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\INotifyRepository.cs" />
+    <Compile Include="Models\NotifyService.cs" />
     <Compile Include="Models\AssessmentService.cs" />
     <Compile Include="Models\CategorySelfAssessmentChart.cs" />
     <Compile Include="Models\GSchedule\IGScheduleRepository.cs" />
@@ -193,6 +195,7 @@
     <Compile Include="Models\TaskLog\SqliteTypeHandler.cs" />
     <Compile Include="Models\TaskLog\TasklogService.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\NotifyRepository.cs" />
     <Compile Include="Models\UserRepository.cs" />
     <Compile Include="Models\UserTxtRepository.cs" />
     <Compile Include="Models\Utilities.cs" />

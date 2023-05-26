@@ -31,6 +31,11 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Home/UpdateAllPercentComplete', o);
     };
 
+    // 通知 <-- 培文
+    this.NotifyUpdate = function (o) {
+        return $http.post('Home/NotifyUpdate', o);
+    };
+
 
 }]);
 
@@ -165,6 +170,18 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
     $scope.UpdateAllPercentComplete = () => {
 
         appService.UpdateAllPercentComplete({}).then((ret) => {
+
+            if (ret.data) {
+                console.log("succeed");
+            }
+
+        });
+    }
+
+    // 通知 <-- 培文
+    $scope.NotifyUpdate = () => {
+
+        appService.NotifyUpdate({}).then((ret) => {
 
             if (ret.data) {
                 console.log("succeed");

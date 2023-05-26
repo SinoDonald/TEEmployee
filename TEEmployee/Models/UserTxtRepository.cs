@@ -186,6 +186,10 @@ namespace TEEmployee.Models
             return;
         }
 
-        
+        // 首頁通知 <-- 培文
+        public List<bool> NotifyUpdate(List<User> users, string date, string empno)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

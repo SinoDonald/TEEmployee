@@ -47,186 +47,6 @@ namespace TEEmployee.Models
 
             return manageAssessments;
         }
-
-        // 首頁通知 <-- 培文
-        public List<bool> GetNotify(string empno)
-        {
-            List<bool> bools = new List<bool>();
-            bool ret = false;
-
-            // 先確認當月為5、11月
-            DateTime now = DateTime.Now;
-            int year = now.Year;
-            int month = now.Month;
-            if (month == 5 || month == 11)
-            {
-                string season = string.Empty;
-                if (month == 5)
-                    season = year + "H1";
-                else
-                    season = year + "H2";
-
-                // 是否已填寫自我評估表
-                HttpContext.Current.Server.MapPath("~/App_Data");
-                string path = Path.Combine(_appData, "Response", season);
-                string filePath = Path.Combine(path, empno + ".txt");
-                if (!File.Exists(filePath))
-                {
-                    ret = true;
-                }                
-                else if (File.Exists(filePath))
-                {
-                    string state = File.ReadAllLines(filePath)[0].Split(';')[0];
-                    string isRead = File.ReadAllLines(filePath)[0].Split(';')[2];
-                    // 未寄出需提醒
-                    if (!state.Equals("submit"))
-                    {
-                        ret = true;
-                    }
-                    // 已寄出看是否有新回饋
-                    else
-                    {
-                        if (isRead.Equals("unread"))
-                        {
-                            ret = true;
-                        }
-                    }
-                }
-                bools.Add(ret);
-
-                // 是否已填寫給予主管建議評估表
-                ret = true;
-                path = Path.Combine(_appData, "ManageResponse", season);
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-                string[] directories = Directory.GetDirectories(path);
-                foreach(string directory in directories)
-                {
-                    filePath = Path.Combine(directory, empno + ".txt");
-                    if (File.Exists(filePath))
-                    {
-                        string state = File.ReadAllLines(filePath)[0].Split(';')[0];
-                        // user已寄出不需提醒
-                        if (state.Equals("sent"))
-                        {
-                            ret = false;
-                            break;
-                        }
-                    }
-                }
-                bools.Add(ret);
-
-                // 檢查是否為主管
-                ret = false;
-                IUserRepository _userRepository = new UserRepository();
-                User user = _userRepository.Get(empno);
-                if (user != null)
-                {
-                    // 檢驗有哪些group為manager
-                    List<string> groupManagers = new List<string>();
-                    if (user.group_manager.Equals(true)) { groupManagers.Add(user.group); }                        
-                    if (user.group_one_manager.Equals(true)) { groupManagers.Add(user.group_one); }                        
-                    if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }                        
-                    if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
-                    // 主管才會收到通知
-                    if (groupManagers.Count > 0 || empno.Equals("4125"))
-                    {
-                        // 檢查有sent自評表的user
-                        List<string> sentEmpnos = new List<string>();
-
-                        // 找到同group的user
-                        List<User> users = _userRepository.GetAll();
-                        List<User> sameGroupUsers = new List<User>(); 
-                        if (empno.Equals("4125"))
-                        { 
-                            sameGroupUsers = users;
-                        }
-                        else
-                        {
-                            foreach (string groupManager in groupManagers)
-                            {
-                                foreach(User sameGroupUser in users.Where(x => x.group.Equals(groupManager) || x.group_one.Equals(groupManager) || x.group_two.Equals(groupManager) || x.group_three.Equals(groupManager)).ToList())
-                                {
-                                    sameGroupUsers.Add(sameGroupUser);
-                                }
-                            }
-                            sameGroupUsers = sameGroupUsers.Distinct().ToList();
-                        }
-
-                        foreach (User sameGroupUser in sameGroupUsers)
-                        {
-                            path = Path.Combine(_appData, "Response", season);
-                            filePath = Path.Combine(path, sameGroupUser.empno + ".txt");
-                            if (File.Exists(filePath))
-                            {
-                                string state = File.ReadAllLines(filePath)[0].Split(';')[0];
-                                // user已寄出需提醒
-                                if (state.Equals("submit"))
-                                {
-                                    if (!sameGroupUser.empno.Equals(empno))
-                                    {
-                                        sentEmpnos.Add(sameGroupUser.empno);
-                                    }
-                                }
-                            }
-                        }
-
-                        if (sentEmpnos.Count > 0)
-                        {
-                            // 檢查主管是否已回饋
-                            path = Path.Combine(_appData, "Feedback", season);
-                            foreach(string sentEmpno in sentEmpnos)
-                            {
-                                ret = true;
-                                filePath = Path.Combine(path, sentEmpno + ".txt");
-                                if (File.Exists(filePath))
-                                {
-                                    string[] lines = File.ReadAllLines(filePath);
-                                    foreach(string line in lines)
-                                    {
-                                        if (line.Split('\t')[1].Equals(empno))
-                                        {
-                                            if (line.Split('\t')[2].Equals("submit"))
-                                            {
-                                                ret = false;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                                if (ret.Equals(true))
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                bools.Add(ret);
-
-                // 未來3年數位轉型規劃
-                ret = false;
-                if (user != null)
-                {
-                    // 檢驗有哪些group為manager
-                    List<string> groupManagers = new List<string>();
-                    if (user.group_manager.Equals(true)) { groupManagers.Add(user.group); }
-                    if (user.group_one_manager.Equals(true)) { groupManagers.Add(user.group_one); }
-                    if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }
-                    if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
-                    // 主管才會收到通知
-                    if(groupManagers.Count() > 0 || user.department_manager.Equals(true) || user.project_manager.Equals(true))
-                    {
-                        ret= true;
-                    }
-                }
-                bools.Add(ret);
-            }
-
-            return bools;
-        }
         public static IEnumerable<string> EnumerateSubDirectories(string path, int depth)
         {
             if (!Directory.Exists(path)) return new List<string>();
@@ -241,7 +61,6 @@ namespace TEEmployee.Models
 
             return result;
         }
-
         public List<User> GetScorePeople()
         {
             IUserRepository _userRepository = new UserRepository();
@@ -341,7 +160,6 @@ namespace TEEmployee.Models
 
             return manageResponse;
         }
-
         // 0912 unescaped break line
         public List<Assessment> GetResponse(string year, string manager, string user)
         {
@@ -403,7 +221,6 @@ namespace TEEmployee.Models
 
             return manageResponse;
         }
-
         //deprecated
         public List<Assessment> GetAllResponses()
         {
@@ -429,7 +246,6 @@ namespace TEEmployee.Models
             }
             return allResponses;
         }
-
         // 0912: escaped break line \n
         public bool Update(List<Assessment> assessments, string state, string year, string manager, string user)
         {
@@ -482,7 +298,6 @@ namespace TEEmployee.Models
 
             return years.OrderByDescending(x => x).ToList();
         }
-
         // 0826
         public List<Assessment> GetAllManagerAssessmentResponses(string manno, string year)
         {
@@ -537,7 +352,6 @@ namespace TEEmployee.Models
 
             return allResponses;
         }
-
         // 0826
         // Get target managers id through directory names 
         public List<string> GetChartManagers(string year)
@@ -552,7 +366,6 @@ namespace TEEmployee.Models
             // empno
             return managers.OrderByDescending(x => x).ToList();            
         }
-
         // 0914  Update Score Manager List
         public bool UpdateScoreManagers(List<User> selectedManagers)
         {
@@ -572,7 +385,6 @@ namespace TEEmployee.Models
 
             return ret;
         }
-
         private string SaveSlash(string s)
         {
             if (string.IsNullOrEmpty(s))
@@ -589,7 +401,6 @@ namespace TEEmployee.Models
 
             return s;
         }
-
         public void Dispose()
         {
             return;
