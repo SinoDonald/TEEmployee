@@ -12,8 +12,7 @@ using Dapper;
 namespace TEEmployee.Models
 {
     public class NotifyRepository : INotifyRepository, IDisposable
-    {
-        
+    {        
         private IDbConnection _conn;
 
         public NotifyRepository()
@@ -41,7 +40,7 @@ namespace TEEmployee.Models
 
             return ret;
         }
-        // 首頁通知 <-- 培文
+        // 首頁通知
         public List<bool> GetNotify(List<User> users, string date, string empno)
         {
             _conn.Open();
@@ -49,7 +48,6 @@ namespace TEEmployee.Models
             List<bool> ret = new List<bool>();
             users = users.OrderBy(x => x.empno).ToList();
 
-            NotifyRepository notifyRepositoryRepository = new NotifyRepository();
             List<UserNotify> userNotifyList = new List<UserNotify>();
 
             // 先確認資料庫中是否已更新當季的資料
@@ -286,6 +284,30 @@ namespace TEEmployee.Models
             }
 
             return bools;
+        }
+
+        // 更新資料庫
+        public bool UpdateDatabase(string empno, int count, int notification)
+        {
+            _conn.Open();
+            bool ret = false;
+
+            // 先確認資料庫中是否已更新當季的資料
+            using (var tran = _conn.BeginTransaction())
+            {
+                string sql = @"SELECT * FROM userNotify WHERE empno=@empno";
+                UserNotify userNotify = _conn.Query<UserNotify>(sql, new { empno }).SingleOrDefault();
+
+                if (count.Equals(1)) sql = @"UPDATE userNotify SET self=@notification WHERE empno=@empno";
+                else if (count.Equals(2)) sql = @"UPDATE userNotify SET freeback=@notification WHERE empno=@empno";
+                else if (count.Equals(3)) sql = @"UPDATE userNotify SET manage_suggest=@notification WHERE empno=@empno";
+                else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=@notification WHERE empno=@empno";
+
+                _conn.Execute(sql, userNotify, tran);
+                tran.Commit();
+            }
+
+            return ret;
         }
         public void Dispose()
         {

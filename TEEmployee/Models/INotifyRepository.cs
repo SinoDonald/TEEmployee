@@ -11,6 +11,7 @@ namespace TEEmployee.Models
         List<User> GetAll();
         User Get(string empno);
         List<bool> GetNotify(List<User> users, string date, string empno);
+        bool UpdateDatabase(string empno, int count, int notification);
         void Dispose();
     }
 }

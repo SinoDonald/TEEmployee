@@ -757,6 +757,16 @@ namespace TEEmployee.Models
         public FeedbackNotification GetFeedbackNotification(string empno)
         {
             var ret = (_assessmentRepository as SelfAssessmentTxtRepository).GetFeedbackNotification(empno, Utilities.DayStr());
+            // 如果讀取檔案為unread狀態, 則更新通知資料庫 <-- 培文
+            NotifyService notifyService = new NotifyService();
+            if (ret == true)
+            {
+                notifyService.UpdateDatabase(empno, 2, 1);
+            }
+            else
+            {
+                notifyService.UpdateDatabase(empno, 2, 0);
+            }
             return new FeedbackNotification() { Unread = ret };
         }
 

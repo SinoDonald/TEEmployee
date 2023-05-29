@@ -123,6 +123,12 @@ namespace TEEmployee.Controllers
         public bool CreateResponse(List<Assessment> assessments, string state, string year)
         {
             bool ret = _service.UpdateResponse(assessments, Session["empno"].ToString(), state, year);
+            // 如果狀態為submit並修改成功, 則更新通知資料庫 <-- 培文
+            if (state.Equals("submit") && ret == true)
+            {
+                NotifyService notifyService = new NotifyService();
+                notifyService.UpdateDatabase(Session["empno"].ToString(), 1, 0);
+            }
             return ret;            
         }
 
