@@ -127,7 +127,7 @@ namespace TEEmployee.Controllers
             if (state.Equals("submit") && ret == true)
             {
                 NotifyService notifyService = new NotifyService();
-                notifyService.UpdateDatabase(Session["empno"].ToString(), 1, 0);
+                notifyService.UpdateDatabase(Session["empno"].ToString(), 1, "0"); // 使用者寄送後取消通知
             }
             return ret;            
         }
@@ -137,6 +137,13 @@ namespace TEEmployee.Controllers
         {
             _service = new AssessmentService("manage");
             bool ret = _service.UpdateManageResponse(assessments, state, year, manager, Session["empno"].ToString());
+            // 如果狀態為sent並修改成功, 則更新通知資料庫 <-- 培文
+            NotifyService notifyService = new NotifyService();
+            if (state.Equals("sent") && ret == true)
+            {
+                notifyService.UpdateDatabase(Session["empno"].ToString(), 3, "0"); // 使用者寄送後取消通知
+                notifyService.UpdateDatabase(manager.empno, 3, "1"); // 通知主管
+            }
             return ret;
         }
 
@@ -313,6 +320,12 @@ namespace TEEmployee.Controllers
         public bool UpdateFeedback(List<string> feedbacks, string state, string empno)
         {
            bool ret = _service.UpdateFeedback(feedbacks, state, empno, Session["empno"].ToString());
+            // 如果狀態為submit並修改成功, 則更新通知資料庫 <-- 培文
+            if (state.Equals("submit") && ret == true)
+            {
+                NotifyService notifyService = new NotifyService();
+                notifyService.UpdateDatabase(empno, 2, "1"); // 通知同仁已回覆
+            }
             return ret;
         }
 

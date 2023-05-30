@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.Common;
+using System.Data.SqlClient;
 using System.Data.SQLite;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -45,9 +48,28 @@ namespace TEEmployee.Models
         {
             _conn.Open();
 
+            SQLiteConnection conn = (SQLiteConnection)_conn;
+            DataTable dataTable = conn.GetSchema("Tables");
+            bool tableExist = false;
+            foreach (DataRow dataRow in dataTable.Rows)
+            {
+                if (dataRow[2].ToString().Equals("userNotify")) { tableExist = true; break; }
+            }
+
+            // 先確認是否有userNotify資料表, 沒有則CREATE
+            if (tableExist == false)
+            {
+                using (var tran = _conn.BeginTransaction())
+                {
+                    SQLiteCommand sqliteCmd = (SQLiteCommand)_conn.CreateCommand();
+                    sqliteCmd.CommandText = "CREATE TABLE IF NOT EXISTS userNotify (empno TEXT, date TEXT, self INTEGER, freeback INTEGER, manager_suggest INTEGER, future INTEGER)";
+                    sqliteCmd.ExecuteNonQuery();
+                    tran.Commit();
+                }
+            }
+
             List<bool> ret = new List<bool>();
             users = users.OrderBy(x => x.empno).ToList();
-
             List<UserNotify> userNotifyList = new List<UserNotify>();
 
             // 先確認資料庫中是否已更新當季的資料
@@ -287,7 +309,7 @@ namespace TEEmployee.Models
         }
 
         // 更新資料庫
-        public bool UpdateDatabase(string empno, int count, int notification)
+        public bool UpdateDatabase(string empno, int count, string notification)
         {
             _conn.Open();
             bool ret = false;
@@ -298,15 +320,26 @@ namespace TEEmployee.Models
                 string sql = @"SELECT * FROM userNotify WHERE empno=@empno";
                 UserNotify userNotify = _conn.Query<UserNotify>(sql, new { empno }).SingleOrDefault();
 
-                if (count.Equals(1)) sql = @"UPDATE userNotify SET self=@notification WHERE empno=@empno";
-                else if (count.Equals(2)) sql = @"UPDATE userNotify SET freeback=@notification WHERE empno=@empno";
-                else if (count.Equals(3)) sql = @"UPDATE userNotify SET manage_suggest=@notification WHERE empno=@empno";
-                else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=@notification WHERE empno=@empno";
+                if(notification == "0")
+                {
+                    if (count.Equals(1)) sql = @"UPDATE userNotify SET self=0 WHERE empno=@empno";
+                    else if (count.Equals(2)) sql = @"UPDATE userNotify SET freeback=0 WHERE empno=@empno";
+                    else if (count.Equals(3)) sql = @"UPDATE userNotify SET manager_suggest=0 WHERE empno=@empno";
+                    else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=0 WHERE empno=@empno";
+                }
+                else
+                {
+                    if (count.Equals(1)) sql = @"UPDATE userNotify SET self=1 WHERE empno=@empno";
+                    else if (count.Equals(2)) sql = @"UPDATE userNotify SET freeback=1 WHERE empno=@empno";
+                    else if (count.Equals(3)) sql = @"UPDATE userNotify SET manager_suggest=1 WHERE empno=@empno";
+                    else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=1 WHERE empno=@empno";
+                }
 
                 _conn.Execute(sql, userNotify, tran);
                 tran.Commit();
             }
 
+            _conn.Close();
             return ret;
         }
         public void Dispose()

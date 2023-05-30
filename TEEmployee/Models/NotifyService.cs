@@ -34,7 +34,7 @@ namespace TEEmployee.Models
             return ret;
         }
         // 更新資料庫 <-- 培文
-        public bool UpdateDatabase(string empno, int count, int notification)
+        public bool UpdateDatabase(string empno, int count, string notification)
         {
             bool ret = _notifyRepository.UpdateDatabase(empno, count, notification);
             return ret;

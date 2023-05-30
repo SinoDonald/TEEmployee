@@ -761,11 +761,11 @@ namespace TEEmployee.Models
             NotifyService notifyService = new NotifyService();
             if (ret == true)
             {
-                notifyService.UpdateDatabase(empno, 2, 1);
+                notifyService.UpdateDatabase(empno, 2, "1");
             }
             else
             {
-                notifyService.UpdateDatabase(empno, 2, 0);
+                notifyService.UpdateDatabase(empno, 2, "0");
             }
             return new FeedbackNotification() { Unread = ret };
         }
