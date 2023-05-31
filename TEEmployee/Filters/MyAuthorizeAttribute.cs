@@ -41,7 +41,7 @@ namespace TEEmployee.Filters
             Match m = Regex.Match(loginUser, @"\\{0,1}(\d{4})@{0,1}");
             if (m.Success)
                 loginUser = m.Groups[1].ToString();
-            loginUser = "7596";
+            //loginUser = "7596";
             //-------------------------------------------------------
 
             if (filterContext.HttpContext.Session["empno"] == null)

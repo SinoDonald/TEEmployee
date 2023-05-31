@@ -48,87 +48,100 @@ namespace TEEmployee.Models
         {
             _conn.Open();
 
-            SQLiteConnection conn = (SQLiteConnection)_conn;
-            DataTable dataTable = conn.GetSchema("Tables");
-            bool tableExist = false;
-            foreach (DataRow dataRow in dataTable.Rows)
+            // 先檢查是否有建立過Table的檔案存在
+            string _appData = HttpContext.Current.Server.MapPath("~/App_Data");
+            // 先確認當月為5、11月
+            DateTime now = DateTime.Now;
+            int year = now.Year;
+            int month = now.Month;
+            string season = string.Empty;
+            if (month == 5 || month == 11)
             {
-                if (dataRow[2].ToString().Equals("userNotify")) { tableExist = true; break; }
+                if (month == 5)
+                    season = year + "H1";
+                else
+                    season = year + "H2";
             }
+            string filePath = Path.Combine(_appData, season + ".log");
+            if (!File.Exists(filePath))
+            { // 確認是否有userNotify資料表, 沒有則CREATE
+                SQLiteConnection conn = (SQLiteConnection)_conn;
+                DataTable dataTable = conn.GetSchema("Tables");
+                bool tableExist = false;
+                foreach (DataRow dataRow in dataTable.Rows)
+                {
+                    if (dataRow[2].ToString().Equals("userNotify")) { tableExist = true; break; }
+                }
+                if (tableExist == false)
+                {
+                    using (var tran = _conn.BeginTransaction())
+                    {
+                        SQLiteCommand sqliteCmd = (SQLiteCommand)_conn.CreateCommand();
+                        sqliteCmd.CommandText = "CREATE TABLE IF NOT EXISTS userNotify (empno TEXT, date TEXT, self INTEGER, manager_suggest INTEGER, freeback INTEGER, future INTEGER)";
+                        sqliteCmd.ExecuteNonQuery();
+                        tran.Commit();
+                    }
+                }
 
-            // 先確認是否有userNotify資料表, 沒有則CREATE
-            if (tableExist == false)
-            {
+                users = users.OrderBy(x => x.empno).ToList();
+                List<UserNotify> userNotifyList = new List<UserNotify>();
+
+                // 先確認資料庫中是否已更新當季的資料
                 using (var tran = _conn.BeginTransaction())
                 {
-                    SQLiteCommand sqliteCmd = (SQLiteCommand)_conn.CreateCommand();
-                    sqliteCmd.CommandText = "CREATE TABLE IF NOT EXISTS userNotify (empno TEXT, date TEXT, self INTEGER, freeback INTEGER, manager_suggest INTEGER, future INTEGER)";
-                    sqliteCmd.ExecuteNonQuery();
+                    string sql = @"SELECT * FROM userNotify WHERE date=@date";
+                    userNotifyList = _conn.Query<UserNotify>(sql, new { date }).ToList();
                     tran.Commit();
                 }
-            }
 
-            List<bool> ret = new List<bool>();
-            users = users.OrderBy(x => x.empno).ToList();
-            List<UserNotify> userNotifyList = new List<UserNotify>();
-
-            // 先確認資料庫中是否已更新當季的資料
-            using (var tran = _conn.BeginTransaction())
-            {
-                string sql = @"SELECT * FROM userNotify WHERE date=@date";
-                userNotifyList = _conn.Query<UserNotify>(sql, new { date }).ToList();
-                tran.Commit();
-            }
-
-            // 如果還沒當年度與當季的通知資料則建立
-            if(userNotifyList.Count.Equals(0))
-            {
-                userNotifyList = new List<UserNotify>();
-
-                foreach (User user in users)
+                // 如果還沒當年度與當季的通知資料則建立
+                if (userNotifyList.Count.Equals(0))
                 {
-                    List<bool> bools = NotifyUpdate(user.empno);
-                    UserNotify userNotify = new UserNotify();
-                    userNotify.empno = user.empno;
-                    userNotify.date = date;
-                    if (bools[0] == true) userNotify.self = 1; else userNotify.self = 0;
-                    if (bools[1] == true) userNotify.freeback = 1; else userNotify.freeback = 0;
-                    if (bools[2] == true) userNotify.manager_suggest = 1; else userNotify.manager_suggest = 0;
-                    if (bools[3] == true) userNotify.future = 1; else userNotify.future = 0;
+                    userNotifyList = new List<UserNotify>();
 
-                    userNotifyList.Add(userNotify);
+                    foreach (User user in users)
+                    {
+                        List<bool> bools = NotifyUpdate(user.empno); // 目前各項通知回覆狀況
+                        UserNotify userNotify = new UserNotify();
+                        userNotify.empno = user.empno;
+                        userNotify.date = date;
+                        if (bools[0] == true) userNotify.self = 1; else userNotify.self = 0; // 自我評估表
+                        if (bools[1] == true) userNotify.manager_suggest = 1; else userNotify.manager_suggest = 0; // 給予主管建議表
+                        if (bools[2] == true) userNotify.freeback = 1; else userNotify.freeback = 0; // 主管給予員工建議
+                        if (bools[3] == true) userNotify.future = 1; else userNotify.future = 0; // 未來3年數位轉型規劃
+
+                        userNotifyList.Add(userNotify);
+                    }
+                    using (var tran = _conn.BeginTransaction())
+                    {
+                        string sql = @"DELETE FROM userNotify";
+                        _conn.Execute(sql);
+
+                        sql = @"INSERT INTO userNotify (empno, date, self, manager_suggest, freeback, future)
+                            VALUES(@empno, @date, @self, @manager_suggest, @freeback, @future)";
+                        _conn.Execute(sql, userNotifyList);
+
+                        tran.Commit();
+                    }
                 }
-                using (var tran = _conn.BeginTransaction())
+                // 建立log檔
+                using (FileStream fs = File.Create(filePath))
                 {
-                    string sql = @"DELETE FROM userNotify";
-                    _conn.Execute(sql);
 
-                    sql = @"INSERT INTO userNotify (empno, date, self, freeback, manager_suggest, future)
-                            VALUES(@empno, @date, @self, @freeback, @manager_suggest, @future)";
-                    _conn.Execute(sql, userNotifyList);
-
-                    tran.Commit();
+                }
+                using (StreamWriter sw = new StreamWriter(filePath))
+                {
+                    DateTime dateTime = DateTime.Now;
+                    sw.WriteLine(dateTime + " 建檔成功。");
                 }
             }
 
             // 從資料庫抓取使用者需通知的項目
-            using (var tran = _conn.BeginTransaction())
-            {
-                string sql = @"SELECT * FROM userNotify WHERE empno=@empno";
-                UserNotify userNotify = _conn.Query<UserNotify>(sql, new { empno }).SingleOrDefault();
-                if (userNotify != null)
-                {
-                    if (userNotify.self == 1) ret.Add(true); else ret.Add(false);
-                    if (userNotify.freeback == 1) ret.Add(true); else ret.Add(false);
-                    if (userNotify.manager_suggest == 1) ret.Add(true); else ret.Add(false);
-                    if (userNotify.future == 1) ret.Add(true); else ret.Add(false);
-                }
-
-                tran.Commit();
-            }
+            List<bool> ret = UserNotifyState(empno);
 
             return ret;
         }
+        // 目前各項通知回覆狀況
         public List<bool> NotifyUpdate(string empno)
         {
             string _appData = HttpContext.Current.Server.MapPath("~/App_Data");
@@ -174,28 +187,11 @@ namespace TEEmployee.Models
                 }
                 bools.Add(ret);
 
-                // 是否已填寫給予主管建議評估表
-                ret = true;
+                // 是否已填寫給予主管建議評估表, 必填協理+group_manager2位
+                List<User> userManagers = UserManagers(empno, "");
+                List<string> managers = userManagers.Select(x => x.empno).ToList();
                 path = Path.Combine(_appData, "ManageResponse", season);
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-                string[] directories = Directory.GetDirectories(path);
-                foreach (string directory in directories)
-                {
-                    filePath = Path.Combine(directory, empno + ".txt");
-                    if (File.Exists(filePath))
-                    {
-                        string state = File.ReadAllLines(filePath)[0].Split(';')[0];
-                        // user已寄出不需提醒
-                        if (state.Equals("sent"))
-                        {
-                            ret = false;
-                            break;
-                        }
-                    }
-                }
+                ret = ManagerSuggest(path, managers, empno);
                 bools.Add(ret);
 
                 // 檢查是否為主管
@@ -266,13 +262,20 @@ namespace TEEmployee.Models
                                     string[] lines = File.ReadAllLines(filePath);
                                     foreach (string line in lines)
                                     {
-                                        if (line.Split('\t')[1].Equals(empno))
+                                        try
                                         {
-                                            if (line.Split('\t')[2].Equals("submit"))
+                                            if (line.Split('\t')[1].Equals(empno))
                                             {
-                                                ret = false;
-                                                break;
+                                                if (line.Split('\t')[2].Equals("submit"))
+                                                {
+                                                    ret = false;
+                                                    break;
+                                                }
                                             }
+                                        }
+                                        catch (Exception)
+                                        {
+
                                         }
                                     }
                                 }
@@ -307,7 +310,102 @@ namespace TEEmployee.Models
 
             return bools;
         }
+        // 從資料庫抓取使用者需通知的項目
+        public List<bool> UserNotifyState(string empno)
+        {
+            List<bool> ret = new List<bool>();
+            using (var tran = _conn.BeginTransaction())
+            {
+                string sql = @"SELECT * FROM userNotify WHERE empno=@empno";
+                UserNotify userNotify = _conn.Query<UserNotify>(sql, new { empno }).SingleOrDefault();
+                if (userNotify != null)
+                {
+                    if (userNotify.self == 1) ret.Add(true); else ret.Add(false); // 自我評估表
+                    if (userNotify.manager_suggest == 1) ret.Add(true); else ret.Add(false); // 給予主管建議表
+                    if (userNotify.freeback == 1) ret.Add(true); else ret.Add(false); // 主管給予員工建議
+                    if (userNotify.future == 1) ret.Add(true); else ret.Add(false); // 未來3年數位轉型規劃
+                }
 
+                tran.Commit();
+            }
+
+            return  ret;
+        }
+        // 找到使用者各群組的主管們
+        public List<User> UserManagers(string empno, string state)
+        {
+            List<List<User>> managerList = new List<List<User>>();
+            managerList.Add(GetAll().Where(x => x.empno.Equals("4125")).ToList()); // 協理
+            managerList.Add(GetAll().Where(x => x.group.Equals(Get(empno).group) && x.group_manager.Equals(true)).ToList());
+            if (state.Equals("freeback"))
+            {
+                managerList.Add(GetAll().Where(x => x.group_one.Equals(Get(empno).group_one) && x.group_one_manager.Equals(true)).ToList());
+                managerList.Add(GetAll().Where(x => x.group_two.Equals(Get(empno).group_two) && x.group_two_manager.Equals(true)).ToList());
+                managerList.Add(GetAll().Where(x => x.group_three.Equals(Get(empno).group_three) && x.group_three_manager.Equals(true)).ToList());
+            }
+            List<User> userManagers = new List<User>(); // 使用者的主管們
+            foreach(List<User> managers in managerList)
+            {
+                foreach(User manager in managers)
+                {
+                    bool isExist = userManagers.Where(x => x.empno.Equals(manager.empno)).Any();
+                    if(isExist == false)
+                    {
+                        userManagers.Add(manager);
+                    }
+                }
+            }
+            userManagers = userManagers.OrderBy(x => x.empno).ToList();
+
+            return userManagers;
+        }
+        // 給予主管建議表
+        public bool ManagerSuggest(string path, List<string> managers, string empno)
+        {
+            bool ret = false;
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            foreach (string manager in managers)
+            {
+                string filePath = Path.Combine(path, manager, empno + ".txt");
+                if (File.Exists(filePath))
+                {
+                    string state = File.ReadAllLines(filePath)[0].Split(';')[0];
+                    // user尚未寄出需提醒
+                    if (!state.Equals("sent"))
+                    {
+                        ret = true;
+                        break;
+                    }
+                }
+                else
+                {
+                    ret = true;
+                    break;
+                }
+            }
+            ////只要填寫一位主管問卷即可, ret預設值修改為true
+            //string[] directories = Directory.GetDirectories(path);
+            //foreach (string directory in directories)
+            //{
+            //    filePath = Path.Combine(directory, empno + ".txt");
+            //    if (File.Exists(filePath))
+            //    {
+            //        string state = File.ReadAllLines(filePath)[0].Split(';')[0];
+            //        // user已寄出不需提醒
+            //        if (state.Equals("sent"))
+            //        {
+            //            ret = false;
+            //            break;
+            //        }
+            //    }
+            //}
+
+            return ret;
+        }
         // 更新資料庫
         public bool UpdateDatabase(string empno, int count, string notification)
         {
@@ -322,17 +420,17 @@ namespace TEEmployee.Models
 
                 if(notification == "0")
                 {
-                    if (count.Equals(1)) sql = @"UPDATE userNotify SET self=0 WHERE empno=@empno";
-                    else if (count.Equals(2)) sql = @"UPDATE userNotify SET freeback=0 WHERE empno=@empno";
-                    else if (count.Equals(3)) sql = @"UPDATE userNotify SET manager_suggest=0 WHERE empno=@empno";
-                    else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=0 WHERE empno=@empno";
+                    if (count.Equals(1)) sql = @"UPDATE userNotify SET self=0 WHERE empno=@empno"; // 自我評估表
+                    else if (count.Equals(2)) sql = @"UPDATE userNotify SET manager_suggest=0 WHERE empno=@empno"; // 給予主管建議表
+                    else if (count.Equals(3)) sql = @"UPDATE userNotify SET freeback=0 WHERE empno=@empno"; // 主管給予員工建議
+                    else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=0 WHERE empno=@empno"; // 未來3年數位轉型規劃
                 }
                 else
                 {
-                    if (count.Equals(1)) sql = @"UPDATE userNotify SET self=1 WHERE empno=@empno";
-                    else if (count.Equals(2)) sql = @"UPDATE userNotify SET freeback=1 WHERE empno=@empno";
-                    else if (count.Equals(3)) sql = @"UPDATE userNotify SET manager_suggest=1 WHERE empno=@empno";
-                    else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=1 WHERE empno=@empno";
+                    if (count.Equals(1)) sql = @"UPDATE userNotify SET self=1 WHERE empno=@empno"; // 自我評估表
+                    else if (count.Equals(2)) sql = @"UPDATE userNotify SET manager_suggest=1 WHERE empno=@empno"; // 給予主管建議表
+                    else if (count.Equals(3)) sql = @"UPDATE userNotify SET freeback=1 WHERE empno=@empno"; // 主管給予員工建議
+                    else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=1 WHERE empno=@empno"; // 未來3年數位轉型規劃
                 }
 
                 _conn.Execute(sql, userNotify, tran);

@@ -51,8 +51,8 @@ namespace TEEmployee.Models
         public string empno { get; set; }
         public string date { get; set; }
         public int self { get; set; }
-        public int freeback { get; set; }
         public int manager_suggest { get; set; }
+        public int freeback { get; set; }
         public int future { get; set; }
     }
 }

@@ -24,6 +24,7 @@ namespace TEEmployee.Controllers
         }
         public ActionResult Self()
         {
+            GetFeedbackNotification(); // 檢查回饋狀況, 並更新資料庫
             return View();
         }
         public ActionResult Manage()
@@ -128,6 +129,12 @@ namespace TEEmployee.Controllers
             {
                 NotifyService notifyService = new NotifyService();
                 notifyService.UpdateDatabase(Session["empno"].ToString(), 1, "0"); // 使用者寄送後取消通知
+                // 找到使用者各群組的主管們
+                List<User> userManagers = notifyService.UserManagers(Session["empno"].ToString(), "freeback");
+                foreach(User userManager in userManagers)
+                {
+                    notifyService.UpdateDatabase(userManager.empno, 3, "1");
+                }
             }
             return ret;            
         }
@@ -141,8 +148,16 @@ namespace TEEmployee.Controllers
             NotifyService notifyService = new NotifyService();
             if (state.Equals("sent") && ret == true)
             {
-                notifyService.UpdateDatabase(Session["empno"].ToString(), 3, "0"); // 使用者寄送後取消通知
-                notifyService.UpdateDatabase(manager.empno, 3, "1"); // 通知主管
+                // 檢查是否必填的主管都填寫完成
+                bool isSent = notifyService.ManagerSuggest(Session["empno"].ToString());
+                if(isSent == true)
+                {
+                    notifyService.UpdateDatabase(Session["empno"].ToString(), 2, "1"); // 尚有主管未填寫需通知
+                }
+                else
+                {
+                    notifyService.UpdateDatabase(Session["empno"].ToString(), 2, "0"); // 所有主管都填寫完則取消通知
+                }
             }
             return ret;
         }
@@ -324,7 +339,18 @@ namespace TEEmployee.Controllers
             if (state.Equals("submit") && ret == true)
             {
                 NotifyService notifyService = new NotifyService();
-                notifyService.UpdateDatabase(empno, 2, "1"); // 通知同仁已回覆
+                notifyService.UpdateDatabase(empno, 1, "1"); // 通知同仁已回覆
+                // 檢查是否還有尚未回覆的同仁
+                List<EmployeesWithState> employeesWithState = _service.GetAllEmployeesWithStateByRole(Session["empno"].ToString());
+                int submit = employeesWithState.Where(x => x.State.Equals("submit")).Count();
+                if(submit > 0)
+                {
+                    notifyService.UpdateDatabase(Session["empno"].ToString(), 3, "1"); // 尚需回覆同仁
+                }
+                else
+                {
+                    notifyService.UpdateDatabase(Session["empno"].ToString(), 3, "0"); // 取消通知
+                }
             }
             return ret;
         }
