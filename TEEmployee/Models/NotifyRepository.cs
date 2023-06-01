@@ -409,35 +409,42 @@ namespace TEEmployee.Models
         // 更新資料庫
         public bool UpdateDatabase(string empno, int count, string notification)
         {
-            _conn.Open();
             bool ret = false;
 
-            // 先確認資料庫中是否已更新當季的資料
-            using (var tran = _conn.BeginTransaction())
+            // 先確認當月為5、11月才會進行資料庫更新
+            int month = DateTime.Now.Month;
+            if (month == 5 || month == 11)
             {
-                string sql = @"SELECT * FROM userNotify WHERE empno=@empno";
-                UserNotify userNotify = _conn.Query<UserNotify>(sql, new { empno }).SingleOrDefault();
-
-                if(notification == "0")
+                _conn.Open();
+                // 先確認資料庫中是否已更新當季的資料
+                using (var tran = _conn.BeginTransaction())
                 {
-                    if (count.Equals(1)) sql = @"UPDATE userNotify SET self=0 WHERE empno=@empno"; // 自我評估表
-                    else if (count.Equals(2)) sql = @"UPDATE userNotify SET manager_suggest=0 WHERE empno=@empno"; // 給予主管建議表
-                    else if (count.Equals(3)) sql = @"UPDATE userNotify SET freeback=0 WHERE empno=@empno"; // 主管給予員工建議
-                    else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=0 WHERE empno=@empno"; // 未來3年數位轉型規劃
-                }
-                else
-                {
-                    if (count.Equals(1)) sql = @"UPDATE userNotify SET self=1 WHERE empno=@empno"; // 自我評估表
-                    else if (count.Equals(2)) sql = @"UPDATE userNotify SET manager_suggest=1 WHERE empno=@empno"; // 給予主管建議表
-                    else if (count.Equals(3)) sql = @"UPDATE userNotify SET freeback=1 WHERE empno=@empno"; // 主管給予員工建議
-                    else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=1 WHERE empno=@empno"; // 未來3年數位轉型規劃
+                    string sql = @"SELECT * FROM userNotify WHERE empno=@empno";
+                    UserNotify userNotify = _conn.Query<UserNotify>(sql, new { empno }).SingleOrDefault();
+
+                    if (notification == "0")
+                    {
+                        if (count.Equals(1)) sql = @"UPDATE userNotify SET self=0 WHERE empno=@empno"; // 自我評估表
+                        else if (count.Equals(2)) sql = @"UPDATE userNotify SET manager_suggest=0 WHERE empno=@empno"; // 給予主管建議表
+                        else if (count.Equals(3)) sql = @"UPDATE userNotify SET freeback=0 WHERE empno=@empno"; // 主管給予員工建議
+                        else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=0 WHERE empno=@empno"; // 未來3年數位轉型規劃
+                    }
+                    else
+                    {
+                        if (count.Equals(1)) sql = @"UPDATE userNotify SET self=1 WHERE empno=@empno"; // 自我評估表
+                        else if (count.Equals(2)) sql = @"UPDATE userNotify SET manager_suggest=1 WHERE empno=@empno"; // 給予主管建議表
+                        else if (count.Equals(3)) sql = @"UPDATE userNotify SET freeback=1 WHERE empno=@empno"; // 主管給予員工建議
+                        else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=1 WHERE empno=@empno"; // 未來3年數位轉型規劃
+                    }
+
+                    _conn.Execute(sql, userNotify, tran);
+                    tran.Commit();
+                    ret = true; // 更新成功
                 }
 
-                _conn.Execute(sql, userNotify, tran);
-                tran.Commit();
+                _conn.Close();
             }
 
-            _conn.Close();
             return ret;
         }
         public void Dispose()
