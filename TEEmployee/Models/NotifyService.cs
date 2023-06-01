@@ -24,12 +24,16 @@ namespace TEEmployee.Models
             DateTime now = DateTime.Now;
             int year = now.Year;
             int month = now.Month;
+            string season = string.Empty;
             if (month == 5 || month == 11)
             {
+                if (month == 5) season = year + "H1";
+                else if(month == 11) season = year + "H2";
+
                 // 檢查資料庫中, userNotify是否為當季資料, 不是的話則新建
                 string date = year.ToString() + month.ToString("00");
                 List<User> users = _notifyRepository.GetAll();
-                ret = _notifyRepository.GetNotify(users, date, empno);
+                ret = _notifyRepository.GetNotify(season, users, date, empno);
             }
 
             return ret;
@@ -37,7 +41,15 @@ namespace TEEmployee.Models
         // 更新資料庫 <-- 培文
         public bool UpdateDatabase(string empno, int count, string notification)
         {
-            bool ret = _notifyRepository.UpdateDatabase(empno, count, notification);
+            bool ret = false;
+
+            // 先確認當月為5、11月才會進行資料庫更新
+            int month = DateTime.Now.Month;
+            if (month == 5 || month == 11)
+            {
+                ret = _notifyRepository.UpdateDatabase(empno, count, notification);
+            }
+
             return ret;
         }
         // 找到使用者各群組的主管們
