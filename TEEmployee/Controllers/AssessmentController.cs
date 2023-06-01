@@ -24,7 +24,6 @@ namespace TEEmployee.Controllers
         }
         public ActionResult Self()
         {
-            GetFeedbackNotification(); // 檢查回饋狀況, 並更新資料庫
             return View();
         }
         public ActionResult Manage()
