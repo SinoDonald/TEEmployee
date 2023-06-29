@@ -4,11 +4,12 @@
 
     <div class="chartmenu mb-5">
 
-        <div>
+        <div id="timespan">
             <button ng-show="editFilter" ng-click="createGroupScheduleModal()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">新增</button>
-            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'y'); UpdateAllPlots()"><<</button>
-            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'y'); UpdateAllPlots()">>></button>
-            <span ng-bind="ganttStartMonth.local('zh-tw').format('YYYY-MM')"></span>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'y'); UpdateAllPlots(); updateMonthRange()"><<</button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'y'); UpdateAllPlots(); updateMonthRange()">>></button>
+            @*<span ng-bind="ganttStartMonth.local('zh-tw').format('YYYY-MM')"></span>*@
+            <span ng-bind="monthRange"></span>
         </div>
         <div>
             <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="filterMembers()" aria-label="Select the Group">

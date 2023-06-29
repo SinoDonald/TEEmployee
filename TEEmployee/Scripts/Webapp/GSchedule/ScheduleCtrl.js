@@ -148,6 +148,12 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     // gantt
     //$scope.ganttStartMonth = moment({ day: 1 });
     $scope.ganttStartMonth = moment({ day: 1 }).subtract(5, 'M');
+    $scope.updateMonthRange = () => {
+        let rangeStart = $scope.ganttStartMonth.local('zh-tw').format('YYYY-MM');
+        let rangeEnd = moment($scope.ganttStartMonth).add(1, 'y').local('zh-tw').format('YYYY-MM');
+        $scope.monthRange = `${rangeStart} ~ ${rangeEnd}`;
+    }
+    $scope.updateMonthRange();
 
     const plot =
         ganttPlot()
@@ -658,6 +664,13 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
     //$scope.ganttStartMonth = moment({ day: 1 });
     $scope.ganttStartMonth = moment({ day: 1 }).subtract(5, 'M');
+    $scope.updateMonthRange = () => {
+        let rangeStart = $scope.ganttStartMonth.local('zh-tw').format('YYYY-MM');
+        let rangeEnd = moment($scope.ganttStartMonth).add(1, 'y').local('zh-tw').format('YYYY-MM');
+        $scope.monthRange = `${rangeStart} ~ ${rangeEnd}`;
+    }
+    $scope.updateMonthRange();
+
 
     const plot =
         ganttPlot()
@@ -1033,6 +1046,12 @@ app.controller('FutureCtrl', ['$scope', '$location', 'appService', '$rootScope',
     // gantt
 
     $scope.ganttStartMonth = moment({ month: 0, day: 1 });
+    $scope.updateMonthRange = () => {
+        let rangeStart = $scope.ganttStartMonth.local('zh-tw').format('YYYY-MM');
+        let rangeEnd = moment($scope.ganttStartMonth).add(3, 'y').local('zh-tw').format('YYYY-MM');
+        $scope.monthRange = `${rangeStart} ~ ${rangeEnd}`;
+    }
+    $scope.updateMonthRange();
 
     const plot =
         ganttPlot()

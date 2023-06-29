@@ -3,12 +3,13 @@
 
     <div class="chartmenu mb-5">
 
-        <div>
-            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'y'); UpdateAllPlots()"><<</button>
-            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'M'); UpdateAllPlots()"><</button>
-            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'M'); UpdateAllPlots()">></button>
-            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'y'); UpdateAllPlots()">>></button>
-            <span ng-bind="ganttStartMonth.local('zh-tw').format('YYYY-MM')"></span>
+        <div id="timespan">
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'y'); UpdateAllPlots(); updateMonthRange()"><<</button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'M'); UpdateAllPlots(); updateMonthRange()"><</button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'M'); UpdateAllPlots(); updateMonthRange()">></button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'y'); UpdateAllPlots(); updateMonthRange()">>></button>
+            @*<span ng-bind="ganttStartMonth.local('zh-tw').format('YYYY-MM')"></span>*@
+            <span ng-bind="monthRange"></span>
         </div>
         <div>
             <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="filterMembers()" aria-label="Select the Group">

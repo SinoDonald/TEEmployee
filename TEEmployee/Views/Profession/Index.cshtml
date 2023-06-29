@@ -1,0 +1,171 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@section Styles {
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            /*overflow: hidden;*/
+        }
+
+        header {
+            margin-top: 72px;
+        }
+
+        h5 {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        #mainNav, #mainNav.navbar-shrink {
+            box-shadow: none;
+        }
+
+        .uvcontainer {
+            margin-top: 150px;
+        }
+
+        .schedule-fixed-top {
+            position: fixed;
+            top: 72px;
+            right: 0;
+            left: 0;
+            z-index: 998;
+        }
+
+        .skill {
+            display: flex;
+        }
+
+            .skill > div {
+                flex: 1;
+                margin: 5px;
+            }
+
+        .chartmenu {
+            display: flex;
+            position: fixed;
+            top: 80px;
+            /*right: 0;
+            left: 0;*/
+            z-index: 999;
+            margin-left: 22em;
+            align-items: center;
+        }
+
+            .chartmenu div {
+                flex: 1;
+                margin: 0 20px;
+            }
+
+        .list-group-item {
+            margin: 0;
+        }
+
+        .tooltipParent .tooltipChild {
+            visibility: hidden;
+        }
+
+        .tooltipParent:hover .tooltipChild {
+            visibility: visible;
+        }
+
+        .borderlessInput {
+            border: none;
+            background-color: inherit;
+            outline: 0;
+            font-size: 1.2rem;
+            width: 300px;
+            height: 30px;
+            line-height: 1.5;
+        }
+
+            .borderlessInput:focus {
+                border: none;
+                background-color: inherit;
+                outline: 0;
+                width: 300px;
+                height: 30px;
+            }
+
+            .borderlessInput:hover {
+                background-color: inherit;
+            }
+
+
+        table {
+            height: 1px;
+        }
+        td {
+            font-family: 'Agdasima', sans-serif;
+        }
+
+        .scoreInput {
+            border: none;
+            background-color: inherit;
+            outline: 0;
+            font-size: 1.2rem;
+            width: 100%;
+            /*height: 100%;*/
+            /*padding: 0.375rem 0.75rem;*/
+            /*padding: 5% 0;*/
+            text-align: center;
+            /*line-height: 1.5;*/
+        }
+
+            .scoreInput:focus {
+                border: none;
+                background-color: inherit;
+                /*outline: 0;*/
+                outline: thick double #32a1ce;
+                width: 100%;
+            }
+
+            .scoreInput:hover {
+                background-color: inherit;
+            }
+
+        .top-btn {
+            position: fixed;
+            bottom: 15vh;
+            right: 5vw;
+            z-index: 99;
+        }
+    </style>
+}
+
+<div ng-controller="ProfessionCtrl" class="container-fluid">
+
+    @*<header>
+            <h2>核心專業盤點</h2>
+        </header>*@
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light schedule-fixed-top">
+        <a class="navbar-brand" href="">核心專業盤點</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" ui-sref="Skill">群組專業規劃</a>
+                <a class="nav-item nav-link" ui-sref="Score">群組專業盤點</a>
+                <a class="nav-item nav-link" ui-sref="Future">組員專業能力盤點</a>
+                <a class="nav-item nav-link" ui-sref="Future">個人專業盤點</a>
+            </div>
+        </div>
+    </nav>
+
+    <div ui-view></div>
+
+</div>
+
+
+@section Scripts {
+    <script src="~/Scripts/WebApp/Profession/ProfessionCtrl.js"></script>
+    <script src="~/Scripts/chart.min.js"></script>
+}

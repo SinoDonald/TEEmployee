@@ -1,0 +1,78 @@
+﻿
+<div ng-controller="ScoreCtrl" class="container">
+
+    <div class="chartmenu">
+
+        <div>
+            <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="GetAllScoresByRole()" aria-label="Select the Group">
+                <option ng-repeat="group in auth.GroupAuthorities" value="{{group.GroupName}}">{{group.GroupName}}</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="uvcontainer">
+
+        <h2>Hard Skill</h2>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col" style="width: 10%">人員</th>
+                    <th scope="col" ng-repeat="skill in hard">{{skill.content}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="member in members">
+                    <th scope="row" class="text-center" ng-bind="member.name"></th>
+                    <td class="p-0" ng-repeat="skill in hard">
+                        <div class="h-100 d-flex">
+                            <input type="text" class="scoreInput" ng-model="skill.scores[$parent.$index].score">
+                        </div>
+                        @*<div ng-bind="skill.scores[$parent.$index].score"></div>*@
+                    </td>
+
+                </tr>
+
+            </tbody>
+        </table>
+
+        <h2>Soft Skill</h2>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col" style="width: 10%">人員</th>
+                    <th scope="col" ng-repeat="skill in soft">{{skill.content}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="member in members">
+                    <th scope="row" class="text-center" ng-bind="member.name"></th>
+                    <td class="p-0" ng-repeat="skill in soft">
+                        <div class="h-100 d-flex">
+                            <input type="text" class="scoreInput" ng-model="skill.scores[$parent.$index].score">
+                        </div>
+                        @*<div ng-bind="skill.scores[$parent.$index].score"></div>*@
+                    </td>
+
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="top-btn">
+        <button type="button" class="btn btn-primary btn-lg" ng-click="upsertScores()">儲存</button>
+    </div>
+    
+
+
+
+</div>
+
+
+
+
+

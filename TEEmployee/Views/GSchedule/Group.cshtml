@@ -4,14 +4,15 @@
 
     <div class="chartmenu mb-5">
 
-        <div>
+        <div id="timespan">
             <button ng-show="editFilter" ng-click="createGroupScheduleModal()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">新增</button>
-            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'y'); UpdateAllPlots()"><<</button>
-            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'M'); UpdateAllPlots()"><</button>
-            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'M'); UpdateAllPlots()">></button>
-            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'y'); UpdateAllPlots()">>></button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'y'); UpdateAllPlots(); updateMonthRange()"><<</button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.subtract(1, 'M'); UpdateAllPlots(); updateMonthRange()"><</button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'M'); UpdateAllPlots(); updateMonthRange()">></button>
+            <button type="button" class="btn btn-primary" ng-click="ganttStartMonth.add(1, 'y'); UpdateAllPlots(); updateMonthRange()">>></button>
             @*<button type="button" class="btn btn-primary" ng-click="niceNoah()">ba</button>*@
-            <span ng-bind="ganttStartMonth.local('zh-tw').format('YYYY-MM')"></span>
+            @*<span ng-bind="ganttStartMonth.local('zh-tw').format('YYYY-MM')"></span>monthRange*@
+            <span ng-bind="monthRange"></span>
         </div>
         <div>
             @*<label for="SelectGroup">請選擇組別</label>*@

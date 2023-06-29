@@ -152,6 +152,7 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\GScheduleController.cs" />
+    <Compile Include="Controllers\ProfessionController.cs" />
     <Compile Include="Controllers\ScheduleController.cs" />
     <Compile Include="Controllers\TasklogController.cs" />
     <Compile Include="Filters\MyAuthorizeAttribute.cs" />
@@ -173,6 +174,11 @@
     <Compile Include="Models\IUserRepository.cs" />
     <Compile Include="Models\ManageAssessmentTxtRepository.cs" />
     <Compile Include="Models\MixResponse.cs" />
+    <Compile Include="Models\Profession\IProfessionRepository.cs" />
+    <Compile Include="Models\Profession\ProfessionRepository.cs" />
+    <Compile Include="Models\Profession\ProfessionService.cs" />
+    <Compile Include="Models\Profession\Score.cs" />
+    <Compile Include="Models\Profession\Skill.cs" />
     <Compile Include="Models\Response.cs" />
     <Compile Include="Models\ResponseTxtRepository.cs" />
     <Compile Include="Models\Schedule\IScheduleRepository.cs" />
@@ -310,6 +316,7 @@
     <Content Include="Scripts\Webapp\GSchedule\HistoryLineChart.js" />
     <Content Include="Scripts\Webapp\GSchedule\ScheduleCtrl.js" />
     <Content Include="Scripts\Webapp\Home\AdminCtrl.js" />
+    <Content Include="Scripts\Webapp\Profession\ProfessionCtrl.js" />
     <Content Include="Scripts\Webapp\Schedule\GanttPlot.js" />
     <Content Include="Scripts\Webapp\Schedule\ScatterPlot.js" />
     <Content Include="Scripts\Webapp\Schedule\ScheduleCtrl.js" />
@@ -386,6 +393,9 @@
     <Content Include="Views\Tasklog\UserList.cshtml" />
     <Content Include="Views\Assessment\ReviewEmployee.cshtml" />
     <Content Include="Views\Tasklog\UserDetails.cshtml" />
+    <Content Include="Views\Profession\Index.cshtml" />
+    <Content Include="Views\Profession\Skill.cshtml" />
+    <Content Include="Views\Profession\Score.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Response\" />
