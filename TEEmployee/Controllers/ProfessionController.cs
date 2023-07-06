@@ -33,6 +33,12 @@ namespace TEEmployee.Controllers
         {
             return PartialView();
         }
+
+        public ActionResult Chart()
+        {
+            return PartialView();
+        }
+
         /*........................  Web api  ...........................*/
 
 

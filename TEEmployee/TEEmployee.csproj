@@ -231,6 +231,7 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\animate-btn.css" />
     <Content Include="Content\css\custom.css" />
     <Content Include="Content\css\starstyles.css" />
     <Content Include="Content\css\table.css" />
@@ -316,6 +317,7 @@
     <Content Include="Scripts\Webapp\GSchedule\HistoryLineChart.js" />
     <Content Include="Scripts\Webapp\GSchedule\ScheduleCtrl.js" />
     <Content Include="Scripts\Webapp\Home\AdminCtrl.js" />
+    <Content Include="Scripts\Webapp\Profession\ProfessionChart.js" />
     <Content Include="Scripts\Webapp\Profession\ProfessionCtrl.js" />
     <Content Include="Scripts\Webapp\Schedule\GanttPlot.js" />
     <Content Include="Scripts\Webapp\Schedule\ScatterPlot.js" />
@@ -396,6 +398,7 @@
     <Content Include="Views\Profession\Index.cshtml" />
     <Content Include="Views\Profession\Skill.cshtml" />
     <Content Include="Views\Profession\Score.cshtml" />
+    <Content Include="Views\Profession\Chart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Response\" />

@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@700&display=swap" rel="stylesheet">
+    <link href="~/Content/css/animate-btn.css" rel="stylesheet">
     <style>
         body {
             /*overflow: hidden;*/
@@ -56,10 +57,11 @@
             z-index: 999;
             margin-left: 22em;
             align-items: center;
+            width: 500px;
         }
 
-            .chartmenu div {
-                flex: 1;
+            .chartmenu div { /*
+                flex: 1 200px;*/
                 margin: 0 20px;
             }
 
@@ -101,6 +103,7 @@
         table {
             height: 1px;
         }
+
         td {
             font-family: 'Agdasima', sans-serif;
         }
@@ -136,6 +139,10 @@
             right: 5vw;
             z-index: 99;
         }
+
+        .pop {
+            white-space: pre-line;
+        }
     </style>
 }
 
@@ -154,7 +161,7 @@
             <div class="navbar-nav">
                 <a class="nav-item nav-link" ui-sref="Skill">群組專業規劃</a>
                 <a class="nav-item nav-link" ui-sref="Score">群組專業盤點</a>
-                <a class="nav-item nav-link" ui-sref="Future">組員專業能力盤點</a>
+                <a class="nav-item nav-link" ui-sref="Chart">組員專業能力盤點</a>
                 <a class="nav-item nav-link" ui-sref="Future">個人專業盤點</a>
             </div>
         </div>
@@ -166,6 +173,7 @@
 
 
 @section Scripts {
+    <script src="~/Scripts/WebApp/Profession/ProfessionChart.js"></script>
     <script src="~/Scripts/WebApp/Profession/ProfessionCtrl.js"></script>
     <script src="~/Scripts/chart.min.js"></script>
 }

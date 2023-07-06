@@ -644,12 +644,12 @@ namespace TEEmployee.Models
             int numOfCategory = managerAssessments.Where(x => x.Id == 0).Count();
             int numOfQuestion = managerAssessments.Count() - numOfCategory * 2;
             managerAssessments = managerAssessments.Where(x => x.Id != 0 && x.Content != "建議").ToList();
-
+            int numOfOptions; 
             // Collect user data and chart data
 
-            int numOfOptions; // old:4 new:6
-            numOfOptions = (year.CompareTo("2022H2") > 0) ? 6 : 4;
-
+            // additional tuning            
+            numOfOptions = (year.CompareTo("2022H2") > 0) ? 6 : 4;   // 2022H2 = 4 ; 2023H1 = 6
+            numOfQuestion = (year.CompareTo("2023H1") > 0) ? numOfQuestion : 43; // 2023H1 = 43 ; 2023H2 = 35
 
             foreach (var empno in empnos)
             {

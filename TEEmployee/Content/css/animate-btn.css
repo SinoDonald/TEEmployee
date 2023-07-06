@@ -1,0 +1,77 @@
+﻿/*green:#1ECD97*/
+
+
+.animate-btn {
+    font-family: 'Roboto', sans-serif;
+    outline: none;
+    height: 40px;
+    text-align: center;
+    /*width: 130px;*/
+    width: 100px;
+    border-radius: 40px;
+    background: #fff;
+    border: 2px solid #F4623A;
+    color: #F4623A;
+    letter-spacing: 1px;
+    text-shadow: 0;
+    /*font-size: 12px;*/
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+    .animate-btn:hover {
+        color: white;
+        background: #F4623A;
+    }
+
+    .animate-btn:active {
+        letter-spacing: 2px;
+    }
+
+    .animate-btn::after {
+        content: "儲存";
+    }
+
+.onclic {
+    width: 40px;
+    border-color: #bbbbbb;
+    border-width: 3px;
+    font-size: 0;
+    border-left-color: #F4623A;
+    animation: rotating 2s 0.25s linear infinite;
+}
+    .onclic::after
+
+{
+    content: "";
+}
+
+    .onclic:hover {
+        color: #1ECD97;
+        background: white;
+    }
+
+
+.validate {
+    font-size: 13px;
+    color: white;
+    background: #F4623A;
+}
+    .validate::after {
+        font-family: 'FontAwesome';
+        content: "\f00c";
+    }
+
+
+
+@keyframes rotating {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -37,6 +37,7 @@ app.controller('ChartManagerCtrl', ['$scope', '$window', 'appService', '$rootSco
     $scope.selectedCategory = $scope.categories[0].id;
 
 
+    
     let promiseA = appService.GetChartYearList({isManagerResponse: true}).then((ret) => {
 
         $scope.years = ret.data;
@@ -157,12 +158,22 @@ app.controller('ChartManagerCtrl', ['$scope', '$window', 'appService', '$rootSco
 
     }
 
-
-    $scope.GetChartData = () => {
+    // 20230706: get new manager list whenever GetChartData()
+    $scope.GetChartData = () => {                   
 
         appService.GetChartManagerData({ year: $scope.selectedYear }).then((ret) => {
 
             $scope.data = ret.data;
+
+            $scope.managers = [];
+
+            for (const item of $scope.data.ChartManagerResponses)
+                $scope.managers.push(item.Manager.name);
+            $scope.selectedManager = $scope.managers[0];
+
+            if ($scope.managers.length > 1)
+                $scope.managers.push('All');
+
             $scope.DrawChart();
         })
     }
@@ -193,6 +204,5 @@ app.controller('ChartManagerCtrl', ['$scope', '$window', 'appService', '$rootSco
         $event.currentTarget.style.opacity = 1.0;
         $scope.DrawChart();       
     }
-
 
 }]);

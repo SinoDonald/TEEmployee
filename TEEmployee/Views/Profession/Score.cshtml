@@ -9,11 +9,17 @@
             </select>
         </div>
 
+        <div>
+            <a tabindex="0" class="btn btn-sm btn-secondary pop" role="button" data-toggle="popover" data-trigger="hover" title="評分說明" data-html="true"
+               data-content="分數區間為1~5分</br>1分「非所需技能」</br>2分「安排學習技能」</br>3分「學習中」</br>4分「可獨立作業」</br>5分「精通且可指導他人」">評分說明</a>
+        </div>
+
+
     </div>
 
     <div class="uvcontainer">
 
-        <h2>Hard Skill</h2>
+        <h2 class="mt-5">Hard Skill</h2>
 
         <table class="table table-bordered">
             <thead>
@@ -37,7 +43,7 @@
             </tbody>
         </table>
 
-        <h2>Soft Skill</h2>
+        <h2 class="mt-5">Soft Skill</h2>
 
         <table class="table table-bordered">
             <thead>
@@ -63,11 +69,14 @@
 
     </div>
 
-    <div class="top-btn">
-        <button type="button" class="btn btn-primary btn-lg" ng-click="upsertScores()">儲存</button>
-    </div>
-    
+    @*<div class="top-btn">
+            <button type="button" class="btn btn-primary btn-lg" ng-click="upsertScores()">儲存</button>
+        </div>*@
 
+
+    <div class="top-btn">
+        <button class="animate-btn" id="button" ng-click="upsertScores()"></button>
+    </div>
 
 
 </div>

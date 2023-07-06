@@ -11,9 +11,9 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             url: '/Score',
             templateUrl: 'Profession/Score'
         })
-        .state('Future', {
-            url: '/Future',
-            templateUrl: 'Profession/Future'
+        .state('Chart', {
+            url: '/Chart',
+            templateUrl: 'Profession/Chart'
         })
 
 }]);
@@ -170,7 +170,7 @@ app.controller('SkillCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         let promiseB = Promise.resolve('b');
 
         if ($scope.deletedSkills.length !== 0) {
-            promiseA = appService.DeleteSkills({ skills: $scope.deletedSkills })                
+            promiseA = appService.DeleteSkills({ skills: $scope.deletedSkills })
         }
 
         if ($scope.modal.data.length !== 0) {
@@ -231,17 +231,19 @@ app.controller('SkillCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
 
 app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$state', function ($scope, $location, appService, $rootScope, $q, dataservice, $state) {
-        
-    document.documentElement.scrollTop = 0;
-    //document.body.style.overflow = "scroll";
 
+    document.documentElement.scrollTop = 0;
+
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+    })
 
     $scope.GetAllScoresByRole = () => {
 
         $scope.members = $scope.auth.GroupAuthorities
             .find(x => x.GroupName === $scope.selectedGroup)
             .Members.sort((a, b) => a.empno - b.empno);
-        
+
         appService.GetAllScoresByRole({ role: $scope.selectedGroup }).then((ret) => {
 
             $scope.data = ret.data;
@@ -271,7 +273,7 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
                 else
                     $scope.soft.push(skill);
             }
-            
+
 
         });
     }
@@ -279,7 +281,7 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     dataservice.get().then((ret) => {
 
         $scope.auth = ret.data;
-        
+
         $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
         $scope.GetAllScoresByRole();
     });
@@ -287,6 +289,8 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     $scope.upsertScores = () => {
 
         let savedScores = [];
+        const aniBtn = document.querySelector(".animate-btn");
+
 
         for (let skill of $scope.data) {
             for (let emp of skill.scores) {
@@ -297,30 +301,79 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
                     emp.score = num;
                     savedScores.push(emp);
                 }
-
-
-                    
             }
         }
 
-        console.log(savedScores);
-
         if (savedScores.length === 0) return;
+
+        // start animation
+        //aniBtn.classList.add('onclic');
 
         appService.UpsertScores({ scores: savedScores }).then((ret) => {
 
             if (ret.data) {
-                $state.reload();
+                /*aniBtn.classList.remove('onclic');*/
+                aniBtn.classList.add('onclic');
+                /*aniBtn.classList.add('validate');*/
+
+                $scope.GetAllScoresByRole();
+                /*$state.reload();*/
+
+                //setTimeout(function () {
+                //    aniBtn.classList.remove('validate');
+                //}, 2500);
+
+                setTimeout(function () {
+                    aniBtn.classList.remove('onclic');
+                    aniBtn.classList.add('validate');
+                    setTimeout(function () {
+                        aniBtn.classList.remove('validate');
+                    }, 1500);
+                }, 1500);
+
+
             }
 
         });
 
 
-        
+
 
     }
 
-    
 
+
+
+}]);
+
+
+app.controller('ChartCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$state', function ($scope, $location, appService, $rootScope, $q, dataservice, $state) {
+
+    document.documentElement.scrollTop = 0;
+
+
+    $scope.GetAllScoresByRole = () => {
+
+        $scope.members = $scope.auth.GroupAuthorities
+            .find(x => x.GroupName === $scope.selectedGroup)
+            .Members.sort((a, b) => a.empno - b.empno);
+
+        appService.GetAllScoresByRole({ role: $scope.selectedGroup }).then((ret) => {
+
+            $scope.data = ret.data;
+
+            createScoreBarChart($scope.data);
+        });
+    }
+
+    dataservice.get().then((ret) => {
+
+        $scope.auth = ret.data;
+
+        $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+        $scope.GetAllScoresByRole();
+
+        
+    });
 
 }]);

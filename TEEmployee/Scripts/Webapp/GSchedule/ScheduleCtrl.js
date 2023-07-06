@@ -480,11 +480,15 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         }
 
         // (Group only) end before startMonth or start after endMonth not showing
+        // 0704 update: hide 100% group schedule
         if (schedule.type === 1) {
             if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate())
                 return false;
 
             if (new Date(schedule.end_date) < moment($scope.ganttStartMonth).toDate())
+                return false;
+
+            if ($scope.checkboxModel.value && schedule.percent_complete === 100)
                 return false;
         }
 
