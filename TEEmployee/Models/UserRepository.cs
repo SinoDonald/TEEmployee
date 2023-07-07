@@ -56,6 +56,7 @@ namespace TEEmployee.Models
             return ret;
         }
 
+        // insert userExtra
         public bool Insert(List<User> users)
         {
 
@@ -71,9 +72,9 @@ namespace TEEmployee.Models
 
 
                 sql = @"INSERT INTO userExtra (empno, department_manager, 'group', group_manager,
-                                group_one, group_one_manager, group_two, group_two_manager, group_three, group_three_manager, project_manager, projects) 
+                                group_one, group_one_manager, group_two, group_two_manager, group_three, group_three_manager, project_manager, projects, assistant_project_manager) 
                         VALUES(@empno, @department_manager, @group, @group_manager, @group_one, @group_one_manager,
-                                @group_two, @group_two_manager, @group_three, @group_three_manager, @project_manager, @projects)";
+                                @group_two, @group_two_manager, @group_three, @group_three_manager, @project_manager, @projects, @assistant_project_manager)";
 
                 ret = _conn.Execute(sql, users);
 

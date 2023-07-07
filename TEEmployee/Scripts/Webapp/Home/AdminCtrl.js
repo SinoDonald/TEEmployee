@@ -120,6 +120,9 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
                 row[17] = (row[17] === 'Y') ? true : false;
                 newdata.project_manager = row[17];
 
+                row[18] = (row[18] === 'Y') ? true : false;
+                newdata.assistant_project_manager = row[18];
+
                 $scope.dada.push(newdata);
             }
 
