@@ -50,6 +50,8 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        // dynamic object serialized by newtonJsom which is different form built-in Json()
+        // so pass it with content and assign the content type
         [HttpPost]
         public ContentResult GetAuthorization()
         {
