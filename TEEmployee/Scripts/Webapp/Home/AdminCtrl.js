@@ -31,16 +31,18 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Home/UpdateAllPercentComplete', o);
     };
 
-    // 通知 <-- 培文
+    // 通知測試 <-- 培文
     this.NotifyUpdate = function (o) {
         return $http.post('Home/NotifyUpdate', o);
     };
-
+    // 人才資料庫 <-- 培文
+    this.TalentUpdate = function (o) {
+        return $http.post('Home/TalentUpdate', o);
+    };
 
 }]);
 
 app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
-
 
     $scope.InsertProjectItem = () => {
 
@@ -70,7 +72,6 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
 
     $scope.dada = [];
 
-
     const input = document.getElementById('input')
     input.addEventListener('change', function () {
         readXlsxFile(input.files[0]).then(function (rows) {
@@ -86,7 +87,6 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
                 //empno
                 if (Number.isInteger(row[0])) row[0] = row[0].toString();
                 newdata.empno = row[0];
-
 
                 //group one two three
                 row[9] = (row[9] && row[9].length >= 2) ? row[9] : '';
@@ -126,7 +126,6 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
                 $scope.dada.push(newdata);
             }
 
-
             appService.InsertUserExtra({ users: $scope.dada })
                 .then((ret) => {
                     if (ret.data === 'True') alert('Successfully updated')
@@ -155,7 +154,6 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
     //        alert('Error');
     //    });
 
-
     $scope.CreateMonthlyRecord = (yymm) => {
 
         appService.CreateMonthlyRecord({ yymm: yymm })
@@ -169,7 +167,6 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
             });
     }
 
-
     $scope.UpdateAllPercentComplete = () => {
 
         appService.UpdateAllPercentComplete({}).then((ret) => {
@@ -181,16 +178,25 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
         });
     }
 
-    // 通知 <-- 培文
+    // 通知測試 <-- 培文
     $scope.NotifyUpdate = () => {
 
         appService.NotifyUpdate({}).then((ret) => {
-
             if (ret.data) {
                 console.log("succeed");
             }
-
         });
+
+    }
+    // 人才資料庫 <-- 培文
+    $scope.TalentUpdate = () => {
+
+        appService.TalentUpdate({}).then((ret) => {
+            if (ret.data) {
+                console.log("succeed");
+            }
+        });
+
     }
 
 }]);

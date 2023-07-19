@@ -87,7 +87,7 @@ namespace TEEmployee.Models.Profession
 
                     tran.Commit();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
 
                 }
@@ -170,7 +170,7 @@ namespace TEEmployee.Models.Profession
 
                     tran.Commit();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     ret = 0;
                 }
@@ -230,7 +230,7 @@ namespace TEEmployee.Models.Profession
 
                     tran.Commit();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     ret = 0;
                 }

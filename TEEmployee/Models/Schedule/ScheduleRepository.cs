@@ -307,7 +307,7 @@ namespace TEEmployee.Models.Schedule
                     tran.Commit();
                     return schedule;
                 }
-                catch(Exception e)
+                catch(Exception)
                 {
                     return null;
                 }

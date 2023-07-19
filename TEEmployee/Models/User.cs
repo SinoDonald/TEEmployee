@@ -46,7 +46,7 @@ namespace TEEmployee.Models
         public string email { get; set; }
         
     }
-    // 首頁通知
+    // 首頁通知 <-- 培文
     public class UserNotify
     {
         public string empno { get; set; }
@@ -55,5 +55,25 @@ namespace TEEmployee.Models
         public int manager_suggest { get; set; }
         public int freeback { get; set; }
         public int future { get; set; }
+    }
+    // 人才資料庫 <-- 培文
+    public class CV
+    {
+        public string empno { get; set; }
+        public string name { get; set; }
+        public string birthday { get; set; }
+        public string address { get; set; }
+        public string educational { get; set; }
+        public string expertise { get; set; }
+        public string treatise { get; set; }
+        public string language { get; set; }
+        public string academic { get; set; }
+        public string license { get; set; }
+        public string training { get; set; }
+        public string honor { get; set; }
+        public string experience { get; set; }
+        public string project { get; set; }
+        public string picture { get; set; }
+        public string lastest_update { get; set; }
     }
 }

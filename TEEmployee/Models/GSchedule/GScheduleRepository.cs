@@ -114,7 +114,7 @@ namespace TEEmployee.Models.GSchedule
                     tran.Commit();
                     return schedule;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return null;
                 }
@@ -126,7 +126,7 @@ namespace TEEmployee.Models.GSchedule
             if (_conn.State == 0)
                 _conn.Open();
 
-            int ret;
+            //int ret;
 
             using (var tran = _conn.BeginTransaction())
             {

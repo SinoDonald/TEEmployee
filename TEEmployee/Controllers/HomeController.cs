@@ -8,6 +8,7 @@ using TEEmployee.Models;
 using TEEmployee.Models.TaskLog;
 using TEEmployee.Models.GSchedule;
 using System.Web.Services.Description;
+using TEEmployee.Models.Talent;
 
 namespace TEEmployee.Controllers
 {
@@ -110,6 +111,16 @@ namespace TEEmployee.Controllers
             List<bool> ret = _service.GetNotify(Session["empno"].ToString());
             Session["notify"] = ret;
             Session["notify_count"] = ret.Where(x => x==true).Count();
+
+            return Json(ret);
+        }
+        // 人才資料庫 <-- 培文
+        [HttpPost]
+        public JsonResult TalentUpdate()
+        {
+            var ret = "";
+            TalentService _service = new TalentService();
+            _service.TalentUpdate();
 
             return Json(ret);
         }
