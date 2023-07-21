@@ -65,6 +65,28 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        [HttpPost]
+        public ActionResult UploadFile(HttpPostedFileBase files)
+        {
+            var num = HttpContext.Request.Files.Count;
+
+            var file = HttpContext.Request.Files[0];
+
+            //Cat ret = new Cat { Name = "Momk", Age = 66 };
+            var ret = true;
+            var jj = Json(ret);
+            return jj;
+        }
+
+        //[HttpPost]
+        //public ActionResult UploadFile(FormCollection form)
+        //{
+        //    var name = form.GetValue("firstName");
+        //    bool res = true;
+        //    return Json(res);
+        //}
+
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

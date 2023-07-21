@@ -338,7 +338,10 @@ namespace TEEmployee.Models.TaskLog
             var userTxtRepository = new UserTxtRepository();            
             var users = userTxtRepository.GetAll();
 
-            var ret = (_userRepository as UserRepository).InsertUser(users);
+            bool ret = false;
+
+            if (users.Count > 0)
+                ret = (_userRepository as UserRepository).InsertUser(users);
 
             return ret;
         }
