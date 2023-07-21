@@ -1,0 +1,106 @@
+﻿
+@{
+    ViewBag.Title = "TalentRecord";
+}
+
+<div ng-controller="TalentRecordCtrl" class="container">
+
+    <div class="wrapper">
+        <div class="box1">
+            <h2>人才資料庫</h2>
+            <div class="form-check form-check-inline">
+                <img src="~/Content/CV/{{user.empno}}.jpg" class="img-thumbnail" alt="{{user.name}}">
+            </div>
+            <div class="form-check form-check-inline">
+                <h3>姓名：{{user.name}}</h3>
+                <h3>生日：{{user.birthday}}</h3>
+                <h3>年齡：{{user.age}}</h3>
+            </div>
+        </div>
+        <div class="box2">
+            <h4>規劃進程</h4>
+            <div class="textblock">
+                <p>{{user.planning}}</p>
+            </div>
+        </div>
+        <div class="box3">
+            <div class="exp">
+                <h4 class="inner">
+                    <span>學歷</span>
+                    <span>學校</span>
+                    <span>科系</span>
+                </h4>
+                <div class="inner">
+                    <p>{{user.educational}}</p>
+                </div>
+            </div>
+            <div class="exp">
+                <h4>近三年考績</h4>
+                <div class="inner">
+                    <p>甲</p>
+                    <p>乙</p>
+                    <p>丙</p>
+                </div>
+            </div>
+            <div class="exp">
+                <h4>職位經歷</h4>
+                <div class="outer">
+                    <div class="inner">
+                        <h3>{{user.experience}}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="exp">
+                <h4>專案經歷</h4>
+                <div class="outer">
+                    <div class="inner">
+                        <p>{{user.project}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="exp">
+                <h4>專業證照</h4>
+                <div class="textblock">
+                    <p>{{user.license}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="box4">
+            <div class="exp">
+                <h4>測評資料</h4>
+                <div class="textblock">
+                    <p>{{user.test}}</p>
+                </div>
+            </div>
+            <div class="exp">
+                <h4>優勢</h4>
+                <div class="textblock">
+                    <p>{{user.advantage}}</p>
+                </div>
+            </div>
+            <div class="exp">
+                <h4>待發展能力</h4>
+                <div class="textblock">
+                    <p>{{user.developed}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="box5">
+            <h4>未來發展規劃</h4>
+            <div class="textblock">
+                <p>{{user.future}}</p>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" ng-click="downloadMyPage()" class="btn btn-primary">Primary</button>
+
+</div>
+
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.js" integrity="sha512-B+gr+zLWg81qxVwvtYwKrmjvQtZKD/GGFF7jD80OfzbqFw+NsbS5faEqpCO7Q7oRw1bYi0+WLJf54j8Vm7NADw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>*@
+    <script src="~/Scripts/WebApp/Talent/TalentRecordCtrl.js"></script>
+    @*<script src="~/Scripts/WebApp/Talent/Happy.js"></script>*@
+}

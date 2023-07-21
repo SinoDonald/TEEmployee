@@ -1,0 +1,36 @@
+﻿@using TEEmployee.Models;
+
+<div ng-controller="TalentOptionCtrl" class="container" style="margin-top: 100px">
+    <div class="container">
+
+        <header class="mb-4 d-flex justify-content-between">
+            <h2>人才資料庫</h2>
+            <div>
+                <a class="btn btn-outline-primary btn-lg mr-2" href="" role="button">返回</a>
+            </div>
+        </header>
+
+        <div class="chartmenu mb-5">
+            <div>
+                <label for="SelectGroup">請選擇組別</label>
+                <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
+                    <option ng-repeat="group in groups" ng-class="{'highlight-select': group == '設計' || group == '規劃'|| group == '專管'|| group == '智慧軌道創新小組'|| group == '行政組'|| group == '計畫管理組'}" value="{{group}}">{{group}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-2 col-sm-2" ng-repeat="user in GetAll">
+                <img src="~/Content/CV/{{user.empno}}.jpg" class="img-thumbnail" alt="{{user.name}}">
+                <input type="submit" value={{user.name}} ng-click="TalentRecord(user.empno)" class="btn btn-warning" style="text-align:center" />
+            </div>
+        </div>
+
+        <div id="painting">
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="@Url.Versioned("~/Scripts/WebApp/Talent/TalentOptionCtrl.js")"></script>
+}

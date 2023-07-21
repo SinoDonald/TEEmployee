@@ -1,20 +1,16 @@
-﻿var app = angular.module('app', ['ui.router']);
+﻿var app = angular.module('app', ['ui.router', 'ngAnimate']);
 var config = { responseType: 'blob' };
 
 app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
     $stateProvider
-        .state('Skill', {
-            url: '/Skill',
-            templateUrl: 'Profession/Skill'
+        .state('TalentOption', {
+            url: '/TalentOption',
+            templateUrl: 'Talent/TalentOption'
         })
-        .state('Score', {
-            url: '/Score',
-            templateUrl: 'Profession/Score'
-        })
-        .state('Chart', {
-            url: '/Chart',
-            templateUrl: 'Profession/Chart'
+        .state('TalentRecord', {
+            url: '/TalentRecord',
+            templateUrl: 'Talent/TalentRecord'
         })
 
 }]);
@@ -26,68 +22,96 @@ app.run(['$http', '$window', function ($http, $window) {
 
 app.service('appService', ['$http', function ($http) {
 
-    this.DownloadMyPage = (o) => {
-        return $http.post('Talent/DownloadMyPage', o, config);
+    // 取得群組
+    this.GetGroupList = (o) => {
+        return $http.post('Talent/GetGroupList', o);
+    };
+    // 取得所有員工履歷
+    this.GetAll = function (o) {
+        return $http.post('Talent/GetAll', o);
+    };
+    // 取得員工履歷
+    this.Get = function (o) {
+        return $http.post('Talent/Get', o);
     };
     
 }]);
 
 app.factory('dataservice', function () {
 
-    //var auth = {};
+    var user = {}
 
-    //return {
-    //    set: set,
-    //    get: get,
-    //}
+    function set(data) {
+        user.empno = data.empno;
+        user.name = data.name;
+        user.birthday = data.birthday;
+        user.age = data.age;
+        user.educational = data.educational;
+        user.experience = data.experience;
+        user.project = data.project;
+        user.license = data.license;
+        user.planning = data.planning;
+        user.test = data.test;
+        user.advantage = data.advantage;
+        user.developed = data.developed;
+        user.future = data.future;
+    }
 
-    //function set(data) {
-    //    auth = data;
-    //}
+    function get() {
+        return user;
+    }
 
-    //function get() {
-    //    return auth;
-    //}
+    return {
+        set: set,
+        get: get,
+    }
+
 });
 
 
-app.controller('TalentCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', function ($scope, $location, appService, $rootScope, $q) {
+app.controller('TalentCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', function ($scope, $location, $window, appService, $rootScope) {
 
-    var reader = new FileReader();
+    $location.path('/TalentOption');
 
-    $scope.downloadMyPage = () => {
-        appService.DownloadMyPage({ name: $scope.name }).then((ret) => {
+}]);
 
-            // set response type of angular http to 'blob', or the default it string or JSON
+app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'dataservice', function ($scope, $location, $window, appService, $rootScope, $q, dataservice) {
 
-            // get the file name from response header
-            const contentDispositionHeader = ret.headers('Content-Disposition');
-            const fileName = contentDispositionHeader.split(';')[1].trim().split('=')[1].replace(/"/g, '');            
+     // 取得群組
+    let groups = appService.GetGroupList({});
+    $q.all([groups]).then((ret) => {
+        $scope.groups = ret[0].data;
+        $scope.selectedGroup = $scope.groups[0];
+        $scope.FilterDataByGroup($scope.selectedGroup);
+    });
 
-            // Create blob object with type(optional, used for createObjectURL)
-            var blob = new Blob([ret.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
-            // Call Filesaver.js to save it with filename(type inclueded)
-            // Benefit: filename
-            saveAs(blob, fileName);
-
-            // Other method - use URL.createObjectURL or FileReader
-            // Cons: Can not define filename
-
-            // Method 2
-            //var objectUrl = URL.createObjectURL(blob);
-            //window.open(objectUrl);
-
-            // Method 3
-            //reader.readAsDataURL(new Blob([ret.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+    // 取得所有員工履歷
+    appService.GetAll({ })
+        .then(function (ret) {
+            $scope.GetAll = ret.data;
         })
+        .catch(function (ret) {
+            alert('Error');
+        });
+
+    // 選擇要看的成員
+    $scope.TalentRecord = function (data) {
+        // 取得員工履歷
+        appService.Get({ empno: data })
+            .then(function (ret) {
+                $scope.Get = ret.data;
+                dataservice.set(ret.data[0]);
+                $location.path('/TalentRecord');
+            })
+            .catch(function (ret) {
+                alert('Error');
+            });
     }
 
-    // Method 3
-    //reader.onload = function (e) {
-    //    window.open(decodeURIComponent(reader.result), '_self', '', false);
-    //}
+}]);
 
-   
+app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', 'dataservice', function ($scope, $location, $window, appService, $rootScope, dataservice) {
+
+    $scope.user = dataservice.get(); // 取得員工履歷
 
 }]);

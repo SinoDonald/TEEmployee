@@ -62,6 +62,7 @@ namespace TEEmployee.Models
         public string empno { get; set; }
         public string name { get; set; }
         public string birthday { get; set; }
+        public string age { get; set; }
         public string address { get; set; }
         public string educational { get; set; }
         public string expertise { get; set; }
@@ -73,7 +74,11 @@ namespace TEEmployee.Models
         public string honor { get; set; }
         public string experience { get; set; }
         public string project { get; set; }
-        public string picture { get; set; }
         public string lastest_update { get; set; }
+        public string planning { get; set; } // 規劃進程
+        public string test { get; set; } // 測評資料
+        public string advantage { get; set; } // 優勢
+        public string developed { get; set; } // 待發展能力
+        public string future { get; set; } // 未來發展規劃
     }
 }
