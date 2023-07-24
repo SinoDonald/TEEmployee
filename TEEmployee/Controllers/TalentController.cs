@@ -65,7 +65,6 @@ namespace TEEmployee.Controllers
             var ret = _service.GetAll(empno);
             return Json(ret);
         }
-<<<<<<< HEAD
         // 儲存回覆
         [HttpPost]
         public JsonResult SaveResponse(CV userCV)
@@ -79,8 +78,6 @@ namespace TEEmployee.Controllers
             
             return Json(ret);
         }
-        
-=======
 
         [HttpPost]
         public ActionResult UploadFile(HttpPostedFileBase files)
@@ -103,8 +100,6 @@ namespace TEEmployee.Controllers
         //    return Json(res);
         //}
 
-
->>>>>>> c860c4d56355ad0e08439122030ff00d9ce645fb
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();
