@@ -164,7 +164,7 @@ namespace TEEmployee.Models
 
                 // Delete the file after reading it
 
-                File.Delete(fn);
+                //File.Delete(fn);
             }
             catch
             {

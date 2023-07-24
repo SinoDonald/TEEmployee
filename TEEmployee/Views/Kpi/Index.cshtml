@@ -1,0 +1,108 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+@section Styles {
+    <style>
+        
+        header {
+            margin-top: 100px;
+        }
+
+        .chartmenu {
+            display: flex;
+            margin-bottom: 40px;
+        }
+
+            .chartmenu div {
+                flex: 1;
+                margin: 0 20px;
+            }
+
+        
+    </style>
+}
+
+<header></header>
+
+<div ng-controller="KpiCtrl" class="container">
+
+    <div class="chartmenu">
+        <div>
+            <label for="SelectYear">年份</label>
+            <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" ng-change="selectYear()" aria-label="Select the Year">
+                <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+            </select>
+        </div>
+        <div>
+            <label for="SelectManager">群組</label>
+            <select class="form-select manager" id="SelectManager" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
+                <option value="" disabled selected>Select your option</option>
+                <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
+            </select>
+        </div>
+        <div>
+            <label for="SelectCategory">員工</label>
+            <select class="form-select" id="SelectCategory" name="SelectEmployee" ng-model="selectedEmployee" ng-change="selectEmployee()" aria-label="Select the Category">
+                <option value="" disabled selected>Select your option</option>
+                <option ng-repeat="employee in employees" value="{{employee}}">{{employee}}</option>
+            </select>
+        </div>
+        <div>
+            <label for="SelectCategory">類型</label>
+            <select class="form-select" id="SelectCategory" name="SelectType" ng-model="selectedType" ng-change="selectType()" aria-label="Select the Category">
+                <option value="" disabled selected>Select your option</option>
+                <option ng-repeat="kpiType in kpiTypes" value="{{kpiType}}">{{kpiType}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div>
+        <div ng-model="datum">
+            <p>{{datum.empno}} - {{datum.name}} - {{datum.kpi_type}} - {{datum.group_name}}</p>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 8%">項目</th>
+                <th>預期目標值</th>
+                <th>權重</th>
+                <th>自我檢視</th>
+                <th>說明</th>
+                <th>主管檢視</th>
+                <th>自我檢視</th>
+                <th>說明</th>
+                <th>主管檢視</th>
+                <th>雙方溝通</th>
+                <th>分數</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr ng-repeat="item in datum.items">
+                <td ng-bind="item.content"></td>
+                <td ng-bind="item.target"></td>
+                <td ng-bind="item.weight"></td>
+                <td ng-bind="item.h1_employee_check"></td>
+                <td ng-bind="item.h1_manager_check"></td>
+                <td ng-bind="item.h1_reason"></td>
+                <td ng-bind="item.h2_employee_check"></td>
+                <td ng-bind="item.h2_manager_check"></td>
+                <td ng-bind="item.h2_reason"></td>
+                <td ng-bind="item.consensual"></td>
+                <td ng-bind="item.weight"></td>
+            </tr>
+                    
+        </tbody>
+    </table>
+
+
+
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/WebApp/Kpi/KpiCtrl.js"></script>
+}

@@ -65,6 +65,7 @@ namespace TEEmployee.Controllers
             var ret = _service.GetAll(empno);
             return Json(ret);
         }
+<<<<<<< HEAD
         // 儲存回覆
         [HttpPost]
         public JsonResult SaveResponse(CV userCV)
@@ -79,6 +80,31 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
         
+=======
+
+        [HttpPost]
+        public ActionResult UploadFile(HttpPostedFileBase files)
+        {
+            var num = HttpContext.Request.Files.Count;
+
+            var file = HttpContext.Request.Files[0];
+
+            //Cat ret = new Cat { Name = "Momk", Age = 66 };
+            var ret = true;
+            var jj = Json(ret);
+            return jj;
+        }
+
+        //[HttpPost]
+        //public ActionResult UploadFile(FormCollection form)
+        //{
+        //    var name = form.GetValue("firstName");
+        //    bool res = true;
+        //    return Json(res);
+        //}
+
+
+>>>>>>> c860c4d56355ad0e08439122030ff00d9ce645fb
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

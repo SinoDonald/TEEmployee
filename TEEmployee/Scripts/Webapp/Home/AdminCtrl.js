@@ -40,6 +40,11 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Home/TalentUpdate', o);
     };
 
+    this.InsertKpiModels = function (o) {
+        return $http.post('Kpi/InsertKpiModels', o);
+    };
+
+
 }]);
 
 app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
@@ -197,6 +202,17 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
             }
         });
 
+    }
+
+    $scope.InsertKpiModels = () => {
+
+        appService.InsertKpiModels({})
+            .then((ret) => {
+                console.log("succeed");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
     }
 
 }]);
