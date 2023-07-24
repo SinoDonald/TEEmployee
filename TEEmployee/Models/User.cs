@@ -61,10 +61,19 @@ namespace TEEmployee.Models
     {
         public string empno { get; set; }
         public string name { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string group { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string group_one { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string group_two { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string group_three { get; set; }
         public string birthday { get; set; }
         public string age { get; set; }
         public string address { get; set; }
         public string educational { get; set; }
+        public string performance { get; set; }
         public string expertise { get; set; }
         public string treatise { get; set; }
         public string language { get; set; }

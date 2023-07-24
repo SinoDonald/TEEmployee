@@ -25,10 +25,11 @@ namespace TEEmployee.Models.Talent
 
             if (user.department_manager)
             {
-                groups = new List<string> { "規劃", "設計", "專管" };
+                groups = new List<string> { "全部顯示", "規劃", "設計", "專管" };
             }
             else
             {
+                groups.Add("全部顯示");
                 groups.Add(user.group);
                 allEmployees = allEmployees.Where(x => x.group == user.group).ToList();
             }
@@ -89,7 +90,14 @@ namespace TEEmployee.Models.Talent
         // 人才資料庫 <-- 培文
         public void TalentUpdate()
         {
-            _talentRepository.ReadWord(); // 讀取Word人員履歷表
+            List<User> userGroups = new UserRepository().UserGroups(); // 取得員工群組
+            _talentRepository.SaveUserCV(userGroups); // 讀取Word人員履歷表
+        }
+        // 儲存回覆
+        public CV SaveResponse(CV userCV)
+        {
+            CV ret = _talentRepository.SaveResponse(userCV);
+            return ret;
         }
 
         public void Dispose()

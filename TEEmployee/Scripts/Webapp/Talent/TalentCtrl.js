@@ -34,6 +34,10 @@ app.service('appService', ['$http', function ($http) {
     this.Get = function (o) {
         return $http.post('Talent/Get', o);
     };
+    // 儲存回覆
+    this.SaveResponse = function (o) {
+        return $http.post('Talent/SaveResponse', o);
+    };
     
 }]);
 
@@ -44,12 +48,17 @@ app.factory('dataservice', function () {
     function set(data) {
         user.empno = data.empno;
         user.name = data.name;
+        user.group = data.group;
+        user.group_one = data.group_one;
+        user.group_two = data.group_two;
+        user.group_three = data.group_three;
         user.birthday = data.birthday;
         user.age = data.age;
-        user.educational = data.educational;
-        user.experience = data.experience;
-        user.project = data.project;
-        user.license = data.license;
+        user.educational = data.educational.split('　');
+        user.performance = data.performance.split('\n');
+        user.experience = data.experience.split('\n');
+        user.project = data.project.split('\n');
+        user.license = data.license.split('\n');
         user.planning = data.planning;
         user.test = data.test;
         user.advantage = data.advantage;
@@ -77,6 +86,15 @@ app.controller('TalentCtrl', ['$scope', '$location', '$window', 'appService', '$
 
 app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'dataservice', function ($scope, $location, $window, appService, $rootScope, $q, dataservice) {
 
+    // 取得所有員工履歷
+    appService.GetAll({})
+        .then(function (ret) {
+            $scope.GetAll = ret.data;
+        })
+        .catch(function (ret) {
+            alert('Error');
+        });
+
      // 取得群組
     let groups = appService.GetGroupList({});
     $q.all([groups]).then((ret) => {
@@ -85,14 +103,18 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
         $scope.FilterDataByGroup($scope.selectedGroup);
     });
 
-    // 取得所有員工履歷
-    appService.GetAll({ })
-        .then(function (ret) {
-            $scope.GetAll = ret.data;
-        })
-        .catch(function (ret) {
-            alert('Error');
-        });
+    // 依群組顯示
+    $scope.FilterDataByGroup = function (selectedGroup) {
+        $scope.data = [];
+        for (let item of $scope.GetAll) {
+            if (selectedGroup === '全部顯示') {
+                $scope.data.push(item);
+            }
+            else if (item.group === selectedGroup || item.group_one === selectedGroup || item.group_two === selectedGroup || item.group_three === selectedGroup) {
+                $scope.data.push(item);
+            }
+        }
+    }
 
     // 選擇要看的成員
     $scope.TalentRecord = function (data) {
@@ -113,5 +135,24 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
 app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', 'dataservice', function ($scope, $location, $window, appService, $rootScope, dataservice) {
 
     $scope.user = dataservice.get(); // 取得員工履歷
+
+    // 回上頁
+    $scope.ToTalent = function () {
+        $window.location.href = 'Talent#!/TalentOption';
+    }
+
+    // 儲存
+    $scope.SaveResponse = function (data) {
+        // 取得員工履歷
+        appService.SaveResponse({ userCV: data })
+            .then(function (ret) {
+                if (ret.data === true) { alert('儲存成功'); }
+                else { alert('僅限協理儲存'); }
+                $location.path('/TalentOption');
+            })
+            .catch(function (ret) {
+                alert('Error');
+            });
+    }
 
 }]);

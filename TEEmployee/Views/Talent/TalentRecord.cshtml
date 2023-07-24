@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "TalentRecord";
 }
 
@@ -20,7 +19,7 @@
         <div class="box2">
             <h4>規劃進程</h4>
             <div class="textblock">
-                <p>{{user.planning}}</p>
+                <textarea ng-model="user.planning" name="SaveResponse" cols="50" rows="6" tabindex="0">{{user.planning}}</textarea>
             </div>
         </div>
         <div class="box3">
@@ -30,38 +29,50 @@
                     <span>學校</span>
                     <span>科系</span>
                 </h4>
-                <div class="inner">
-                    <p>{{user.educational}}</p>
+                <div class="container">
+                    <div class="row align-items-start">
+                        <div class="col">
+                            {{user.educational[2]}}
+                        </div>
+                        <div class="col">
+                            {{user.educational[0]}}
+                        </div>
+                        <div class="col">
+                            {{user.educational[1]}}
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="exp">
                 <h4>近三年考績</h4>
                 <div class="inner">
-                    <p>甲</p>
-                    <p>乙</p>
-                    <p>丙</p>
+                    <div class="col">
+                        {{user.performance[0]}}
+                    </div>
+                    <div class="col">
+                        {{user.performance[1]}}
+                    </div>
+                    <div class="col">
+                        {{user.performance[2]}}
+                    </div>
                 </div>
             </div>
             <div class="exp">
                 <h4>職位經歷</h4>
-                <div class="outer">
-                    <div class="inner">
-                        <h3>{{user.experience}}</h3>
-                    </div>
+                <div ng-repeat="experience in user.experience">
+                    <p>{{experience}}</p>
                 </div>
             </div>
             <div class="exp">
                 <h4>專案經歷</h4>
-                <div class="outer">
-                    <div class="inner">
-                        <p>{{user.project}}</p>
-                    </div>
+                <div ng-repeat="project in user.project">
+                    <p>{{project}}</p>
                 </div>
             </div>
             <div class="exp">
                 <h4>專業證照</h4>
-                <div class="textblock">
-                    <p>{{user.license}}</p>
+                <div ng-repeat="license in user.license">
+                    <p>{{license}}</p>
                 </div>
             </div>
         </div>
@@ -69,38 +80,40 @@
             <div class="exp">
                 <h4>測評資料</h4>
                 <div class="textblock">
-                    <p>{{user.test}}</p>
+                    <textarea ng-model="user.test" name="SaveResponse" cols="50" rows="6" tabindex="1">{{user.test}}</textarea>
                 </div>
             </div>
             <div class="exp">
                 <h4>優勢</h4>
                 <div class="textblock">
-                    <p>{{user.advantage}}</p>
+                    <textarea ng-model="user.advantage" name="SaveResponse" cols="50" rows="6" tabindex="2">{{user.advantage}}</textarea>
                 </div>
             </div>
             <div class="exp">
                 <h4>待發展能力</h4>
                 <div class="textblock">
-                    <p>{{user.developed}}</p>
+                    <textarea ng-model="user.developed" name="SaveResponse" cols="50" rows="6" tabindex="3">{{user.developed}}</textarea>
                 </div>
             </div>
         </div>
         <div class="box5">
             <h4>未來發展規劃</h4>
             <div class="textblock">
-                <p>{{user.future}}</p>
+                <textarea ng-model="user.future" name="SaveResponse" cols="50" rows="6" tabindex="4">{{user.future}}</textarea>
             </div>
         </div>
     </div>
 
-    <button type="button" ng-click="downloadMyPage()" class="btn btn-primary">Primary</button>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="返回" ng-click="ToTalent()" class="btn btn-warning" />
+            <input type="submit" value="儲存" ng-click="SaveResponse(user)" class="btn btn-warning" />
+        </div>
+    </div>
 
 </div>
 
 
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.js" integrity="sha512-B+gr+zLWg81qxVwvtYwKrmjvQtZKD/GGFF7jD80OfzbqFw+NsbS5faEqpCO7Q7oRw1bYi0+WLJf54j8Vm7NADw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>*@
     <script src="~/Scripts/WebApp/Talent/TalentRecordCtrl.js"></script>
-    @*<script src="~/Scripts/WebApp/Talent/Happy.js"></script>*@
 }

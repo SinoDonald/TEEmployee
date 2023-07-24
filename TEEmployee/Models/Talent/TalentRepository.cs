@@ -44,7 +44,7 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
         // 讀取Word人員履歷表
-        public List<CV> ReadWord()
+        public List<CV> SaveUserCV(List<User> userGroups)
         {
             List<CV> userCVs = new List<CV>();
             string folderPath = Path.Combine(_appData, "Talent\\CV"); // 人員履歷表Word檔路徑
@@ -66,6 +66,24 @@ namespace TEEmployee.Models.Talent
                                 try
                                 {
                                     CV userCV = ReadWord(doc, empno, lastUpdate);
+                                    // 加入使用者群組
+                                    User user = userGroups.Where(x => x.empno.ToString().Equals(empno)).FirstOrDefault();
+                                    if (user != null)
+                                    {
+                                        try
+                                        {
+                                            userCV.group = user.group;
+                                            userCV.group_one = user.group_one;
+                                            userCV.group_two = user.group_two;
+                                            userCV.group_three = user.group_three;
+                                        }
+                                        catch (Exception)
+                                        {
+
+                                        }
+                                    }
+                                    // 加入三年績效考核
+                                    userCV.performance = "甲\n乙\n丙";
                                     userCVs.Add(userCV);
                                 }
                                 catch(Exception)
@@ -205,8 +223,8 @@ namespace TEEmployee.Models.Talent
                 string sql = @"DELETE FROM userCV";
                 _conn.Execute(sql);
 
-                sql = @"INSERT INTO userCV (empno, name, birthday, age, address, educational, expertise, treatise, language, academic, license, training, honor, experience, project, lastest_update, planning, test, advantage, developed, future)
-                            VALUES(@empno, @name, @birthday, @age, @address, @educational, @expertise, @treatise, @language, @academic, @license, @training, @honor, @experience, @project, @lastest_update, @planning, @test, @advantage, @developed, @future)";
+                sql = @"INSERT INTO userCV (empno, name, 'group', group_one, group_two, group_three, birthday, age, address, educational, performance, expertise, treatise, language, academic, license, training, honor, experience, project, lastest_update, planning, test, advantage, developed, future)
+                            VALUES(@empno, @name, @group, @group_one, @group_two, @group_three, @birthday, @age, @address, @educational, @performance, @expertise, @treatise, @language, @academic, @license, @training, @honor, @experience, @project, @lastest_update, @planning, @test, @advantage, @developed, @future)";
                 _conn.Execute(sql, userCVs);
 
                 tran.Commit();
@@ -215,6 +233,20 @@ namespace TEEmployee.Models.Talent
             _conn.Close();
 
             return ret;
+        }
+        // 儲存回覆
+        public CV SaveResponse(CV userCV)
+        {
+            _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                string sql = @"UPDATE userCV SET planning=@planning, test=@test, advantage=@advantage, developed=@developed, future=@future WHERE empno=@empno";
+                _conn.Execute(sql, userCV, tran);
+                tran.Commit();
+
+                return userCV;
+            }
         }
 
         public void Dispose()

@@ -7,7 +7,8 @@ namespace TEEmployee.Models.Talent
 {
     public interface ITalentRepository
     {
-        List<CV> ReadWord(); // 讀取Word人員履歷表
+        List<CV> SaveUserCV(List<User> userGroups); // 讀取Word人員履歷表
+        CV SaveResponse(CV userCV); // 儲存回覆
         void Dispose();
     }
 }

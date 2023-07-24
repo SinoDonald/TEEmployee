@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TEEmployee.Models;
 using TEEmployee.Models.Talent;
 
 namespace TEEmployee.Controllers
@@ -64,7 +65,20 @@ namespace TEEmployee.Controllers
             var ret = _service.GetAll(empno);
             return Json(ret);
         }
-
+        // 儲存回覆
+        [HttpPost]
+        public JsonResult SaveResponse(CV userCV)
+        {
+            var ret = false;
+            if (Session["empno"].ToString() == "4125")
+            {
+                _service.SaveResponse(userCV);
+                ret = true;
+            }
+            
+            return Json(ret);
+        }
+        
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

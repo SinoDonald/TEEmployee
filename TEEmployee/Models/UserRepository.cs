@@ -164,6 +164,17 @@ namespace TEEmployee.Models
             return groups;
         }
 
+        // 取得員工群組 <-- 培文
+        public List<User> UserGroups()
+        {
+            List<User> ret;
+
+            string sql = @"SELECT * FROM userExtra";
+            ret = _conn.Query<User>(sql).ToList();
+
+            return ret;
+        }
+
         //public bool DeleteUserExtra()
         //{
         //    int ret;
