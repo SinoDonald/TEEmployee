@@ -54,7 +54,75 @@ namespace TEEmployee.Models.Kpi
             ret = _conn.Execute(sql, kpiModels);
 
             return ret > 0;
-        }        
+        }
+
+        public List<KpiItem> UpsertKpiItems(List<KpiItem> items)
+        {
+            if (_conn.State == 0)
+                _conn.Open();
+
+            // collection parameter not support returning
+            // id is the primary key for kpiitems. Not suited for upsert sql command because new item has to got a non-repeated id first
+            string insertSql = @"INSERT INTO KpiItem (kpi_id, content, target, weight, h1_employee_check, h1_manager_check,
+                    h1_reason, h2_employee_check, h2_manager_check, h2_reason, consensual) 
+                    VALUES(@kpi_id, @content, @target, @weight, @h1_employee_check, @h1_manager_check,
+                    @h1_reason, @h2_employee_check, @h2_manager_check, @h2_reason, @consensual)
+                    RETURNING *";
+
+            string updateSql = @"UPDATE KpiItem 
+                    SET content=@content, target=@target, weight=@weight, h1_employee_check=@h1_employee_check, 
+                    h1_manager_check=@h1_manager_check, h1_reason=@h1_reason, h2_employee_check=@h2_employee_check, 
+                    h2_manager_check=@h2_manager_check, h2_reason=@h2_reason, consensual=@consensual
+                    WHERE id=@id
+                    RETURNING *";
+
+            var ret = new List<KpiItem>();
+
+            using (var tran = _conn.BeginTransaction())
+            {                
+                try
+                {
+                    foreach (var item in items)
+                    {
+                        if (item.id == 0)
+                        {
+                            ret.Add(_conn.QuerySingle<KpiItem>(insertSql, item, tran));
+                        }
+                        else
+                        {
+                            ret.Add(_conn.QuerySingle<KpiItem>(updateSql, item, tran));
+                        }
+
+                    }
+
+                    tran.Commit();
+                }
+                catch (Exception e)
+                {
+                    int a = 0;
+                }
+
+                return ret;
+            }
+        }
+
+
+        public bool DeleteKpiItems(List<KpiItem> items)
+        {
+            int ret = 0;
+            string sql = @"DELETE FROM KpiItem WHERE id=@id";
+
+            try
+            {
+                ret = _conn.Execute(sql, items);
+            }
+            catch (Exception e)
+            {
+                ret = -1;
+            }
+
+            return ret >= 0;
+        }
 
         public void Dispose()
         {
@@ -63,6 +131,6 @@ namespace TEEmployee.Models.Kpi
             return;
         }
 
-        
+
     }
 }

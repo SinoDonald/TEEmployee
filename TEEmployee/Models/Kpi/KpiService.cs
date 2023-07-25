@@ -43,6 +43,24 @@ namespace TEEmployee.Models.Kpi
             return ret.Distinct().OrderBy(x => x.empno).ToList();
         }
 
+        // 
+        public List<KpiItem> UpdateKpiItems(List<KpiItem> items, List<KpiItem> removedItems, string empno)
+        {
+            // TODO: Check authorization
+            
+            bool retDelete = true;
+            List<KpiItem> ret = null;
+
+            if (removedItems != null)
+                retDelete = _kpiRepository.DeleteKpiItems(removedItems);
+
+            if (!retDelete) return ret;
+
+            if (items != null)
+                ret = _kpiRepository.UpsertKpiItems(items);
+
+            return ret;
+        }
 
         // Insert, Update and Delete KpiModels based on current Users in database and kpi relationships this year
         public bool InsertKpiModels()

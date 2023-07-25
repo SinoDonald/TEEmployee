@@ -264,6 +264,7 @@
     <Content Include="Content\css\animate-btn.css" />
     <Content Include="Content\css\custom.css" />
     <Content Include="Content\css\starstyles.css" />
+    <Content Include="Content\css\switch-btn.css" />
     <Content Include="Content\css\table.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />

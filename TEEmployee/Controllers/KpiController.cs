@@ -32,6 +32,14 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
+        public JsonResult UpdateKpiItems(List<KpiItem> items, List<KpiItem> removedItems)
+        {
+            var ret = _service.UpdateKpiItems(items, removedItems, Session["empno"].ToString());
+
+            return Json(ret);
+        }
+
+        [HttpPost]
         public JsonResult InsertKpiModels()
         {
             var ret = _service.InsertKpiModels();

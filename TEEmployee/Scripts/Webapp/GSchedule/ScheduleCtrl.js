@@ -244,8 +244,14 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         $scope.modal.createMode = false;
         //$scope.modal.history = JSON.stringify(sData);
 
-        if (groupSchedule)
-            $scope.modal.parentContent = groupSchedule.content;        
+        
+        if (groupSchedule) {
+            // show group schedule content in detail schedule modal 
+            $scope.modal.parentContent = groupSchedule.content;
+            // update projno from group schedule
+            $scope.modal.projno = groupSchedule.projno;
+        }
+                  
 
         // MEMBER FILTER
 
@@ -794,6 +800,9 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
         $scope.modal.detailIndex = dIdx;
         $scope.modal.groupIndex = gIdx;
 
+        // update projno from group schedule
+        let groupSchedule = $scope.data[$scope.modal.groupIndex].Group
+        $scope.modal.projno = groupSchedule.projno;
     };
 
     $scope.createPersonalScheduleModal = (detailSchedule, dIdx, gIdx) => {
@@ -806,13 +815,17 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
             end_date: moment().locale('zh-tw').format('YYYY-MM-DD'),
             role: detailSchedule.role,
             parent_id: detailSchedule.id,
-            projno: detailSchedule.projno,
+            //projno: detailSchedule.projno,
             empno: $scope.auth.User.empno,
         };
 
         $scope.modal.detailIndex = dIdx;
         $scope.modal.groupIndex = gIdx;
         $scope.modal.createMode = true;
+
+        // update projno from group schedule
+        let groupSchedule = $scope.data[$scope.modal.groupIndex].Group;
+        $scope.modal.projno = groupSchedule.projno;
     };
 
     $scope.createSchedule = () => {

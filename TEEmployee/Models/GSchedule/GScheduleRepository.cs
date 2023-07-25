@@ -76,7 +76,7 @@ namespace TEEmployee.Models.GSchedule
 
             using (var tran = _conn.BeginTransaction())
             {
-                string sql = @"UPDATE Schedule SET member=@member, content=@content, start_date=@start_date, end_date=@end_date, percent_complete=@percent_complete, last_percent_complete=@last_percent_complete, history=@history WHERE id=@id";
+                string sql = @"UPDATE Schedule SET member=@member, content=@content, start_date=@start_date, end_date=@end_date, percent_complete=@percent_complete, last_percent_complete=@last_percent_complete, history=@history, projno=@projno WHERE id=@id";
 
                 try
                 {
