@@ -10,6 +10,8 @@ namespace TEEmployee.Models.Kpi
     {
         List<KpiModel> GetAllKpiModels(int year);
         bool InsertKpiModels(List<KpiModel> kpiModels);
-        
+        List<KpiItem> UpsertKpiItems(List<KpiItem> items);
+        bool DeleteKpiItems(List<KpiItem> items);
+
     }
 }

@@ -11,7 +11,7 @@ namespace TEEmployee.Models.Kpi
         public int kpi_id { get; set; }
         public string content { get; set; }
         public string target { get; set; }
-        public int weight { get; set; }
+        public double weight { get; set; }
         public bool h1_employee_check { get; set; }
         public bool h1_manager_check { get; set; }
         public string h1_reason { get; set; }

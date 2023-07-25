@@ -4,8 +4,13 @@
 }
 
 @section Styles {
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link href="~/Content/css/animate-btn.css" rel="stylesheet">
+    <link href="~/Content/css/switch-btn.css" rel="stylesheet">
     <style>
-        
+
         header {
             margin-top: 100px;
         }
@@ -20,7 +25,9 @@
                 margin: 0 20px;
             }
 
-        
+        tfoot td {
+            text-align: right;
+        }
     </style>
 }
 
@@ -59,23 +66,33 @@
     </div>
 
     <div>
-        <div ng-model="datum">
+        @*<div ng-model="datum">
             <p>{{datum.empno}} - {{datum.name}} - {{datum.kpi_type}} - {{datum.group_name}}</p>
+        </div>*@
+
+        <div class="switch-button">
+            <input ng-model="showFirst" class="switch-button-checkbox" type="checkbox">
+            <label class="switch-button-label" for=""><span class="switch-button-label-span">上半年</span></label>
         </div>
     </div>
 
     <table class="table">
         <thead>
             <tr>
+                <th>
+                    <button ng-click="addKpiItem()" type="button" class="btn btn-sm">
+                        <span class="material-icons">playlist_add</span>
+                    </button>
+                </th>
                 <th style="width: 8%">項目</th>
                 <th>預期目標值</th>
                 <th>權重</th>
-                <th>自我檢視</th>
-                <th>說明</th>
-                <th>主管檢視</th>
-                <th>自我檢視</th>
-                <th>說明</th>
-                <th>主管檢視</th>
+                <th ng-show="showFirst">自我檢視</th>
+                <th ng-show="showFirst">說明</th>
+                <th ng-show="showFirst">主管檢視</th>
+                <th ng-show="!showFirst">自我檢視</th>
+                <th ng-show="!showFirst">說明</th>
+                <th ng-show="!showFirst">主管檢視</th>
                 <th>雙方溝通</th>
                 <th>分數</th>
             </tr>
@@ -83,21 +100,70 @@
 
         <tbody>
             <tr ng-repeat="item in datum.items">
-                <td ng-bind="item.content"></td>
-                <td ng-bind="item.target"></td>
-                <td ng-bind="item.weight"></td>
-                <td ng-bind="item.h1_employee_check"></td>
-                <td ng-bind="item.h1_manager_check"></td>
-                <td ng-bind="item.h1_reason"></td>
-                <td ng-bind="item.h2_employee_check"></td>
-                <td ng-bind="item.h2_manager_check"></td>
-                <td ng-bind="item.h2_reason"></td>
-                <td ng-bind="item.consensual"></td>
-                <td ng-bind="item.weight"></td>
+                <td>
+                    <button ng-click="removeKpiItem($index)" type="button" class="btn btn-sm">
+                        <span class="material-symbols-outlined">disabled_by_default</span>
+                    </button>
+                </td>
+                <td>
+                    <input ng-model="item.content" class="form-control" type="text" placeholder="項目">
+                </td>
+                <td>
+                    <input ng-model="item.target" class="form-control" type="text" placeholder="預期目標值">
+                </td>
+                <td>
+                    <div class="form-check">
+                        <input ng-model="item.weight" type="number" min="0" step="0.1" class="form-control" placeholder="權重">
+                    </div>
+                </td>
+                <td ng-show="showFirst">
+                    <div class="form-check">
+                        <input ng-model="item.h1_employee_check" class="form-check-input" type="checkbox">
+                    </div>
+                </td>
+                <td ng-show="showFirst">
+                    <input ng-model="item.h1_reason" class="form-control" type="text" placeholder="說明">
+                </td>
+                <td ng-show="showFirst">
+                    <div class="form-check">
+                        <input ng-model="item.h1_manager_check" class="form-check-input" type="checkbox">
+                    </div>
+                </td>
+                <td ng-show="!showFirst">
+                    <div class="form-check">
+                        <input ng-model="item.h2_employee_check" class="form-check-input" type="checkbox">
+                    </div>
+                </td>
+                <td ng-show="!showFirst">
+                    <input ng-model="item.h2_reason" class="form-control" type="text" placeholder="Default input">
+                </td>
+                <td ng-show="!showFirst">
+                    <div class="form-check">
+                        <input ng-model="item.h2_manager_check" class="form-check-input" type="checkbox">
+                    </div>
+                </td>
+                <td>
+                    <div class="form-check">
+                        <input ng-model="item.consensual" class="form-check-input" type="checkbox">
+                    </div>
+                </td>
+                <td ng-bind="item.consensual ? item.weight : 0"></td>
             </tr>
-                    
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="8">總分</td>
+                <td ng-bind="sumScore()"></td>
+            </tr>
+        </tfoot>
     </table>
+
+    @*<button ng-click="showFirst = !showFirst" type="button" class="btn">Basic</button>*@
+
+
+    <div>
+        <button class="animate-btn" id="button" type="button" ng-click="updateKpiItems()"></button>
+    </div>
 
 
 

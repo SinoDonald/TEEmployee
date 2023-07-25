@@ -11,18 +11,23 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Kpi/GetAllKpiModels', o);
     };
 
+    this.UpdateKpiItems = (o) => {
+        return $http.post('Kpi/UpdateKpiItems', o);
+    };
+
 }]);
 
 app.controller('KpiCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', function ($scope, $location, appService, $rootScope, $q) {
 
-
+    const aniBtn = document.querySelector(".animate-btn");
+    $scope.showFirst = true;
     $scope.years = [], $scope.employees = [];
-    $scope.kpiModels = [];
+    $scope.removedItems = [];
 
     let curYear = new Date().getFullYear();
     for (let i = curYear; i >= 2023; i--) {
         $scope.years.push(i);
-    }    
+    }
 
     $scope.selectYear = () => {
 
@@ -66,9 +71,76 @@ app.controller('KpiCtrl', ['$scope', '$location', 'appService', '$rootScope', '$
             .find(x => x.name === $scope.selectedEmployee
                 && x.group_name === $scope.selectedGroup
                 && x.kpi_type === $scope.selectedType);
+
+        // reset removed items
+        $scope.removedItems = [];
     }
 
     $scope.selectedYear = $scope.years[0].toString();
     $scope.selectYear();
+
+    // add at bottom
+    $scope.addKpiItem = () => {
+
+        if ($scope.datum) {
+            $scope.datum.items.push({
+                id: 0,
+                kpi_id: $scope.datum.id,
+                content: '',
+                target: '',
+                weight: 0,
+                h1_employee_check: false,
+                h1_manager_check: false,
+                h1_reason: '',
+                h2_employee_check: false,
+                h2_manager_check: false,
+                h2_reason: '',
+                consensual: false,
+            });
+        }
+    };
+
+    $scope.removeKpiItem = (idx) => {
+        $scope.removedItems.push($scope.datum.items[idx]);
+        $scope.datum.items.splice(idx, 1);
+    };
+
+    $scope.updateKpiItems = () => {
+
+        // Upsert and delete kpi items
+        appService.UpdateKpiItems({ items: $scope.datum.items, removedItems: $scope.removedItems }).then((ret) => {
+
+
+
+            if (ret.data) {
+                $scope.datum.items = ret.data;
+                $scope.removedItems = [];
+
+                aniBtn.classList.add('onclic');
+
+                setTimeout(function () {
+                    aniBtn.classList.remove('onclic');
+                    aniBtn.classList.add('validate');
+                    setTimeout(function () {
+                        aniBtn.classList.remove('validate');
+                    }, 1500);
+                }, 1500);
+
+            }
+
+        });
+    };
+
+    $scope.sumScore = () => {
+
+        if (!$scope.datum) return 0;
+
+        //console.log($scope.datum.items);
+
+        let scores = $scope.datum.items.map(x => (x.consensual ? x.weight : 0));
+        return scores.reduce((a, c) => (a + c)).toFixed(2);
+
+        //return $scope.datum.items.reduce((a, c) => (a.consensual ? a.weight : 0) + (c.consensual ? c.weight : 0)).toFixed(2);
+    }
 
 }]);

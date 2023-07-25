@@ -183,7 +183,9 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">計畫編號</span>
                         </div>
-                        <input ng-disabled="modal.type !== 1 || !modal.createMode" ng-model="modal.projno" type="text" class="form-control" placeholder="請輸入計畫編號" aria-label="Username" aria-describedby="basic-addon1">
+                        @*<input ng-disabled="modal.type !== 1 || !modal.createMode" ng-model="modal.projno" type="text" class="form-control" placeholder="請輸入計畫編號" aria-label="Username" aria-describedby="basic-addon1">*@
+                        <input ng-disabled="modal.type !== 1" ng-model="modal.projno" type="text" class="form-control" placeholder="請輸入計畫編號" aria-label="Username" aria-describedby="basic-addon1">
+
                     </div>
 
                     <!--fake-->
@@ -191,7 +193,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">主要工作項目</span>
                         </div>
-                        <input ng-model="modal.parentContent" type="text" class="form-control" placeholder="請輸入計畫編號" aria-label="Username" aria-describedby="basic-addon1" disabled>
+                        <input ng-model="modal.parentContent" type="text" class="form-control" placeholder="請輸入工作項目" aria-label="Username" aria-describedby="basic-addon1" disabled>
                     </div>
 
 
