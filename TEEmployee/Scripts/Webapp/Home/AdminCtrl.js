@@ -31,6 +31,10 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Home/UpdateAllPercentComplete', o);
     };
 
+    this.InsertKpiModels = function (o) {
+        return $http.post('Kpi/InsertKpiModels', o);
+    };
+
     // 通知測試 <-- 培文
     this.NotifyUpdate = function (o) {
         return $http.post('Home/NotifyUpdate', o);
@@ -39,11 +43,6 @@ app.service('appService', ['$http', function ($http) {
     this.TalentUpdate = function (o) {
         return $http.post('Home/TalentUpdate', o);
     };
-
-    this.InsertKpiModels = function (o) {
-        return $http.post('Kpi/InsertKpiModels', o);
-    };
-
 
 }]);
 
@@ -183,6 +182,17 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
         });
     }
 
+    $scope.InsertKpiModels = () => {
+
+        appService.InsertKpiModels({})
+            .then((ret) => {
+                console.log("succeed");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+
     // 通知測試 <-- 培文
     $scope.NotifyUpdate = () => {
 
@@ -193,6 +203,33 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
         });
 
     }
+    // 上傳員工名單
+    $(document).on("click", "#btnUpload", function () {
+        var files = $("#importFile").get(0).files;
+
+        var formData = new FormData();
+        formData.append('importFile', files[0]);
+
+        $.ajax({
+            url: '/Talent/ImportFile',
+            data: formData,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data.length > 0) {
+                    // 取得所有成員名單
+                    //$("#result").html(data);
+                    //$("#result").html('<font color="#ff0000">' + data + '</font>');
+                    $scope.Test = data;
+                    $("#result").html('<div class="row"><div class="col" style="align-items:center" ng-repeat="name in Test"><h6 class="list-group-item" style="color:crimson">{{ name.Name }}</h6></div></div>');
+                } else {
+                    alert("上傳檔案格式錯誤");
+                }
+            }
+        });
+
+    });
     // 人才資料庫 <-- 培文
     $scope.TalentUpdate = () => {
 
@@ -202,17 +239,6 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
             }
         });
 
-    }
-
-    $scope.InsertKpiModels = () => {
-
-        appService.InsertKpiModels({})
-            .then((ret) => {
-                console.log("succeed");
-            })
-            .catch((ret) => {
-                alert('Error');
-            });
     }
 
 }]);

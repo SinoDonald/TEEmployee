@@ -207,7 +207,10 @@ namespace TEEmployee.Models.Talent
             string returnParagraph = string.Empty;
             foreach (string paragraph in cells[1].Elements<Paragraph>().Select(o => o.InnerText).ToList())
             {
-                returnParagraph += paragraph + "\n";
+                if(paragraph != "")
+                {
+                    returnParagraph += paragraph + "\n";
+                }
             }
             return returnParagraph;
         }
@@ -216,21 +219,25 @@ namespace TEEmployee.Models.Talent
         {
             bool ret = false;
 
-            _conn.Open();
-            // 先確認資料庫中是否已更新當季的資料
-            using (var tran = _conn.BeginTransaction())
+            try
             {
-                string sql = @"DELETE FROM userCV";
-                _conn.Execute(sql);
+                _conn.Open();
+                // 先確認資料庫中是否已更新當季的資料
+                using (var tran = _conn.BeginTransaction())
+                {
+                    //string sql = @"DELETE FROM userCV";
+                    //_conn.Execute(sql);
+                    string sql = @"INSERT INTO userCV (empno, name, 'group', group_one, group_two, group_three, birthday, age, address, educational, performance, expertise, treatise, language, academic, license, training, honor, experience, project, lastest_update, planning, test, advantage, developed, future)
+                            VALUES(@empno, @name, @group, @group_one, @group_two, @group_three, @birthday, @age, @address, @educational, @performance, @expertise, @treatise, @language, @academic, @license, @training, @honor, @experience, @project, @lastest_update, @planning, @test, @advantage, @developed, @future)
+                            ON CONFLICT(empno)
+                            DO UPDATE SET name=@name, 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three, birthday=@birthday, age=@age, address=@address, educational=@educational, performance=@performance, expertise=@expertise, treatise=@treatise, language=@language, academic=@academic, license=@license, training=@training, honor=@honor, experience=@experience, project=@project, lastest_update=@lastest_update";
+                    _conn.Execute(sql, userCVs);
 
-                sql = @"INSERT INTO userCV (empno, name, 'group', group_one, group_two, group_three, birthday, age, address, educational, performance, expertise, treatise, language, academic, license, training, honor, experience, project, lastest_update, planning, test, advantage, developed, future)
-                            VALUES(@empno, @name, @group, @group_one, @group_two, @group_three, @birthday, @age, @address, @educational, @performance, @expertise, @treatise, @language, @academic, @license, @training, @honor, @experience, @project, @lastest_update, @planning, @test, @advantage, @developed, @future)";
-                _conn.Execute(sql, userCVs);
-
-                tran.Commit();
+                    tran.Commit();
+                }
+                _conn.Close();
             }
-
-            _conn.Close();
+            catch (Exception) { }
 
             return ret;
         }

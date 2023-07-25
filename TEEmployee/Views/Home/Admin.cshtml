@@ -12,12 +12,22 @@
     </style>
 }
 
-
 <div ng-controller="AdminCtrl" class="container">
 
     <header>
         <h2>Admin0512</h2>
     </header>
+
+    <div>
+        <br>
+        @using (Html.BeginForm("Uploaded", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @*因為要多個上傳 所以要用到multiple屬性*@
+            <input type="file" name="files" multiple />
+            <input type="submit" value="上傳員工履歷" />
+        }
+        <br><br>
+    </div>
 
     @if (Session["empno"] is "7596")
     {
@@ -42,19 +52,33 @@
             通知測試
         </button>
 
-        <button type="button" class="btn btn-outline-primary" name="addRow" ng-click="TalentUpdate()">
-            更新人才資料庫
-        </button>
-
         <button type="button" class="btn btn-outline-dark" name="addRow" ng-click="InsertKpiModels()">
             KPI
         </button>
+
+        @*<button type="button" class="btn btn-outline-primary" name="addRow" ng-click="TalentUpdate()">
+                更新人才資料庫
+            </button>*@
     }
 
     <div>
         <label for="input" class="btn btn-danger">匯入組織表</label>
         <input id="input" style="visibility:hidden;" type="file">
     </div>
+
+    @*<div class="row">
+            <div class="col-sm-12" style="padding-bottom:20px">
+                <div class="col-sm-2">
+                    <span>請選擇檔案：</span>
+                </div>
+                <div class="col-sm-3">
+                    <input class="form-control" type="file" name="importFile" id="importFile" />
+                </div>
+                <div class="col-sm-3">
+                    <input class="btn btn-primary" id="btnUpload" type="button" value="上傳員工名單" />
+                </div>
+            </div>
+        </div>*@
 
     @*<input class="btn btn-danger" type="file" id="input" />*@
 

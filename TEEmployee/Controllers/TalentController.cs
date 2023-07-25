@@ -1,6 +1,5 @@
-﻿using OfficeOpenXml;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -40,6 +39,24 @@ namespace TEEmployee.Controllers
         // Web API
         // -----------------------------------------
 
+        // 上傳員工履歷表多檔
+        public ActionResult Uploaded(HttpPostedFileBase[] files)
+        {
+            if (files.Count() > 0)
+            {
+                foreach (var uploadFile in files)
+                {
+                    if (uploadFile.ContentLength > 0)
+                    {
+                        string savePath = Path.Combine(Server.MapPath("~/App_Data"), "Talent\\CV\\"); // 人員履歷表Word檔路徑
+                        uploadFile.SaveAs(savePath + uploadFile.FileName);
+                    }
+                }
+                List<User> userGroups = new UserRepository().UserGroups(); // 取得員工群組
+                new TalentRepository().SaveUserCV(userGroups); // 讀取Word人員履歷表
+            }
+            return RedirectToAction("Index", "Home");
+        }
         // 取得群組
         [HttpPost]
         public JsonResult GetGroupList()
