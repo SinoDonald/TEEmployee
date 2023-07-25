@@ -70,7 +70,7 @@
             <p>{{datum.empno}} - {{datum.name}} - {{datum.kpi_type}} - {{datum.group_name}}</p>
         </div>*@
 
-        <div class="switch-button">
+        <div class="switch-button mb-3">
             <input ng-model="showLast" class="switch-button-checkbox" type="checkbox">
             <label class="switch-button-label" for=""><span class="switch-button-label-span">上半年</span></label>
         </div>
@@ -118,33 +118,33 @@
                 </td>
                 <td ng-show="!showLast">
                     <div class="form-check">
-                        <input ng-model="item.h1_employee_check" class="form-check-input" type="checkbox">
+                        <input ng-model="item.h1_employee_check" ng-disabled="auth != datum.empno" class="form-check-input" type="checkbox">
                     </div>
                 </td>
                 <td ng-show="!showLast">
-                    <input ng-model="item.h1_reason" class="form-control" type="text" placeholder="說明">
+                    <input ng-model="item.h1_reason" ng-disabled="auth == datum.empno" class="form-control" type="text" placeholder="說明詳細情形">
                 </td>
                 <td ng-show="!showLast">
                     <div class="form-check">
-                        <input ng-model="item.h1_manager_check" class="form-check-input" type="checkbox">
+                        <input ng-model="item.h1_manager_check" ng-disabled="auth == datum.empno" class="form-check-input" type="checkbox">
                     </div>
                 </td>
                 <td ng-show="showLast">
                     <div class="form-check">
-                        <input ng-model="item.h2_employee_check" class="form-check-input" type="checkbox">
+                        <input ng-model="item.h2_employee_check" ng-disabled="auth != datum.empno" class="form-check-input" type="checkbox">
                     </div>
                 </td>
                 <td ng-show="showLast">
-                    <input ng-model="item.h2_reason" class="form-control" type="text" placeholder="Default input">
+                    <input ng-model="item.h2_reason" ng-disabled="auth == datum.empno" class="form-control" type="text" placeholder="說明詳細情形">
                 </td>
                 <td ng-show="showLast">
                     <div class="form-check">
-                        <input ng-model="item.h2_manager_check" class="form-check-input" type="checkbox">
+                        <input ng-model="item.h2_manager_check" ng-disabled="auth == datum.empno" class="form-check-input" type="checkbox">
                     </div>
                 </td>
                 <td>
                     <div class="form-check">
-                        <input ng-model="item.consensual" class="form-check-input" type="checkbox">
+                        <input ng-model="item.consensual" ng-disabled="auth == datum.empno" class="form-check-input" type="checkbox">
                     </div>
                 </td>
                 <td ng-bind="item.consensual ? item.weight : 0"></td>

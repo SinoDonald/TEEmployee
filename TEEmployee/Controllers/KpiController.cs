@@ -47,6 +47,12 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        [HttpPost]
+        public JsonResult GetAuth()
+        {
+            return Json(Session["empno"].ToString());
+        }
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();
