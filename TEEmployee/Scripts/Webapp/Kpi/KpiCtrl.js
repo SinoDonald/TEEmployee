@@ -20,14 +20,19 @@ app.service('appService', ['$http', function ($http) {
 app.controller('KpiCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', function ($scope, $location, appService, $rootScope, $q) {
 
     const aniBtn = document.querySelector(".animate-btn");
-    $scope.showFirst = true;
+    $scope.showLast = false;
     $scope.years = [], $scope.employees = [];
     $scope.removedItems = [];
 
     let curYear = new Date().getFullYear();
+    let curMonth = new Date().getMonth();
+
     for (let i = curYear; i >= 2023; i--) {
         $scope.years.push(i);
     }
+    if (curMonth > 5)
+        $scope.showLast = true;
+
 
     $scope.selectYear = () => {
 
