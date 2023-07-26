@@ -203,42 +203,24 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
         });
 
     }
-    // 上傳員工名單
-    $(document).on("click", "#btnUpload", function () {
-        var files = $("#importFile").get(0).files;
 
-        var formData = new FormData();
-        formData.append('importFile', files[0]);
-
-        $.ajax({
-            url: '/Talent/ImportFile',
-            data: formData,
-            type: 'POST',
-            contentType: false,
-            processData: false,
-            success: function (data) {
-                if (data.length > 0) {
-                    // 取得所有成員名單
-                    //$("#result").html(data);
-                    //$("#result").html('<font color="#ff0000">' + data + '</font>');
-                    $scope.Test = data;
-                    $("#result").html('<div class="row"><div class="col" style="align-items:center" ng-repeat="name in Test"><h6 class="list-group-item" style="color:crimson">{{ name.Name }}</h6></div></div>');
-                } else {
-                    alert("上傳檔案格式錯誤");
-                }
-            }
-        });
-
+    // 儲存上傳檔案的檔名與最後修改時間
+    const filepicker = document.getElementById("filepicker");
+    filepicker.addEventListener("change", (event) => {
+        $scope.filesInfo = [];
+        const files = event.target.files;
+        for (const file of files) {
+            $scope.filesInfo.push(file.name + "：" + file.lastModifiedDate);
+        }
     });
+
     // 人才資料庫 <-- 培文
     $scope.TalentUpdate = () => {
-
-        appService.TalentUpdate({}).then((ret) => {
+        appService.TalentUpdate({ }).then((ret) => {
             if (ret.data) {
                 console.log("succeed");
             }
         });
-
     }
 
 }]);

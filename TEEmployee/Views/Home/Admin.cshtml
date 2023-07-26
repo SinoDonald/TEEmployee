@@ -23,7 +23,7 @@
         @using (Html.BeginForm("Uploaded", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             @*因為要多個上傳 所以要用到multiple屬性*@
-            <input type="file" name="files" multiple />
+            <input type="file" id="filepicker" name="files" multiple />
             <input type="submit" value="上傳員工履歷" />
         }
         <br><br>

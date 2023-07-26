@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace TEEmployee.Models.Talent
@@ -12,6 +14,41 @@ namespace TEEmployee.Models.Talent
         public TalentService()
         {
             _talentRepository = new TalentRepository();
+        }
+        // 比對上傳的檔案更新時間
+        public List<string> CompareLastestUpdate(List<string> filesInfo)
+        {
+            List<string> userNames = _talentRepository.CompareLastestUpdate(filesInfo);
+            return userNames;
+        }
+        // 上傳員工履歷表多檔, 並解析Word後存到SQL
+        public void Uploaded(HttpPostedFileBase[] files)
+        {
+            if (files.Count() > 0)
+            {
+                try
+                {
+                    //// 取得現在SQL存檔的更新時間
+                    //List<CV> userCVs = _talentRepository.GetLastestUpdate();
+                    foreach (HttpPostedFileBase uploadFile in files)
+                    {
+                        try
+                        {
+                            //string empno = Regex.Replace(Path.GetFileName(uploadFile.FileName), "[^0-9]", ""); // 僅保留數字
+                            //string lastest_update = userCVs.Where(x => x.empno.Equals(empno)).Select(x => x.lastest_update).FirstOrDefault();
+                            if (uploadFile.ContentLength > 0)
+                            {
+                                string savePath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data"), "Talent\\CV\\"); // 人員履歷表Word檔路徑
+                                uploadFile.SaveAs(savePath + uploadFile.FileName);
+                            }
+                        }
+                        catch (NullReferenceException) { }
+                    }
+                    List<User> userGroups = new UserRepository().UserGroups(); // 取得員工群組
+                    _talentRepository.SaveUserCV(userGroups); // 讀取Word人員履歷表
+                }
+                catch (Exception) { }
+            }
         }
         // 取得群組
         public List<string> GetGroupList(string empno)

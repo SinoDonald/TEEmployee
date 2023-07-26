@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System;
 using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Models;
 using TEEmployee.Models.Talent;
+using System.IO;
 
 namespace TEEmployee.Controllers
 {
@@ -40,26 +40,10 @@ namespace TEEmployee.Controllers
         // Web API
         // -----------------------------------------
 
-        // 上傳員工履歷表多檔
+        // 上傳員工履歷表多檔, 並解析Word後存到SQL
         public ActionResult Uploaded(HttpPostedFileBase[] files)
         {
-            if (files.Count() > 0)
-            {
-                try
-                {
-                    foreach (var uploadFile in files)
-                    {
-                        if (uploadFile.ContentLength > 0)
-                        {
-                            string savePath = Path.Combine(Server.MapPath("~/App_Data"), "Talent\\CV\\"); // 人員履歷表Word檔路徑
-                            uploadFile.SaveAs(savePath + uploadFile.FileName);
-                        }
-                    }
-                    List<User> userGroups = new UserRepository().UserGroups(); // 取得員工群組
-                    new TalentRepository().SaveUserCV(userGroups); // 讀取Word人員履歷表
-                }
-                catch (Exception) { }
-            }
+            _service.Uploaded(files);
             return RedirectToAction("Index", "Home");
         }
         // 取得群組
@@ -114,6 +98,12 @@ namespace TEEmployee.Controllers
             return jj;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            _service.Dispose();
+            base.Dispose(disposing);
+        }
+
         //[HttpPost]
         //public ActionResult UploadFile(FormCollection form)
         //{
@@ -121,12 +111,6 @@ namespace TEEmployee.Controllers
         //    bool res = true;
         //    return Json(res);
         //}
-
-        protected override void Dispose(bool disposing)
-        {
-            _service.Dispose();
-            base.Dispose(disposing);
-        }
 
         //[HttpPost]
         //public FileContentResult DownloadMyPage(string name)

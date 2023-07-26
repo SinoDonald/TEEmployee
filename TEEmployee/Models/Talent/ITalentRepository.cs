@@ -7,6 +7,8 @@ namespace TEEmployee.Models.Talent
 {
     public interface ITalentRepository
     {
+        List<string> CompareLastestUpdate(List<string> filesInfo); // 比對上傳的檔案更新時間
+        List<CV> GetLastestUpdate(); // 取得現在SQL存檔的更新時間
         List<CV> SaveUserCV(List<User> userGroups); // 讀取Word人員履歷表
         CV SaveResponse(CV userCV); // 儲存回覆
         void Dispose();

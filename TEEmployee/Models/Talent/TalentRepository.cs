@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -28,6 +27,12 @@ namespace TEEmployee.Models.Talent
             _conn = new SQLiteConnection(talentConnection);
             _appData = HttpContext.Current.Server.MapPath("~/App_Data");
         }
+        // 檔案版本比對
+        public class FileInfo
+        {
+            public string empno { get; set; }
+            public string lastModifiedDate { get; set; }
+        }
         // 取得員工履歷
         public List<CV> Get(string empno)
         {
@@ -40,6 +45,71 @@ namespace TEEmployee.Models.Talent
             }
 
             ret = _conn.Query<CV>(sql, new { empno }).ToList();
+
+            // 計算年齡, 民國轉西元後計算年齡
+            foreach (CV userCV in ret)
+            {
+                CultureInfo culture = new CultureInfo("zh-TW");
+                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                DateTime birthday = DateTime.Parse(userCV.birthday, culture);
+                DateTime now = DateTime.Now;
+                int age = now.Year - birthday.Year;
+                if (now.Month < birthday.Month || (now.Month == birthday.Month && now.Day < birthday.Day))
+                {
+                    age--;
+                }
+                userCV.age = age.ToString();
+            }
+
+            return ret;
+        }
+        // 比對上傳的檔案更新時間
+        public List<string> CompareLastestUpdate(List<string> filesInfo)
+        {
+            List<FileInfo> fileInfoList = FileLastestUpdate(filesInfo); // 解析更新上傳時間
+            List <CV> usersCV = GetLastestUpdate();
+            return filesInfo;
+        }
+        // 解析更新上傳時間
+        public List<FileInfo> FileLastestUpdate(List<string> filesInfo)
+        {
+            List<FileInfo> fileInfos = new List<FileInfo>();
+            foreach(string info in filesInfo)
+            {
+                try
+                {
+                    FileInfo fileInfo = new FileInfo();
+                    fileInfo.empno = Regex.Replace(Path.GetFileName(info.Split('：')[0]), "[^0-9]", ""); // 僅保留數字
+                    // 解析時間
+                    string lastModifiedDate = info.Split('：')[1];
+                    int GMTindex = lastModifiedDate.IndexOf("GMT");
+                    lastModifiedDate = lastModifiedDate.Substring(4, GMTindex);
+                    // 民國轉西元後計算年齡
+                    CultureInfo culture = new CultureInfo("zh-TW");
+                    culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                    DateTime birthday = DateTime.Parse(lastModifiedDate, culture);
+                }
+                catch(Exception) { }
+            }
+            return fileInfos;
+        }
+        // 取得現在SQL存檔的更新時間
+        public List<CV> GetLastestUpdate()
+        {
+            List<CV> ret = new List<CV>();
+            try
+            {
+                _conn.Open();
+                using (var tran = _conn.BeginTransaction())
+                {
+                    string sql = @"SELECT * FROM userCV";
+                    ret = _conn.Query<CV>(sql).ToList();
+
+                    tran.Commit();
+                }
+                _conn.Close();
+            }
+            catch (Exception) { }
 
             return ret;
         }
@@ -84,7 +154,10 @@ namespace TEEmployee.Models.Talent
                                     }
                                     // 加入三年績效考核
                                     userCV.performance = "甲\n乙\n丙";
-                                    userCVs.Add(userCV);
+                                    if(userCV.empno != null && userCV.name != null)
+                                    { 
+                                        userCVs.Add(userCV);
+                                    }
                                 }
                                 catch(Exception)
                                 { 
@@ -104,6 +177,15 @@ namespace TEEmployee.Models.Talent
                 UpdateUserCV(userCVs); // 更新資料庫
             }
             catch (Exception) { }
+
+            // 移除資料夾內檔案
+            try
+            {
+                DirectoryInfo directory = new DirectoryInfo(folderPath);
+                directory.EnumerateFiles().ToList().ForEach(f => f.Delete());
+                directory.EnumerateDirectories().ToList().ForEach(d => d.Delete(true));
+            }
+            catch(Exception) { }
 
             return userCVs;
         }
@@ -148,17 +230,6 @@ namespace TEEmployee.Models.Talent
                             break;
                         case "出生日期：":
                             userCV.birthday = cells[1].InnerText;
-                            // 民國轉西元後計算年齡
-                            CultureInfo culture = new CultureInfo("zh-TW");
-                            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-                            DateTime birthday = DateTime.Parse(cells[1].InnerText, culture);
-                            DateTime now = DateTime.Now;
-                            int age = now.Year - birthday.Year;
-                            if(now.Month < birthday.Month || (now.Month == birthday.Month && now.Day < birthday.Day))
-                            {
-                                age--;
-                            }
-                            userCV.age = age.ToString();
                             break;
                         case "出 生 地：":
                             userCV.address = cells[1].InnerText;
@@ -227,10 +298,10 @@ namespace TEEmployee.Models.Talent
                 {
                     //string sql = @"DELETE FROM userCV";
                     //_conn.Execute(sql);
-                    string sql = @"INSERT INTO userCV (empno, name, 'group', group_one, group_two, group_three, birthday, age, address, educational, performance, expertise, treatise, language, academic, license, training, honor, experience, project, lastest_update, planning, test, advantage, developed, future)
-                            VALUES(@empno, @name, @group, @group_one, @group_two, @group_three, @birthday, @age, @address, @educational, @performance, @expertise, @treatise, @language, @academic, @license, @training, @honor, @experience, @project, @lastest_update, @planning, @test, @advantage, @developed, @future)
+                    string sql = @"INSERT INTO userCV (empno, name, 'group', group_one, group_two, group_three, birthday, address, educational, performance, expertise, treatise, language, academic, license, training, honor, experience, project, lastest_update, planning, test, advantage, developed, future)
+                            VALUES(@empno, @name, @group, @group_one, @group_two, @group_three, @birthday, @address, @educational, @performance, @expertise, @treatise, @language, @academic, @license, @training, @honor, @experience, @project, @lastest_update, @planning, @test, @advantage, @developed, @future)
                             ON CONFLICT(empno)
-                            DO UPDATE SET name=@name, 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three, birthday=@birthday, age=@age, address=@address, educational=@educational, performance=@performance, expertise=@expertise, treatise=@treatise, language=@language, academic=@academic, license=@license, training=@training, honor=@honor, experience=@experience, project=@project, lastest_update=@lastest_update";
+                            DO UPDATE SET name=@name, 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three, birthday=@birthday, address=@address, educational=@educational, performance=@performance, expertise=@expertise, treatise=@treatise, language=@language, academic=@academic, license=@license, training=@training, honor=@honor, experience=@experience, project=@project, lastest_update=@lastest_update";
                     _conn.Execute(sql, userCVs);
 
                     tran.Commit();
