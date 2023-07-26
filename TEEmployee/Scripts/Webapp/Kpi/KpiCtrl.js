@@ -7,6 +7,10 @@ app.run(['$http', '$window', function ($http, $window) {
 
 app.service('appService', ['$http', function ($http) {
 
+    this.GetAuth = (o) => {
+        return $http.post('Kpi/GetAuth', o);
+    };
+
     this.GetAllKpiModels = (o) => {
         return $http.post('Kpi/GetAllKpiModels', o);
     };
@@ -18,6 +22,10 @@ app.service('appService', ['$http', function ($http) {
 }]);
 
 app.controller('KpiCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', function ($scope, $location, appService, $rootScope, $q) {
+
+    appService.GetAuth({}).then((ret) => {
+        $scope.auth = ret.data;
+    });
 
     const aniBtn = document.querySelector(".animate-btn");
     $scope.showLast = false;
