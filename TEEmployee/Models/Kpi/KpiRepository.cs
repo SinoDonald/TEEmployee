@@ -99,7 +99,6 @@ namespace TEEmployee.Models.Kpi
                 }
                 catch (Exception e)
                 {
-                    int a = 0;
                 }
 
                 return ret;

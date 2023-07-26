@@ -151,7 +151,7 @@ app.controller('KpiCtrl', ['$scope', '$location', 'appService', '$rootScope', '$
         //console.log($scope.datum.items);
 
         let scores = $scope.datum.items.map(x => (x.consensual ? x.weight : 0));
-        return scores.reduce((a, c) => (a + c)).toFixed(2);
+        return scores.reduce((a, c) => (a + c)).toFixed(1);
 
         //return $scope.datum.items.reduce((a, c) => (a.consensual ? a.weight : 0) + (c.consensual ? c.weight : 0)).toFixed(2);
     }

@@ -229,7 +229,7 @@
                 </div>
             }
 
-           
+
             <div class="col-lg-4 col-sm-6">
                 <a class="portfolio-box" href="@Url.Action("Index", "Kpi")">
                     <div class="position-relative">
@@ -240,7 +240,21 @@
                     <p class="text-center mt-2 h3">KPI</p>
                 </a>
             </div>
-            
+
+            @if (Session["empno"] is "7596")
+            {
+                <div class="col-lg-4 col-sm-6">
+                    <a class="portfolio-box" href="@Url.Action("Index", "Test")">
+                        <div class="position-relative">
+                            <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/food.jpg" alt="..." />
+                            <div class="portfolio-box-caption p-3">
+                            </div>
+                        </div>
+                        <p class="text-center mt-2 h3">TTTest</p>
+                    </a>
+                </div>
+            }
+
 
 
 
