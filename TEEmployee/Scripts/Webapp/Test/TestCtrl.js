@@ -18,6 +18,8 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
 
     var reader = new FileReader();
 
+    // server to client
+
     $scope.downloadMyPage = () => {
         appService.DownloadMyPage({ name: $scope.name }).then((ret) => {
 
@@ -51,6 +53,38 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
     //    window.open(decodeURIComponent(reader.result), '_self', '', false);
     //}
 
+
+    // client to server
+    formElem.onsubmit = async (e) => {
+        e.preventDefault();
+
+        let response = await fetch('/Test/UploadFiles', {
+            method: 'POST',
+            body: new FormData(formElem)
+        });
+
+        let result = await response.json();
+
+        alert(result);
+    };
+
+    // get file lastModified
+    const output = document.getElementById("output");
+    const filepicker = document.getElementById("filepicker");
+
+    filepicker.addEventListener("change", (event) => {
+        const files = event.target.files;
+        const now = new Date();
+        output.textContent = "";
+
+        for (const file of files) {
+            const date = new Date(file.lastModified);
+            // true if the file hasn't been modified for more than 1 year
+            const stale = now.getTime() - file.lastModified > 31_536_000_000;
+            output.textContent += `${file.name} is ${stale ? "stale" : "fresh"
+                } (${date}).\n`;
+        }
+    });
 
 
 }]);
