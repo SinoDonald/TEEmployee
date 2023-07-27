@@ -66,9 +66,23 @@ namespace TEEmployee.Models.Talent
         // 比對上傳的檔案更新時間
         public List<string> CompareLastestUpdate(List<string> filesInfo)
         {
+            List<string> updateUsers = new List<string>();
             List<FileInfo> fileInfoList = FileLastestUpdate(filesInfo); // 解析更新上傳時間
             List <CV> usersCV = GetLastestUpdate();
-            return filesInfo;
+            foreach(FileInfo fileInfo in fileInfoList)
+            {
+                string userLastestUpdate = usersCV.Where(x => x.empno.Equals(fileInfo.empno)).Select(x => x.lastest_update).FirstOrDefault();
+                CultureInfo culture = new CultureInfo("zh-TW");
+                DateTime sqlDate = DateTime.Parse(userLastestUpdate, culture); // 資料庫的檔案更新時間
+                DateTime fileDate = DateTime.Parse(fileInfo.lastModifiedDate, culture); // 要上傳檔案的更新時間
+                if((fileDate.Ticks - sqlDate.Ticks) > 0)
+                {
+                    CV userCV = usersCV.Where(x => x.empno.Equals(fileInfo.empno)).FirstOrDefault();
+                    string addFileName = userCV.empno + userCV.name + ".docx";
+                    updateUsers.Add(addFileName); 
+                }
+            }
+            return updateUsers;
         }
         // 解析更新上傳時間
         public List<FileInfo> FileLastestUpdate(List<string> filesInfo)
@@ -83,11 +97,10 @@ namespace TEEmployee.Models.Talent
                     // 解析時間
                     string lastModifiedDate = info.Split('：')[1];
                     int GMTindex = lastModifiedDate.IndexOf("GMT");
-                    lastModifiedDate = lastModifiedDate.Substring(4, GMTindex);
-                    // 民國轉西元後計算年齡
+                    lastModifiedDate = lastModifiedDate.Substring(4, GMTindex - 4);
                     CultureInfo culture = new CultureInfo("zh-TW");
-                    culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-                    DateTime birthday = DateTime.Parse(lastModifiedDate, culture);
+                    fileInfo.lastModifiedDate = DateTime.Parse(lastModifiedDate, culture).ToString();
+                    fileInfos.Add(fileInfo);
                 }
                 catch(Exception) { }
             }

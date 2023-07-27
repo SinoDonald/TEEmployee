@@ -18,8 +18,8 @@ namespace TEEmployee.Models.Talent
         // 比對上傳的檔案更新時間
         public List<string> CompareLastestUpdate(List<string> filesInfo)
         {
-            List<string> userNames = _talentRepository.CompareLastestUpdate(filesInfo);
-            return userNames;
+            List<string> updateUsers = _talentRepository.CompareLastestUpdate(filesInfo);
+            return updateUsers;
         }
         // 上傳員工履歷表多檔, 並解析Word後存到SQL
         public void Uploaded(HttpPostedFileBase[] files)
