@@ -51,7 +51,7 @@ namespace TEEmployee.Models.TaskLog
             int ret;
 
             string sql = @"INSERT INTO ProjectItem (empno, depno, yymm, projno, itemno, workhour, overtime) 
-                        VALUES(@empno, @depno, @yymm, @projno, @itemno, @workhour, @overtime)";
+                        VALUES(@empno, @depno, @yymm, @projno, @itemno, @workHour, @overtime)";
 
             ret = _conn.Execute(sql, projectItem);
 
@@ -68,7 +68,7 @@ namespace TEEmployee.Models.TaskLog
                 int ret;
 
                 string sql = @"INSERT INTO ProjectItem (empno, depno, yymm, projno, itemno, workhour, overtime) 
-                        VALUES(@empno, @depno, @yymm, @projno, @itemno, @workhour, @overtime)";
+                        VALUES(@empno, @depno, @yymm, @projno, @itemno, @workHour, @overtime)";
 
                 ret = _conn.Execute(sql, projectItem);
 
@@ -93,7 +93,7 @@ namespace TEEmployee.Models.TaskLog
         {
             int ret;
 
-            string sql = @"UPDATE ProjectItem SET workhour=@workhour WHERE 
+            string sql = @"UPDATE ProjectItem SET workhour=@workHour WHERE 
                         empno=@empno AND yymm=@yymm AND projno=@projno AND itemno=@itemno";
 
             ret = _conn.Execute(sql, projectItem);
@@ -112,9 +112,9 @@ namespace TEEmployee.Models.TaskLog
 
             // Add overtime
             string sql = @"INSERT INTO ProjectItem (empno, depno, yymm, projno, itemno, workhour, overtime) 
-                        VALUES(@empno, @depno, @yymm, @projno, @itemno, @workhour, @overtime) 
+                        VALUES(@empno, @depno, @yymm, @projno, @itemno, @workHour, @overtime) 
                         ON CONFLICT(empno, yymm, projno, itemno) 
-                        DO UPDATE SET workhour=@workhour, overtime=@overtime";
+                        DO UPDATE SET workhour=@workHour, overtime=@overtime";
 
 
             ret = _conn.Execute(sql, projectItem);
@@ -134,9 +134,9 @@ namespace TEEmployee.Models.TaskLog
                 int ret;
 
                 string sql = @"INSERT INTO ProjectItem (empno, depno, yymm, projno, itemno, workhour, overtime) 
-                        VALUES(@empno, @depno, @yymm, @projno, @itemno, @workhour, @overtime) 
+                        VALUES(@empno, @depno, @yymm, @projno, @itemno, @workHour, @overtime) 
                         ON CONFLICT(empno, yymm, projno, itemno) 
-                        DO UPDATE SET workhour=@workhour, overtime=@overtime";
+                        DO UPDATE SET workhour=@workHour, overtime=@overtime";
 
                 ret = _conn.Execute(sql, projectItem);
 
