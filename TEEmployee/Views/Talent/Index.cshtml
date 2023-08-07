@@ -1,10 +1,47 @@
-﻿
+﻿@using TEEmployee.Models;
+
 @{
     ViewBag.Title = "Talent";
 }
 
 @section Styles {
     <style>
+        body {
+            /*background-color: linen;*/
+        }
+
+        header {
+            margin-top: 100px;
+        }
+
+        .chartmenu {
+            display: flex;
+        }
+
+            .chartmenu div {
+                flex: 1;
+                margin: 0 20px;
+            }
+
+        .top-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 99;
+        }
+        /* .back-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 120px;
+            z-index: 99;
+        }*/
+        .highlight-select {
+            background-color: papayawhip;
+        }
+
+        .bar div {
+            height: 50vh;
+        }
         .wrapper {
             display: grid;
             grid-template-columns: repeat(2, 1fr);

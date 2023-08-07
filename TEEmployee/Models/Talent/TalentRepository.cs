@@ -66,9 +66,23 @@ namespace TEEmployee.Models.Talent
         // 比對上傳的檔案更新時間
         public List<string> CompareLastestUpdate(List<string> filesInfo)
         {
+            List<string> updateUsers = new List<string>();
             List<FileInfo> fileInfoList = FileLastestUpdate(filesInfo); // 解析更新上傳時間
             List <CV> usersCV = GetLastestUpdate();
-            return filesInfo;
+            foreach(FileInfo fileInfo in fileInfoList)
+            {
+                string userLastestUpdate = usersCV.Where(x => x.empno.Equals(fileInfo.empno)).Select(x => x.lastest_update).FirstOrDefault();
+                CultureInfo culture = new CultureInfo("zh-TW");
+                DateTime sqlDate = DateTime.Parse(userLastestUpdate, culture); // 資料庫的檔案更新時間
+                DateTime fileDate = DateTime.Parse(fileInfo.lastModifiedDate, culture); // 要上傳檔案的更新時間
+                if((fileDate.Ticks - sqlDate.Ticks) > 0)
+                {
+                    CV userCV = usersCV.Where(x => x.empno.Equals(fileInfo.empno)).FirstOrDefault();
+                    string addFileName = userCV.empno + userCV.name + ".docx";
+                    updateUsers.Add(addFileName); 
+                }
+            }
+            return updateUsers;
         }
         // 解析更新上傳時間
         public List<FileInfo> FileLastestUpdate(List<string> filesInfo)
@@ -83,11 +97,10 @@ namespace TEEmployee.Models.Talent
                     // 解析時間
                     string lastModifiedDate = info.Split('：')[1];
                     int GMTindex = lastModifiedDate.IndexOf("GMT");
-                    lastModifiedDate = lastModifiedDate.Substring(4, GMTindex);
-                    // 民國轉西元後計算年齡
+                    lastModifiedDate = lastModifiedDate.Substring(4, GMTindex - 4);
                     CultureInfo culture = new CultureInfo("zh-TW");
-                    culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-                    DateTime birthday = DateTime.Parse(lastModifiedDate, culture);
+                    fileInfo.lastModifiedDate = DateTime.Parse(lastModifiedDate, culture).ToString();
+                    fileInfos.Add(fileInfo);
                 }
                 catch(Exception) { }
             }
@@ -235,7 +248,8 @@ namespace TEEmployee.Models.Talent
                             userCV.address = cells[1].InnerText;
                             break;
                         case "學　　歷：":
-                            userCV.educational = cells[1].Elements<Paragraph>().Select(o => o.InnerText).FirstOrDefault();
+                            //userCV.educational = cells[1].Elements<Paragraph>().Select(o => o.InnerText).FirstOrDefault();
+                            userCV.educational = ReturnEducationalParagraph(cells);
                             break;
                         case "專　　長：":
                             userCV.expertise = ReturnParagraph(cells);
@@ -278,10 +292,33 @@ namespace TEEmployee.Models.Talent
             string returnParagraph = string.Empty;
             foreach (string paragraph in cells[1].Elements<Paragraph>().Select(o => o.InnerText).ToList())
             {
-                if(paragraph != "")
+                returnParagraph += paragraph + "\n";
+            }
+            if(returnParagraph.Length > 2 || returnParagraph.Equals("\n"))
+            {
+                returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
+            }
+            return returnParagraph;
+        }
+        // 大學學歷以上才加入
+        private string ReturnEducationalParagraph(TableCell[] cells)
+        {
+            string returnParagraph = string.Empty;
+            foreach (string paragraph in cells[1].Elements<Paragraph>().Select(o => o.InnerText).ToList())
+            {
+                if (paragraph.Contains("大學") || paragraph.Contains("學士") || paragraph.Contains("碩士") || paragraph.Contains("博士"))
                 {
-                    returnParagraph += paragraph + "\n";
+                    string[] splitString = paragraph.Split('　');
+                    try
+                    {
+                        returnParagraph += splitString[2] + splitString[3] + "　" + splitString[0] + "　" + splitString[1] + "\n";
+                    }
+                    catch (Exception) { }
                 }
+            }
+            if (returnParagraph.Length > 2)
+            {
+                returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
             }
             return returnParagraph;
         }

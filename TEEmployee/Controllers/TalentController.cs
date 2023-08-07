@@ -40,6 +40,13 @@ namespace TEEmployee.Controllers
         // Web API
         // -----------------------------------------
 
+        // 比對上傳的檔案更新時間
+        [HttpPost]
+        public JsonResult CompareLastestUpdate(List<string> filesInfo)
+        {
+            var ret = _service.CompareLastestUpdate(filesInfo);
+            return Json(ret);
+        }
         // 上傳員工履歷表多檔, 並解析Word後存到SQL
         public ActionResult Uploaded(HttpPostedFileBase[] files)
         {

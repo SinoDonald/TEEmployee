@@ -43,6 +43,10 @@ app.service('appService', ['$http', function ($http) {
     this.TalentUpdate = function (o) {
         return $http.post('Home/TalentUpdate', o);
     };
+    // 比對上傳版本
+    this.CompareLastestUpdate = (o) => {
+        return $http.post('Talent/CompareLastestUpdate', o);
+    };
 
 }]);
 
@@ -212,6 +216,16 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
         for (const file of files) {
             $scope.filesInfo.push(file.name + "：" + file.lastModifiedDate);
         }
+        appService.CompareLastestUpdate({ filesInfo: $scope.filesInfo }).then((ret) => {
+            var updateUsers = ret.data;
+            for (var file of files) {
+                for (var updateUser of updateUsers) {
+                    if (file.name === updateUser) {
+                        var trueOrFalse = true;
+                    }
+                }
+            }
+        });
     });
 
     // 人才資料庫 <-- 培文
