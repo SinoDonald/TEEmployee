@@ -248,7 +248,8 @@ namespace TEEmployee.Models.Talent
                             userCV.address = cells[1].InnerText;
                             break;
                         case "學　　歷：":
-                            userCV.educational = cells[1].Elements<Paragraph>().Select(o => o.InnerText).FirstOrDefault();
+                            //userCV.educational = cells[1].Elements<Paragraph>().Select(o => o.InnerText).FirstOrDefault();
+                            userCV.educational = ReturnEducationalParagraph(cells);
                             break;
                         case "專　　長：":
                             userCV.expertise = ReturnParagraph(cells);
@@ -291,10 +292,33 @@ namespace TEEmployee.Models.Talent
             string returnParagraph = string.Empty;
             foreach (string paragraph in cells[1].Elements<Paragraph>().Select(o => o.InnerText).ToList())
             {
-                if(paragraph != "")
+                returnParagraph += paragraph + "\n";
+            }
+            if(returnParagraph.Length > 2 || returnParagraph.Equals("\n"))
+            {
+                returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
+            }
+            return returnParagraph;
+        }
+        // 大學學歷以上才加入
+        private string ReturnEducationalParagraph(TableCell[] cells)
+        {
+            string returnParagraph = string.Empty;
+            foreach (string paragraph in cells[1].Elements<Paragraph>().Select(o => o.InnerText).ToList())
+            {
+                if (paragraph.Contains("大學") || paragraph.Contains("學士") || paragraph.Contains("碩士") || paragraph.Contains("博士"))
                 {
-                    returnParagraph += paragraph + "\n";
+                    string[] splitString = paragraph.Split('　');
+                    try
+                    {
+                        returnParagraph += splitString[2] + splitString[3] + "　" + splitString[0] + "　" + splitString[1] + "\n";
+                    }
+                    catch (Exception) { }
                 }
+            }
+            if (returnParagraph.Length > 2)
+            {
+                returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
             }
             return returnParagraph;
         }

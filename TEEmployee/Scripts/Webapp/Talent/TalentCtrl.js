@@ -54,7 +54,7 @@ app.factory('dataservice', function () {
         user.group_three = data.group_three;
         user.birthday = data.birthday;
         user.age = data.age;
-        user.educational = data.educational.split('　');
+        user.educational = data.educational.split('\n');
         user.performance = data.performance.split('\n');
         user.experience = data.experience.split('\n');
         user.project = data.project.split('\n');
@@ -90,18 +90,18 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
     appService.GetAll({})
         .then(function (ret) {
             $scope.GetAll = ret.data;
+
+            // 取得群組
+            let groups = appService.GetGroupList({});
+            $q.all([groups]).then((ret) => {
+                $scope.groups = ret[0].data;
+                $scope.selectedGroup = $scope.groups[0];
+                $scope.FilterDataByGroup($scope.selectedGroup);
+            });
         })
         .catch(function (ret) {
             alert('Error');
         });
-
-     // 取得群組
-    let groups = appService.GetGroupList({});
-    $q.all([groups]).then((ret) => {
-        $scope.groups = ret[0].data;
-        $scope.selectedGroup = $scope.groups[0];
-        $scope.FilterDataByGroup($scope.selectedGroup);
-    });
 
     // 依群組顯示
     $scope.FilterDataByGroup = function (selectedGroup) {
@@ -148,8 +148,8 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
             .then(function (ret) {
                 if (ret.data === false) { alert('僅限協理儲存'); }
                 //if (ret.data === true) { alert('儲存成功'); }
-                //else { alert('僅限協理儲存'); }
-                $location.path('/TalentOption');
+                else { alert('儲存成功'); }
+                /*$location.path('/TalentOption');*/
             })
             .catch(function (ret) {
                 alert('Error');
