@@ -10,6 +10,7 @@ using System.Data.SQLite;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using Image = System.Drawing.Image;
@@ -348,6 +349,55 @@ namespace TEEmployee.Models.Talent
             catch (Exception) { }
 
             return ret;
+        }
+        // 上傳年度績效檔案
+        public List<string> ImportFile(HttpPostedFileBase file)
+        {
+            List<string> fileInfo = new List<string>();
+            try
+            {
+                if (Path.GetExtension(file.FileName) != ".xlsx") throw new ApplicationException("請使用Excel 2007(.xlsx)格式");
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat("<table border='1'>");
+                var stream = file.InputStream;
+                using (SpreadsheetDocument doc = SpreadsheetDocument.Open(stream, false))
+                {
+                    WorksheetPart worksheetPart = (WorksheetPart)doc.WorkbookPart.GetPartById(doc.WorkbookPart.Workbook.Descendants<Sheet>().First().Id);
+                    Worksheet sheet = worksheetPart.Worksheet;
+                    //取得共用字串表
+                    SharedStringTable strTable = doc.WorkbookPart.SharedStringTablePart.SharedStringTable;
+                    foreach (Row row in sheet.Descendants<Row>())
+                    {
+                        sb.AppendFormat("<tr>");
+                        foreach (Cell cell in row.Descendants<Cell>())
+                        {
+                            sb.AppendFormat("<td>{0}</td>", GetCellText(cell, strTable));
+                        }
+                        sb.AppendFormat("</tr>");
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return fileInfo;
+        }
+        // 解析年度績效文字
+        private string GetCellText(Cell cell, SharedStringTable strTable)
+        {
+            if (cell.ChildElements.Count == 0)
+            {
+                return null;
+            }
+            string val = cell.CellValue.InnerText;
+            //若為共享字串時的處理邏輯
+            if (cell.DataType != null && cell.DataType == CellValues.SharedString)
+            {
+                val = strTable.ChildElements[int.Parse(val)].InnerText;
+            }
+            return val;
         }
         // 儲存回覆
         public CV SaveResponse(CV userCV)

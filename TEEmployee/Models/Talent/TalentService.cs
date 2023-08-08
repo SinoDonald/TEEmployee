@@ -50,6 +50,12 @@ namespace TEEmployee.Models.Talent
                 catch (Exception) { }
             }
         }
+        // 上傳年度績效檔案
+        public List<string> ImportFile(HttpPostedFileBase file)
+        {
+            var ret = _talentRepository.ImportFile(file);
+            return ret;
+        }
         // 取得群組
         public List<string> GetGroupList(string empno)
         {

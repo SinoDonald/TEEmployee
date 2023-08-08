@@ -130,6 +130,34 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
             });
     }
 
+
+    // 上傳年度績效檔案
+    $(document).on("click", "#btnUpload", function () {
+        var files = $("#importFile").get(0).files;
+
+        var formData = new FormData();
+        formData.append('importFile', files[0]);
+
+        $.ajax({
+            url: '/Talent/ImportFile',
+            data: formData,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data.length > 0) {
+                    // 取得所有成員名單
+                    //$("#result").html(data);
+                    //$("#result").html('<font color="#ff0000">' + data + '</font>');
+                    $scope.Test = data;
+                    $("#result").html('<div class="row"><div class="col" style="align-items:center" ng-repeat="name in Test"><h6 class="list-group-item" style="color:crimson">{{ name.Name }}</h6></div></div>');
+                } else {
+                    alert("上傳檔案格式錯誤");
+                }
+            }
+        });
+    });
+
 }]);
 
 app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', 'dataservice', function ($scope, $location, $window, appService, $rootScope, dataservice) {

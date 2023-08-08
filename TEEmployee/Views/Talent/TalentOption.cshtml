@@ -10,8 +10,21 @@
             </div>
         </header>
 
+        @if (Session["empno"] is "4125" || Session["empno"] is "7596")
+        {
+            <div class="col-sm-2">
+                <span>請選擇年度績效檔案：</span>
+            </div>
+            <div class="col-sm-3">
+                <input class="form-control" type="file" name="importFile" id="importFile" />
+                <input class="btn btn-primary" id="btnUpload" type="button" value="上傳" />
+            </div>
+        }
+
         <div class="chartmenu mb-5">
             <div>
+                <br />
+                <br />
                 <label for="SelectGroup">請選擇組別</label>
                 <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
                     <option ng-repeat="group in groups" ng-class="{'highlight-select': group == '設計' || group == '規劃'|| group == '專管'|| group == '智慧軌道創新小組'|| group == '行政組'|| group == '計畫管理組'}" value="{{group}}">{{group}}</option>

@@ -53,6 +53,14 @@ namespace TEEmployee.Controllers
             _service.Uploaded(files);
             return RedirectToAction("Index", "Home");
         }
+        // 上傳年度績效檔案
+        [HttpPost]
+        public ActionResult ImportFile(HttpPostedFileBase importFile)
+        {
+            if (importFile == null) return Json(new { Status = 0, Message = "No File Selected" });
+            var ret = _service.ImportFile(importFile);
+            return Json(ret);
+        }
         // 取得群組
         [HttpPost]
         public JsonResult GetGroupList()
