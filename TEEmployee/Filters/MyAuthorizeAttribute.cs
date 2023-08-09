@@ -45,14 +45,11 @@ namespace TEEmployee.Filters
             //-------------------------------------------------------
 
             if (filterContext.HttpContext.Session["empno"] == null)
-            {
-                
+            {                
                 var ret = _userRepository.Get(loginUser);
-
                 // Fake User v1
 
                 //User ret;
-
                 //if (filterContext.HttpContext.Session["empno"] == null)
                 //{
                 //    ret = _userRepository.Get(loginUser);
@@ -62,8 +59,7 @@ namespace TEEmployee.Filters
                 //    ret = _userRepository.Get(filterContext.HttpContext.Session["empno"].ToString());
                 //}
 
-                if (ret != null) {
-                                     
+                if (ret != null) {                                     
                     //Get Userinfo
                     //filterContext.HttpContext.Session["empno"] = loginUser;
                     filterContext.HttpContext.Session["empno"] = ret.empno;
@@ -80,33 +76,26 @@ namespace TEEmployee.Filters
                     // 首頁通知 <-- 培文
                     filterContext.HttpContext.Session["notify"] = new List<bool>();
                     filterContext.HttpContext.Session["notify_count"] = 0;
-
                     if (ret.department_manager)
                     {
                         filterContext.HttpContext.Session["leader"] = true;
                     }
-
                     if (ret.group_manager)
                     {
                         filterContext.HttpContext.Session["group_leader"] = true;
                     }
-
                     if (ret.project_manager)
                     {
                         filterContext.HttpContext.Session["role"] = "PM";
                     }
-
                     if (ret.department_manager || ret.group_manager || ret.group_one_manager || ret.group_two_manager || ret.group_three_manager)
                     {
                         filterContext.HttpContext.Session["role"] = "Manager";
                     }
-
                     if (ConfigurationManager.AppSettings["Admin"].Contains(ret.empno))
                     {
                         filterContext.HttpContext.Session["Admin"] = true;
                     }
-
-
                     //filterContext.HttpContext.Session["role"] = ret.Role;
                 }
                 else
@@ -116,16 +105,13 @@ namespace TEEmployee.Filters
                     );
                     filterContext.Result = new EmptyResult();
                     return;
-                }
-                
+                }                
             }
-
 
             // fake user v1
 
             //if (true)
-            //{
-                
+            //{                
             //    User ret;
 
             //    if (filterContext.HttpContext.Session["empno"] == null)
@@ -139,7 +125,6 @@ namespace TEEmployee.Filters
 
             //    if (ret != null)
             //    {
-
             //        //Get Userinfo
             //        //filterContext.HttpContext.Session["empno"] = loginUser;
             //        filterContext.HttpContext.Session["empno"] = ret.empno;
@@ -156,17 +141,14 @@ namespace TEEmployee.Filters
             //        {
             //            filterContext.HttpContext.Session["leader"] = true;
             //        }
-
             //        if (ret.project_manager)
             //        {
             //            filterContext.HttpContext.Session["role"] = "PM";
             //        }
-
             //        if (ret.department_manager || ret.group_manager || ret.group_one_manager || ret.group_two_manager || ret.group_three_manager)
             //        {
             //            filterContext.HttpContext.Session["role"] = "Manager";
             //        }
-
             //        //filterContext.HttpContext.Session["role"] = ret.Role;
             //    }
             //    else
@@ -177,10 +159,7 @@ namespace TEEmployee.Filters
             //        filterContext.Result = new EmptyResult();
             //        return;
             //    }
-
             //}
-
-
         }
     }
 }

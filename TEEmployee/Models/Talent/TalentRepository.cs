@@ -351,9 +351,9 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
         // 上傳年度績效檔案
-        public List<string> ImportFile(HttpPostedFileBase file)
+        public bool ImportFile(HttpPostedFileBase file)
         {
-            List<string> ret = new List<string>();
+            bool ret = false;
             List<CV> userCVs = new List<CV>(); 
             try
             {
@@ -398,7 +398,7 @@ namespace TEEmployee.Models.Talent
                     }
                 }
 
-                SavePerformance(userCVs); // 儲存年度績效
+                ret = SavePerformance(userCVs); // 儲存年度績效
             }
             catch (Exception)
             {
@@ -423,8 +423,10 @@ namespace TEEmployee.Models.Talent
             return val;
         }
         // 儲存年度績效
-        public List<CV> SavePerformance(List<CV> userCVs)
+        public bool SavePerformance(List<CV> userCVs)
         {
+            bool ret = false;
+
             _conn.Open();
 
             using (var tran = _conn.BeginTransaction())
@@ -432,9 +434,10 @@ namespace TEEmployee.Models.Talent
                 string sql = @"UPDATE userCV SET performance=@performance WHERE empno=@empno";
                 _conn.Execute(sql, userCVs, tran);
                 tran.Commit();
-
-                return userCVs;
+                ret = true;
             }
+
+            return ret;
         }
         // 儲存回覆
         public CV SaveResponse(CV userCV)

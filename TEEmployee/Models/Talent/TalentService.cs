@@ -51,7 +51,7 @@ namespace TEEmployee.Models.Talent
             }
         }
         // 上傳年度績效檔案
-        public List<string> ImportFile(HttpPostedFileBase file)
+        public bool ImportFile(HttpPostedFileBase file)
         {
             var ret = _talentRepository.ImportFile(file);
             return ret;

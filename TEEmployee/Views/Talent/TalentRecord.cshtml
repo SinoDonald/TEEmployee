@@ -5,7 +5,7 @@
 <div ng-controller="TalentRecordCtrl" class="container">
 
     <div class="container p-5 my-5 bg-dark text-white">
-        <div class="box1">
+        <div class="box">
             <h2>人才資料庫</h2>
             <div class="form-check form-check-inline">
                 <img src="~/Content/CV/{{user.empno}}.jpg" class="img-thumbnail" alt="{{user.name}}">
@@ -16,120 +16,127 @@
                 <h3>年齡：{{user.age}}</h3>
             </div>
         </div>
-    </div>
-
-    <div class="wrapper">
-        <div class="box1">
-            <h2>人才資料庫</h2>
-            <div class="form-check form-check-inline">
-                <img src="~/Content/CV/{{user.empno}}.jpg" class="img-thumbnail" alt="{{user.name}}">
-            </div>
-            <div class="form-check form-check-inline">
-                <h3>姓名：{{user.name}}</h3>
-                <h3>生日：{{user.birthday}}</h3>
-                <h3>年齡：{{user.age}}</h3>
-            </div>
-        </div>
-        <div class="box2">
-            <h4>規劃進程</h4>
-            <div class="textblock">
-                <textarea ng-model="user.planning" name="SaveResponse" cols="50" rows="6">{{user.planning}}</textarea>
-            </div>
-        </div>
-        <div class="box3">
-            <div class="exp">
-                <h4 class="inner">
-                    <span>學歷</span>
-                    <span>學校</span>
-                    <span>科系</span>
-                </h4>
-                <div class="container">
-                    <div ng-repeat="educational in user.educational">
-                        <div class="row align-items-start">
-                            <div class="col">
-                                {{educational.split('　')[0]}}
-                            </div>
-                            <div class="col">
-                                {{educational.split('　')[1]}}
-                            </div>
-                            <div class="col">
-                                {{educational.split('　')[2]}}
+        <br />
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="exp">
+                    <h4 class="inner">
+                        <span>學歷</span>
+                        <span>學校</span>
+                        <span>科系</span>
+                    </h4>
+                    <div class="container">
+                        <div ng-repeat="educational in user.educational">
+                            <div class="row align-items-start">
+                                <div class="col text-center">
+                                    <h5>{{educational.split('　')[0]}}</h5>
+                                </div>
+                                <div class="col text-center">
+                                    <h5>{{educational.split('　')[1]}}</h5>
+                                </div>
+                                <div class="col">
+                                    <h5>{{educational.split('　')[2]}}</h5>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="exp">
-                <h4>近三年考績</h4>
-                <div class="inner">
-                    <div class="col">
-                        {{user.performance[0]}}
+            <div class="col-sm-6 text-center">
+                <div class="exp">
+                    <h4>近三年考績</h4>
+                    <div class="inner">
+                        <div class="col">
+                            <h5>{{user.performance[0]}}</h5>
+                        </div>
+                        <div class="col">
+                            <h5>{{user.performance[1]}}</h5>
+                        </div>
+                        <div class="col">
+                            <h5>{{user.performance[2]}}</h5>
+                        </div>
                     </div>
-                    <div class="col">
-                        {{user.performance[1]}}
-                    </div>
-                    <div class="col">
-                        {{user.performance[2]}}
-                    </div>
-                </div>
-            </div>
-            <div class="exp">
-                <h4>職位經歷</h4>
-                <div ng-repeat="experience in user.experience">
-                    <p>{{experience}}</p>
-                </div>
-            </div>
-            <div class="exp">
-                <h4>專案經歷</h4>
-                <div ng-repeat="project in user.project">
-                    <p>{{project}}</p>
-                </div>
-            </div>
-            <div class="exp">
-                <h4>專業證照</h4>
-                <div ng-repeat="license in user.license">
-                    <p>{{license}}</p>
                 </div>
             </div>
         </div>
-        <div class="box4">
-            <div class="exp">
-                <h4>測評資料</h4>
-                <div class="textblock">
-                    <textarea ng-model="user.test" name="SaveResponse" cols="50" rows="6">{{user.test}}</textarea>
+        <br />
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="exp">
+                    <h4>職位經歷</h4>
+                    <div ng-repeat="experience in user.experience">
+                        <h5>{{experience}}</h5>
+                    </div>
                 </div>
             </div>
-            <div class="exp">
-                <h4>優勢</h4>
-                <div class="textblock">
-                    <textarea ng-model="user.advantage" name="SaveResponse" cols="50" rows="6">{{user.advantage}}</textarea>
-                </div>
-            </div>
-            <div class="exp">
-                <h4>待發展能力</h4>
-                <div class="textblock">
-                    <textarea ng-model="user.developed" name="SaveResponse" cols="50" rows="6">{{user.developed}}</textarea>
+            <div class="col-sm-6">
+                <div class="exp">
+                    <h4>專業證照</h4>
+                    <div ng-repeat="license in user.license">
+                        <h5>{{license}}</h5>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="box5">
+        <br />
+        <div class="row">
+            <button class="btn btn-secondary btn-lg" type="button" data-toggle="collapse" data-target="#projectExperience">專案經歷 (可開啟收合)</button>
+            <div class="collapse" id="projectExperience">
+                <div class="exp">
+                    <br />
+                    <br />
+                    <div ng-repeat="project in user.project">
+                        <h5>{{project}}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <h4>規劃進程</h4>
+                    <textarea class="form-control" ng-model="user.planning" name="SaveResponse" rows="3">{{user.planning}}</textarea>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <h4>測評資料</h4>
+                    <textarea class="form-control" ng-model="user.test" name="SaveResponse" rows="3">{{user.test}}</textarea>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <h4>優勢</h4>
+                    <textarea class="form-control" ng-model="user.advantage" name="SaveResponse" rows="3">{{user.advantage}}</textarea>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <h4>待發展能力</h4>
+                    <textarea class="form-control" ng-model="user.developed" name="SaveResponse" rows="3">{{user.developed}}</textarea>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-group">
             <h4>未來發展規劃</h4>
-            <div class="textblock">
-                <textarea ng-model="user.future" name="SaveResponse" cols="50" rows="6">{{user.future}}</textarea>
-            </div>
+            <textarea class="form-control" ng-model="user.future" name="SaveResponse" rows="3">{{user.future}}</textarea>
         </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="返回" ng-click="ToTalent()" class="btn btn-warning" />
-            <input type="submit" value="儲存" ng-click="SaveResponse(user)" class="btn btn-warning" />
+        <br />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="返回" ng-click="ToTalent()" class="btn btn-warning" />
+                <input type="submit" value="儲存" ng-click="SaveResponse(user)" class="btn btn-warning" />
+            </div>
         </div>
     </div>
 
 </div>
 
-
-@section Scripts {
-    <script src="~/Scripts/WebApp/Talent/TalentRecordCtrl.js"></script>
-}
+    @section Scripts {
+        <script src="~/Scripts/WebApp/Talent/TalentRecordCtrl.js"></script>
+    }
