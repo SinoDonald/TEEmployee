@@ -353,12 +353,11 @@ namespace TEEmployee.Models.Talent
         // 上傳年度績效檔案
         public List<string> ImportFile(HttpPostedFileBase file)
         {
-            List<string> fileInfo = new List<string>();
+            List<string> ret = new List<string>();
+            List<CV> userCVs = new List<CV>(); 
             try
             {
                 if (Path.GetExtension(file.FileName) != ".xlsx") throw new ApplicationException("請使用Excel 2007(.xlsx)格式");
-                StringBuilder sb = new StringBuilder();
-                sb.AppendFormat("<table border='1'>");
                 var stream = file.InputStream;
                 using (SpreadsheetDocument doc = SpreadsheetDocument.Open(stream, false))
                 {
@@ -366,23 +365,47 @@ namespace TEEmployee.Models.Talent
                     Worksheet sheet = worksheetPart.Worksheet;
                     //取得共用字串表
                     SharedStringTable strTable = doc.WorkbookPart.SharedStringTablePart.SharedStringTable;
+                    int i = 0;
                     foreach (Row row in sheet.Descendants<Row>())
                     {
-                        sb.AppendFormat("<tr>");
-                        foreach (Cell cell in row.Descendants<Cell>())
+                        if(i > 0)
                         {
-                            sb.AppendFormat("<td>{0}</td>", GetCellText(cell, strTable));
+                            int j = 0;
+                            CV userCV = new CV();
+                            foreach (Cell cell in row.Descendants<Cell>())
+                            {
+                                if(j.Equals(0))
+                                {
+                                    userCV.empno = GetCellText(cell, strTable);
+                                }
+                                else if (j.Equals(1))
+                                {
+                                    userCV.name = GetCellText(cell, strTable);
+                                }
+                                else
+                                {
+                                    userCV.performance += GetCellText(cell, strTable) + "\n";
+                                }
+                                j++;
+                            }
+                            if (userCV.performance.Length > 2 || userCV.performance.Equals("\n"))
+                            {
+                                userCV.performance = userCV.performance.Substring(0, userCV.performance.Length - 1);
+                            }
+                            userCVs.Add(userCV);
                         }
-                        sb.AppendFormat("</tr>");
+                        i++;
                     }
                 }
+
+                SavePerformance(userCVs); // 儲存年度績效
             }
             catch (Exception)
             {
 
             }
 
-            return fileInfo;
+            return ret;
         }
         // 解析年度績效文字
         private string GetCellText(Cell cell, SharedStringTable strTable)
@@ -398,6 +421,20 @@ namespace TEEmployee.Models.Talent
                 val = strTable.ChildElements[int.Parse(val)].InnerText;
             }
             return val;
+        }
+        // 儲存年度績效
+        public List<CV> SavePerformance(List<CV> userCVs)
+        {
+            _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                string sql = @"UPDATE userCV SET performance=@performance WHERE empno=@empno";
+                _conn.Execute(sql, userCVs, tran);
+                tran.Commit();
+
+                return userCVs;
+            }
         }
         // 儲存回覆
         public CV SaveResponse(CV userCV)
