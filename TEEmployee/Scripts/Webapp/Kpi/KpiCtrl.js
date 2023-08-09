@@ -49,7 +49,10 @@ app.controller('KpiCtrl', ['$scope', '$location', 'appService', '$rootScope', '$
             $scope.data = ret.data;
 
             let group_array = $scope.data.map(x => x.group_name);
-            $scope.groups = [...new Set(group_array)]
+            $scope.groups = [...new Set(group_array)];
+
+            $scope.selectedGroup = $scope.groups[0];
+            $scope.selectGroup();
         });
     }
 
@@ -147,6 +150,7 @@ app.controller('KpiCtrl', ['$scope', '$location', 'appService', '$rootScope', '$
     $scope.sumScore = () => {
 
         if (!$scope.datum) return 0;
+        if ($scope.datum.items.length === 0) return 0;
 
         //console.log($scope.datum.items);
 

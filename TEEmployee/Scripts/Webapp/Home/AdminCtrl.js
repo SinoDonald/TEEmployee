@@ -32,7 +32,7 @@ app.service('appService', ['$http', function ($http) {
     };
 
     this.InsertKpiModels = function (o) {
-        return $http.post('Kpi/InsertKpiModels', o);
+        return $http.post('GKpi/InsertKpiModels', o);
     };
 
     // 通知測試 <-- 培文
@@ -236,5 +236,21 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
             }
         });
     }
+
+
+    // client to server
+    formKpiElem.onsubmit = async (e) => {
+        e.preventDefault();
+
+        let response = await fetch('/GKpi/UploadKpiFile', {
+            method: 'POST',
+            body: new FormData(formKpiElem)
+        });
+
+        let result = await response.json();
+
+        alert(result);
+    };
+
 
 }]);

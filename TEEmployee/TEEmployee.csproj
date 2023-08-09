@@ -170,6 +170,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AssessmentController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\GKpiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\GScheduleController.cs" />
     <Compile Include="Controllers\KpiController.cs" />
@@ -182,6 +183,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\GKpi\GKpiRepository.cs" />
+    <Compile Include="Models\GKpi\GKpiService.cs" />
+    <Compile Include="Models\GKpi\IGKpiRepository.cs" />
+    <Compile Include="Models\GKpi\KpiItem.cs" />
+    <Compile Include="Models\GKpi\KpiModel.cs" />
     <Compile Include="Models\INotifyRepository.cs" />
     <Compile Include="Models\Kpi\IKpiRepository.cs" />
     <Compile Include="Models\Kpi\KpiItem.cs" />
@@ -349,6 +355,7 @@
     <Content Include="Scripts\Webapp\GSchedule\HistoryLineChart.js" />
     <Content Include="Scripts\Webapp\GSchedule\ScheduleCtrl.js" />
     <Content Include="Scripts\Webapp\Home\AdminCtrl.js" />
+    <Content Include="Scripts\Webapp\GKpi\GKpiCtrl.js" />
     <Content Include="Scripts\Webapp\Kpi\KpiCtrl.js" />
     <Content Include="Scripts\Webapp\Profession\ProfessionChart.js" />
     <Content Include="Scripts\Webapp\Profession\ProfessionCtrl.js" />
@@ -442,6 +449,10 @@
     <Content Include="Views\Talent\TalentRecord.cshtml" />
     <Content Include="Views\Kpi\Index.cshtml" />
     <Content Include="Views\Test\Index.cshtml" />
+    <Content Include="Views\Kpi\Fillin.cshtml" />
+    <Content Include="Views\Kpi\Feedback.cshtml" />
+    <Content Include="Views\GKpi\Fillin.cshtml" />
+    <Content Include="Views\GKpi\Feedback.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Response\" />

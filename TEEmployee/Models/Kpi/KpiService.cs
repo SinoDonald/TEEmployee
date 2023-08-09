@@ -38,6 +38,7 @@ namespace TEEmployee.Models.Kpi
             foreach (var kpi in ret)
             {
                 kpi.name = users.Find(x => x.empno == kpi.empno).name;
+                kpi.items = kpi.items.OrderBy(x => x.id).ToList();
             }            
             
             return ret.Distinct().OrderBy(x => x.empno).ToList();
@@ -165,6 +166,51 @@ namespace TEEmployee.Models.Kpi
             return groups;
         }
 
+        // DLC
+
+        public List<KpiModel> GetEmployeeKpiModelsByRole(string empno, int year)
+        {
+            var ret = new List<KpiModel>();
+            var kpiModels = _kpiRepository.GetAllKpiModels(year);
+            User user = _userRepository.Get(empno);
+            
+            // Get personal Kpi models
+            ret.AddRange(kpiModels.Where(x => x.empno == user.empno).ToList());
+
+            // Add employee name
+            var users = _userRepository.GetAll();
+            foreach (var kpi in ret)
+            {
+                kpi.name = users.Find(x => x.empno == kpi.empno).name;
+                kpi.items = kpi.items.OrderBy(x => x.id).ToList();
+            }
+
+            return ret.Distinct().OrderBy(x => x.empno).ToList();
+        }
+
+        public List<KpiModel> GetManagerKpiModelsByRole(string empno, int year)
+        {
+            var ret = new List<KpiModel>();
+            var kpiModels = _kpiRepository.GetAllKpiModels(year);
+            User user = _userRepository.Get(empno);
+            var managerGroups = GetManagerGroups(empno);
+
+            // If the User is the manager of a group or subgroups, filter with group.
+            if (managerGroups.Count > 0)
+            {
+                ret.AddRange(kpiModels.Where(x => managerGroups.Contains(x.group_name)).ToList());
+            }
+
+            // Add employee name
+            var users = _userRepository.GetAll();
+            foreach (var kpi in ret)
+            {
+                kpi.name = users.Find(x => x.empno == kpi.empno).name;
+                kpi.items = kpi.items.OrderBy(x => x.id).ToList();
+            }
+
+            return ret.Distinct().OrderBy(x => x.empno).ToList();
+        }
 
         public void Dispose()
         {

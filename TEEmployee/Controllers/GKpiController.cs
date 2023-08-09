@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using TEEmployee.Models.Kpi;
+using TEEmployee.Models.GKpi;
 
 namespace TEEmployee.Controllers
 {
-    public class KpiController : Controller
+    public class GKpiController : Controller
     {
-        private KpiService _service;
+        private GKpiService _service;
 
-        public KpiController()
+        public GKpiController()
         {
-            _service = new KpiService();
+            _service = new GKpiService();
         }
 
         // GET: Kpi
@@ -60,7 +60,7 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult GetAuth()
         {
-            return Json(Session["empno"].ToString());
+            return Json(new List<string> { Session["empno"].ToString(), Session["empname"].ToString() });
         }
 
         // DLC
@@ -79,6 +79,16 @@ namespace TEEmployee.Controllers
             var ret = _service.GetManagerKpiModelsByRole(Session["empno"].ToString(), year);
 
             return Json(ret);
+        }
+
+        // Upload file from client side to server 
+        [HttpPost]
+        public ActionResult UploadKpiFile(HttpPostedFileBase kpifiles)
+        {
+            var ret = _service.UploadKpiFile(kpifiles.InputStream);
+
+            var jj = Json(ret);
+            return jj;
         }
 
         protected override void Dispose(bool disposing)
