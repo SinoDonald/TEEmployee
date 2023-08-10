@@ -122,11 +122,14 @@
             </div>
         </div>
         <br />
-        <div class="form-group">
-            <h4>未來發展規劃</h4>
-            <textarea class="form-control" ng-model="user.future" name="SaveResponse" rows="3">{{user.future}}</textarea>
-        </div>
-        <br />
+        @if (Session["empno"] is "4125")
+        {
+            <div class="form-group">
+                <h4>未來發展規劃</h4>
+                <textarea class="form-control" ng-model="user.future" name="SaveResponse" rows="3">{{user.future}}</textarea>
+            </div>
+            <br />
+        }
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="返回" ng-click="ToTalent()" class="btn btn-warning" />

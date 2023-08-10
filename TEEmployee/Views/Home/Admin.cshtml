@@ -28,9 +28,8 @@
         <br><br>
     </div>
 
-    @if (Session["empno"] is "7596")
+    @if (Session["empno"] is "7596" || Session["empno"] is "7291")
     {
-
         <button type="button" class="btn btn-outline-success" name="addRow" ng-click="InsertProjectItem()">
             更新旬卡資料
         </button>
@@ -65,7 +64,6 @@
                 <input type="submit">
             </form>
         </div>
-
     }
 
     <div>
