@@ -1,0 +1,21 @@
+﻿<div ng-controller="ScatterCtrl" class="container">
+
+    <div class="chartmenu">
+
+        <div>
+            <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="GetAllScoresByRole()" aria-label="Select the Group">
+                <option ng-repeat="group in editableGroup" value="{{group.GroupName}}">{{group.GroupName}}</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="uvcontainer">
+        
+        <div id="painting">
+
+        </div>
+
+    </div>
+
+</div>

@@ -15,50 +15,50 @@
     <div class="skill uvcontainer">
         <div>
             <div class="p-3 mb-2 bg-info text-white d-flex justify-content-between align-items-center">
-                <div>Current Hard Skills</div>
+                <div>Domain Skills</div>
                 <div>
-                    <button type="button" ng-click="cloneDeepToModal(nowHard, 'now', 'hard')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
+                    <button ng-disabled="!editable" type="button" ng-click="cloneDeepToModal(domain, 'domain')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
                         <span class="material-icons text-white">edit_note</span>
                     </button>
                 </div>
             </div>
             <ul class="list-group">
-                <li class="list-group-item" ng-repeat="skill in nowHard">
+                <li class="list-group-item" ng-repeat="skill in domain">
                     {{skill.content}}
                 </li>
             </ul>
         </div>
         <div>
             <div class="p-3 mb-2 bg-info text-white d-flex justify-content-between align-items-center">
-                <div>Current Soft Skills</div>
+                <div>Core Skills</div>
                 <div>
-                    <button type="button" ng-click="cloneDeepToModal(nowSoft, 'now', 'soft')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
+                    <button ng-disabled="!auth.User.department_manager" type="button" ng-click="cloneDeepToModal(core, 'core')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
                         <span class="material-icons text-white">edit_note</span>
                     </button>
                 </div>
             </div>
             <ul class="list-group">
-                <li class="list-group-item" ng-repeat="skill in nowSoft">
+                <li class="list-group-item" ng-repeat="skill in core">
                     {{skill.content}}
                 </li>
             </ul>
         </div>
         <div>
             <div class="p-3 mb-2 bg-info text-white d-flex justify-content-between align-items-center">
-                <div>Future Hard Skills</div>
+                <div>Management Skills</div>
                 <div>
-                    <button type="button" ng-click="cloneDeepToModal(futureHard, 'future', 'hard')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
+                    <button ng-disabled="!auth.User.department_manager" type="button" ng-click="cloneDeepToModal(manage, 'manage')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
                         <span class="material-icons text-white">edit_note</span>
                     </button>
                 </div>
             </div>
             <ul class="list-group">
-                <li class="list-group-item" ng-repeat="skill in futureHard">
+                <li class="list-group-item" ng-repeat="skill in manage">
                     {{skill.content}}
                 </li>
             </ul>
         </div>
-        <div>
+        @*<div>
             <div class="p-3 mb-2 bg-info text-white d-flex justify-content-between align-items-center">
                 <div>Future Soft Skills</div>
                 <div>
@@ -72,7 +72,7 @@
                     {{skill.content}}
                 </li>
             </ul>
-        </div>
+        </div>*@
     </div>
 
     <!-- Modal -->

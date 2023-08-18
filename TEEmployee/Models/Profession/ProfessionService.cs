@@ -30,12 +30,36 @@ namespace TEEmployee.Models.Profession
             var employeeGroups = GetEmployeeGroups(empno);
             var groups = managerGroups.Concat(employeeGroups).Distinct();
 
+            // group skill
             // check role
             if (groups.Contains(role))
                 ret = _professionRepository.GetAllSkillsByRole(new List<string> { role });
 
+            // shared skills
+            var sharedSkills = _professionRepository.GetAllSkillsByRole(new List<string> { "shared" });
+
+            ret.AddRange(sharedSkills);
+
             return ret;
         }
+
+        //public List<Skill> GetAllSkillsByRole(string role, string empno)
+        //{
+        //    var ret = new List<Skill>();
+
+        //    // get user information
+        //    User user = _userRepository.Get(empno);
+        //    var managerGroups = GetManagerGroups(empno);
+        //    var employeeGroups = GetEmployeeGroups(empno);
+        //    var groups = managerGroups.Concat(employeeGroups).Distinct();
+
+        //    // check role
+        //    if (groups.Contains(role))
+        //        ret = _professionRepository.GetAllSkillsByRole(new List<string> { role });
+
+        //    return ret;
+        //}
+
 
         public List<Skill> UpsertSkills(List<Skill> skills, string empno)
         {
@@ -65,12 +89,42 @@ namespace TEEmployee.Models.Profession
             var employeeGroups = GetEmployeeGroups(empno);
             var groups = managerGroups.Concat(employeeGroups).Distinct();
 
+            // group skills
             // check role
             if (groups.Contains(role))
                 ret = _professionRepository.GetAllScoresByRole(new List<string> { role });
 
+            // shared skills
+            var sharedSkills = _professionRepository.GetAllScoresByRole(new List<string> { "shared" });
+            var groupmembers = this.GetGroupMembers(role).Select(x => x.empno).ToList();
+            foreach (var item in sharedSkills)
+            {
+                item.scores = item.scores?.Where(x => groupmembers.Contains(x.empno)).ToList();
+            }
+
+            ret.AddRange(sharedSkills);
+            ret = ret.OrderBy(x => x.custom_order).ToList();
+
             return ret;
         }
+
+        //public List<Skill> GetAllScoresByRole(string role, string empno)
+        //{
+        //    var ret = new List<Skill>();
+
+        //    // get user information
+        //    User user = _userRepository.Get(empno);
+        //    var managerGroups = GetManagerGroups(empno);
+        //    var employeeGroups = GetEmployeeGroups(empno);
+        //    var groups = managerGroups.Concat(employeeGroups).Distinct();
+
+        //    // check role
+        //    if (groups.Contains(role))
+        //        ret = _professionRepository.GetAllScoresByRole(new List<string> { role });
+
+        //    return ret;
+        //}
+
 
         public bool UpsertScores(List<Score> scores, string empno)
         {

@@ -15,6 +15,10 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             url: '/Chart',
             templateUrl: 'Profession/Chart'
         })
+        .state('Scatter', {
+            url: '/Scatter',
+            templateUrl: 'Profession/Scatter'
+        })
 
 }]);
 
@@ -87,22 +91,19 @@ app.controller('SkillCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
     $scope.GetAllSkillsByRole = () => {
 
+        $scope.editable = $scope.auth.GroupAuthorities.find(x => x.GroupName === $scope.selectedGroup).Editable;
+
         appService.GetAllSkillsByRole({ role: $scope.selectedGroup }).then((ret) => {
 
-            //$scope.data = ret.data;
-
-            $scope.nowHard = ret.data.filter(x => x.skill_type === 'hard' && x.skill_time === 'now').sort((a, b) => a.custom_order - b.custom_order);
-            $scope.nowSoft = ret.data.filter(x => x.skill_type === 'soft' && x.skill_time === 'now').sort((a, b) => a.custom_order - b.custom_order);
-            $scope.futureHard = ret.data.filter(x => x.skill_type === 'hard' && x.skill_time === 'future').sort((a, b) => a.custom_order - b.custom_order);
-            $scope.futureSoft = ret.data.filter(x => x.skill_type === 'soft' && x.skill_time === 'future').sort((a, b) => a.custom_order - b.custom_order);
-
+            $scope.domain = ret.data.filter(x => x.skill_type === 'domain').sort((a, b) => a.custom_order - b.custom_order);
+            $scope.core = ret.data.filter(x => x.skill_type === 'core').sort((a, b) => a.custom_order - b.custom_order);
+            $scope.manage = ret.data.filter(x => x.skill_type === 'manage').sort((a, b) => a.custom_order - b.custom_order);
         });
     }
 
     dataservice.get().then((ret) => {
 
         $scope.auth = ret.data;
-
         $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
         $scope.GetAllSkillsByRole();
     });
@@ -111,17 +112,11 @@ app.controller('SkillCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     // deep clone skills object to modal
     $scope.deletedSkills = [];
     $scope.modal = {};
-    $scope.cloneDeepToModal = (skills, skill_time, skill_type) => {
+    $scope.cloneDeepToModal = (skills, skill_type) => {
 
         $scope.modal.data = structuredClone(skills);
-        $scope.modal.skill_time = skill_time;
         $scope.modal.skill_type = skill_type;
         $scope.deletedSkills = [];
-
-        //$scope.modal.origin = schedule;
-        //$scope.modal.originidx = idx;
-        //$scope.modal.createMode = false;
-
     };
 
     $scope.addSkill = (newSkill) => {
@@ -131,8 +126,7 @@ app.controller('SkillCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         $scope.modal.data.push({
             id: 0,
             content: newSkill,
-            role: $scope.selectedGroup,
-            skill_time: $scope.modal.skill_time,
+            role: ($scope.modal.skill_type === 'core' || $scope.modal.skill_type === "manage") ? 'shared' :$scope.selectedGroup,
             skill_type: $scope.modal.skill_type,
         })
 
@@ -247,8 +241,9 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         appService.GetAllScoresByRole({ role: $scope.selectedGroup }).then((ret) => {
 
             $scope.data = ret.data;
-            $scope.hard = [];
-            $scope.soft = [];
+            $scope.domain = [];
+            $scope.core = [];
+            $scope.manage = [];
 
             // Create data: fill the blank space of table
 
@@ -268,10 +263,12 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
                 skill.scores.sort((a, b) => a.empno - b.empno);
 
-                if (skill.skill_type === 'hard')
-                    $scope.hard.push(skill);
+                if (skill.skill_type === 'domain')
+                    $scope.domain.push(skill);
+                else if (skill.skill_type === 'core')
+                    $scope.core.push(skill);
                 else
-                    $scope.soft.push(skill);
+                    $scope.manage.push(skill);
             }
 
 
@@ -282,7 +279,10 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
         $scope.auth = ret.data;
 
-        $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+        $scope.editableGroup = $scope.auth.GroupAuthorities.filter(x => x.Editable);
+        $scope.selectedGroup = $scope.editableGroup[0].GroupName;
+
+        //$scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
         $scope.GetAllScoresByRole();
     });
 
@@ -295,9 +295,15 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         for (let skill of $scope.data) {
             for (let emp of skill.scores) {
 
+                if (!emp.score)
+                    continue;
+
                 let num = Number(emp.score);
 
-                if (num && Number.isInteger(num) && num > 0 && num <= 5) {
+                if (isNaN(num))
+                    continue;
+
+                if (Number.isInteger(num) && num >= 0 && num <= 5) {
                     emp.score = num;
                     savedScores.push(emp);
                 }
@@ -351,6 +357,7 @@ app.controller('ChartCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
     document.documentElement.scrollTop = 0;
 
+    $scope.selectedType = 'domain';
 
     $scope.GetAllScoresByRole = () => {
 
@@ -362,7 +369,44 @@ app.controller('ChartCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
             $scope.data = ret.data;
 
-            createScoreBarChart($scope.data);
+            $scope.filterChart($scope.selectedType);
+        });
+    }
+
+    $scope.filterChart = (skill_type) => {
+        $scope.selectedType = skill_type;
+        createScoreBarChart($scope.data.filter(x => x.skill_type === skill_type));
+    }
+
+
+    dataservice.get().then((ret) => {
+
+        $scope.auth = ret.data;
+
+        $scope.editableGroup = $scope.auth.GroupAuthorities.filter(x => x.Editable);
+        $scope.selectedGroup = $scope.editableGroup[0].GroupName;
+        //$scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+        $scope.GetAllScoresByRole();
+
+        
+    });
+
+}]);
+
+app.controller('ScatterCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$state', function ($scope, $location, appService, $rootScope, $q, dataservice, $state) {
+
+    document.documentElement.scrollTop = 0;
+
+    $scope.GetAllScoresByRole = () => {
+
+        $scope.members = $scope.auth.GroupAuthorities
+            .find(x => x.GroupName === $scope.selectedGroup)
+            .Members.sort((a, b) => a.empno - b.empno);
+
+        appService.GetAllScoresByRole({ role: $scope.selectedGroup }).then((ret) => {
+
+            $scope.data = ret.data;
+            createScoreScatterChart($scope.data, $scope.members);
         });
     }
 
@@ -370,10 +414,277 @@ app.controller('ChartCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
         $scope.auth = ret.data;
 
-        $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+        $scope.editableGroup = $scope.auth.GroupAuthorities.filter(x => x.Editable);
+        $scope.selectedGroup = $scope.editableGroup[0].GroupName;
+        //$scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
         $scope.GetAllScoresByRole();
 
-        
     });
 
 }]);
+
+
+//app.controller('SkillCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', function ($scope, $location, appService, $rootScope, $q, dataservice) {
+
+//    document.documentElement.scrollTop = 0;
+//    //document.body.style.overflow = "hidden";
+
+//    $scope.GetAllSkillsByRole = () => {
+
+//        appService.GetAllSkillsByRole({ role: $scope.selectedGroup }).then((ret) => {
+
+//            //$scope.data = ret.data;
+
+//            $scope.nowHard = ret.data.filter(x => x.skill_type === 'hard' && x.skill_time === 'now').sort((a, b) => a.custom_order - b.custom_order);
+//            $scope.nowSoft = ret.data.filter(x => x.skill_type === 'soft' && x.skill_time === 'now').sort((a, b) => a.custom_order - b.custom_order);
+//            $scope.futureHard = ret.data.filter(x => x.skill_type === 'hard' && x.skill_time === 'future').sort((a, b) => a.custom_order - b.custom_order);
+//            $scope.futureSoft = ret.data.filter(x => x.skill_type === 'soft' && x.skill_time === 'future').sort((a, b) => a.custom_order - b.custom_order);
+
+//        });
+//    }
+
+//    dataservice.get().then((ret) => {
+
+//        $scope.auth = ret.data;
+
+//        $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+//        $scope.GetAllSkillsByRole();
+//    });
+
+
+//    // deep clone skills object to modal
+//    $scope.deletedSkills = [];
+//    $scope.modal = {};
+//    $scope.cloneDeepToModal = (skills, skill_time, skill_type) => {
+
+//        $scope.modal.data = structuredClone(skills);
+//        $scope.modal.skill_time = skill_time;
+//        $scope.modal.skill_type = skill_type;
+//        $scope.deletedSkills = [];
+
+//        //$scope.modal.origin = schedule;
+//        //$scope.modal.originidx = idx;
+//        //$scope.modal.createMode = false;
+
+//    };
+
+//    $scope.addSkill = (newSkill) => {
+
+//        if (!newSkill) return;
+
+//        $scope.modal.data.push({
+//            id: 0,
+//            content: newSkill,
+//            role: $scope.selectedGroup,
+//            skill_time: $scope.modal.skill_time,
+//            skill_type: $scope.modal.skill_type,
+//        })
+
+//        // clear input
+//        $scope.newSkill = "";
+//    }
+
+//    $scope.deleteSkill = (idx) => {
+
+//        if ($scope.modal.data[idx].id !== 0) {
+//            $scope.deletedSkills.push($scope.modal.data[idx]);
+//        }
+
+//        $scope.modal.data.splice(idx, 1);
+//    }
+
+//    $scope.moveUp = (idx) => {
+//        if (idx === 0) return;
+//        [$scope.modal.data[idx], $scope.modal.data[idx - 1]] = [$scope.modal.data[idx - 1], $scope.modal.data[idx]];
+//    }
+
+//    $scope.moveDown = (idx) => {
+//        if (idx === $scope.modal.data.length - 1) return;
+//        [$scope.modal.data[idx], $scope.modal.data[idx + 1]] = [$scope.modal.data[idx + 1], $scope.modal.data[idx]];
+//    }
+
+//    $scope.saveChanges = () => {
+
+//        // reassign the customOrder
+//        for (let i = 0; i !== $scope.modal.data.length; i++) {
+//            $scope.modal.data[i].custom_order = i + 1;
+//        }
+
+//        let promiseA = Promise.resolve('a');
+//        let promiseB = Promise.resolve('b');
+
+//        if ($scope.deletedSkills.length !== 0) {
+//            promiseA = appService.DeleteSkills({ skills: $scope.deletedSkills })
+//        }
+
+//        if ($scope.modal.data.length !== 0) {
+//            promiseB = appService.UpsertSkills({ skills: $scope.modal.data });
+//        }
+
+//        $q.all([promiseA, promiseB]).then((ret) => {
+
+//            // easy peasy
+//            $scope.GetAllSkillsByRole();
+
+//            //if (!ret[1].data) return;
+
+//            //if ($scope.modal.skill_type === 'hard') {
+//            //    if ($scope.modal.skill_time === 'now')
+//            //        $scope.nowHard = ret[1].data.sort((a, b) => a.custom_order - b.custom_order);
+//            //    else
+//            //        $scope.futureHard = ret[1].data.sort((a, b) => a.custom_order - b.custom_order);
+//            //}
+//            //else {
+//            //    if ($scope.modal.skill_time === 'now')
+//            //        $scope.nowSoft = ret[1].data.sort((a, b) => a.custom_order - b.custom_order);
+//            //    else
+//            //        $scope.futureSoft = ret[1].data.sort((a, b) => a.custom_order - b.custom_order);
+//            //}
+
+//        });
+
+
+//        //// delete skills
+//        //appService.DeleteSkills({ skills: $scope.deletedSkills }).then((ret) => {
+//        //    if (ret.data) {
+//        //        $scope.deletedSkills = [];
+//        //    }
+//        //});        
+
+//        //// upsert skills
+//        //appService.UpsertSkills({ skills: $scope.modal.data }).then((ret) => {
+
+//        //    if (!ret.data) return;
+
+//        //    if ($scope.modal.skill_type === 'hard') {
+//        //        if ($scope.modal.skill_time === 'now')
+//        //            $scope.nowHard = ret.data.sort((a, b) => a.custom_order - b.custom_order);
+//        //        else
+//        //            $scope.futureHard = ret.data.sort((a, b) => a.custom_order - b.custom_order);
+//        //    }
+//        //    else {
+//        //        if ($scope.modal.skill_time === 'now')
+//        //            $scope.nowSoft = ret.data.sort((a, b) => a.custom_order - b.custom_order);
+//        //        else
+//        //            $scope.futureSoft = ret.data.sort((a, b) => a.custom_order - b.custom_order);
+//        //    }
+//        //});
+//    }
+
+//}]);
+
+//app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$state', function ($scope, $location, appService, $rootScope, $q, dataservice, $state) {
+
+//    document.documentElement.scrollTop = 0;
+
+//    $(function () {
+//        $('[data-toggle="popover"]').popover()
+//    })
+
+//    $scope.GetAllScoresByRole = () => {
+
+//        $scope.members = $scope.auth.GroupAuthorities
+//            .find(x => x.GroupName === $scope.selectedGroup)
+//            .Members.sort((a, b) => a.empno - b.empno);
+
+//        appService.GetAllScoresByRole({ role: $scope.selectedGroup }).then((ret) => {
+
+//            $scope.data = ret.data;
+//            $scope.hard = [];
+//            $scope.soft = [];
+
+//            // Create data: fill the blank space of table
+
+//            for (let skill of $scope.data) {
+
+//                for (let member of $scope.members) {
+
+//                    if (!skill.scores.find(x => x.empno === member.empno)) {
+
+//                        skill.scores.push({
+//                            skill_id: skill.id,
+//                            empno: member.empno,
+//                            score: '',
+//                        })
+//                    }
+//                }
+
+//                skill.scores.sort((a, b) => a.empno - b.empno);
+
+//                if (skill.skill_type === 'hard')
+//                    $scope.hard.push(skill);
+//                else
+//                    $scope.soft.push(skill);
+//            }
+
+
+//        });
+//    }
+
+//    dataservice.get().then((ret) => {
+
+//        $scope.auth = ret.data;
+
+//        $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+//        $scope.GetAllScoresByRole();
+//    });
+
+//    $scope.upsertScores = () => {
+
+//        let savedScores = [];
+//        const aniBtn = document.querySelector(".animate-btn");
+
+
+//        for (let skill of $scope.data) {
+//            for (let emp of skill.scores) {
+
+//                let num = Number(emp.score);
+
+//                if (num && Number.isInteger(num) && num > 0 && num <= 5) {
+//                    emp.score = num;
+//                    savedScores.push(emp);
+//                }
+//            }
+//        }
+
+//        if (savedScores.length === 0) return;
+
+//        // start animation
+//        //aniBtn.classList.add('onclic');
+
+//        appService.UpsertScores({ scores: savedScores }).then((ret) => {
+
+//            if (ret.data) {
+//                /*aniBtn.classList.remove('onclic');*/
+//                aniBtn.classList.add('onclic');
+//                /*aniBtn.classList.add('validate');*/
+
+//                $scope.GetAllScoresByRole();
+//                /*$state.reload();*/
+
+//                //setTimeout(function () {
+//                //    aniBtn.classList.remove('validate');
+//                //}, 2500);
+
+//                setTimeout(function () {
+//                    aniBtn.classList.remove('onclic');
+//                    aniBtn.classList.add('validate');
+//                    setTimeout(function () {
+//                        aniBtn.classList.remove('validate');
+//                    }, 1500);
+//                }, 1500);
+
+
+//            }
+
+//        });
+
+
+
+
+//    }
+
+
+
+
+//}]);

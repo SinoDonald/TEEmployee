@@ -453,6 +453,7 @@
     <Content Include="Views\Kpi\Feedback.cshtml" />
     <Content Include="Views\GKpi\Fillin.cshtml" />
     <Content Include="Views\GKpi\Feedback.cshtml" />
+    <Content Include="Views\Profession\Scatter.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Response\" />
