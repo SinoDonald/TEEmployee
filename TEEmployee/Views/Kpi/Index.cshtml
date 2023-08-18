@@ -1,4 +1,5 @@
-﻿
+﻿@using TEEmployee.Models;
+
 @{
     ViewBag.Title = "Index";
 }
@@ -9,9 +10,46 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <link href="~/Content/css/animate-btn.css" rel="stylesheet">
     <link href="~/Content/css/switch-btn.css" rel="stylesheet">
+
     <style>
+        body {
+            /*background-color: linen;*/
+        }
 
         header {
+            margin-top: 100px;
+        }
+
+        .chartmenu {
+            display: flex;
+        }
+
+            .chartmenu div {
+                flex: 1;
+                margin: 0 20px;
+            }
+
+        .top-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 99;
+        }
+        /* .back-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 120px;
+            z-index: 99;
+        }*/
+        .highlight-select {
+            background-color: papayawhip;
+        }
+
+        .bar div {
+            height: 50vh;
+        }
+
+        /*header {
             margin-top: 100px;
         }
 
@@ -23,7 +61,7 @@
             .chartmenu div {
                 flex: 1;
                 margin: 0 20px;
-            }
+            }*/
 
         tfoot td {
             text-align: right;
@@ -46,7 +84,7 @@
             <label for="SelectManager">群組</label>
             <select class="form-select manager" id="SelectManager" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
                 <option value="" disabled selected>Select your option</option>
-                <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
+                <option ng-repeat="group in groups" ng-class="{'highlight-select': group == '設計' || group == '規劃'|| group == '專管'|| group == '智慧軌道創新小組'|| group == '行政組'|| group == '計畫管理組'}" value="{{group}}">{{group}}</option>
             </select>
         </div>
         <div>
@@ -67,8 +105,8 @@
 
     <div>
         @*<div ng-model="datum">
-            <p>{{datum.empno}} - {{datum.name}} - {{datum.kpi_type}} - {{datum.group_name}}</p>
-        </div>*@
+                <p>{{datum.empno}} - {{datum.name}} - {{datum.kpi_type}} - {{datum.group_name}}</p>
+            </div>*@
 
         <div class="switch-button mb-3">
             <input ng-model="showLast" class="switch-button-checkbox" type="checkbox">

@@ -4,7 +4,8 @@
 
 <div ng-controller="TalentRecordCtrl" class="container">
 
-    <div class="container p-5 my-5 bg-dark text-white">
+    @*<div class="container p-5 my-5 bg-dark text-white">*@
+    <div class="container p-5 my-5 bg-light">
         <div class="box">
             <h2>人才資料庫</h2>
             <div class="form-check form-check-inline">
@@ -17,129 +18,206 @@
             </div>
         </div>
         <br />
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="exp">
-                    <h4 class="inner">
-                        <span>學歷</span>
-                        <span>學校</span>
-                        <span>科系</span>
-                    </h4>
-                    <div class="container">
-                        <div ng-repeat="educational in user.educational">
-                            <div class="row align-items-start">
-                                <div class="col text-center">
-                                    <h5>{{educational.split('　')[0]}}</h5>
-                                </div>
-                                <div class="col text-center">
-                                    <h5>{{educational.split('　')[1]}}</h5>
-                                </div>
-                                <div class="col">
-                                    <h5>{{educational.split('　')[2]}}</h5>
+        <nav class="navbar navbar-light bg-light">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li class="col text-center nav-item" role="presentation">
+                    <a class="btn btn-outline-success me-2 btn-lg nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="button" aria-controls="pills-home" aria-selected="true">基本資料與規劃</a>
+                </li>
+                <li class="col text-center nav-item" role="presentation">
+                    <a class="btn btn-outline-success me-2 btn-lg nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="button" aria-controls="pills-profile" aria-selected="false">專案經歷</a>
+                </li>
+                <li class="col text-center nav-item" role="presentation">
+                    <a class="btn btn-outline-success me-2 btn-lg nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="button" aria-controls="pills-contact" aria-selected="false">個人特質</a>
+                </li>
+            </ul>
+        </nav>
+        <nav class="navbar navbar-light bg-light">
+            <form class="container-fluid justify-content-start" id="pills-tab" role="tablist">
+                <div class="col text-center nav-item" role="presentation">
+                    <a class="btn btn-outline-success me-2 btn-lg" role="button" ng-click="BasicInformation()">基本資料與規劃</a>
+                </div>
+                <div class="col text-center">
+                    <button class="btn btn-outline-success me-2 btn-lg" type="button">專案經歷</button>
+                </div>
+                <div class="col text-center">
+                    <button class="btn btn-outline-success me-2 btn-lg" type="button">個人特質</button>
+                </div>
+            </form>
+        </nav>
+    </div>
+
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active " id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="exp">
+                        <h4 class="inner">
+                            <span>學歷</span>
+                            <span>學校</span>
+                            <span>科系</span>
+                        </h4>
+                        <div class="container">
+                            <div ng-repeat="educational in user.educational">
+                                <div class="row align-items-start">
+                                    <div class="col text-center">
+                                        <h5>{{educational.split('　')[0]}}</h5>
+                                    </div>
+                                    <div class="col text-center">
+                                        <h5>{{educational.split('　')[1]}}</h5>
+                                    </div>
+                                    <div class="col">
+                                        <h5>{{educational.split('　')[2]}}</h5>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6 text-center">
-                <div class="exp">
-                    <h4>近三年考績</h4>
-                    <div class="inner">
-                        <div class="col">
-                            <h5>{{user.performance[0]}}</h5>
-                        </div>
-                        <div class="col">
-                            <h5>{{user.performance[1]}}</h5>
-                        </div>
-                        <div class="col">
-                            <h5>{{user.performance[2]}}</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-        <br />
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="exp">
-                    <h4>職位經歷</h4>
-                    <div ng-repeat="experience in user.experience">
-                        <h5>{{experience}}</h5>
-                    </div>
+        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">內容2</div>
+        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">內容3</div>
+    </div>
+
+    <div ui-view></div>
+
+    @*<div class="container p-5 my-5 bg-dark text-white">
+            <div class="box">
+                <h2>人才資料庫</h2>
+                <div class="form-check form-check-inline">
+                    <img src="~/Content/CV/{{user.empno}}.jpg" class="img-thumbnail" alt="{{user.name}}">
                 </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="exp">
-                    <h4>專業證照</h4>
-                    <div ng-repeat="license in user.license">
-                        <h5>{{license}}</h5>
-                    </div>
+                <div class="form-check form-check-inline">
+                    <h3>姓名：{{user.name}}</h3>
+                    <h3>生日：{{user.birthday}}</h3>
+                    <h3>年齡：{{user.age}}</h3>
                 </div>
-            </div>
-        </div>
-        <br />
-        <div class="row">
-            <button class="btn btn-secondary btn-lg" type="button" data-toggle="collapse" data-target="#projectExperience">專案經歷 (可開啟收合)</button>
-            <div class="collapse" id="projectExperience">
-                <div class="exp">
-                    <br />
-                    <br />
-                    <div ng-repeat="project in user.project">
-                        <h5>{{project}}</h5>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br />
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <h4>規劃進程</h4>
-                    <textarea class="form-control" ng-model="user.planning" name="SaveResponse" rows="3">{{user.planning}}</textarea>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <h4>測評資料</h4>
-                    <textarea class="form-control" ng-model="user.test" name="SaveResponse" rows="3">{{user.test}}</textarea>
-                </div>
-            </div>
-        </div>
-        <br />
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <h4>優勢</h4>
-                    <textarea class="form-control" ng-model="user.advantage" name="SaveResponse" rows="3">{{user.advantage}}</textarea>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <h4>待發展能力</h4>
-                    <textarea class="form-control" ng-model="user.developed" name="SaveResponse" rows="3">{{user.developed}}</textarea>
-                </div>
-            </div>
-        </div>
-        <br />
-        @if (Session["empno"] is "4125")
-        {
-            <div class="form-group">
-                <h4>未來發展規劃</h4>
-                <textarea class="form-control" ng-model="user.future" name="SaveResponse" rows="3">{{user.future}}</textarea>
             </div>
             <br />
-        }
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="返回" ng-click="ToTalent()" class="btn btn-warning" />
-                <input type="submit" value="儲存" ng-click="SaveResponse(user)" class="btn btn-warning" />
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="exp">
+                        <h4 class="inner">
+                            <span>學歷</span>
+                            <span>學校</span>
+                            <span>科系</span>
+                        </h4>
+                        <div class="container">
+                            <div ng-repeat="educational in user.educational">
+                                <div class="row align-items-start">
+                                    <div class="col text-center">
+                                        <h5>{{educational.split('　')[0]}}</h5>
+                                    </div>
+                                    <div class="col text-center">
+                                        <h5>{{educational.split('　')[1]}}</h5>
+                                    </div>
+                                    <div class="col">
+                                        <h5>{{educational.split('　')[2]}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 text-center">
+                    <div class="exp">
+                        <h4>近三年考績</h4>
+                        <div class="inner">
+                            <div class="col">
+                                <h5>{{user.performance[0]}}</h5>
+                            </div>
+                            <div class="col">
+                                <h5>{{user.performance[1]}}</h5>
+                            </div>
+                            <div class="col">
+                                <h5>{{user.performance[2]}}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
+            <br />
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="exp">
+                        <h4>職位經歷</h4>
+                        <div ng-repeat="experience in user.experience">
+                            <h5>{{experience}}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="exp">
+                        <h4>專業證照</h4>
+                        <div ng-repeat="license in user.license">
+                            <h5>{{license}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <button class="btn btn-secondary btn-lg" type="button" data-toggle="collapse" data-target="#projectExperience">專案經歷 (可開啟收合)</button>
+                <div class="collapse" id="projectExperience">
+                    <div class="exp">
+                        <br />
+                        <br />
+                        <div ng-repeat="project in user.project">
+                            <h5>{{project}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <h4>規劃進程</h4>
+                        <textarea class="form-control" ng-model="user.planning" name="SaveResponse" rows="3">{{user.planning}}</textarea>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <h4>測評資料</h4>
+                        <textarea class="form-control" ng-model="user.test" name="SaveResponse" rows="3">{{user.test}}</textarea>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <h4>優勢</h4>
+                        <textarea class="form-control" ng-model="user.advantage" name="SaveResponse" rows="3">{{user.advantage}}</textarea>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <h4>待發展能力</h4>
+                        <textarea class="form-control" ng-model="user.developed" name="SaveResponse" rows="3">{{user.developed}}</textarea>
+                    </div>
+                </div>
+            </div>
+            <br />
+            @if (Session["empno"] is "4125")
+            {
+                <div class="form-group">
+                    <h4>未來發展規劃</h4>
+                    <textarea class="form-control" ng-model="user.future" name="SaveResponse" rows="3">{{user.future}}</textarea>
+                </div>
+                <br />
+            }
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="返回" ng-click="ToTalent()" class="btn btn-warning" />
+                    <input type="submit" value="儲存" ng-click="SaveResponse(user)" class="btn btn-warning" />
+                </div>
+            </div>
+        </div>*@
 
 </div>
 
-    @section Scripts {
-        <script src="~/Scripts/WebApp/Talent/TalentRecordCtrl.js"></script>
-    }
+@section Scripts {
+    <script src="~/Scripts/WebApp/Talent/TalentRecordCtrl.js"></script>
+    <script src="~/Scripts/WebApp/Talent/BasicInfomation.js"></script>
+}
