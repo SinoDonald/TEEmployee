@@ -38,6 +38,10 @@ namespace TEEmployee.Controllers
         {
             return PartialView();
         }
+        public ActionResult Scatter()
+        {
+            return PartialView();
+        }
 
         /*........................  Web api  ...........................*/
 

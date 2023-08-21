@@ -160,8 +160,13 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a class="nav-item nav-link" ui-sref="Skill">群組專業規劃</a>
-                <a class="nav-item nav-link" ui-sref="Score">群組專業盤點</a>
-                <a class="nav-item nav-link" ui-sref="Chart">組員專業能力盤點</a>
+
+                @if (Session["role"] is "Manager")
+                {
+                    <a class="nav-item nav-link" ui-sref="Score">群組專業盤點</a>
+                    <a class="nav-item nav-link" ui-sref="Chart">長條圖</a>
+                    <a class="nav-item nav-link" ui-sref="Scatter">散佈圖</a>
+                }
                 <a class="nav-item nav-link" ui-sref="Future">個人專業盤點</a>
             </div>
         </div>

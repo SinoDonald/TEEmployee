@@ -43,19 +43,19 @@
             </select>
         </div>
         @*<div>
-            <label for="SelectManager">群組</label>
-            <select class="form-select manager" id="SelectManager" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
-                <option value="" disabled selected>Select your option</option>
-                <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
-            </select>
-        </div>*@
+                <label for="SelectManager">群組</label>
+                <select class="form-select manager" id="SelectManager" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
+                    <option value="" disabled selected>Select your option</option>
+                    <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
+                </select>
+            </div>*@
         @*<div>
-            <label for="SelectCategory">員工</label>
-            <select class="form-select" id="SelectCategory" name="SelectEmployee" ng-model="selectedEmployee" ng-change="selectEmployee()" aria-label="Select the Category">
-                <option value="" disabled selected>Select your option</option>
-                <option ng-repeat="employee in employees" value="{{employee}}">{{employee}}</option>
-            </select>
-        </div>*@
+                <label for="SelectCategory">員工</label>
+                <select class="form-select" id="SelectCategory" name="SelectEmployee" ng-model="selectedEmployee" ng-change="selectEmployee()" aria-label="Select the Category">
+                    <option value="" disabled selected>Select your option</option>
+                    <option ng-repeat="employee in employees" value="{{employee}}">{{employee}}</option>
+                </select>
+            </div>*@
         <div>
             <label for="SelectCategory">職位</label>
             <select class="form-select" id="SelectCategory" name="SelectType" ng-model="selectedRole" ng-change="selectRole()" aria-label="Select the Category">
@@ -87,10 +87,10 @@
         <thead>
             <tr>
                 @*<th>
-                    <button ng-click="addKpiItem()" type="button" class="btn btn-sm">
-                        <span class="material-icons">playlist_add</span>
-                    </button>
-                </th>*@
+                        <button ng-click="addKpiItem()" type="button" class="btn btn-sm">
+                            <span class="material-icons">playlist_add</span>
+                        </button>
+                    </th>*@
                 <th style="width: 10%">績效目標</th>
                 <th style="width: 20%">預期目標值</th>
                 <th style="width: 5%">權重</th>
@@ -110,10 +110,10 @@
         <tbody>
             <tr ng-repeat="item in datum.items">
                 @*<td>
-            <button ng-click="removeKpiItem($index)" type="button" class="btn btn-sm">
-                <span class="material-symbols-outlined">disabled_by_default</span>
-            </button>
-        </td>*@
+                        <button ng-click="removeKpiItem($index)" type="button" class="btn btn-sm">
+                            <span class="material-symbols-outlined">disabled_by_default</span>
+                        </button>
+                    </td>*@
                 <td ng-bind="item.content">
                     @*<input ng-model="item.content" class="form-control" type="text" placeholder="項目">*@
                 </td>
@@ -125,8 +125,8 @@
                 </td>
                 <td ng-bind="item.weight">
                     @*<div class="form-check">
-                <input ng-model="item.weight" type="number" min="0" step="0.1" class="form-control" placeholder="權重">
-            </div>*@
+                            <input ng-model="item.weight" type="number" min="0" step="0.1" class="form-control" placeholder="權重">
+                        </div>*@
                 </td>
                 <td ng-show="!showLast">
                     <div class="form-check">
@@ -143,7 +143,7 @@
                 </td>
                 @*<td ng-show="!showLast" ng-bind="item.h1_feedback"></td>*@
                 <td ng-show="!showLast">
-                    <p ng-repeat="fb in item.h1_feedbacks" ng-bind="fb"></p>
+                    <p ng-repeat="fb in item.h1_feedbacks"><span class="badge badge-secondary" style="font-size: 1em" ng-bind="fb.slice(0,3)"></span><span ng-bind="fb.slice(3)"></span></p>
                 </td>
                 <td ng-show="showLast">
                     <div class="form-check">
@@ -160,7 +160,8 @@
                 </td>
                 @*<td ng-show="showLast" ng-bind="item.h2_feedback"></td>*@
                 <td ng-show="showLast">
-                    <p ng-repeat="fb in item.h2_feedbacks" ng-bind="fb"></p>
+                    @*<p ng-repeat="fb in item.h2_feedbacks" ng-bind="fb"></p>*@
+                    <p ng-repeat="fb in item.h2_feedbacks"><span class="badge badge-secondary" style="font-size: 1em" ng-bind="fb.slice(0,3)"></span><span ng-bind="fb.slice(3)"></span></p>
                 </td>
                 <td>
                     <div class="form-check">

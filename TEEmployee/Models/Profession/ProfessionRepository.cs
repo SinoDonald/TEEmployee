@@ -62,8 +62,8 @@ namespace TEEmployee.Models.Profession
             {
                 List<Skill> ret = new List<Skill>();
 
-                string insertSql = @"INSERT INTO Skill (content, role, skill_type, skill_time, custom_order) 
-                        VALUES(@content, @role, @skill_type, @skill_time, @custom_order) 
+                string insertSql = @"INSERT INTO Skill (content, role, skill_type, custom_order) 
+                        VALUES(@content, @role, @skill_type, @custom_order) 
                         RETURNING *";
 
                 string updateSql = @"UPDATE Skill SET content=@content, custom_order=@custom_order WHERE id=@id RETURNING *";
@@ -147,6 +147,103 @@ namespace TEEmployee.Models.Profession
 
         }
 
+
+        // Deprecated
+        //public List<Skill> UpsertSkills(List<Skill> skills)
+        //{
+        //    if (_conn.State == 0)
+        //        _conn.Open();
+
+        //    using (var tran = _conn.BeginTransaction())
+        //    {
+        //        List<Skill> ret = new List<Skill>();
+
+        //        string insertSql = @"INSERT INTO Skill (content, role, skill_type, skill_time, custom_order) 
+        //                VALUES(@content, @role, @skill_type, @skill_time, @custom_order) 
+        //                RETURNING *";
+
+        //        string updateSql = @"UPDATE Skill SET content=@content, custom_order=@custom_order WHERE id=@id RETURNING *";
+
+
+        //        try
+        //        {
+        //            foreach (var skill in skills)
+        //            {
+        //                if (skill.id != 0)
+        //                {
+        //                    var ret_skill = _conn.QuerySingle<Skill>(updateSql, skill, tran);
+        //                    ret.Add(ret_skill);
+        //                }
+        //                else
+        //                {
+        //                    var ret_skill = _conn.QuerySingle<Skill>(insertSql, skill, tran);
+        //                    ret.Add(ret_skill);
+        //                }
+        //            }
+
+        //            tran.Commit();
+        //        }
+        //        catch (Exception)
+        //        {
+
+        //        }
+
+        //        return ret;
+
+
+
+        //        // ---------------------------------------------------------------
+
+        //        // id is the primary key, not suited for upsert sql command
+
+        //        //List<Skill> ret = new List<Skill>();
+
+        //        //string sql = @"INSERT INTO Skill (content, role, skill_type, skill_time, custom_order) 
+        //        //        VALUES(@content, @role, @skill_type, @skill_time, @custom_order) 
+        //        //        ON CONFLICT(id=@id) 
+        //        //        DO UPDATE SET content=@content, custom_order=@custom_order RETURNING *";
+
+        //        //try
+        //        //{
+        //        //    foreach (var skill in skills)
+        //        //    {
+        //        //        var ret_skill = _conn.QuerySingle<Skill>(sql, skill, tran);
+        //        //        ret.Add(ret_skill);
+        //        //    }
+
+        //        //    tran.Commit();
+        //        //}
+        //        //catch (Exception e)
+        //        //{
+
+        //        //}               
+
+        //        //return ret;
+
+        //        // ----------------------------------------------------------
+
+        //        // RETURNING sql not support IEnumerable parameters (?)
+
+        //        //List<Skill> ret;
+
+        //        //string sql = @"INSERT INTO Skill (content, role, skill_type, skill_time, order) 
+        //        //        VALUES(@content, @role, @skill_type, @skill_time, @order) 
+        //        //        ON CONFLICT(id) 
+        //        //        DO UPDATE SET content=@content, order=@order
+        //        //        RETURING *";
+
+        //        //ret = _conn.Query<Skill>(sql, skills).ToList();
+
+
+        //        //tran.Commit();
+
+        //        //return ret;
+
+        //    }
+
+        //}
+
+
         // delete skills and related scores
         public bool DeleteSkills(List<Skill> skills)
         {
@@ -180,16 +277,45 @@ namespace TEEmployee.Models.Profession
             }
         }
 
+
+        // Deprecated
         // For score page: return scores wrapped with skill
         // Current skills only
+        //public List<Skill> GetAllScoresByRole(List<string> roles)
+        //{
+        //    var lookup = new Dictionary<int, Skill>();
+        //    _conn.Query<Skill, Score, Skill>(@"
+        //        SELECT sk.*, sc.*
+        //        FROM Skill AS sk
+        //        LEFT JOIN Score AS sc ON sk.id = sc.skill_id
+        //        WHERE skill_time = 'now' AND role IN @roles",
+        //        (sk, sc) =>
+        //        {
+        //            Skill skill;
+        //            if (!lookup.TryGetValue(sk.id, out skill))
+        //                lookup.Add(sk.id, skill = sk);
+        //            if (skill.scores == null)
+        //                skill.scores = new List<Score>();
+        //            if (sc != null)
+        //                skill.scores.Add(sc);
+        //            return skill;
+        //        }, new { roles }, splitOn: "skill_id").AsQueryable();
+        //    var resultList = lookup.Values;
+
+        //    return resultList.ToList();
+        //}
+
+        // score page
+        //
         public List<Skill> GetAllScoresByRole(List<string> roles)
         {
             var lookup = new Dictionary<int, Skill>();
             _conn.Query<Skill, Score, Skill>(@"
                 SELECT sk.*, sc.*
-                FROM Skill AS sk
+                FROM Skill AS sk                
                 LEFT JOIN Score AS sc ON sk.id = sc.skill_id
-                WHERE skill_time = 'now' AND role IN @roles",
+                WHERE role IN @roles
+                ",
                 (sk, sc) =>
                 {
                     Skill skill;
@@ -205,6 +331,32 @@ namespace TEEmployee.Models.Profession
 
             return resultList.ToList();
         }
+
+        // Deprecated
+        //public List<Skill> GetAllScoresByRole(List<string> roles)
+        //{
+        //    var lookup = new Dictionary<int, Skill>();
+        //    _conn.Query<Skill, Score, Skill>(@"
+        //        SELECT sk.*, sc.*
+        //        FROM Skill AS sk
+        //        LEFT JOIN Score AS sc ON sk.id = sc.skill_id
+        //        AND role IN @roles",
+        //        (sk, sc) =>
+        //        {
+        //            Skill skill;
+        //            if (!lookup.TryGetValue(sk.id, out skill))
+        //                lookup.Add(sk.id, skill = sk);
+        //            if (skill.scores == null)
+        //                skill.scores = new List<Score>();
+        //            if (sc != null)
+        //                skill.scores.Add(sc);
+        //            return skill;
+        //        }, new { roles }, splitOn: "skill_id").AsQueryable();
+        //    var resultList = lookup.Values;
+
+        //    return resultList.ToList();
+        //}
+
 
         public bool UpsertScores(List<Score> scores)
         {
