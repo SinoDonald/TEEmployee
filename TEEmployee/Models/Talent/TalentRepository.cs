@@ -336,8 +336,8 @@ namespace TEEmployee.Models.Talent
                 {
                     //string sql = @"DELETE FROM userCV";
                     //_conn.Execute(sql);
-                    string sql = @"INSERT INTO userCV (empno, name, 'group', group_one, group_two, group_three, birthday, address, educational, performance, expertise, treatise, language, academic, license, training, honor, experience, project, lastest_update, planning, test, advantage, developed, future)
-                            VALUES(@empno, @name, @group, @group_one, @group_two, @group_three, @birthday, @address, @educational, @performance, @expertise, @treatise, @language, @academic, @license, @training, @honor, @experience, @project, @lastest_update, @planning, @test, @advantage, @developed, @future)
+                    string sql = @"INSERT INTO userCV (empno, name, 'group', group_one, group_two, group_three, birthday, address, educational, performance, expertise, treatise, language, academic, license, training, honor, experience, project, lastest_update, planning, test, advantage, disadvantage, developed, future)
+                            VALUES(@empno, @name, @group, @group_one, @group_two, @group_three, @birthday, @address, @educational, @performance, @expertise, @treatise, @language, @academic, @license, @training, @honor, @experience, @project, @lastest_update, @planning, @test, @advantage, @disadvantage, @developed, @future)
                             ON CONFLICT(empno)
                             DO UPDATE SET name=@name, 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three, birthday=@birthday, address=@address, educational=@educational, performance=@performance, expertise=@expertise, treatise=@treatise, language=@language, academic=@academic, license=@license, training=@training, honor=@honor, experience=@experience, project=@project, lastest_update=@lastest_update";
                     _conn.Execute(sql, userCVs);
@@ -446,7 +446,7 @@ namespace TEEmployee.Models.Talent
 
             using (var tran = _conn.BeginTransaction())
             {
-                string sql = @"UPDATE userCV SET planning=@planning, test=@test, advantage=@advantage, developed=@developed, future=@future WHERE empno=@empno";
+                string sql = @"UPDATE userCV SET planning=@planning, test=@test, advantage=@advantage, disadvantage=@disadvantage, developed=@developed, future=@future WHERE empno=@empno";
                 _conn.Execute(sql, userCV, tran);
                 tran.Commit();
 

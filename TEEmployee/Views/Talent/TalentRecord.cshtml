@@ -16,40 +16,32 @@
                 <h3>生日：{{user.birthday}}</h3>
                 <h3>年齡：{{user.age}}</h3>
             </div>
+            <br />
+            <br />
+            <nav class="navbar navbar-light bg-light">
+                <ul class="nav mb-3 container-fluid justify-content-start" id="pills-tab" role="tablist">
+                    <li class="col text-center" role="presentation">
+                        <a class="btn btn-outline-warning btn-lg active" id="pills-home-tab" data-toggle="pill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="規劃進程、學校、近三年考績、未來發展規劃" href="#pills-home" role="button" aria-controls="pills-home" aria-selected="true">基本資料與規劃</a>
+                    </li>
+                    <li class="col text-center" role="presentation">
+                        <a class="btn btn-outline-warning btn-lg" id="pills-profile-tab" data-toggle="pill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="職位經歷、專案經歷" href="#pills-profile" role="button" aria-controls="pills-profile" aria-selected="false">專案經歷</a>
+                    </li>
+                    <li class="col text-center" role="presentation">
+                        <a class="btn btn-outline-warning btn-lg" id="pills-contact-tab" data-toggle="pill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="專業證照、測評資料、優勢、劣勢、待發展能力" href="#pills-contact" role="button" aria-controls="pills-contact" aria-selected="false">個人特質</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
-        <br />
-        <nav class="navbar navbar-light bg-light">
-            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                <li class="col text-center nav-item" role="presentation">
-                    <a class="btn btn-outline-success me-2 btn-lg nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="button" aria-controls="pills-home" aria-selected="true">基本資料與規劃</a>
-                </li>
-                <li class="col text-center nav-item" role="presentation">
-                    <a class="btn btn-outline-success me-2 btn-lg nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="button" aria-controls="pills-profile" aria-selected="false">專案經歷</a>
-                </li>
-                <li class="col text-center nav-item" role="presentation">
-                    <a class="btn btn-outline-success me-2 btn-lg nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="button" aria-controls="pills-contact" aria-selected="false">個人特質</a>
-                </li>
-            </ul>
-        </nav>
-        <nav class="navbar navbar-light bg-light">
-            <form class="container-fluid justify-content-start" id="pills-tab" role="tablist">
-                <div class="col text-center nav-item" role="presentation">
-                    <a class="btn btn-outline-success me-2 btn-lg" role="button" ng-click="BasicInformation()">基本資料與規劃</a>
-                </div>
-                <div class="col text-center">
-                    <button class="btn btn-outline-success me-2 btn-lg" type="button">專案經歷</button>
-                </div>
-                <div class="col text-center">
-                    <button class="btn btn-outline-success me-2 btn-lg" type="button">個人特質</button>
-                </div>
-            </form>
-        </nav>
-    </div>
 
-    <div class="tab-content" id="pills-tabContent">
-        <div class="tab-pane fade show active " id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-            <div class="row">
-                <div class="col-sm-6">
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active " id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="row">
+                    <div class="form-group">
+                        <h4>規劃進程</h4>
+                        <textarea class="form-control" ng-model="user.planning" name="SaveResponse" rows="3">{{user.planning}}</textarea>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="exp">
                         <h4 class="inner">
                             <span>學歷</span>
@@ -65,7 +57,7 @@
                                     <div class="col text-center">
                                         <h5>{{educational.split('　')[1]}}</h5>
                                     </div>
-                                    <div class="col">
+                                    <div class="col text-center">
                                         <h5>{{educational.split('　')[2]}}</h5>
                                     </div>
                                 </div>
@@ -73,13 +65,107 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="exp">
+                        <h4>近三年考績</h4>
+                        <div class="inner">
+                            <div class="col text-center">
+                                <h5>{{user.performance[0]}}</h5>
+                            </div>
+                            <div class="col text-center" ">
+                                <h5>{{user.performance[1]}}</h5>
+                            </div>
+                            <div class="col text-center" ">
+                                <h5>{{user.performance[2]}}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (Session["empno"] is "4125")
+                {
+                    <div class="row">
+                        <div class="form-group">
+                            <h4>未來發展規劃</h4>
+                            <textarea class="form-control" ng-model="user.future" name="SaveResponse" rows="3">{{user.future}}</textarea>
+                        </div>
+                    </div>
+                }
+                <br />
+            </div>
+            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                <div class="row">
+                    <div class="exp">
+                        <h4>職位經歷</h4>
+                        <div ng-repeat="experience in user.experience">
+                            <h5>{{experience}}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="exp">
+                        <h4>專案經歷</h4>
+                        <div ng-repeat="project in user.project">
+                            <h5>{{project}}</h5>
+                        </div>
+                    </div>
+                </div>
+                <br />
+            </div>
+            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="exp">
+                            <h4>專業證照</h4>
+                            <div ng-repeat="license in user.license">
+                                <h5>{{license}}</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="exp">
+                            <h4>測評資料</h4>
+                            <div ng-repeat="experience in user.experience">
+                                <h5>{{experience}}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h4>優勢</h4>
+                            <textarea class="form-control" ng-model="user.advantage" name="SaveResponse" rows="3">{{user.advantage}}</textarea>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h4>劣勢</h4>
+                            <textarea class="form-control" ng-model="user.disadvantage" name="SaveResponse" rows="3">{{user.disadvantage}}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <h4>待發展能力</h4>
+                        <textarea class="form-control" ng-model="user.developed" name="SaveResponse" rows="3">{{user.developed}}</textarea>
+                    </div>
+                </div>
+                <br />
             </div>
         </div>
-        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">內容2</div>
-        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">內容3</div>
-    </div>
 
-    <div ui-view></div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+            </div>
+            <div class="col-md-offset-2 col-md-10">
+                <input class="btn btn-warning btn-lg" type="submit" value="返回" ng-click="ToTalent()" />
+                <input class="btn btn-warning btn-lg" type="submit" value="儲存" ng-click="SaveResponse(user)" />
+            </div>
+            <div class="col-md-offset-2 col-md-10">
+            </div>
+        </div>
+
+    </div>
 
     @*<div class="container p-5 my-5 bg-dark text-white">
             <div class="box">

@@ -62,6 +62,7 @@ app.factory('dataservice', function () {
         user.planning = data.planning;
         user.test = data.test;
         user.advantage = data.advantage;
+        user.disadvantage = data.disadvantage;
         user.developed = data.developed;
         user.future = data.future;
     }
