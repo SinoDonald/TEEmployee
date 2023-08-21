@@ -290,6 +290,10 @@ function createScoreScatterChart(scoreData, members) {
         //}],
     };
 
+    // Draw line and add label after chartjs complete
+    // https://www.youtube.com/watch?v=A35nHNLt8nw
+    // https://www.youtube.com/watch?v=PNbDrDI97Ng
+
     const scatterDataLabels = {
         id: 'scatterDataLabels',
         afterDatasetsDraw(chart, args, options) {
