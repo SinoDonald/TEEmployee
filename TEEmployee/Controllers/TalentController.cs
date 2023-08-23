@@ -61,6 +61,14 @@ namespace TEEmployee.Controllers
             var ret = _service.ImportFile(importFile);
             return Json(ret);
         }
+        // 上傳測評資料檔案
+        [HttpPost]
+        public ActionResult ImportPDFFile(HttpPostedFileBase importPDFFile)
+        {
+            if (importPDFFile == null) return Json(new { Status = 0, Message = "No File Selected" });
+            var ret = _service.ImportPDFFile(importPDFFile);
+            return Json(ret);
+        }
         // 取得群組
         [HttpPost]
         public JsonResult GetGroupList()
@@ -88,12 +96,12 @@ namespace TEEmployee.Controllers
         }
         // 儲存回覆
         [HttpPost]
-        public JsonResult SaveResponse(CV userCV)
+        public JsonResult SaveResponse(CV userCV, string planning)
         {
             var ret = false;
             if (Session["empno"].ToString() == "4125")
             {
-                _service.SaveResponse(userCV);
+                _service.SaveResponse(userCV, planning);
                 ret = true;
             }
             

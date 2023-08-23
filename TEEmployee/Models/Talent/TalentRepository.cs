@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
+using IFilterTextReader;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -10,7 +11,6 @@ using System.Data.SQLite;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using Image = System.Drawing.Image;
@@ -50,6 +50,10 @@ namespace TEEmployee.Models.Talent
             // 計算年齡, 民國轉西元後計算年齡
             foreach (CV userCV in ret)
             {
+                if(userCV.planning == null)
+                {
+                    userCV.planning = "";
+                }
                 CultureInfo culture = new CultureInfo("zh-TW");
                 culture.DateTimeFormat.Calendar = new TaiwanCalendar();
                 DateTime birthday = DateTime.Parse(userCV.birthday, culture);
@@ -439,9 +443,66 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
-        // 儲存回覆
-        public CV SaveResponse(CV userCV)
+        // 上傳測評資料檔案
+        public bool ImportPDFFile(HttpPostedFileBase file)
         {
+            bool ret = false;
+            List<CV> userCVs = new List<CV>();
+            try
+            {
+                if (Path.GetExtension(file.FileName) != ".pdf") throw new ApplicationException("請使用PDF(.pdf)格式");
+                var path = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"), file.FileName);
+                file.SaveAs(path); // 將檔案存到Server
+
+                string empno = Regex.Replace(Path.GetFileName(file.FileName), "[^0-9]", ""); // 僅保留數字
+                string line = new FilterReader(path).ReadToEnd();
+                //while (line != null)
+                //{
+                //    line = line.Trim();
+                //    if (!String.IsNullOrEmpty(line))
+                //    {
+                //        line = Regex.Replace(line, @"[,]\s+", " ");
+                //        line = Regex.Replace(line, @"[,]", "");
+                //        line = Regex.Replace(line, @"[^a-zA-Z'\d\s:]", " ");
+                //        break;
+                //    }
+                //}
+
+                CV userCV = new CV();
+                userCV.empno = empno;
+                userCV.test = line;
+                userCVs.Add(userCV);
+                ret = SaveTest(userCVs); // 儲存測評資料
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return ret;
+        }
+        // 儲存測評資料
+        public bool SaveTest(List<CV> userCVs)
+        {
+            bool ret = false;
+
+            _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                string sql = @"UPDATE userCV SET test=@test WHERE empno=@empno";
+                _conn.Execute(sql, userCVs, tran);
+                tran.Commit();
+                ret = true;
+            }
+
+            return ret;
+        }
+        // 儲存回覆
+        public CV SaveResponse(CV userCV, string planning)
+        {
+            planning = planning.Substring(0, planning.Length - 1);
+            userCV.planning = planning;
             _conn.Open();
 
             using (var tran = _conn.BeginTransaction())

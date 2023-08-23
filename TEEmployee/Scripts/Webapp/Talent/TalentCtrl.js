@@ -59,7 +59,7 @@ app.factory('dataservice', function () {
         user.experience = data.experience.split('\n');
         user.project = data.project.split('\n');
         user.license = data.license.split('\n');
-        user.planning = data.planning;
+        user.planning = data.planning.split('\n');
         user.test = data.test;
         user.advantage = data.advantage;
         user.disadvantage = data.disadvantage;
@@ -130,7 +130,6 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
             });
     }
 
-
     // 上傳年度績效檔案
     $(document).on("click", "#btnUpload", function () {
         var files = $("#importFile").get(0).files;
@@ -160,6 +159,44 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
 app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', 'dataservice', function ($scope, $location, $window, appService, $rootScope, dataservice) {
 
     $scope.user = dataservice.get(); // 取得員工履歷
+    $scope.planning = []; // 規劃進程
+    for (let i = 0; i < $scope.user.planning.length; i++) {
+        if ($scope.planning.length < 6) {
+                $scope.planning.push({ plan: $scope.user.planning[i] });
+        }
+    }
+    for (let i = 0; i < 6; i++) {
+        if ($scope.planning.length < 6) {
+            $scope.planning.push({ plan: '' });
+        }
+        else {
+            break;
+        }
+    }
+
+    // 上傳測評資料檔案
+    $(document).on("click", "#btnPDFUpload", function () {
+        var files = $("#importPDFFile").get(0).files;
+
+        var formData = new FormData();
+        formData.append('importPDFFile', files[0]);
+
+        $.ajax({
+            url: '/Talent/ImportPDFFile',
+            data: formData,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data === true) {
+                    alert("更新完成");
+                }
+                else {
+                    alert("上傳格式錯誤");
+                }
+            }
+        });
+    });
 
     // 回上頁
     $scope.ToTalent = function () {
@@ -168,13 +205,17 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
 
     // 儲存
     $scope.SaveResponse = function (data) {
+
+        // 解析回傳的planning字串
+        let planning = '';
+        for (let i = 0; i < $scope.planning.length; i++) {
+            planning += $scope.planning[i].plan + '\n';
+        }        
         // 取得員工履歷
-        appService.SaveResponse({ userCV: data })
+        appService.SaveResponse({ userCV: data, planning: planning })
             .then(function (ret) {
                 if (ret.data === false) { alert('僅限協理儲存'); }
-                //if (ret.data === true) { alert('儲存成功'); }
                 else { alert('儲存成功'); }
-                /*$location.path('/TalentOption');*/
             })
             .catch(function (ret) {
                 alert('Error');

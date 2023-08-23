@@ -11,7 +11,8 @@ namespace TEEmployee.Models.Talent
         List<CV> GetLastestUpdate(); // 取得現在SQL存檔的更新時間
         List<CV> SaveUserCV(List<User> userGroups); // 讀取Word人員履歷表
         bool ImportFile(HttpPostedFileBase file); // 上傳年度績效檔案
-        CV SaveResponse(CV userCV); // 儲存回覆
+        bool ImportPDFFile(HttpPostedFileBase file); // 上傳測評資料檔案
+        CV SaveResponse(CV userCV, string planning); // 儲存回覆
         void Dispose();
     }
 }

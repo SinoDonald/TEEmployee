@@ -56,6 +56,12 @@ namespace TEEmployee.Models.Talent
             var ret = _talentRepository.ImportFile(file);
             return ret;
         }
+        // 上傳測評資料檔案
+        public bool ImportPDFFile(HttpPostedFileBase file)
+        {
+            var ret = _talentRepository.ImportPDFFile(file);
+            return ret;
+        }
         // 取得群組
         public List<string> GetGroupList(string empno)
         {
@@ -137,9 +143,9 @@ namespace TEEmployee.Models.Talent
             _talentRepository.SaveUserCV(userGroups); // 讀取Word人員履歷表
         }
         // 儲存回覆
-        public CV SaveResponse(CV userCV)
+        public CV SaveResponse(CV userCV, string planning)
         {
-            CV ret = _talentRepository.SaveResponse(userCV);
+            CV ret = _talentRepository.SaveResponse(userCV, planning);
             return ret;
         }
 

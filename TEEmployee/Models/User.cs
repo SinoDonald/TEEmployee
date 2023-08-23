@@ -44,7 +44,7 @@ namespace TEEmployee.Models
         public string tel { get; set; }
         [ScriptIgnore]
         public string email { get; set; }
-        
+
     }
     // 首頁通知 <-- 培文
     public class UserNotify
