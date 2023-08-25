@@ -121,7 +121,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     //    });
     //}
 
-    // checkbox
+    // checkbox: show complete projects
     $scope.checkboxModel = {
         value: false
     };
@@ -198,13 +198,126 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
         }
 
+        // version 1: checkbox and filter crossing
+        // default 
+
+        //let count = 0;
+        //let groupProjectNames = groupSchedules.filter(x => !(
+        //    new Date(x.Group.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate() ||
+        //    new Date(x.Group.end_date) < moment($scope.ganttStartMonth).toDate())
+        //    ).map(x => {
+        //    count++;
+        //    return {
+        //        id: count,
+        //        label: x.Group.projno,
+        //        finished: x.Group.percent_complete === 100,
+        //    }
+        //})
+
+        
+        //if (!$scope.selection_filtered_projects) {
+        //    $scope.selection_filtered_projects = [];
+        //    for (let name of groupProjectNames) {
+        //        $scope.selection_filtered_projects.push(name);
+        //        if (!name.finished)
+        //            $scope.multi_selected_projects.push(name);
+        //    }
+            
+        //}
+        //else {
+        //    let temp_range_projects = $scope.selection_filtered_projects;
+        //    $scope.selection_filtered_projects = [];
+        //    let temp_selected_projects = $scope.multi_selected_projects;
+        //    $scope.multi_selected_projects = [];
+
+        //    for (let name of groupProjectNames) {
+        //        $scope.selection_filtered_projects.push(name);
+
+        //        if (temp_range_projects.find(x => x.label === name.label)) {
+
+        //            if (temp_selected_projects.find(x => x.label === name.label)) {
+        //                $scope.multi_selected_projects.push(name);
+        //                continue;
+        //            }
+
+        //        }
+        //        else {
+
+        //            if ($scope.checkboxModel.value) {
+        //                $scope.multi_selected_projects.push(name);
+        //            }
+        //            else {
+        //                if (!name.finished)
+        //                    $scope.multi_selected_projects.push(name);
+        //            }
+
+        //        }
+        //    }
+        //}
+
+
+        
+
+
     }
 
-    $scope.UpdateAllPlots = () => {
+    $scope.UpdateAllPlots = (redundant) => {
+        if (!redundant)
+            $scope.updateProjectFilter();
         $timeout(function () {
             UpdateAllPlots();
         }, 0);
     }
+
+
+    $scope.updateProjectFilter = () => {
+        // version 2: checkbox prior to filter
+
+        let count = 0;
+        let groupProjectNames = $scope.data
+            .filter(x => x.Group.role === $scope.selectedGroup)
+            .filter(x => !(
+                new Date(x.Group.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate() ||
+                new Date(x.Group.end_date) < moment($scope.ganttStartMonth).toDate()))
+            .map(x => {
+            count++;
+            return {
+                id: count,
+                label: x.Group.projno
+            }
+        })
+
+        if (!$scope.selection_filtered_projects) {
+            $scope.selection_filtered_projects = [];
+            for (let name of groupProjectNames) {
+                $scope.selection_filtered_projects.push(name);
+                $scope.multi_selected_projects.push(name);
+            }
+        }
+        else {
+            let temp_range_projects = $scope.selection_filtered_projects;
+            let temp_selected_projects = $scope.multi_selected_projects;
+            $scope.selection_filtered_projects = [];            
+            $scope.multi_selected_projects = [];
+
+            for (let name of groupProjectNames) {
+                $scope.selection_filtered_projects.push(name);
+
+                if (temp_range_projects.find(x => x.label === name.label)) {
+
+                    if (temp_selected_projects.find(x => x.label === name.label)) {
+                        $scope.multi_selected_projects.push(name);
+                        continue;
+                    }
+                }
+                else {
+                    $scope.multi_selected_projects.push(name);
+                }
+            }
+        }
+
+    }
+
 
 
     // multi-select
@@ -224,6 +337,18 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
             $scope.modal.member = "";
         }
     };
+
+    // project multi-select
+    $scope.multi_selected_projects = [];
+    $scope.multi_selected_project_event = {
+        onSelectionChanged: function () {
+            $scope.UpdateAllPlots('yes');
+        },
+        onDeselectAll: function () {
+            $scope.UpdateAllPlots('yes');
+        }
+    };
+
 
     // trasform members string into checkbox array object
     $scope.passChosen = () => {
@@ -350,6 +475,10 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         $scope.modal.createMode = true;
         $scope.modal.parentContent = groupSchedule.content;
 
+        // set default time of detail schedule equal to group schedule
+        $scope.modal.start_date = groupSchedule.start_date;
+        $scope.modal.end_date = groupSchedule.end_date;
+
         // MEMBER FILTER
         $scope.selectionFilteredMembers = [];
 
@@ -465,7 +594,9 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
         $scope.editFilter = group.Editable;
 
-        // overlapping gantt text must be redraw
+        // gantt charts that are hidden because of group filter
+        // will cause overlapping gantt text when showing it
+        // redraw charts
         $scope.UpdateAllPlots();
     }
 
@@ -481,7 +612,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         // (Detail only) if checkbox is true, hide completed detail schedule
 
         if (schedule.type === 2) {
-            if ($scope.checkboxModel.value && schedule.percent_complete === 100)
+            if (!$scope.checkboxModel.value && schedule.percent_complete === 100)
                 return false;
         }
 
@@ -494,7 +625,13 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
             if (new Date(schedule.end_date) < moment($scope.ganttStartMonth).toDate())
                 return false;
 
-            if ($scope.checkboxModel.value && schedule.percent_complete === 100)
+            if (!$scope.checkboxModel.value && schedule.percent_complete === 100)
+                return false;
+        }
+
+        // (Group Only) Additional filter for comparing specific projexts       
+        if (schedule.type === 1) {
+            if (!$scope.multi_selected_projects.find(x => x.label === schedule.projno))            
                 return false;
         }
 
@@ -640,6 +777,8 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     //$timeout(function () {
     //    $scope.UpdateAllPlots();
     //}, 0);
+
+
     $scope.UpdateAllPlots();
 
 }]);
@@ -669,6 +808,18 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
     // default group
     $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
     //$scope.filteredMembers = $scope.auth.GroupAuthorities[0].Members
+
+    // project multi-select
+    $scope.multi_selected_projects = [];
+    $scope.multi_selected_project_event = {
+        onSelectionChanged: function () {
+            $scope.UpdateAllPlots('yes');
+        },
+        onDeselectAll: function () {
+            $scope.UpdateAllPlots('yes');
+        }
+    };
+
 
     // gantt
 
@@ -736,11 +887,64 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
     }
 
-    $scope.UpdateAllPlots = () => {
+    $scope.UpdateAllPlots = (redundent) => {
+        if (!redundent)
+            $scope.updateProjectFilter();
         $timeout(function () {
             UpdateAllPlots();
         }, 0);
     }
+
+
+    $scope.updateProjectFilter = () => {
+        // version 2: checkbox prior to filter
+
+        let count = 0;
+        let groupProjectNames = $scope.data
+            .filter(x => x.Group.role === $scope.selectedGroup)
+            .filter(x => x.Group.member?.includes($scope.selectedMember) )
+            .filter(x => !(
+                new Date(x.Group.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate() ||
+                new Date(x.Group.end_date) < moment($scope.ganttStartMonth).toDate()))
+            .map(x => {
+                count++;
+                return {
+                    id: count,
+                    label: x.Group.projno
+                }
+            })
+
+        if (!$scope.selection_filtered_projects) {
+            $scope.selection_filtered_projects = [];
+            for (let name of groupProjectNames) {
+                $scope.selection_filtered_projects.push(name);
+                $scope.multi_selected_projects.push(name);
+            }
+        }
+        else {
+            let temp_range_projects = $scope.selection_filtered_projects;
+            let temp_selected_projects = $scope.multi_selected_projects;
+            $scope.selection_filtered_projects = [];
+            $scope.multi_selected_projects = [];
+
+            for (let name of groupProjectNames) {
+                $scope.selection_filtered_projects.push(name);
+
+                if (temp_range_projects.find(x => x.label === name.label)) {
+
+                    if (temp_selected_projects.find(x => x.label === name.label)) {
+                        $scope.multi_selected_projects.push(name);
+                        continue;
+                    }
+                }
+                else {
+                    $scope.multi_selected_projects.push(name);
+                }
+            }
+        }
+
+    }
+
 
     $scope.updateSchedule = () => {
 
@@ -822,6 +1026,10 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
         $scope.modal.detailIndex = dIdx;
         $scope.modal.groupIndex = gIdx;
         $scope.modal.createMode = true;
+
+        // set default time of personal schedule equal to detail schedule
+        $scope.modal.start_date = detailSchedule.start_date;
+        $scope.modal.end_date = detailSchedule.end_date;
 
         // update projno from group schedule
         let groupSchedule = $scope.data[$scope.modal.groupIndex].Group;
@@ -929,6 +1137,15 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
             if (new Date(schedule.end_date) < moment($scope.ganttStartMonth).toDate())
                 return false;
+
+            if (!$scope.checkboxModel.value && schedule.percent_complete === 100)
+                return false;
+        }
+
+        // (Group Only) Additional filter for comparing specific projexts       
+        if (schedule.type === 1) {
+            if (!$scope.multi_selected_projects.find(x => x.label === schedule.projno))
+                return false;
         }
 
 
@@ -950,7 +1167,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
         // (Personal only) if checkbox is true, hide completed detail schedule
 
 
-        if ($scope.checkboxModel.value && schedule.percent_complete === 100)
+        if (!$scope.checkboxModel.value && schedule.percent_complete === 100)
             return false;
 
 

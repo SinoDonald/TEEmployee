@@ -53,10 +53,13 @@ app.service('appService', ['$http', function ($http) {
 app.factory('dataservice', function () {
 
     var auth = {};
+    let temp_group = '';
 
     return {
         set: set,
         get: get,
+        setGroup: setGroup,
+        getGroup: getGroup,
     }
 
     function set(data) {
@@ -65,6 +68,14 @@ app.factory('dataservice', function () {
 
     function get() {
         return auth;
+    }
+
+    function setGroup(group) {
+        temp_group = group;
+    }
+
+    function getGroup() {
+        return temp_group;
     }
 });
 
@@ -91,6 +102,8 @@ app.controller('SkillCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
     $scope.GetAllSkillsByRole = () => {
 
+        dataservice.setGroup($scope.selectedGroup);
+
         $scope.editable = $scope.auth.GroupAuthorities.find(x => x.GroupName === $scope.selectedGroup).Editable;
 
         appService.GetAllSkillsByRole({ role: $scope.selectedGroup }).then((ret) => {
@@ -104,9 +117,18 @@ app.controller('SkillCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     dataservice.get().then((ret) => {
 
         $scope.auth = ret.data;
-        $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+
+        if (dataservice.getGroup()) {
+            $scope.selectedGroup = dataservice.getGroup()
+        }
+        else {
+            $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+        }
+        //$scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
         $scope.GetAllSkillsByRole();
     });
+
+    
 
 
     // deep clone skills object to modal
@@ -234,6 +256,8 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
     $scope.GetAllScoresByRole = () => {
 
+        dataservice.setGroup($scope.selectedGroup);
+
         $scope.members = $scope.auth.GroupAuthorities
             .find(x => x.GroupName === $scope.selectedGroup)
             .Members.sort((a, b) => a.empno - b.empno);
@@ -280,11 +304,41 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         $scope.auth = ret.data;
 
         $scope.editableGroup = $scope.auth.GroupAuthorities.filter(x => x.Editable);
-        $scope.selectedGroup = $scope.editableGroup[0].GroupName;
+
+        if (dataservice.getGroup() && $scope.editableGroup.find(x => x.GroupName === dataservice.getGroup())) {
+            $scope.selectedGroup = dataservice.getGroup()
+        }
+        else {
+            $scope.selectedGroup = $scope.editableGroup[0].GroupName;
+        }
+        //$scope.selectedGroup = $scope.editableGroup[0].GroupName;
 
         //$scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
         $scope.GetAllScoresByRole();
     });
+
+    $scope.IamInvalid = true;
+
+    $scope.isInvalidScore = (score) => {
+
+        if (!score)
+            return false;
+
+        let num = Number(score);
+
+        if (isNaN(num)) {
+            return true;
+        }
+
+
+        if (Number.isInteger(num) && num >= 0 && num <= 5) {
+            return false;
+        }
+        else {           
+            return true;
+        }
+
+    }
 
     $scope.upsertScores = () => {
 
@@ -309,6 +363,8 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
                 }
             }
         }
+
+        
 
         if (savedScores.length === 0) return;
 
@@ -342,13 +398,7 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
         });
 
-
-
-
     }
-
-
-
 
 }]);
 
@@ -360,6 +410,8 @@ app.controller('ChartCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     $scope.selectedType = 'domain';
 
     $scope.GetAllScoresByRole = () => {
+
+        dataservice.setGroup($scope.selectedGroup);
 
         $scope.members = $scope.auth.GroupAuthorities
             .find(x => x.GroupName === $scope.selectedGroup)
@@ -384,7 +436,15 @@ app.controller('ChartCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         $scope.auth = ret.data;
 
         $scope.editableGroup = $scope.auth.GroupAuthorities.filter(x => x.Editable);
-        $scope.selectedGroup = $scope.editableGroup[0].GroupName;
+
+        if (dataservice.getGroup() && $scope.editableGroup.find(x => x.GroupName === dataservice.getGroup())) {
+            $scope.selectedGroup = dataservice.getGroup()
+        }
+        else {
+            $scope.selectedGroup = $scope.editableGroup[0].GroupName;
+        }
+
+        //$scope.selectedGroup = $scope.editableGroup[0].GroupName;
         //$scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
         $scope.GetAllScoresByRole();
 
@@ -398,6 +458,8 @@ app.controller('ScatterCtrl', ['$scope', '$location', 'appService', '$rootScope'
     document.documentElement.scrollTop = 0;
 
     $scope.GetAllScoresByRole = () => {
+
+        dataservice.setGroup($scope.selectedGroup);
 
         $scope.members = $scope.auth.GroupAuthorities
             .find(x => x.GroupName === $scope.selectedGroup)
@@ -415,7 +477,14 @@ app.controller('ScatterCtrl', ['$scope', '$location', 'appService', '$rootScope'
         $scope.auth = ret.data;
 
         $scope.editableGroup = $scope.auth.GroupAuthorities.filter(x => x.Editable);
-        $scope.selectedGroup = $scope.editableGroup[0].GroupName;
+
+        if (dataservice.getGroup() && $scope.editableGroup.find(x => x.GroupName === dataservice.getGroup())) {
+            $scope.selectedGroup = dataservice.getGroup()
+        }
+        else {
+            $scope.selectedGroup = $scope.editableGroup[0].GroupName;
+        }
+        //$scope.selectedGroup = $scope.editableGroup[0].GroupName;
         //$scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
         $scope.GetAllScoresByRole();
 

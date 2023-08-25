@@ -189,7 +189,7 @@ function createScoreBarChart(scoreData) {
 }
 
 function createScoreScatterChart(scoreData, members) {
-        
+
     const painting = document.getElementById('painting');
     painting.innerHTML = '';
     const div = document.createElement('div');
@@ -219,7 +219,7 @@ function createScoreScatterChart(scoreData, members) {
             if (foundScore) {
                 domainSum = domainSum + foundScore.score;
                 domainCount++;
-            }                
+            }
         }
 
         for (let item of core) {
@@ -232,8 +232,8 @@ function createScoreScatterChart(scoreData, members) {
 
         if (domainCount === 0 || coreCount === 0)
             return 0;
-        
-        return ((domainSum / domainCount) * 3 + (coreSum / coreCount) * 2) / 5 ;
+
+        return ((domainSum / domainCount) * 3 + (coreSum / coreCount) * 2) / 5;
     });
 
     const manageScores = members.map(x => {
@@ -257,16 +257,16 @@ function createScoreScatterChart(scoreData, members) {
 
     const scores = [];
     for (let i = 0; i < members.length; i++) {
-        scores.push({            
-            x: manageScores[i],
-            y: professionScores[i],
+        scores.push({
+            x: professionScores[i],
+            y: manageScores[i],
             status: members[i].name,
         });
     }
 
     const data = {
 
-        datasets: [{            
+        datasets: [{
             data: scores,
             backgroundColor: 'rgb(255, 99, 132)'
         }],
@@ -312,7 +312,7 @@ function createScoreScatterChart(scoreData, members) {
             ctx.fillText('Experienced But Unsure', left + 50, top + 50);
             ctx.fillText('Enthusiastic Engineer', right - 200, bottom - 50);
             ctx.fillText('Lost Traveler', left + 50, bottom - 50);
-            ctx.fillText('High Performer', right - 200 , top + 50);
+            ctx.fillText('High Performer', right - 200, top + 50);
 
             ctx.beginPath();
             ctx.lineWidth = 5;
@@ -346,14 +346,14 @@ function createScoreScatterChart(scoreData, members) {
                             size: 25,
                         },
                         text: '專業能力',
-                        
+
                     },
                     type: 'linear',
                     //position: {y: 3},
-                    min: 0, 
-                    max: 5, 
+                    min: 0,
+                    max: 5,
                 },
-                y: {           
+                y: {
                     title: {
                         //align: 'end',
                         display: true,
@@ -376,7 +376,7 @@ function createScoreScatterChart(scoreData, members) {
                     hoverRadius: 12, // ex.: to make it bigger when user hovers put larger number than radius.
                 }
             }
-            
+
         },
         plugins: [scatterDataLabels],
     };

@@ -33,7 +33,7 @@
                     <th scope="row" class="text-center" ng-bind="member.name"></th>
                     <td class="p-0" ng-repeat="skill in domain">
                         <div class="h-100 d-flex">
-                            <input type="text" class="scoreInput" ng-model="skill.scores[$parent.$index].score">
+                            <input type="text" class="scoreInput" ng-class="{'has-error': isInvalidScore(skill.scores[$parent.$index].score)}" ng-model="skill.scores[$parent.$index].score">
                         </div>
                         @*<div ng-bind="skill.scores[$parent.$index].score"></div>*@
                     </td>
@@ -57,7 +57,7 @@
                     <th scope="row" class="text-center" ng-bind="member.name"></th>
                     <td class="p-0" ng-repeat="skill in core">
                         <div class="h-100 d-flex">
-                            <input type="text" class="scoreInput" ng-model="skill.scores[$parent.$index].score">
+                            <input type="text" class="scoreInput" ng-class="{'has-error': isInvalidScore(skill.scores[$parent.$index].score)}" ng-model="skill.scores[$parent.$index].score">
                         </div>
                         @*<div ng-bind="skill.scores[$parent.$index].score"></div>*@
                     </td>

@@ -283,8 +283,8 @@ const ganttPlot = () => {
         }
 
 
-        console.log(labelHeights);
-        console.log('close idx is :' + closestIdx);
+        //console.log(labelHeights);
+        //console.log('close idx is :' + closestIdx);
 
         // text
         groups.selectAll('text')
