@@ -36,7 +36,7 @@ namespace TEEmployee.Models.Profession
                 if (sc != null)
                     skill.scores.Add(sc);
                 return skill;
-            }).AsQueryable();
+            }, splitOn: "skill_id").AsQueryable();
             var resultList = lookup.Values;
 
             return resultList.ToList();

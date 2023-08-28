@@ -47,7 +47,7 @@ app.service('appService', ['$http', function ($http) {
     this.UpsertScores = (o) => {
         return $http.post('Profession/UpsertScores', o);
     };
-
+    
 }]);
 
 app.factory('dataservice', function () {
@@ -92,6 +92,7 @@ app.controller('ProfessionCtrl', ['$scope', '$location', 'appService', '$rootSco
     //})
 
     dataservice.set(appService.GetAuthorization({}));
+       
 
 }]);
 

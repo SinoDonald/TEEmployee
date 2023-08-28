@@ -91,6 +91,14 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        [HttpPost]
+        public JsonResult GetAll()
+        {
+            var ret = _service.GetAll(Session["empno"].ToString());
+
+            return Json(ret);
+        }
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

@@ -176,6 +176,13 @@ namespace TEEmployee.Models.Profession
         }
 
 
+        public List<Skill> GetAll(string empno)
+        {            
+            return _professionRepository.GetAll();
+        }
+
+
+
 
         // private method
 
