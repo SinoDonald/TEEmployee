@@ -22,6 +22,10 @@ app.run(['$http', '$window', function ($http, $window) {
 
 app.service('appService', ['$http', function ($http) {
 
+    // 取得核心專業盤點的專業與管理能力分數
+    this.GetAllScoresByRole = (o) => {
+        return $http.post('Profession/GetAllScoresByRole', o);
+    };
     // 取得群組
     this.GetGroupList = (o) => {
         return $http.post('Talent/GetGroupList', o);
@@ -85,6 +89,15 @@ app.controller('TalentCtrl', ['$scope', '$location', '$window', 'appService', '$
 }]);
 
 app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'dataservice', function ($scope, $location, $window, appService, $rootScope, $q, dataservice) {
+
+    // 取得核心專業盤點的專業與管理能力分數
+    appService.GetAllScoresByRole({ role: 'role' })
+        .then(function (ret) {
+            $scope.Test = ret.data;
+        })
+        .catch(function (ret) {
+            alert('Error');
+        });
 
     // 取得所有員工履歷
     appService.GetAll({})

@@ -77,14 +77,17 @@ namespace TEEmployee.Models.Talent
             foreach(FileInfo fileInfo in fileInfoList)
             {
                 string userLastestUpdate = usersCV.Where(x => x.empno.Equals(fileInfo.empno)).Select(x => x.lastest_update).FirstOrDefault();
-                CultureInfo culture = new CultureInfo("zh-TW");
-                DateTime sqlDate = DateTime.Parse(userLastestUpdate, culture); // 資料庫的檔案更新時間
-                DateTime fileDate = DateTime.Parse(fileInfo.lastModifiedDate, culture); // 要上傳檔案的更新時間
-                if((fileDate.Ticks - sqlDate.Ticks) > 0)
+                if(userLastestUpdate != null)
                 {
-                    CV userCV = usersCV.Where(x => x.empno.Equals(fileInfo.empno)).FirstOrDefault();
-                    string addFileName = userCV.empno + userCV.name + ".docx";
-                    updateUsers.Add(addFileName); 
+                    CultureInfo culture = new CultureInfo("zh-TW");
+                    DateTime sqlDate = DateTime.Parse(userLastestUpdate, culture); // 資料庫的檔案更新時間
+                    DateTime fileDate = DateTime.Parse(fileInfo.lastModifiedDate, culture); // 要上傳檔案的更新時間
+                    if ((fileDate.Ticks - sqlDate.Ticks) > 0)
+                    {
+                        CV userCV = usersCV.Where(x => x.empno.Equals(fileInfo.empno)).FirstOrDefault();
+                        string addFileName = userCV.empno + userCV.name + ".docx";
+                        updateUsers.Add(addFileName);
+                    }
                 }
             }
             return updateUsers;
