@@ -104,16 +104,16 @@ namespace TEEmployee.Models.GKpi
 
             // collection parameter not support returning
             // id is the primary key for kpiitems. Not suited for upsert sql command because new item has to got a non-repeated id first
-            string insertSql = @"INSERT INTO KpiItem (kpi_id, content, target, weight, h1_employee_check, h1_manager_check,
-                    h1_reason, h2_employee_check, h2_manager_check, h2_reason, consensual, h1_feedback, h2_feedback) 
-                    VALUES(@kpi_id, @content, @target, @weight, @h1_employee_check, @h1_manager_check,
-                    @h1_reason, @h2_employee_check, @h2_manager_check, @h2_reason, @consensual, @h1_feedback, @h2_feedback)
+            string insertSql = @"INSERT INTO KpiItem (kpi_id, content, target, weight, h1_employee_check,
+                    h1_reason, h2_employee_check, h2_reason, consensual, h1_feedback, h2_feedback) 
+                    VALUES(@kpi_id, @content, @target, @weight, @h1_employee_check,
+                    @h1_reason, @h2_employee_check, @h2_reason, @consensual, @h1_feedback, @h2_feedback)
                     RETURNING *";
 
             string updateSql = @"UPDATE KpiItem 
                     SET content=@content, target=@target, weight=@weight, h1_employee_check=@h1_employee_check, 
-                    h1_manager_check=@h1_manager_check, h1_reason=@h1_reason, h2_employee_check=@h2_employee_check, 
-                    h2_manager_check=@h2_manager_check, h2_reason=@h2_reason, consensual=@consensual, h1_feedback=@h1_feedback, h2_feedback=@h2_feedback
+                    h1_reason=@h1_reason, h2_employee_check=@h2_employee_check, 
+                    h2_reason=@h2_reason, consensual=@consensual, h1_feedback=@h1_feedback, h2_feedback=@h2_feedback
                     WHERE id=@id
                     RETURNING *";
 

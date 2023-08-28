@@ -88,12 +88,11 @@ namespace TEEmployee.Models.GKpi
                     kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "計畫", role = "重大計畫經理" });
                     isNormal = false;
                 }
-                // 小計畫 > 技術 (計畫, 專業)
+                // 小計畫 > 技術 (計畫)
                 if (user.assistant_project_manager)
                 {
-                    kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "計畫", role = "小型計畫經理" });
-                    kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "專業", role = "小型計畫經理" });
-                    isNormal = false;
+                    kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "計畫", role = "一般計畫經理" });                    
+                    //isNormal = false;
                 }
                 // 組長 > 技術 (管理, 專業)
                 if (user.group_one_manager/* || user.group_two_manager || user.group_three_manager*/)
@@ -238,29 +237,55 @@ namespace TEEmployee.Models.GKpi
 
                 if (model.role == "技術經理")
                 {
-
+                    kpm = processedInput.Where(x => x.role == "技術經理").FirstOrDefault();
                 }
                 else if (model.role == "重大計畫經理")
                 {
-
+                    kpm = processedInput.Where(x => x.role == "重大計畫經理").FirstOrDefault();
                 }
-                else if (model.role == "小型計畫經理")
+                else if (model.role == "一般計畫經理")
                 {
-
+                    kpm = processedInput.Where(x => x.role == "一般計畫經理").FirstOrDefault();
                 }
                 else if (model.role == "組長")
                 {
-                    if (model.group_name == "專管")
+                    // 管理 kpi = Excel 組長 kpi
+
+                    if (model.kpi_type == "管理")
                     {
-                        User user = _userRepository.Get(model.empno);
-                        kpm = processedInput.Where(x =>
-                            x.role.Contains(user.group_one.Substring(0, 2)) &&
-                            x.role.Contains("組長")).FirstOrDefault();
+                        if (model.group_name == "專管")
+                        {
+                            User user = _userRepository.Get(model.empno);
+                            kpm = processedInput.Where(x =>
+                                x.role.Contains(user.group_one.Substring(0, 2)) &&
+                                x.role.Contains("組長")).FirstOrDefault();
+                        }
+                        else
+                        {
+                            kpm = processedInput.Where(x =>
+                                x.role.Contains(model.group_name.Substring(0, 2)) &&
+                                x.role.Contains("組長")).FirstOrDefault();
+                        }
                     }
+                    // 專業 kpi = Excel 組員 kpi
                     else
                     {
-                        kpm = processedInput.Where(x => x.role.Contains(model.group_name.Substring(0, 2))).FirstOrDefault();
+                        if (model.group_name == "專管" || model.group_name == "設計")
+                        {
+                            User user = _userRepository.Get(model.empno);
+                            kpm = processedInput.Where(x =>
+                                x.role.Contains(user.group_one.Substring(0, 2)) &&
+                                x.role.Contains("組員")).FirstOrDefault();
+                        }
+                        else
+                        {
+                            kpm = processedInput.Where(x => 
+                                x.role.Contains(model.group_name.Substring(0, 2)) &&
+                                x.role.Contains("組員")).FirstOrDefault();
+                        }
                     }
+
+                    
                 }
                 else if (model.role == "一般工程師")
                 {
@@ -392,15 +417,15 @@ namespace TEEmployee.Models.GKpi
                 // 大計畫 > 技術 (計畫)
                 if (user.project_manager && !user.department_manager)
                 {
-                    kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "計畫", role = "重大計劃經理" });
+                    kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "計畫", role = "重大計畫經理" });
                     isNormal = false;
                 }
                 // 小計畫 > 技術 (計畫, 專業)
                 if (user.assistant_project_manager)
                 {
-                    kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "計畫", role = "小型計劃經理" });
-                    kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "專業", role = "小型計劃經理" });
-                    isNormal = false;
+                    kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "計畫", role = "一般計畫經理" });
+                    //kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "專業", role = "小型計畫經理" });
+                    //isNormal = false;
                 }
                 // 組長 > 技術 (管理, 專業)
                 if (user.group_one_manager/* || user.group_two_manager || user.group_three_manager*/)

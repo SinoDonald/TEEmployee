@@ -644,12 +644,37 @@ namespace TEEmployee.Models
             int numOfCategory = managerAssessments.Where(x => x.Id == 0).Count();
             int numOfQuestion = managerAssessments.Count() - numOfCategory * 2;
             managerAssessments = managerAssessments.Where(x => x.Id != 0 && x.Content != "建議").ToList();
-            int numOfOptions; 
+            int numOfOptions = 0;
             // Collect user data and chart data
 
             // additional tuning            
-            numOfOptions = (year.CompareTo("2022H2") > 0) ? 6 : 4;   // 2022H2 = 4 ; 2023H1 = 6
-            numOfQuestion = (year.CompareTo("2023H1") > 0) ? numOfQuestion : 43; // 2023H1 = 43 ; 2023H2 = 35
+
+            //numOfOptions = (year.CompareTo("2022H2") > 0) ? 6 : 4;   // 2022H2 = 4 ; 2023H1 = 6
+            //numOfQuestion = (year.CompareTo("2023H1") > 0) ? numOfQuestion : 43; // 2023H1 = 43 ; 2023H2 = 30
+
+            if (year == "2022H2")
+            {
+                numOfOptions = 4;
+                numOfQuestion = 43;
+                numOfCategory = 8;
+                managerAssessments = (_assessmentRepository as ManageAssessmentTxtRepository).GetAllByYear(year).Where(x => x.Id != 0 && x.Content != "建議").ToList();
+            }
+            else if (year == "2023H1")
+            {
+                numOfOptions = 6;
+                numOfQuestion = 43;
+                numOfCategory = 8;
+                managerAssessments = (_assessmentRepository as ManageAssessmentTxtRepository).GetAllByYear(year).Where(x => x.Id != 0 && x.Content != "建議").ToList();
+
+            }
+            // current "2023H2"
+            else
+            {
+                numOfOptions = 5;
+                numOfQuestion = 30;
+                numOfCategory = 7;
+            }
+
 
             foreach (var empno in empnos)
             {
@@ -658,6 +683,8 @@ namespace TEEmployee.Models
 
                 var allResponses = (_assessmentRepository as ManageAssessmentTxtRepository).GetAllManagerAssessmentResponses(empno, year);
                 //if (allResponses.Count == 0) break;
+
+                
 
                 // Create empty list
                 List<List<int>> Votes = new List<List<int>>();

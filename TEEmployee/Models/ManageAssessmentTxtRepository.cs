@@ -385,6 +385,29 @@ namespace TEEmployee.Models
 
             return ret;
         }
+
+        public List<Assessment> GetAllByYear(string year)
+        {
+            string fn = Path.Combine(_appData, $"ManageResponse/ManageAssessments{year}.txt");
+            string[] lines = System.IO.File.ReadAllLines(fn);
+            List<Assessment> manageAssessments = new List<Assessment>();
+
+            foreach (var item in lines)
+            {
+                string[] subs = item.Split('/');
+                Assessment manageAssessment = new Assessment();
+
+                manageAssessment.Id = Convert.ToInt32(subs[0]);
+                manageAssessment.CategoryId = Convert.ToInt32(subs[1]);
+                manageAssessment.Content = subs[2];
+                manageAssessments.Add(manageAssessment);
+            }
+
+            manageAssessments = manageAssessments.OrderBy(a => a.CategoryId).ThenBy(a => a.Id).ToList();
+
+            return manageAssessments;
+        }
+
         private string SaveSlash(string s)
         {
             if (string.IsNullOrEmpty(s))

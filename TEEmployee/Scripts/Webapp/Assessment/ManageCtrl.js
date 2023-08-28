@@ -196,13 +196,18 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
             .then(function (ret) {
                 $scope.ManageAssessments = ret.data.Responses;
                 $scope.state = ret.data.State;
+                // 2023H2 model = 2, 5 options
+                $scope.model = 2;
                 // 判斷問卷, 2023之前選項使用模式0(4個選項), 之後使用模式1(6個選項)
-                $scope.model = 1;
-                if (year != null) {
-                    year = year.substring(0, 4);
-                    if (year < 2023) {
+                if (year !== null) {
+                    //year = year.substring(0, 4);
+                    //if (year < 2023) {
+                    //    $scope.model = 0;
+                    //}
+                    if (year < '2023H1')
                         $scope.model = 0;
-                    }
+                    if (year < '2023H2')
+                        $scope.model = 1;
                 }
 
                 // set textarea height in beginning

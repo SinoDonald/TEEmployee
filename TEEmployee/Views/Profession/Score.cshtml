@@ -19,77 +19,88 @@
 
     <div class="uvcontainer">
 
-        <h2 class="mt-5">Domain Skills</h2>
+        @*<h2 class="mt-5">Domain Skills</h2>*@
 
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th scope="col" style="width: 10%">人員</th>
-                    <th scope="col" ng-repeat="skill in domain">{{skill.content}}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="member in members">
-                    <th scope="row" class="text-center" ng-bind="member.name"></th>
-                    <td class="p-0" ng-repeat="skill in domain">
-                        <div class="h-100 d-flex">
-                            <input type="text" class="scoreInput" ng-class="{'has-error': isInvalidScore(skill.scores[$parent.$index].score)}" ng-model="skill.scores[$parent.$index].score">
-                        </div>
-                        @*<div ng-bind="skill.scores[$parent.$index].score"></div>*@
-                    </td>
+        <div class="sega">
+            <h2 class="bg-secondary text-white">專業能力</h2>
 
-                </tr>
+            <div>
+                <h2 class="mt-1">領域技能</h2>
 
-            </tbody>
-        </table>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 10%">人員</th>
+                            <th scope="col" ng-repeat="skill in domain">{{skill.content}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="member in members">
+                            <th scope="row" class="text-center" ng-bind="member.name"></th>
+                            <td class="p-0" ng-repeat="skill in domain">
+                                <div class="h-100 d-flex">
+                                    <input type="text" class="scoreInput" ng-class="{'has-error': isInvalidScore(skill.scores[$parent.$index].score)}" ng-model="skill.scores[$parent.$index].score">
+                                </div>
+                                @*<div ng-bind="skill.scores[$parent.$index].score"></div>*@
+                            </td>
 
-        <h2 class="mt-5">Core Skills</h2>
+                        </tr>
 
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th scope="col" style="width: 10%">人員</th>
-                    <th scope="col" ng-repeat="skill in core">{{skill.content}}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="member in members">
-                    <th scope="row" class="text-center" ng-bind="member.name"></th>
-                    <td class="p-0" ng-repeat="skill in core">
-                        <div class="h-100 d-flex">
-                            <input type="text" class="scoreInput" ng-class="{'has-error': isInvalidScore(skill.scores[$parent.$index].score)}" ng-model="skill.scores[$parent.$index].score">
-                        </div>
-                        @*<div ng-bind="skill.scores[$parent.$index].score"></div>*@
-                    </td>
+                    </tbody>
+                </table>
 
-                </tr>
+                <h2 class="mt-1">核心技能</h2>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 10%">人員</th>
+                            <th scope="col" ng-repeat="skill in core">{{skill.content}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="member in members">
+                            <th scope="row" class="text-center" ng-bind="member.name"></th>
+                            <td class="p-0" ng-repeat="skill in core">
+                                <div class="h-100 d-flex">
+                                    <input type="text" class="scoreInput" ng-class="{'has-error': isInvalidScore(skill.scores[$parent.$index].score)}" ng-model="skill.scores[$parent.$index].score">
+                                </div>
+                                @*<div ng-bind="skill.scores[$parent.$index].score"></div>*@
+                            </td>
 
-            </tbody>
-        </table>
+                        </tr>
 
-        <h2 class="mt-5">Management Skills</h2>
+                    </tbody>
+                </table>
+            </div>
+            
 
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th scope="col" style="width: 10%">人員</th>
-                    <th scope="col" ng-repeat="skill in manage">{{skill.content}}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="member in members">
-                    <th scope="row" class="text-center" ng-bind="member.name"></th>
-                    <td class="p-0" ng-repeat="skill in manage">
-                        <div class="h-100 d-flex">
-                            <input type="text" class="scoreInput" ng-model="skill.scores[$parent.$index].score">
-                        </div>
-                        @*<div ng-bind="skill.scores[$parent.$index].score"></div>*@
-                    </td>
+        </div>
 
-                </tr>
+        
+        <div class="sega">
+            <h2 class="bg-secondary text-white">管理能力</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width: 10%">人員</th>
+                        <th scope="col" ng-repeat="skill in manage">{{skill.content}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="member in members">
+                        <th scope="row" class="text-center" ng-bind="member.name"></th>
+                        <td class="p-0" ng-repeat="skill in manage">
+                            <div class="h-100 d-flex">
+                                <input type="text" class="scoreInput" ng-model="skill.scores[$parent.$index].score">
+                            </div>
+                            @*<div ng-bind="skill.scores[$parent.$index].score"></div>*@
+                        </td>
 
-            </tbody>
-        </table>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>       
 
     </div>
 

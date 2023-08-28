@@ -11,11 +11,11 @@
         </div>
 
     </div>
-
-    <div class="skill uvcontainer">
+    <h2 class ="uvcontainer bg-secondary text-white banner">專業能力</h2>
+    <div class="skill">
         <div>
-            <div class="p-3 mb-2 bg-info text-white d-flex justify-content-between align-items-center">
-                <div>Domain Skills</div>
+            <div class="p-3 mb-2 bg-secondary text-white d-flex justify-content-center align-items-center">
+                <h2>領域技能</h2>
                 <div>
                     <button ng-disabled="!editable" type="button" ng-click="cloneDeepToModal(domain, 'domain')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
                         <span class="material-icons text-white">edit_note</span>
@@ -29,8 +29,8 @@
             </ul>
         </div>
         <div>
-            <div class="p-3 mb-2 bg-info text-white d-flex justify-content-between align-items-center">
-                <div>Core Skills</div>
+            <div class="p-3 mb-2 bg-secondary text-white d-flex justify-content-center align-items-center">
+                <h2>核心技能</h2>
                 <div>
                     <button ng-disabled="!auth.User.department_manager" type="button" ng-click="cloneDeepToModal(core, 'core')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
                         <span class="material-icons text-white">edit_note</span>
@@ -44,14 +44,22 @@
             </ul>
         </div>
         <div>
-            <div class="p-3 mb-2 bg-info text-white d-flex justify-content-between align-items-center">
-                <div>Management Skills</div>
+            <div class="p-3 mb-2 bg-secondary text-white d-flex justify-content-center align-items-center">
+                <h2>管理能力</h2>
                 <div>
                     <button ng-disabled="!auth.User.department_manager" type="button" ng-click="cloneDeepToModal(manage, 'manage')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
                         <span class="material-icons text-white">edit_note</span>
                     </button>
                 </div>
             </div>
+            @*<div class="p-3 mb-2 bg-info text-white d-flex justify-content-between align-items-center">
+                <div>Management Skills</div>
+                <div>
+                    <button ng-disabled="!auth.User.department_manager" type="button" ng-click="cloneDeepToModal(manage, 'manage')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
+                        <span class="material-icons text-white">edit_note</span>
+                    </button>
+                </div>
+            </div>*@
             <ul class="list-group">
                 <li class="list-group-item" ng-repeat="skill in manage">
                     {{skill.content}}

@@ -13,11 +13,11 @@ namespace TEEmployee.Models.GKpi
         public string target { get; set; }
         public double weight { get; set; }
         public bool h1_employee_check { get; set; }
-        public bool h1_manager_check { get; set; }
+        //public bool h1_manager_check { get; set; }
         public string h1_reason { get; set; }
         public string h1_feedback { get; set; }
         public bool h2_employee_check { get; set; }
-        public bool h2_manager_check { get; set; }
+        //public bool h2_manager_check { get; set; }
         public string h2_reason { get; set; }
         public string h2_feedback { get; set; }
         public bool consensual { get; set; }
