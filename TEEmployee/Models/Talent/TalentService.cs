@@ -152,6 +152,6 @@ namespace TEEmployee.Models.Talent
         public void Dispose()
         {
             _talentRepository.Dispose();
-        }        
+        }
     }
 }
