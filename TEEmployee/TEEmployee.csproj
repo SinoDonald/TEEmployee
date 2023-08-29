@@ -227,6 +227,7 @@
     <Compile Include="Models\Talent\ITalentRepository.cs" />
     <Compile Include="Models\Talent\TalentRepository.cs" />
     <Compile Include="Models\Talent\TalentService.cs" />
+    <Compile Include="Models\Talent\Talent.cs" />
     <Compile Include="Models\TaskLog\IMonthlyRecordRepository.cs" />
     <Compile Include="Models\TaskLog\IProjectItemRepository.cs" />
     <Compile Include="Models\TaskLog\IProjectTaskRepository.cs" />

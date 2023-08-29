@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using TEEmployee.Models.Profession;
 
 namespace TEEmployee.Models.Talent
 {
@@ -62,6 +63,12 @@ namespace TEEmployee.Models.Talent
             var ret = _talentRepository.ImportPDFFile(file);
             return ret;
         }
+        // High Performer
+        public List<Ability> HighPerformer(List<Skill> getAllScores)
+        {
+            List<Ability> users = _talentRepository.HighPerformer(getAllScores);
+            return users;
+        }
         // 取得群組
         public List<string> GetGroupList(string empno)
         {
@@ -74,11 +81,17 @@ namespace TEEmployee.Models.Talent
 
             if (user.department_manager)
             {
-                groups = new List<string> { "全部顯示", "規劃", "設計", "專管" };
+                if (empno.Equals("4125"))
+                {
+                    groups = new List<string> { "High Performer", "全部顯示", "規劃", "設計", "專管" };
+                }
+                else
+                {
+                    groups = new List<string> { "全部顯示", "規劃", "設計", "專管" };
+                }
             }
             else
             {
-                groups.Add("全部顯示");
                 groups.Add(user.group);
                 allEmployees = allEmployees.Where(x => x.group == user.group).ToList();
             }

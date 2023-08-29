@@ -22,10 +22,14 @@ app.run(['$http', '$window', function ($http, $window) {
 
 app.service('appService', ['$http', function ($http) {
 
-    // 取得核心專業盤點的專業與管理能力分數
-    this.GetAllScoresByRole = (o) => {
-        return $http.post('Profession/GetAllScoresByRole', o);
+    // High Performer
+    this.GetAllScores = (o) => {
+        return $http.post('Profession/GetAll', o);
     };
+    // High Performer
+    this.HighPerformer = (o) => {
+        return $http.post('Talent/HighPerformer', o);
+    }
     // 取得群組
     this.GetGroupList = (o) => {
         return $http.post('Talent/GetGroupList', o);
@@ -63,6 +67,8 @@ app.factory('dataservice', function () {
         user.experience = data.experience.split('\n');
         user.project = data.project.split('\n');
         user.license = data.license.split('\n');
+        user.coreSkill = data.coreSkill.split('\n');
+        user.manageSkill = data.manageSkill.split('\n');
         user.planning = data.planning.split('\n');
         user.test = data.test;
         user.advantage = data.advantage;
@@ -90,14 +96,18 @@ app.controller('TalentCtrl', ['$scope', '$location', '$window', 'appService', '$
 
 app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'dataservice', function ($scope, $location, $window, appService, $rootScope, $q, dataservice) {
 
-    // 取得核心專業盤點的專業與管理能力分數
-    appService.GetAllScoresByRole({ role: 'role' })
+    // High Performer
+    appService.GetAllScores({})
         .then(function (ret) {
-            $scope.Test = ret.data;
+            appService.HighPerformer({ getAllScores: ret.data })
+                .then(function (ret) {
+                    $scope.HighPerformer = ret.data;
+                })
         })
         .catch(function (ret) {
             alert('Error');
         });
+    appService.GetAllScores();
 
     // 取得所有員工履歷
     appService.GetAll({})
@@ -120,7 +130,14 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
     $scope.FilterDataByGroup = function (selectedGroup) {
         $scope.data = [];
         for (let item of $scope.GetAll) {
-            if (selectedGroup === '全部顯示') {
+            if (selectedGroup === 'High Performer') {
+                for (let highPerformer of $scope.HighPerformer) {
+                    if (item.empno === highPerformer.empno) {
+                        $scope.data.push(item);
+                    }
+                }
+            }
+            else if (selectedGroup === '全部顯示') {
                 $scope.data.push(item);
             }
             else if (item.group === selectedGroup || item.group_one === selectedGroup || item.group_two === selectedGroup || item.group_three === selectedGroup) {

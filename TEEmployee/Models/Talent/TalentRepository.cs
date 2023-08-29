@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using TEEmployee.Models.Profession;
 using Image = System.Drawing.Image;
 using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
 
@@ -46,7 +47,24 @@ namespace TEEmployee.Models.Talent
             }
 
             ret = _conn.Query<CV>(sql, new { empno }).ToList();
-
+                        
+            List<string> usersEmpno = new UserRepository().GetAll().Select(x => x.empno).ToList(); // 在職員工
+            List<string> exEmployees = new List<string>(); // 不顯示的名單(協理+離職員工)
+            exEmployees.Add("4125");
+            foreach(CV user in ret)
+            {
+                string exEmployee = usersEmpno.Where(x => x.Equals(user.empno)).FirstOrDefault();
+                if(exEmployee == null)
+                {
+                    exEmployees.Add(user.empno);
+                }
+            }
+            // 移除不顯示的名單
+            foreach (string exEmployee in exEmployees)
+            {
+                CV removeEmployee = ret.Where(x => x.empno.Equals(exEmployee)).FirstOrDefault();
+                ret.Remove(removeEmployee);
+            }
             // 計算年齡, 民國轉西元後計算年齡
             foreach (CV userCV in ret)
             {
@@ -64,6 +82,65 @@ namespace TEEmployee.Models.Talent
                     age--;
                 }
                 userCV.age = age.ToString();
+                
+                // 取得核心專業盤點的專業與管理能力分數
+                List<Skill> getAllScores = new ProfessionRepository().GetAll();
+                // 專業分數
+                List<Skill> coreScores = getAllScores.Where(x => x.skill_type.Equals("core")).ToList();
+                foreach (Skill skill in coreScores)
+                {
+                    if (skill.scores != null)
+                    {
+                        try
+                        {
+                            Score score = skill.scores.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+                            if (score != null)
+                            {
+                                if (score.score >= 4)
+                                {
+                                    userCV.coreSkill += skill.content + "：" + score.score + "\n";
+                                }
+                            }
+                        }
+                        catch (Exception) { }
+                    }
+                }
+                if(userCV.coreSkill != null)
+                {
+                    userCV.coreSkill = userCV.coreSkill.Substring(0, userCV.coreSkill.Length - 1); // 移除最後的"/n"
+                }
+                else
+                {
+                    userCV.coreSkill = "\n";
+                }
+                // 管理分數
+                List<Skill> manageScores = getAllScores.Where(x => x.skill_type.Equals("manage")).ToList();
+                foreach (Skill skill in manageScores)
+                {
+                    if (skill.scores != null)
+                    {
+                        try
+                        {
+                            Score score = skill.scores.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+                            if (score != null)
+                            {
+                                if (score.score >= 4)
+                                {
+                                    userCV.manageSkill += skill.content + "：" + score.score + "\n";
+                                }
+                            }
+                        }
+                        catch (Exception) { }
+                    }
+                }
+                if(userCV.manageSkill != null)
+                {
+                    userCV.manageSkill = userCV.manageSkill.Substring(0, userCV.manageSkill.Length - 1); // 移除最後的"/n"
+                }
+                else
+                {
+                    userCV.manageSkill = "\n";
+                }
             }
 
             return ret;
@@ -356,6 +433,69 @@ namespace TEEmployee.Models.Talent
             catch (Exception) { }
 
             return ret;
+        }
+        // High Performer
+        public List<Ability> HighPerformer(List<Skill> getAllScores)
+        {
+            List<Ability> users = new List<Ability>();
+            List<string> empnos = new UserRepository().GetAll().Select(x => x.empno).ToList();
+            foreach (string empno in empnos)
+            {
+                Ability user = new Ability();
+                // 專業分數
+                List<Skill> coreScores = getAllScores.Where(x => x.skill_type.Equals("core")).ToList();
+                double coreScore = 0.0;
+                foreach(Skill skill in coreScores)
+                {
+                    if(skill.scores != null)
+                    {
+                        try
+                        {
+                            Score score = skill.scores.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+                            if(score != null)
+                            {
+                                coreScore += score.score;
+                                if(score.score >= 4)
+                                {
+                                    user.coreSkill += skill.content + "：" + score.score + "\n";
+                                }
+                            }
+                        }
+                        catch (Exception) { }
+                    }
+                }
+                coreScore = coreScore / coreScores.Count();
+                // 管理分數
+                List<Skill> manageScores = getAllScores.Where(x => x.skill_type.Equals("manage")).ToList();
+                double manageScore = 0.0;
+                foreach(Skill skill in manageScores)
+                {
+                    if (skill.scores != null)
+                    {
+                        try
+                        {
+                            Score score = skill.scores.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+                            if (score != null)
+                            {
+                                manageScore += score.score;
+                                if (score.score >= 4)
+                                {
+                                    user.manageSkill += skill.content + "：" + score.score + "\n";
+                                }
+                            }
+                        }
+                        catch (Exception) { }
+                    }
+                }
+                manageScore = manageScore / manageScores.Count();
+                if(coreScore > 3 && manageScore > 3) 
+                {
+                    user.empno = empno;
+                    users.Add(user);
+                }
+            }
+
+            return users;
         }
         // 上傳年度績效檔案
         public bool ImportFile(HttpPostedFileBase file)

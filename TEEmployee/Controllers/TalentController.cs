@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using TEEmployee.Models;
 using TEEmployee.Models.Talent;
 using System.IO;
+using TEEmployee.Models.Profession;
 
 namespace TEEmployee.Controllers
 {
@@ -69,6 +70,13 @@ namespace TEEmployee.Controllers
             var ret = _service.ImportPDFFile(importPDFFile);
             return Json(ret);
         }
+        // High Performer
+        [HttpPost]
+        public JsonResult HighPerformer(List<Skill> getAllScores)
+        {
+            var ret = _service.HighPerformer(getAllScores);
+            return Json(ret);
+        }
         // 取得群組
         [HttpPost]
         public JsonResult GetGroupList()
@@ -99,11 +107,11 @@ namespace TEEmployee.Controllers
         public JsonResult SaveResponse(CV userCV, string planning)
         {
             var ret = false;
-            if (Session["empno"].ToString() == "4125")
-            {
+            //if (Session["empno"].ToString() == "4125")
+            //{
                 _service.SaveResponse(userCV, planning);
                 ret = true;
-            }
+            //}
             
             return Json(ret);
         }

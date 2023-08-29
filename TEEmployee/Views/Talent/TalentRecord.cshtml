@@ -21,13 +21,13 @@
             <nav class="navbar navbar-light bg-light">
                 <ul class="nav mb-3 container-fluid justify-content-start" id="pills-tab" role="tablist">
                     <li class="col text-center" role="presentation">
-                        <a class="btn btn-outline-warning btn-lg active" id="pills-home-tab" data-toggle="pill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="規劃進程、學校、近三年考績、未來發展規劃" href="#pills-home" role="button" aria-controls="pills-home" aria-selected="true">基本資料與規劃</a>
+                        <a class="btn btn-outline-warning btn-lg active" id="pills-home-tab" data-toggle="pill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="學校、近三年考績、能力檢視、自我發展規劃(由員工自己編輯)" href="#pills-home" role="button" aria-controls="pills-home" aria-selected="true">基本資料與規劃</a>
                     </li>
                     <li class="col text-center" role="presentation">
                         <a class="btn btn-outline-warning btn-lg" id="pills-profile-tab" data-toggle="pill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="職位經歷、專案經歷" href="#pills-profile" role="button" aria-controls="pills-profile" aria-selected="false">專案經歷</a>
                     </li>
                     <li class="col text-center" role="presentation">
-                        <a class="btn btn-outline-warning btn-lg" id="pills-contact-tab" data-toggle="pill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="專業證照、測評資料、優勢、劣勢、待發展能力" href="#pills-contact" role="button" aria-controls="pills-contact" aria-selected="false">個人特質</a>
+                        <a class="btn btn-outline-warning btn-lg" id="pills-contact-tab" data-toggle="pill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="規劃進程、專業證照、測評資料、優勢、劣勢、待發展能力" href="#pills-contact" role="button" aria-controls="pills-contact" aria-selected="false">個人特質</a>
                     </li>
                 </ul>
             </nav>
@@ -79,10 +79,16 @@
                     <div class="row">
                         <h4>能力檢視</h4>
                         <div class="col form-group">
-                            <textarea class="form-control" ng-model="user.future" name="SaveResponse" rows="3">{{user.future}}</textarea>
+                            <h4>專業能力</h4>
+                            <div ng-repeat="coreSkill in user.coreSkill">
+                                <h5>{{coreSkill}}</h5>
+                            </div>
                         </div>
                         <div class="col form-group">
-                            <textarea class="form-control" ng-model="user.future" name="SaveResponse" rows="3">{{user.future}}</textarea>
+                            <h4>管理能力</h4>
+                            <div ng-repeat="manageSkill in user.manageSkill">
+                                <h5>{{manageSkill}}</h5>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -119,14 +125,28 @@
                     <div class="inner">
                         <div ng-if="$index < 3" ng-repeat="item in planning">
                             <div class="col text-center">
-                                <input class="form-control text-center" ng-model="item.plan" name="SaveResponse" rows="1">
+                                @if (Session["empno"] is "4125")
+                                {
+                                    <input class="form-control text-center" ng-model="item.plan" name="SaveResponse" rows="1">
+                                }
+                                else
+                                {
+                                    <input class="form-control text-center" ng-model="item.plan" rows="1" readonly>
+                                }
                             </div>
                         </div>
                     </div>
                     <div class="inner">
                         <div ng-if="$index >= 3" ng-repeat="item in planning">
                             <div class="col text-center">
-                                <input class="form-control text-center" ng-model="item.plan" name="SaveResponse" rows="1">
+                                @if (Session["empno"] is "4125")
+                                {
+                                    <input class="form-control text-center" ng-model="item.plan" name="SaveResponse" rows="1">
+                                }
+                                else
+                                {
+                                    <input class="form-control text-center" ng-model="item.plan" rows="1" readonly>
+                                }
                             </div>
                         </div>
                     </div>
@@ -142,7 +162,14 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <h4>測評資料</h4>
-                            <textarea class="form-control" ng-model="user.test" name="SaveResponse" rows="3">{{user.test}}</textarea>
+                            @if (Session["empno"] is "4125")
+                            {
+                                <textarea class="form-control" ng-model="user.test" name="SaveResponse" rows="3">{{user.test}}</textarea>
+                            }
+                            else
+                            {
+                                <textarea class="form-control" ng-model="user.test" rows="3" readonly>{{user.test}}</textarea>
+                            }
                             @if (Session["empno"] is "4125" || Session["empno"] is "7291" || Session["empno"] is "7596")
                             {
                                 <div class="row">
@@ -162,20 +189,41 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <h4>優勢</h4>
-                            <textarea class="form-control" ng-model="user.advantage" name="SaveResponse" rows="3">{{user.advantage}}</textarea>
+                            @if (Session["empno"] is "4125")
+                            {
+                                <textarea class="form-control" ng-model="user.advantage" name="SaveResponse" rows="3">{{user.advantage}}</textarea>
+                            }
+                            else
+                            {
+                                <textarea class="form-control" ng-model="user.advantage" rows="3" readonly>{{user.advantage}}</textarea>
+                            }
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             <h4>劣勢</h4>
-                            <textarea class="form-control" ng-model="user.disadvantage" name="SaveResponse" rows="3">{{user.disadvantage}}</textarea>
+                            @if (Session["empno"] is "4125")
+                            {
+                                <textarea class="form-control" ng-model="user.disadvantage" name="SaveResponse" rows="3">{{user.disadvantage}}</textarea>
+                            }
+                            else
+                            {
+                                <textarea class="form-control" ng-model="user.disadvantage" rows="3" readonly>{{user.disadvantage}}</textarea>
+                            }
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group">
                         <h4>待發展能力</h4>
-                        <textarea class="form-control" ng-model="user.developed" name="SaveResponse" rows="3">{{user.developed}}</textarea>
+                        @if (Session["empno"] is "4125")
+                        {
+                            <textarea class="form-control" ng-model="user.developed" name="SaveResponse" rows="3">{{user.developed}}</textarea>
+                        }
+                        else
+                        {
+                            <textarea class="form-control" ng-model="user.developed" rows="3" readonly>{{user.developed}}</textarea>
+                        }
                     </div>
                 </div>
                 <br />
