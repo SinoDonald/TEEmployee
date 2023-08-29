@@ -67,6 +67,7 @@ app.factory('dataservice', function () {
         user.experience = data.experience.split('\n');
         user.project = data.project.split('\n');
         user.license = data.license.split('\n');
+        user.domainSkill = data.domainSkill.split('\n');
         user.coreSkill = data.coreSkill.split('\n');
         user.manageSkill = data.manageSkill.split('\n');
         user.planning = data.planning.split('\n');

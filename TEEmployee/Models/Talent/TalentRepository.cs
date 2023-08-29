@@ -85,7 +85,35 @@ namespace TEEmployee.Models.Talent
                 
                 // 取得核心專業盤點的專業與管理能力分數
                 List<Skill> getAllScores = new ProfessionRepository().GetAll();
-                // 專業分數
+                // 專業能力_領域技能
+                List<Skill> domainScores = getAllScores.Where(x => x.skill_type.Equals("domain")).ToList();
+                foreach (Skill skill in domainScores)
+                {
+                    if (skill.scores != null)
+                    {
+                        try
+                        {
+                            Score score = skill.scores.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+                            if (score != null)
+                            {
+                                if (score.score >= 4)
+                                {
+                                    userCV.domainSkill += skill.content + "：" + score.score + "\n";
+                                }
+                            }
+                        }
+                        catch (Exception) { }
+                    }
+                }
+                if (userCV.domainSkill != null)
+                {
+                    userCV.domainSkill = userCV.domainSkill.Substring(0, userCV.domainSkill.Length - 1); // 移除最後的"/n"
+                }
+                else
+                {
+                    userCV.domainSkill = "\n";
+                }
+                // 專業能力_核心技能
                 List<Skill> coreScores = getAllScores.Where(x => x.skill_type.Equals("core")).ToList();
                 foreach (Skill skill in coreScores)
                 {
@@ -113,7 +141,7 @@ namespace TEEmployee.Models.Talent
                 {
                     userCV.coreSkill = "\n";
                 }
-                // 管理分數
+                // 管理能力
                 List<Skill> manageScores = getAllScores.Where(x => x.skill_type.Equals("manage")).ToList();
                 foreach (Skill skill in manageScores)
                 {
@@ -442,7 +470,29 @@ namespace TEEmployee.Models.Talent
             foreach (string empno in empnos)
             {
                 Ability user = new Ability();
-                // 專業分數
+                // 專業能力_領域技能
+                List<Skill> domainScores = getAllScores.Where(x => x.skill_type.Equals("domain")).ToList();
+                double domainScore = 0.0;
+                foreach (Skill skill in domainScores)
+                {
+                    if (skill.scores != null)
+                    {
+                        try
+                        {
+                            Score score = skill.scores.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+                            if (score != null)
+                            {
+                                domainScore += score.score;
+                                if (score.score >= 4)
+                                {
+                                    user.domainSkill += skill.content + "：" + score.score + "\n";
+                                }
+                            }
+                        }
+                        catch (Exception) { }
+                    }
+                }
+                // 專業能力_核心技能
                 List<Skill> coreScores = getAllScores.Where(x => x.skill_type.Equals("core")).ToList();
                 double coreScore = 0.0;
                 foreach(Skill skill in coreScores)
@@ -464,8 +514,8 @@ namespace TEEmployee.Models.Talent
                         catch (Exception) { }
                     }
                 }
-                coreScore = coreScore / coreScores.Count();
-                // 管理分數
+                double professionScore = (domainScore + coreScore) / (domainScores.Count() + coreScores.Count());
+                // 管理能力
                 List<Skill> manageScores = getAllScores.Where(x => x.skill_type.Equals("manage")).ToList();
                 double manageScore = 0.0;
                 foreach(Skill skill in manageScores)
@@ -488,7 +538,7 @@ namespace TEEmployee.Models.Talent
                     }
                 }
                 manageScore = manageScore / manageScores.Count();
-                if(coreScore > 3 && manageScore > 3) 
+                if(professionScore > 3 && manageScore > 3) 
                 {
                     user.empno = empno;
                     users.Add(user);
