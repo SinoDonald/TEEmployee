@@ -669,35 +669,40 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
         // 上傳測評資料檔案
-        public bool ImportPDFFile(HttpPostedFileBase file)
+        public string ImportPDFFile(HttpPostedFileBase file)
         {
-            bool ret = false;
+            string ret = "";
             List<CV> userCVs = new List<CV>();
             try
             {
                 if (Path.GetExtension(file.FileName) != ".pdf") throw new ApplicationException("請使用PDF(.pdf)格式");
+                string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"));
                 var path = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"), file.FileName);
                 file.SaveAs(path); // 將檔案存到Server
 
                 string empno = Regex.Replace(Path.GetFileName(file.FileName), "[^0-9]", ""); // 僅保留數字
-                string line = new FilterReader(path).ReadToEnd();
-                //while (line != null)
-                //{
-                //    line = line.Trim();
-                //    if (!String.IsNullOrEmpty(line))
-                //    {
-                //        line = Regex.Replace(line, @"[,]\s+", " ");
-                //        line = Regex.Replace(line, @"[,]", "");
-                //        line = Regex.Replace(line, @"[^a-zA-Z'\d\s:]", " ");
-                //        break;
-                //    }
-                //}
+                FilterReader rilterReader = new FilterReader(path);
+                string line = rilterReader.ReadToEnd();
 
                 CV userCV = new CV();
                 userCV.empno = empno;
                 userCV.test = line;
                 userCVs.Add(userCV);
-                ret = SaveTest(userCVs); // 儲存測評資料
+                if(SaveTest(userCVs) == true)
+                {
+                    ret = line; // 儲存測評資料
+                }
+
+                rilterReader.Close();
+
+                // 移除資料夾內檔案
+                try
+                {
+                    DirectoryInfo directory = new DirectoryInfo(folderPath);
+                    directory.EnumerateFiles().ToList().ForEach(f => f.Delete());
+                    directory.EnumerateDirectories().ToList().ForEach(d => d.Delete(true));
+                }
+                catch (Exception) { }
             }
             catch (Exception)
             {

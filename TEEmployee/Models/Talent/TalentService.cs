@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Web;
 using TEEmployee.Models.Profession;
 
@@ -58,7 +57,7 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
         // 上傳測評資料檔案
-        public bool ImportPDFFile(HttpPostedFileBase file)
+        public string ImportPDFFile(HttpPostedFileBase file)
         {
             var ret = _talentRepository.ImportPDFFile(file);
             return ret;

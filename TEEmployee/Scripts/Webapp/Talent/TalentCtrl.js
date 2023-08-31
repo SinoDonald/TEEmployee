@@ -219,7 +219,9 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
             contentType: false,
             processData: false,
             success: function (data) {
-                if (data === true) {
+                if (data != "") {
+                    $scope.user.test = data;
+                    $scope.$apply(); // 用$apply強制刷新數據
                     alert("更新完成");
                 }
                 else {
