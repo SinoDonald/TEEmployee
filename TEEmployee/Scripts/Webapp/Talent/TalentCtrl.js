@@ -22,7 +22,7 @@ app.run(['$http', '$window', function ($http, $window) {
 
 app.service('appService', ['$http', function ($http) {
 
-    // High Performer
+    // 取得核心專業盤點的專業與管理能力分數
     this.GetAllScores = (o) => {
         return $http.post('Profession/GetAll', o);
     };

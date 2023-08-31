@@ -35,43 +35,75 @@ namespace TEEmployee.Models.Talent
             public string empno { get; set; }
             public string lastModifiedDate { get; set; }
         }
+        // 取得所有員工履歷
+        public List<CV> GetAll(string empno)
+        {
+            UpdateUsersGroup(new UserRepository().GetAll().ToList()); // 更新SQL員工當前所屬群組
+
+            List<CV> ret;
+
+            string sql = @"SELECT * FROM userCV WHERE empno=@empno";
+            ret = _conn.Query<CV>(sql, new { empno }).ToList();
+
+            if (empno == "4125")
+            {
+                sql = @"SELECT * FROM userCV ORDER BY empno";
+                ret = _conn.Query<CV>(sql, new { empno }).ToList();
+
+                List<string> usersEmpno = new UserRepository().GetAll().Select(x => x.empno).ToList(); // 在職員工
+                List<string> exEmployees = new List<string>(); // 不顯示的名單(協理+離職員工)
+                exEmployees.Add("4125");
+                foreach (CV user in ret)
+                {
+                    string exEmployee = usersEmpno.Where(x => x.Equals(user.empno)).FirstOrDefault();
+                    if (exEmployee == null)
+                    {
+                        exEmployees.Add(user.empno);
+                    }
+                }
+                // 移除不顯示的名單
+                foreach (string exEmployee in exEmployees)
+                {
+                    CV removeEmployee = ret.Where(x => x.empno.Equals(exEmployee)).FirstOrDefault();
+                    ret.Remove(removeEmployee);
+                }
+            }
+
+            return ret;
+        }
+        // 更新SQL員工當前所屬群組
+        public bool UpdateUsersGroup(List<User> users)
+        {
+            bool ret = false;
+
+            _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                string sql = @"UPDATE userCV SET 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three WHERE empno=@empno";
+                _conn.Execute(sql, users, tran);
+                tran.Commit();
+                ret = true;
+            }
+
+            return ret;
+        }
         // 取得員工履歷
         public List<CV> Get(string empno)
         {
             List<CV> ret;
 
             string sql = @"SELECT * FROM userCV WHERE empno=@empno";
-            if (empno == "4125")
-            {
-                sql = @"SELECT * FROM userCV ORDER BY empno";
-            }
-
             ret = _conn.Query<CV>(sql, new { empno }).ToList();
-                        
-            List<string> usersEmpno = new UserRepository().GetAll().Select(x => x.empno).ToList(); // 在職員工
-            List<string> exEmployees = new List<string>(); // 不顯示的名單(協理+離職員工)
-            exEmployees.Add("4125");
-            foreach(CV user in ret)
-            {
-                string exEmployee = usersEmpno.Where(x => x.Equals(user.empno)).FirstOrDefault();
-                if(exEmployee == null)
-                {
-                    exEmployees.Add(user.empno);
-                }
-            }
-            // 移除不顯示的名單
-            foreach (string exEmployee in exEmployees)
-            {
-                CV removeEmployee = ret.Where(x => x.empno.Equals(exEmployee)).FirstOrDefault();
-                ret.Remove(removeEmployee);
-            }
-            // 計算年齡, 民國轉西元後計算年齡
+
             foreach (CV userCV in ret)
             {
-                if(userCV.planning == null)
+                if (userCV.planning == null)
                 {
                     userCV.planning = "";
                 }
+
+                // 計算年齡, 民國轉西元後計算年齡
                 CultureInfo culture = new CultureInfo("zh-TW");
                 culture.DateTimeFormat.Calendar = new TaiwanCalendar();
                 DateTime birthday = DateTime.Parse(userCV.birthday, culture);

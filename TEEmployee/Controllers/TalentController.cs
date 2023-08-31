@@ -99,7 +99,7 @@ namespace TEEmployee.Controllers
             {
                 empno = Session["empno"].ToString();
             }
-            var ret = _service.GetAll(empno);
+            var ret = _service.Get(empno);
             return Json(ret);
         }
         // 儲存回覆

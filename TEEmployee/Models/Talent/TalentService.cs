@@ -145,6 +145,14 @@ namespace TEEmployee.Models.Talent
         public List<CV> GetAll(string empno)
         {
             _talentRepository = new TalentRepository();
+            List<CV> cv = (_talentRepository as TalentRepository).GetAll(empno);
+
+            return cv;
+        }
+        // 取得員工履歷
+        public List<CV> Get(string empno)
+        {
+            _talentRepository = new TalentRepository();
             List<CV> cv = (_talentRepository as TalentRepository).Get(empno);
 
             return cv;
