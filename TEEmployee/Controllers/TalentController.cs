@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System;
 using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Models;
-using TEEmployee.Models.Talent;
-using System.IO;
 using TEEmployee.Models.Profession;
+using TEEmployee.Models.Talent;
 
 namespace TEEmployee.Controllers
 {
@@ -99,7 +96,7 @@ namespace TEEmployee.Controllers
             {
                 empno = Session["empno"].ToString();
             }
-            var ret = _service.GetAll(empno);
+            var ret = _service.Get(empno);
             return Json(ret);
         }
         // 儲存回覆
@@ -121,7 +118,5 @@ namespace TEEmployee.Controllers
             _service.Dispose();
             base.Dispose(disposing);
         }
-
-        
     }
 }

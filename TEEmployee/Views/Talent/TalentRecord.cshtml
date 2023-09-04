@@ -80,6 +80,9 @@
                         <h4>能力檢視</h4>
                         <div class="col form-group">
                             <h4>專業能力</h4>
+                            <div ng-repeat="domainSkill in user.domainSkill">
+                                <h5>{{domainSkill}}</h5>
+                            </div>
                             <div ng-repeat="coreSkill in user.coreSkill">
                                 <h5>{{coreSkill}}</h5>
                             </div>

@@ -84,7 +84,8 @@ namespace TEEmployee.Models
         public string experience { get; set; }
         public string project { get; set; }
         public string lastest_update { get; set; }
-        public string coreSkill { get; set; } // 專業能力
+        public string domainSkill { get; set; } // 專業能力_領域技能
+        public string coreSkill { get; set; } // 專業能力_核心技能
         public string manageSkill { get; set; } // 管理能力
         public string planning { get; set; } // 規劃進程
         public string test { get; set; } // 測評資料

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Web;
 using TEEmployee.Models.Profession;
 
@@ -58,7 +57,7 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
         // 上傳測評資料檔案
-        public bool ImportPDFFile(HttpPostedFileBase file)
+        public string ImportPDFFile(HttpPostedFileBase file)
         {
             var ret = _talentRepository.ImportPDFFile(file);
             return ret;
@@ -143,6 +142,14 @@ namespace TEEmployee.Models.Talent
         }
         // 取得所有員工履歷
         public List<CV> GetAll(string empno)
+        {
+            _talentRepository = new TalentRepository();
+            List<CV> cv = (_talentRepository as TalentRepository).GetAll(empno);
+
+            return cv;
+        }
+        // 取得員工履歷
+        public List<CV> Get(string empno)
         {
             _talentRepository = new TalentRepository();
             List<CV> cv = (_talentRepository as TalentRepository).Get(empno);

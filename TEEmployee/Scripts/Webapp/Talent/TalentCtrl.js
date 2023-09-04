@@ -22,7 +22,7 @@ app.run(['$http', '$window', function ($http, $window) {
 
 app.service('appService', ['$http', function ($http) {
 
-    // High Performer
+    // 取得核心專業盤點的專業與管理能力分數
     this.GetAllScores = (o) => {
         return $http.post('Profession/GetAll', o);
     };
@@ -67,6 +67,7 @@ app.factory('dataservice', function () {
         user.experience = data.experience.split('\n');
         user.project = data.project.split('\n');
         user.license = data.license.split('\n');
+        user.domainSkill = data.domainSkill.split('\n');
         user.coreSkill = data.coreSkill.split('\n');
         user.manageSkill = data.manageSkill.split('\n');
         user.planning = data.planning.split('\n');
@@ -218,7 +219,9 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
             contentType: false,
             processData: false,
             success: function (data) {
-                if (data === true) {
+                if (data != "") {
+                    $scope.user.test = data;
+                    $scope.$apply(); // 用$apply強制刷新數據
                     alert("更新完成");
                 }
                 else {

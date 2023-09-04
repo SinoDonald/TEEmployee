@@ -35,43 +35,75 @@ namespace TEEmployee.Models.Talent
             public string empno { get; set; }
             public string lastModifiedDate { get; set; }
         }
+        // 取得所有員工履歷
+        public List<CV> GetAll(string empno)
+        {
+            UpdateUsersGroup(new UserRepository().GetAll().ToList()); // 更新SQL員工當前所屬群組
+
+            List<CV> ret;
+
+            string sql = @"SELECT * FROM userCV WHERE empno=@empno";
+            ret = _conn.Query<CV>(sql, new { empno }).ToList();
+
+            if (empno == "4125")
+            {
+                sql = @"SELECT * FROM userCV ORDER BY empno";
+                ret = _conn.Query<CV>(sql, new { empno }).ToList();
+
+                List<string> usersEmpno = new UserRepository().GetAll().Select(x => x.empno).ToList(); // 在職員工
+                List<string> exEmployees = new List<string>(); // 不顯示的名單(協理+離職員工)
+                exEmployees.Add("4125");
+                foreach (CV user in ret)
+                {
+                    string exEmployee = usersEmpno.Where(x => x.Equals(user.empno)).FirstOrDefault();
+                    if (exEmployee == null)
+                    {
+                        exEmployees.Add(user.empno);
+                    }
+                }
+                // 移除不顯示的名單
+                foreach (string exEmployee in exEmployees)
+                {
+                    CV removeEmployee = ret.Where(x => x.empno.Equals(exEmployee)).FirstOrDefault();
+                    ret.Remove(removeEmployee);
+                }
+            }
+
+            return ret;
+        }
+        // 更新SQL員工當前所屬群組
+        public bool UpdateUsersGroup(List<User> users)
+        {
+            bool ret = false;
+
+            _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                string sql = @"UPDATE userCV SET 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three WHERE empno=@empno";
+                _conn.Execute(sql, users, tran);
+                tran.Commit();
+                ret = true;
+            }
+
+            return ret;
+        }
         // 取得員工履歷
         public List<CV> Get(string empno)
         {
             List<CV> ret;
 
             string sql = @"SELECT * FROM userCV WHERE empno=@empno";
-            if (empno == "4125")
-            {
-                sql = @"SELECT * FROM userCV ORDER BY empno";
-            }
-
             ret = _conn.Query<CV>(sql, new { empno }).ToList();
-                        
-            List<string> usersEmpno = new UserRepository().GetAll().Select(x => x.empno).ToList(); // 在職員工
-            List<string> exEmployees = new List<string>(); // 不顯示的名單(協理+離職員工)
-            exEmployees.Add("4125");
-            foreach(CV user in ret)
-            {
-                string exEmployee = usersEmpno.Where(x => x.Equals(user.empno)).FirstOrDefault();
-                if(exEmployee == null)
-                {
-                    exEmployees.Add(user.empno);
-                }
-            }
-            // 移除不顯示的名單
-            foreach (string exEmployee in exEmployees)
-            {
-                CV removeEmployee = ret.Where(x => x.empno.Equals(exEmployee)).FirstOrDefault();
-                ret.Remove(removeEmployee);
-            }
-            // 計算年齡, 民國轉西元後計算年齡
+
             foreach (CV userCV in ret)
             {
-                if(userCV.planning == null)
+                if (userCV.planning == null)
                 {
                     userCV.planning = "";
                 }
+
+                // 計算年齡, 民國轉西元後計算年齡
                 CultureInfo culture = new CultureInfo("zh-TW");
                 culture.DateTimeFormat.Calendar = new TaiwanCalendar();
                 DateTime birthday = DateTime.Parse(userCV.birthday, culture);
@@ -85,7 +117,35 @@ namespace TEEmployee.Models.Talent
                 
                 // 取得核心專業盤點的專業與管理能力分數
                 List<Skill> getAllScores = new ProfessionRepository().GetAll();
-                // 專業分數
+                // 專業能力_領域技能
+                List<Skill> domainScores = getAllScores.Where(x => x.skill_type.Equals("domain")).ToList();
+                foreach (Skill skill in domainScores)
+                {
+                    if (skill.scores != null)
+                    {
+                        try
+                        {
+                            Score score = skill.scores.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+                            if (score != null)
+                            {
+                                if (score.score >= 4)
+                                {
+                                    userCV.domainSkill += skill.content + "：" + score.score + "\n";
+                                }
+                            }
+                        }
+                        catch (Exception) { }
+                    }
+                }
+                if (userCV.domainSkill != null)
+                {
+                    userCV.domainSkill = userCV.domainSkill.Substring(0, userCV.domainSkill.Length - 1); // 移除最後的"/n"
+                }
+                else
+                {
+                    userCV.domainSkill = "\n";
+                }
+                // 專業能力_核心技能
                 List<Skill> coreScores = getAllScores.Where(x => x.skill_type.Equals("core")).ToList();
                 foreach (Skill skill in coreScores)
                 {
@@ -113,7 +173,7 @@ namespace TEEmployee.Models.Talent
                 {
                     userCV.coreSkill = "\n";
                 }
-                // 管理分數
+                // 管理能力
                 List<Skill> manageScores = getAllScores.Where(x => x.skill_type.Equals("manage")).ToList();
                 foreach (Skill skill in manageScores)
                 {
@@ -442,7 +502,29 @@ namespace TEEmployee.Models.Talent
             foreach (string empno in empnos)
             {
                 Ability user = new Ability();
-                // 專業分數
+                // 專業能力_領域技能
+                List<Skill> domainScores = getAllScores.Where(x => x.skill_type.Equals("domain")).ToList();
+                double domainScore = 0.0;
+                foreach (Skill skill in domainScores)
+                {
+                    if (skill.scores != null)
+                    {
+                        try
+                        {
+                            Score score = skill.scores.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+                            if (score != null)
+                            {
+                                domainScore += score.score;
+                                if (score.score >= 4)
+                                {
+                                    user.domainSkill += skill.content + "：" + score.score + "\n";
+                                }
+                            }
+                        }
+                        catch (Exception) { }
+                    }
+                }
+                // 專業能力_核心技能
                 List<Skill> coreScores = getAllScores.Where(x => x.skill_type.Equals("core")).ToList();
                 double coreScore = 0.0;
                 foreach(Skill skill in coreScores)
@@ -464,8 +546,8 @@ namespace TEEmployee.Models.Talent
                         catch (Exception) { }
                     }
                 }
-                coreScore = coreScore / coreScores.Count();
-                // 管理分數
+                double professionScore = (domainScore + coreScore) / (domainScores.Count() + coreScores.Count());
+                // 管理能力
                 List<Skill> manageScores = getAllScores.Where(x => x.skill_type.Equals("manage")).ToList();
                 double manageScore = 0.0;
                 foreach(Skill skill in manageScores)
@@ -488,7 +570,7 @@ namespace TEEmployee.Models.Talent
                     }
                 }
                 manageScore = manageScore / manageScores.Count();
-                if(coreScore > 3 && manageScore > 3) 
+                if(professionScore > 3 && manageScore > 3) 
                 {
                     user.empno = empno;
                     users.Add(user);
@@ -587,35 +669,40 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
         // 上傳測評資料檔案
-        public bool ImportPDFFile(HttpPostedFileBase file)
+        public string ImportPDFFile(HttpPostedFileBase file)
         {
-            bool ret = false;
+            string ret = "";
             List<CV> userCVs = new List<CV>();
             try
             {
                 if (Path.GetExtension(file.FileName) != ".pdf") throw new ApplicationException("請使用PDF(.pdf)格式");
+                string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"));
                 var path = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"), file.FileName);
                 file.SaveAs(path); // 將檔案存到Server
 
                 string empno = Regex.Replace(Path.GetFileName(file.FileName), "[^0-9]", ""); // 僅保留數字
-                string line = new FilterReader(path).ReadToEnd();
-                //while (line != null)
-                //{
-                //    line = line.Trim();
-                //    if (!String.IsNullOrEmpty(line))
-                //    {
-                //        line = Regex.Replace(line, @"[,]\s+", " ");
-                //        line = Regex.Replace(line, @"[,]", "");
-                //        line = Regex.Replace(line, @"[^a-zA-Z'\d\s:]", " ");
-                //        break;
-                //    }
-                //}
+                FilterReader rilterReader = new FilterReader(path);
+                string line = rilterReader.ReadToEnd();
 
                 CV userCV = new CV();
                 userCV.empno = empno;
                 userCV.test = line;
                 userCVs.Add(userCV);
-                ret = SaveTest(userCVs); // 儲存測評資料
+                if(SaveTest(userCVs) == true)
+                {
+                    ret = line; // 儲存測評資料
+                }
+
+                rilterReader.Close();
+
+                // 移除資料夾內檔案
+                try
+                {
+                    DirectoryInfo directory = new DirectoryInfo(folderPath);
+                    directory.EnumerateFiles().ToList().ForEach(f => f.Delete());
+                    directory.EnumerateDirectories().ToList().ForEach(d => d.Delete(true));
+                }
+                catch (Exception) { }
             }
             catch (Exception)
             {
