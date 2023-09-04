@@ -677,6 +677,12 @@ namespace TEEmployee.Models.Talent
             {
                 if (Path.GetExtension(file.FileName) != ".pdf") throw new ApplicationException("請使用PDF(.pdf)格式");
                 string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"));
+                // 檢查資料夾是否存在
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
                 var path = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"), file.FileName);
                 file.SaveAs(path); // 將檔案存到Server
 

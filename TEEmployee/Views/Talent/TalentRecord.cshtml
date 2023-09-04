@@ -167,13 +167,13 @@
                             <h4>測評資料</h4>
                             @if (Session["empno"] is "4125")
                             {
-                                <textarea class="form-control" ng-model="user.test" name="SaveResponse" rows="3">{{user.test}}</textarea>
+                                <textarea class="form-control" ng-model="user.test" name="SaveResponse" rows="5">{{user.test}}</textarea>
                             }
                             else
                             {
-                                <textarea class="form-control" ng-model="user.test" rows="3" readonly>{{user.test}}</textarea>
+                                <textarea class="form-control" ng-model="user.test" rows="5" readonly>{{user.test}}</textarea>
                             }
-                            @if (Session["empno"] is "4125" || Session["empno"] is "7291" || Session["empno"] is "7596")
+                            @if (Session["empno"] is "4125" @*|| Session["empno"] is "7291" || Session["empno"] is "7596"*@)
                             {
                                 <div class="row">
                                     <span>請選擇測評資料：</span>
