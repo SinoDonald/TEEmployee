@@ -52,46 +52,46 @@ const data = {
     }]
 };
 
-const config = {
-    type: 'scatter',
-    data: data,
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top',
-            },
-            //title: {
-            //    display: true,
-            //    text: 'Chart.js Line Chart'
-            //}
-        },
-        scales: {
-            x: {
-                type: 'time',
-                time: {
-                    unit: 'month',
-                    displayFormats: {
-                        month: 'YYYY-MM'
-                    }
-                }
-            },
-            y: {
-                max: 100,
-                min: 0,
-            }
-            //xAxes: [{
-            //    type: 'time',
-            //    gridLines: {
-            //        display: true
-            //    },
-            //    time: {
-            //        minUnit: 'month'
-            //    }
-            //}]
-        },
-    },
-};
+//const config = {
+//    type: 'scatter',
+//    data: data,
+//    options: {
+//        responsive: true,
+//        plugins: {
+//            legend: {
+//                position: 'top',
+//            },
+//            //title: {
+//            //    display: true,
+//            //    text: 'Chart.js Line Chart'
+//            //}
+//        },
+//        scales: {
+//            x: {
+//                type: 'time',
+//                time: {
+//                    unit: 'month',
+//                    displayFormats: {
+//                        month: 'YYYY-MM'
+//                    }
+//                }
+//            },
+//            y: {
+//                max: 100,
+//                min: 0,
+//            }
+//            //xAxes: [{
+//            //    type: 'time',
+//            //    gridLines: {
+//            //        display: true
+//            //    },
+//            //    time: {
+//            //        minUnit: 'month'
+//            //    }
+//            //}]
+//        },
+//    },
+//};
 
 //function createHistoryLineChart() {
 
@@ -375,7 +375,10 @@ function createScoreScatterChart(scoreData, members) {
                     radius: 8,
                     hoverRadius: 12, // ex.: to make it bigger when user hovers put larger number than radius.
                 }
-            }
+            },
+            layout: {
+                padding: 60
+            },
 
         },
         plugins: [scatterDataLabels],
