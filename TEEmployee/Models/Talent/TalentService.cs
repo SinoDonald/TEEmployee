@@ -39,6 +39,11 @@ namespace TEEmployee.Models.Talent
                             if (uploadFile.ContentLength > 0)
                             {
                                 string savePath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data"), "Talent\\CV\\"); // 人員履歷表Word檔路徑
+                                // 檢查資料夾是否存在, 沒有則建立資料夾
+                                if (!Directory.Exists(savePath))
+                                {
+                                    Directory.CreateDirectory(savePath);
+                                }
                                 uploadFile.SaveAs(savePath + uploadFile.FileName);
                             }
                         }
@@ -57,9 +62,9 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
         // 上傳測評資料檔案
-        public string ImportPDFFile(HttpPostedFileBase file)
+        public List<CV> ImportPDFFile(HttpPostedFileBase file)
         {
-            var ret = _talentRepository.ImportPDFFile(file);
+            List<CV> ret = _talentRepository.ImportPDFFile(file);
             return ret;
         }
         // High Performer
@@ -139,6 +144,12 @@ namespace TEEmployee.Models.Talent
             groups = groups.Distinct().ToList();
 
             return groups;
+        }
+        // 儲存選項
+        public bool SaveChoice(List<Ability> users)
+        {
+            bool ret = _talentRepository.SaveChoice(users);
+            return ret;
         }
         // 取得所有員工履歷
         public List<CV> GetAll(string empno)

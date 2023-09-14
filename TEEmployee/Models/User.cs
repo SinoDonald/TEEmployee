@@ -93,5 +93,11 @@ namespace TEEmployee.Models
         public string disadvantage { get; set; } // 劣勢
         public string developed { get; set; } // 待發展能力
         public string future { get; set; } // 未來發展規劃
+        public string position { get; set; } // 職位
+        public bool choice1 { get; set; } // 專業性 – 專家的潛質
+        public bool choice2 { get; set; } // 格局、視野大 - 舉一反三
+        public bool choice3 { get; set; } // 責任心驅動的主動性 - 捨我其誰
+        public bool choice4 { get; set; } // 建立系統性、計畫性的學習能力 - 學習力具體
+        public bool choice5 { get; set; } // 適應變化的韌性 - 懂得取捨、不放棄
     }
 }

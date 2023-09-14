@@ -88,6 +88,41 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
+        // 儲存選項
+        public bool SaveChoice(List<Ability> users)
+        {
+            bool ret = false;
+            string sql = @"SELECT * FROM userCV ORDER BY empno";
+            List<CV> userCVs = _conn.Query<CV>(sql).ToList();
+            foreach(Ability user in users)
+            {
+                CV userCV = userCVs.Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
+                userCV.position = user.position;
+                userCV.choice1 = user.choice1;
+                userCV.choice2 = user.choice2;
+                userCV.choice3 = user.choice3;
+                userCV.choice4 = user.choice4;
+                userCV.choice5 = user.choice5;
+            }
+            try
+            {
+                _conn.Open();
+                // 先確認資料庫中是否已更新當季的資料
+                using (var tran = _conn.BeginTransaction())
+                {
+                    //string sql = @"DELETE FROM userCV";
+                    //_conn.Execute(sql);
+                    sql = @"UPDATE userCV SET choice1=@choice1, choice2=@choice2, choice3=@choice3, choice4=@choice4, choice5=@choice5 WHERE empno=@empno";
+                    _conn.Execute(sql, userCVs);
+
+                    tran.Commit();
+                }
+                _conn.Close();
+            }
+            catch (Exception) { }
+
+            return ret;
+        }
         // 取得員工履歷
         public List<CV> Get(string empno)
         {
@@ -311,8 +346,8 @@ namespace TEEmployee.Models.Talent
                                         }
                                     }
                                     // 加入三年績效考核
-                                    userCV.performance = "甲\n乙\n丙";
-                                    if(userCV.empno != null && userCV.name != null)
+                                    userCV.performance = "";
+                                    if (userCV.empno != null && userCV.name != null)
                                     { 
                                         userCVs.Add(userCV);
                                     }
@@ -498,10 +533,10 @@ namespace TEEmployee.Models.Talent
         public List<Ability> HighPerformer(List<Skill> getAllScores)
         {
             List<Ability> users = new List<Ability>();
-            List<string> empnos = new UserRepository().GetAll().Select(x => x.empno).ToList();
-            foreach (string empno in empnos)
+            List<User> allUser = new UserRepository().GetAll().ToList();
+            foreach (User user in allUser)
             {
-                Ability user = new Ability();
+                Ability userAbility = new Ability();
                 // 專業能力_領域技能
                 List<Skill> domainScores = getAllScores.Where(x => x.skill_type.Equals("domain")).ToList();
                 double domainScore = 0.0;
@@ -511,13 +546,13 @@ namespace TEEmployee.Models.Talent
                     {
                         try
                         {
-                            Score score = skill.scores.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+                            Score score = skill.scores.Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
                             if (score != null)
                             {
                                 domainScore += score.score;
                                 if (score.score >= 4)
                                 {
-                                    user.domainSkill += skill.content + "：" + score.score + "\n";
+                                    userAbility.domainSkill += skill.content + "：" + score.score + "\n";
                                 }
                             }
                         }
@@ -533,13 +568,13 @@ namespace TEEmployee.Models.Talent
                     {
                         try
                         {
-                            Score score = skill.scores.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+                            Score score = skill.scores.Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
                             if(score != null)
                             {
                                 coreScore += score.score;
                                 if(score.score >= 4)
                                 {
-                                    user.coreSkill += skill.content + "：" + score.score + "\n";
+                                    userAbility.coreSkill += skill.content + "：" + score.score + "\n";
                                 }
                             }
                         }
@@ -556,13 +591,13 @@ namespace TEEmployee.Models.Talent
                     {
                         try
                         {
-                            Score score = skill.scores.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+                            Score score = skill.scores.Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
                             if (score != null)
                             {
                                 manageScore += score.score;
                                 if (score.score >= 4)
                                 {
-                                    user.manageSkill += skill.content + "：" + score.score + "\n";
+                                    userAbility.manageSkill += skill.content + "：" + score.score + "\n";
                                 }
                             }
                         }
@@ -572,8 +607,9 @@ namespace TEEmployee.Models.Talent
                 manageScore = manageScore / manageScores.Count();
                 if(professionScore > 3 && manageScore > 3) 
                 {
-                    user.empno = empno;
-                    users.Add(user);
+                    userAbility.empno = user.empno;
+                    userAbility.name = user.name;
+                    users.Add(userAbility);
                 }
             }
 
@@ -669,7 +705,7 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
         // 上傳測評資料檔案
-        public string ImportPDFFile(HttpPostedFileBase file)
+        public List<CV> ImportPDFFile(HttpPostedFileBase file)
         {
             string ret = "";
             List<CV> userCVs = new List<CV>();
@@ -689,10 +725,18 @@ namespace TEEmployee.Models.Talent
                 string empno = Regex.Replace(Path.GetFileName(file.FileName), "[^0-9]", ""); // 僅保留數字
                 FilterReader rilterReader = new FilterReader(path);
                 string line = rilterReader.ReadToEnd();
+                // 解析PDF內的優、缺點
+                int advantages = line.LastIndexOf("1.3 典型優勢");
+                int disadvantage = line.LastIndexOf("1.4 典型劣勢");
+                int life = line.LastIndexOf("1.5 關鍵的⼈⽣問題");
+                int work = line.IndexOf("4.2 價值觀: ⼯作成果");
+                int values = line.IndexOf("4.3 價值觀: ⼈⽣價值觀");
 
                 CV userCV = new CV();
                 userCV.empno = empno;
-                userCV.test = line;
+                userCV.advantage = line.Substring(advantages, disadvantage - advantages).Trim().Replace("1.3 典型優勢", "").Replace(".", "。\n").Replace("\uff00", ";"); // 優勢
+                userCV.disadvantage = line.Substring(disadvantage, life - disadvantage).Trim().Replace("1.4 典型劣勢", "").Replace(".", "。\n").Replace("\uff00", ";"); // 劣勢
+                userCV.test = line.Substring(work, values - work).Trim().Replace("4.2 價值觀: ⼯作成果", "").Replace(".", "。\n").Replace("\uff00", ";"); // 測評資料
                 userCVs.Add(userCV);
                 if(SaveTest(userCVs) == true)
                 {
@@ -715,7 +759,7 @@ namespace TEEmployee.Models.Talent
 
             }
 
-            return ret;
+            return userCVs;
         }
         // 儲存測評資料
         public bool SaveTest(List<CV> userCVs)
@@ -726,7 +770,7 @@ namespace TEEmployee.Models.Talent
 
             using (var tran = _conn.BeginTransaction())
             {
-                string sql = @"UPDATE userCV SET test=@test WHERE empno=@empno";
+                string sql = @"UPDATE userCV SET test=@test, advantage=@advantage, disadvantage=@disadvantage WHERE empno=@empno";
                 _conn.Execute(sql, userCVs, tran);
                 tran.Commit();
                 ret = true;

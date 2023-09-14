@@ -29,6 +29,10 @@ namespace TEEmployee.Controllers
         {
             return PartialView();
         }
+        public ActionResult TalentHighPerformers()
+        {
+            return PartialView();
+        }
         public ActionResult TalentRecord()
         {
             return PartialView();
@@ -53,7 +57,7 @@ namespace TEEmployee.Controllers
         }
         // 上傳年度績效檔案
         [HttpPost]
-        public ActionResult ImportFile(HttpPostedFileBase importFile)
+        public JsonResult ImportFile(HttpPostedFileBase importFile)
         {
             if (importFile == null) return Json(new { Status = 0, Message = "No File Selected" });
             var ret = _service.ImportFile(importFile);
@@ -79,6 +83,16 @@ namespace TEEmployee.Controllers
         public JsonResult GetGroupList()
         {
             var ret = _service.GetGroupList(Session["empno"].ToString());
+            return Json(ret);
+        }
+        // 儲存選項
+        [HttpPost]
+        public JsonResult SaveChoice(List<Ability> users)
+        {
+            var ret = false;
+            _service.SaveChoice(users);
+            ret = true;
+
             return Json(ret);
         }
         // 取得所有員工履歷

@@ -8,6 +8,10 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             url: '/TalentOption',
             templateUrl: 'Talent/TalentOption'
         })
+        .state('TalentHighPerformers', {
+            url: '/TalentHighPerformers',
+            templateUrl: 'Talent/TalentHighPerformers'
+        })
         .state('TalentRecord', {
             url: '/TalentRecord',
             templateUrl: 'Talent/TalentRecord'
@@ -33,6 +37,10 @@ app.service('appService', ['$http', function ($http) {
     // 取得群組
     this.GetGroupList = (o) => {
         return $http.post('Talent/GetGroupList', o);
+    };
+    // 儲存選項
+    this.SaveChoice = function (o) {
+        return $http.post('Talent/SaveChoice', o);
     };
     // 取得所有員工履歷
     this.GetAll = function (o) {
@@ -89,31 +97,49 @@ app.factory('dataservice', function () {
 
 });
 
+app.factory('highperformers', function () {
+
+    var users = {}
+
+    function set(data) {
+        users = data;
+    }
+
+    function get() {
+        return users;
+    }
+
+    return {
+        set: set,
+        get: get,
+    }
+
+});
+
 app.controller('TalentCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', function ($scope, $location, $window, appService, $rootScope) {
 
     $location.path('/TalentOption');
 
 }]);
 
-app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'dataservice', function ($scope, $location, $window, appService, $rootScope, $q, dataservice) {
-
-    // High Performer
-    appService.GetAllScores({})
-        .then(function (ret) {
-            appService.HighPerformer({ getAllScores: ret.data })
-                .then(function (ret) {
-                    $scope.HighPerformer = ret.data;
-                })
-        })
-        .catch(function (ret) {
-            alert('Error');
-        });
-    appService.GetAllScores();
+app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'dataservice', 'highperformers', function ($scope, $location, $window, appService, $rootScope, $q, dataservice, highperformers) {
 
     // 取得所有員工履歷
     appService.GetAll({})
         .then(function (ret) {
             $scope.GetAll = ret.data;
+
+            // High Performer
+            appService.GetAllScores({})
+                .then(function (ret) {
+                    appService.HighPerformer({ getAllScores: ret.data })
+                        .then(function (ret) {
+                            $scope.HighPerformer = ret.data;
+                        })
+                })
+                .catch(function (ret) {
+                    alert('Error');
+                });
 
             // 取得群組
             let groups = appService.GetGroupList({});
@@ -145,6 +171,23 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
                 $scope.data.push(item);
             }
         }
+    }
+
+    // TalentHighPerformers
+    $scope.TalentHighPerformers = function (data) {
+        // High Performer
+        appService.GetAllScores({})
+            .then(function (ret) {
+                appService.HighPerformer({ getAllScores: ret.data })
+                    .then(function (ret) {
+                        $scope.HighPerformer = ret.data;
+                        highperformers.set(ret.data);
+                        $location.path('/TalentHighPerformers');
+                    })
+            })
+            .catch(function (ret) {
+                alert('Error');
+            });
     }
 
     // 選擇要看的成員
@@ -187,6 +230,26 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
 
 }]);
 
+app.controller('TalentHighPerformersCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', 'dataservice', 'highperformers', function ($scope, $location, $window, appService, $rootScope, dataservice, highperformers) {
+
+    $scope.data = highperformers.get(); // 取得員工履歷
+    $scope.positions = ['技術經理', '計畫經理', '組長'];
+
+    // 儲存
+    $scope.SaveChoice = function (data) {
+        // 取得員工履歷
+        appService.SaveChoice({ users: data })
+            .then(function (ret) {
+                if (ret.data === false) { alert('僅限協理儲存'); }
+                else { alert('儲存成功'); }
+            })
+            .catch(function (ret) {
+                alert('Error');
+            });
+    }
+
+}]);
+
 app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', 'dataservice', function ($scope, $location, $window, appService, $rootScope, dataservice) {
 
     $scope.user = dataservice.get(); // 取得員工履歷
@@ -220,7 +283,9 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
             processData: false,
             success: function (data) {
                 if (data != "") {
-                    $scope.user.test = data;
+                    $scope.user.advantage = data[0].advantage;
+                    $scope.user.disadvantage = data[0].disadvantage;
+                    $scope.user.test = data[0].test;
                     $scope.$apply(); // 用$apply強制刷新數據
                     alert("更新完成");
                 }
