@@ -33,6 +33,10 @@ namespace TEEmployee.Controllers
         {
             return PartialView();
         }
+        public ActionResult TalentSuccessExample()
+        {
+            return PartialView();
+        }        
         public ActionResult TalentRecord()
         {
             return PartialView();

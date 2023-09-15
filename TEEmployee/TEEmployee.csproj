@@ -459,6 +459,7 @@
     <Content Include="Views\GKpi\Feedback.cshtml" />
     <Content Include="Views\Profession\Scatter.cshtml" />
     <Content Include="Views\Talent\TalentHighPerformers.cshtml" />
+    <Content Include="Views\Talent\TalentSuccessExample.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Response\" />

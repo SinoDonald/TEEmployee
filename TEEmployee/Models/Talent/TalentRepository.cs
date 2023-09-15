@@ -112,7 +112,7 @@ namespace TEEmployee.Models.Talent
                 {
                     //string sql = @"DELETE FROM userCV";
                     //_conn.Execute(sql);
-                    sql = @"UPDATE userCV SET choice1=@choice1, choice2=@choice2, choice3=@choice3, choice4=@choice4, choice5=@choice5 WHERE empno=@empno";
+                    sql = @"UPDATE userCV SET position=@position, choice1=@choice1, choice2=@choice2, choice3=@choice3, choice4=@choice4, choice5=@choice5 WHERE empno=@empno";
                     _conn.Execute(sql, userCVs);
 
                     tran.Commit();
@@ -605,10 +605,19 @@ namespace TEEmployee.Models.Talent
                     }
                 }
                 manageScore = manageScore / manageScores.Count();
-                if(professionScore > 3 && manageScore > 3) 
+                if(professionScore > 3 && manageScore > 3)
                 {
+                    string sql = @"SELECT * FROM userCV ORDER BY empno";
+                    CV userCV = _conn.Query<CV>(sql).ToList().Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
+
                     userAbility.empno = user.empno;
                     userAbility.name = user.name;
+                    userAbility.position = userCV.position;
+                    userAbility.choice1 = userCV.choice1;
+                    userAbility.choice2 = userCV.choice2;
+                    userAbility.choice3 = userCV.choice3;
+                    userAbility.choice4 = userCV.choice4;
+                    userAbility.choice5 = userCV.choice5;
                     users.Add(userAbility);
                 }
             }

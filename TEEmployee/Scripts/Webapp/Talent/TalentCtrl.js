@@ -12,6 +12,10 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             url: '/TalentHighPerformers',
             templateUrl: 'Talent/TalentHighPerformers'
         })
+        .state('TalentSuccessExample', {
+            url: '/TalentSuccessExample',
+            templateUrl: 'Talent/TalentSuccessExample'
+        })
         .state('TalentRecord', {
             url: '/TalentRecord',
             templateUrl: 'Talent/TalentRecord'
@@ -190,6 +194,11 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
             });
     }
 
+    // 成功典範
+    $scope.TalentSuccessExample = function (data) {
+        $location.path('/TalentSuccessExample');
+    }
+
     // 選擇要看的成員
     $scope.TalentRecord = function (data) {
         // 取得員工履歷
@@ -233,19 +242,32 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
 app.controller('TalentHighPerformersCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', 'dataservice', 'highperformers', function ($scope, $location, $window, appService, $rootScope, dataservice, highperformers) {
 
     $scope.data = highperformers.get(); // 取得員工履歷
-    $scope.positions = ['技術經理', '計畫經理', '組長'];
+    $scope.positions = ['', '技術經理', '計畫經理', '組長'];
+
+    // 回上頁
+    $scope.ToTalent = function () {
+        $window.location.href = 'Talent#!/TalentOption';
+    }
 
     // 儲存
     $scope.SaveChoice = function (data) {
         // 取得員工履歷
         appService.SaveChoice({ users: data })
             .then(function (ret) {
-                if (ret.data === false) { alert('僅限協理儲存'); }
-                else { alert('儲存成功'); }
+                if (ret.data === true) { alert('儲存成功'); }
             })
             .catch(function (ret) {
                 alert('Error');
             });
+    }
+
+}]);
+
+app.controller('TalentSuccessExampleCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', 'dataservice', 'highperformers', function ($scope, $location, $window, appService, $rootScope, dataservice, highperformers) {
+
+    // 回上頁
+    $scope.ToTalent = function () {
+        $window.location.href = 'Talent#!/TalentOption';
     }
 
 }]);

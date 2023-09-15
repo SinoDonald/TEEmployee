@@ -1,0 +1,53 @@
+﻿@{
+    ViewBag.Title = "TalentSuccessExample";
+}
+
+<div ng-controller="TalentSuccessExampleCtrl" class="container">
+
+    <header class="mb-4 d-flex justify-content-between">
+        <h2>成功典範</h2>
+        <div>
+            <a class="btn btn-outline-primary btn-lg mr-2" href="Talent#!/TalentOption" role="button">返回</a>
+        </div>
+    </header>
+
+    <div class="container p-5 my-5 bg-light">
+        <div class="row">
+            <nav class="navbar navbar-light bg-light">
+                <ul class="nav mb-3 container-fluid justify-content-start" id="pills-tab" role="tablist">
+                    <li class="col text-center" role="presentation">
+                        <a class="btn btn-outline-warning btn-lg active" id="pills-technical-manager-tab" data-toggle="pill" data-bs-toggle="tooltip" data-bs-placement="bottom" href="#pills-technical-manager" role="button" aria-controls="pills-technical-manager" aria-selected="true">
+                            技術經理<br>成功典範
+                        </a>
+                    </li>
+                    <li class="col text-center" role="presentation">
+                        <a class="btn btn-outline-warning btn-lg" id="pills-project-manager-tab" data-toggle="pill" data-bs-toggle="tooltip" data-bs-placement="bottom" href="#pills-project-manager" role="button" aria-controls="pills-project-manager" aria-selected="false">
+                            計畫經理<br>成功典範
+                        </a>
+                    </li>
+                    <li class="col text-center" role="presentation">
+                        <a class="btn btn-outline-warning btn-lg" id="pills-team-leader-tab" data-toggle="pill" data-bs-toggle="tooltip" data-bs-placement="bottom" href="#pills-team-leader" role="button" aria-controls="pills-team-leader" aria-selected="false">
+                            組長<br>成功典範
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active text-center" id="pills-technical-manager" role="tabpanel" aria-labelledby="pills-technical-manager-tab">
+                <img src="~/Content/SuccessExample/技術經理.png" class="img-thumbnail" alt="技術經理">
+            </div>
+            <div class="tab-pane fade text-center" id="pills-project-manager" role="tabpanel" aria-labelledby="pills-project-manager-tab">
+                <img src="~/Content/SuccessExample/計畫經理.png" class="img-thumbnail" alt="計畫經理">
+            </div>
+            <div class="tab-pane fade text-center" id="pills-team-leader" role="tabpanel" aria-labelledby="pills-team-leader-tab">
+                <img src="~/Content/SuccessExample/組長.png" class="img-thumbnail" alt="組長">
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/WebApp/Talent/TalentSuccessExampleCtrl.js"></script>
+}
