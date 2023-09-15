@@ -88,9 +88,9 @@ namespace TEEmployee.Models
         public string coreSkill { get; set; } // 專業能力_核心技能
         public string manageSkill { get; set; } // 管理能力
         public string planning { get; set; } // 規劃進程
-        public string test { get; set; } // 測評資料
         public string advantage { get; set; } // 優勢
         public string disadvantage { get; set; } // 劣勢
+        public string test { get; set; } // 工作成果
         public string developed { get; set; } // 待發展能力
         public string future { get; set; } // 未來發展規劃
         public string position { get; set; } // 職位

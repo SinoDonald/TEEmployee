@@ -128,6 +128,32 @@ app.controller('TalentCtrl', ['$scope', '$location', '$window', 'appService', '$
 
 app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', '$q', 'dataservice', 'highperformers', function ($scope, $location, $window, appService, $rootScope, $q, dataservice, highperformers) {
 
+    // 搜尋功能
+    $scope.SearchByName = function (selectedGroup, name) {
+        $scope.data = [];
+        for (let item of $scope.GetAll) {
+            if (selectedGroup === 'High Performer') {
+                for (let highPerformer of $scope.HighPerformer) {
+                    if (item.empno === highPerformer.empno) {
+                        if (item.empno === name || item.name.includes(name)) {
+                            $scope.data.push(item);
+                        }
+                    }
+                }
+            }
+            else if (selectedGroup === '全部顯示') {
+                if (item.empno === name || item.name.includes(name)) {
+                    $scope.data.push(item);
+                }
+            }
+            else if (item.group === selectedGroup || item.group_one === selectedGroup || item.group_two === selectedGroup || item.group_three === selectedGroup) {
+                if (item.empno === name || item.name.includes(name)) {
+                    $scope.data.push(item);
+                }
+            }
+        }
+    }
+
     // 取得所有員工履歷
     appService.GetAll({})
         .then(function (ret) {

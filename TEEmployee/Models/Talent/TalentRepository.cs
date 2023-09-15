@@ -76,15 +76,19 @@ namespace TEEmployee.Models.Talent
         {
             bool ret = false;
 
-            _conn.Open();
-
-            using (var tran = _conn.BeginTransaction())
+            try
             {
-                string sql = @"UPDATE userCV SET 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three WHERE empno=@empno";
-                _conn.Execute(sql, users, tran);
-                tran.Commit();
-                ret = true;
+                _conn.Open();
+                using (var tran = _conn.BeginTransaction())
+                {
+                    string sql = @"UPDATE userCV SET 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three WHERE empno=@empno";
+                    _conn.Execute(sql, users, tran);
+                    tran.Commit();
+                    ret = true;
+                }
+                _conn.Close();
             }
+            catch (Exception) { }
 
             return ret;
         }
@@ -345,8 +349,27 @@ namespace TEEmployee.Models.Talent
 
                                         }
                                     }
-                                    // 加入三年績效考核
-                                    userCV.performance = "";
+                                    // 加入三年績效考核與High Performance資訊
+                                    CV cv = GetAll(empno).FirstOrDefault();
+                                    if(cv != null)
+                                    {
+                                        userCV.advantage = cv.advantage; // 優勢
+                                        userCV.disadvantage = cv.disadvantage; // 劣勢
+                                        userCV.test = cv.test; // 工作成果
+                                        userCV.developed = cv.developed; // 待發展能力
+                                        userCV.future = cv.future; // 未來發展規劃
+                                        userCV.performance = cv.performance; // 近三年考績
+                                        userCV.position = cv.position; // 職位
+                                        userCV.choice1 = cv.choice1; // 專業性 – 專家的潛質
+                                        userCV.choice2 = cv.choice2; // 格局、視野大 - 舉一反三
+                                        userCV.choice3 = cv.choice3; // 責任心驅動的主動性 - 捨我其誰
+                                        userCV.choice4 = cv.choice4; // 建立系統性、計畫性的學習能力 - 學習力具體
+                                        userCV.choice5 = cv.choice5; // 適應變化的韌性 - 懂得取捨、不放棄
+                                    }
+                                    else
+                                    {
+                                        userCV.performance = "";
+                                    }
                                     if (userCV.empno != null && userCV.name != null)
                                     { 
                                         userCVs.Add(userCV);
@@ -607,17 +630,19 @@ namespace TEEmployee.Models.Talent
                 manageScore = manageScore / manageScores.Count();
                 if(professionScore > 3 && manageScore > 3)
                 {
-                    string sql = @"SELECT * FROM userCV ORDER BY empno";
-                    CV userCV = _conn.Query<CV>(sql).ToList().Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
-
                     userAbility.empno = user.empno;
                     userAbility.name = user.name;
-                    userAbility.position = userCV.position;
-                    userAbility.choice1 = userCV.choice1;
-                    userAbility.choice2 = userCV.choice2;
-                    userAbility.choice3 = userCV.choice3;
-                    userAbility.choice4 = userCV.choice4;
-                    userAbility.choice5 = userCV.choice5;
+                    string sql = @"SELECT * FROM userCV ORDER BY empno";
+                    CV userCV = _conn.Query<CV>(sql).ToList().Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
+                    if (userCV != null)
+                    {
+                        userAbility.position = userCV.position;
+                        userAbility.choice1 = userCV.choice1;
+                        userAbility.choice2 = userCV.choice2;
+                        userAbility.choice3 = userCV.choice3;
+                        userAbility.choice4 = userCV.choice4;
+                        userAbility.choice5 = userCV.choice5;
+                    }
                     users.Add(userAbility);
                 }
             }
@@ -701,15 +726,19 @@ namespace TEEmployee.Models.Talent
         {
             bool ret = false;
 
-            _conn.Open();
-
-            using (var tran = _conn.BeginTransaction())
+            try
             {
-                string sql = @"UPDATE userCV SET performance=@performance WHERE empno=@empno";
-                _conn.Execute(sql, userCVs, tran);
-                tran.Commit();
-                ret = true;
+                _conn.Open();
+                using (var tran = _conn.BeginTransaction())
+                {
+                    string sql = @"UPDATE userCV SET performance=@performance WHERE empno=@empno";
+                    _conn.Execute(sql, userCVs, tran);
+                    tran.Commit();
+                    ret = true;
+                }
+                _conn.Close();
             }
+            catch (Exception) { }
 
             return ret;
         }
@@ -745,7 +774,7 @@ namespace TEEmployee.Models.Talent
                 userCV.empno = empno;
                 userCV.advantage = line.Substring(advantages, disadvantage - advantages).Trim().Replace("1.3 典型優勢", "").Replace(".", "。\n").Replace("\uff00", ";"); // 優勢
                 userCV.disadvantage = line.Substring(disadvantage, life - disadvantage).Trim().Replace("1.4 典型劣勢", "").Replace(".", "。\n").Replace("\uff00", ";"); // 劣勢
-                userCV.test = line.Substring(work, values - work).Trim().Replace("4.2 價值觀: ⼯作成果", "").Replace(".", "。\n").Replace("\uff00", ";"); // 測評資料
+                userCV.test = line.Substring(work, values - work).Trim().Replace("4.2 價值觀: ⼯作成果", "").Replace(".", "。\n").Replace("\uff00", ";"); // 工作成果
                 userCVs.Add(userCV);
                 if(SaveTest(userCVs) == true)
                 {
@@ -775,15 +804,19 @@ namespace TEEmployee.Models.Talent
         {
             bool ret = false;
 
-            _conn.Open();
-
-            using (var tran = _conn.BeginTransaction())
+            try
             {
-                string sql = @"UPDATE userCV SET test=@test, advantage=@advantage, disadvantage=@disadvantage WHERE empno=@empno";
-                _conn.Execute(sql, userCVs, tran);
-                tran.Commit();
-                ret = true;
+                _conn.Open();
+                using (var tran = _conn.BeginTransaction())
+                {
+                    string sql = @"UPDATE userCV SET test=@test, advantage=@advantage, disadvantage=@disadvantage WHERE empno=@empno";
+                    _conn.Execute(sql, userCVs, tran);
+                    tran.Commit();
+                    ret = true;
+                }
+                _conn.Close();
             }
+            catch (Exception) { }
 
             return ret;
         }
@@ -792,16 +825,20 @@ namespace TEEmployee.Models.Talent
         {
             planning = planning.Substring(0, planning.Length - 1);
             userCV.planning = planning;
-            _conn.Open();
-
-            using (var tran = _conn.BeginTransaction())
+            try
             {
-                string sql = @"UPDATE userCV SET planning=@planning, test=@test, advantage=@advantage, disadvantage=@disadvantage, developed=@developed, future=@future WHERE empno=@empno";
-                _conn.Execute(sql, userCV, tran);
-                tran.Commit();
-
-                return userCV;
+                _conn.Open();
+                using (var tran = _conn.BeginTransaction())
+                {
+                    string sql = @"UPDATE userCV SET planning=@planning, test=@test, advantage=@advantage, disadvantage=@disadvantage, developed=@developed, future=@future WHERE empno=@empno";
+                    _conn.Execute(sql, userCV, tran);
+                    tran.Commit();
+                }
+                _conn.Close();
             }
+            catch (Exception) { }
+
+            return userCV;
         }
 
         public void Dispose()

@@ -9,8 +9,9 @@
                 <a class="btn btn-outline-primary btn-lg mr-2" href="~/" role="button">返回</a>
             </div>
         </header>
+
         <div class="row">
-            @if (Session["empno"] is "4125" || Session["empno"] is "7291" @*|| Session["empno"] is "7596"*@)
+            @if (Session["empno"] is "4125" || Session["empno"] is "7291")
             {
                 <div class="col-sm-3">
                     <input type="submit" value="High Performers Pool" ng-click="TalentHighPerformers()" class="btn btn-outline-primary" style="text-align:center" />
@@ -21,24 +22,29 @@
             </div>
         </div>
         <div class="row justify-content-center text-center">
-            <h5> </h5>
+            <br />
         </div>
 
-        @if (Session["empno"] is "4125" @*|| Session["empno"] is "7291" || Session["empno"] is "7596"*@)
+        @if (Session["empno"] is "4125" || Session["empno"] is "7291")
         {
             <div class="row">
-                <span>請選擇年度績效檔案：</span>
+                <span></span>
                 <div class="col-sm-3">
                     <input class="form-control" type="file" name="importFile" id="importFile" />
                 </div>
                 <div class="col-sm-3">
                     <input class="btn btn-primary" id="btnUpload" type="button" value="上傳" />
                 </div>
+                <div class="col-sm-3">
+                </div>
+                <div class="col-sm-3">
+                    <input class="input-medium search-query" type="text" placeholder="搜尋員編或姓名" data-ng-model="name" />
+                    <input class="btn btn-primary" type="button" value="搜尋" ng-click="SearchByName(selectedGroup, name)" />
+                </div>
             </div>
 
             <div class="chartmenu mb-5">
                 <div>
-                    <br />
                     <br />
                     <label for="SelectGroup">請選擇組別</label>
                     <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
@@ -56,7 +62,7 @@
         </div>
 
     </div>
-    </div>
+</div>
 
 @section Scripts {
     <script src="@Url.Versioned("~/Scripts/WebApp/Talent/TalentOptionCtrl.js")"></script>
