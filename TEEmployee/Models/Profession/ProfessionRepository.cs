@@ -67,7 +67,7 @@ namespace TEEmployee.Models.Profession
                         RETURNING *";
 
                 string updateSql = @"UPDATE Skill SET content=@content, custom_order=@custom_order WHERE id=@id RETURNING *";
-                
+
 
                 try
                 {
@@ -82,7 +82,7 @@ namespace TEEmployee.Models.Profession
                         {
                             var ret_skill = _conn.QuerySingle<Skill>(insertSql, skill, tran);
                             ret.Add(ret_skill);
-                        }                       
+                        }
                     }
 
                     tran.Commit();
@@ -256,6 +256,9 @@ namespace TEEmployee.Models.Profession
 
                 string delSkillsql = @"DELETE FROM Skill WHERE id=@id";
                 string delScoresql = @"DELETE FROM Score WHERE skill_id=@id";
+                // NEW: delete all related personals
+                string delPersonalsql = @"DELETE FROM Personal WHERE skill_id=@id";
+                
 
                 try
                 {
@@ -263,6 +266,7 @@ namespace TEEmployee.Models.Profession
                     {
                         ret += _conn.Execute(delSkillsql, skill, tran);
                         ret += _conn.Execute(delScoresql, skill, tran);
+                        ret += _conn.Execute(delPersonalsql, skill, tran);
                     }
 
                     tran.Commit();
@@ -391,6 +395,68 @@ namespace TEEmployee.Models.Profession
             }
         }
 
+        public List<Personal> GetPersonal(string empno)
+        {
+            List<Personal> ret;
+
+            string sql = @"SELECT * FROM Personal AS p LEFT JOIN Skill AS s ON p.skill_id = s.id WHERE p.empno=@empno";
+            ret = _conn.Query<Personal>(sql, new { empno }).ToList();
+
+            return ret;
+        }
+
+        public bool UpsertPersonal(List<Personal> personals)
+        {
+            if (_conn.State == 0)
+                _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                int ret = 0;
+
+                string sql = @"INSERT INTO Personal (skill_id, empno, score, comment) 
+                    VALUES(@skill_id, @empno, @score, @comment) 
+                    ON CONFLICT(skill_id, empno) 
+                    DO UPDATE SET score=@score, comment=@comment";
+
+                try
+                {
+                    foreach (var personal in personals)
+                    {
+                        ret += _conn.Execute(sql, personal, tran);
+                    }
+
+                    tran.Commit();
+                }
+                catch (Exception)
+                {
+                    ret = 0;
+                }
+
+                return ret > 0;
+            }
+        }
+
+        public bool DeletePersonal(List<Personal> personals)
+        {
+            int ret;
+
+            string sql = @"DELETE FROM Personal WHERE skill_id=@skill_id";
+
+            try
+            {               
+                ret = _conn.Execute(sql, personals);
+            }
+            catch (Exception)
+            {
+                ret = 0;
+            }
+
+            return ret > 0;
+
+        }
+
+
         public void Dispose()
         {
             _conn.Close();
@@ -398,6 +464,6 @@ namespace TEEmployee.Models.Profession
             return;
         }
 
-       
+
     }
 }

@@ -1,0 +1,167 @@
+﻿
+<div ng-controller="PersonalCtrl" class="container">
+
+    <div class="chartmenu">
+
+        <div>
+            <a tabindex="0" class="btn btn-sm btn-secondary pop" role="button" data-toggle="popover" data-trigger="hover" title="評分說明" data-html="true"
+               data-content="分數區間為 0 ~ 5分</br>0分「非所需技能」</br>1分「安排學習技能」</br>2分「學習中」</br>3分「可獨立作業」</br>4分「精通且可指導他人」</br>5分「專家，從事專業達五年以上」">評分說明</a>
+        </div>
+
+        <div>
+            <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="GetAllSkillsByRole()" aria-label="Select the Group">
+                <option ng-repeat="group in auth.GroupAuthorities" value="{{group.GroupName}}">{{group.GroupName}}</option>
+            </select>
+        </div>
+        <div>
+            <select class="form-select" id="SelectMember" name="SelectGroup" ng-model="selectedMember" ng-change="GetPersonal(selectedMember)" aria-label="Select the Group">
+                <option ng-repeat="member in members" value="{{member.empno}}">{{member.name}}</option>
+            </select>
+        </div>
+
+
+    </div>
+    <h2 class="uvcontainer bg-secondary text-white banner">專業能力</h2>
+    <div class="skill">
+        <div>
+            <div class="p-3 mb-2 bg-secondary text-white d-flex justify-content-center align-items-center">
+                <h2>領域技能</h2>
+                <div>
+                    <button ng-disabled="!editable" type="button" ng-click="cloneDeepToModal(personalDomain, 'domain', domain)" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
+                        <span class="material-icons text-white">edit_note</span>
+                    </button>
+                </div>
+            </div>
+            <div class="card" ng-repeat="skill in personalDomain">
+                <div class="card-body">
+                    <h5 class="card-title d-inline mr-1">{{skill.content}}</h5>
+                    <div class="d-inline-block score"><p>{{skill.score}}</p></div>
+                    <p class="card-text">{{skill.comment}}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <div class="p-3 mb-2 bg-secondary text-white d-flex justify-content-center align-items-center">
+                <h2>核心技能</h2>
+                <div>
+                    <button ng-disabled="!editable" type="button" ng-click="cloneDeepToModal(personalCore, 'core', core)" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
+                        <span class="material-icons text-white">edit_note</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card" ng-repeat="skill in personalCore">
+                <div class="card-body">
+                    <h5 class="card-title d-inline mr-1">{{skill.content}}</h5>
+                    <div class="d-inline-block score"><p>{{skill.score}}</p></div>
+                    <p class="card-text">{{skill.comment}}</p>
+                </div>
+            </div>
+
+        </div>
+        
+        <div>
+            <div class="p-3 mb-2 bg-secondary text-white d-flex justify-content-center align-items-center">
+                <h2>管理能力</h2>
+                <div>
+                    <button ng-disabled="!editable" type="button" ng-click="cloneDeepToModal(personalManage, 'manage', manage)" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
+                        <span class="material-icons text-white">edit_note</span>
+                    </button>
+                </div>
+            </div>
+           
+            <div class="card" ng-repeat="skill in personalManage">
+                <div class="card-body">
+                    <h5 class="card-title d-inline mr-1">{{skill.content}}</h5>
+                    <div class="d-inline-block score"><p>{{skill.score}}</p></div>
+                    <p class="card-text">{{skill.comment}}</p>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="skillModal" tabindex="-1" role="dialog" aria-labelledby="skillModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">編輯專業項目</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+
+                    @*<div>
+                        <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="GetAllSkillsByRole()" aria-label="Select the Group">
+                            <option ng-repeat="group in auth.GroupAuthorities" value="{{group.GroupName}}">{{group.GroupName}}</option>
+                        </select>
+                    </div>*@
+
+                    <div class="input-group">
+                        <select class="form-select" id="inputGroupSelect" ng-model="newSkill">
+                            <option value="" disabled selected>選擇技能</option>
+                            <option ng-hide="isInSkillSet(skill.id)" ng-repeat="skill in skillSet" value="{{skill.id}}">{{skill.content}}</option>
+                        </select>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" ng-click="addSkill(newSkill)" type="button">新增</button>
+                        </div>
+                    </div>
+
+                    @*<div class="input-group mb-3">
+            <input type="text" class="form-control" ng-model="newSkill" placeholder="專業名稱" aria-label="專業名稱" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <button class="btn btn-primary" ng-click="addSkill(newSkill)" type="button">新增</button>
+            </div>
+        </div>*@
+
+                    <form name="myform">
+                        <div class="list-group list-group-flush">
+                            <div ng-repeat="skill in modal.data" class="list-group-item list-group-item-action flex-column align-items-start tooltipParent">
+                                <div class="d-flex w-100 justify-content-between align-items-center mt-3">
+                                    @*<input type="text" class="borderlessInput" ng-model="skill.content" name="myinput{{$index}}" placeholder="請填入專業名稱" required>*@
+
+                                    <h5 class="w-100" ng-bind="skill.content"></h5>
+
+                                    <div class="d-flex w-100 justify-content-end tooltipChild">
+
+                                        <button type="button" class="btn btn-sm" ng-click="deleteSkill($index)">
+                                            <span class="material-icons">delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="inputGroupSelect01">分數</label>
+                                    </div>
+                                    <select ng-model="skill.score" class="custom-select" id="inputGroupSelect01" ng-options="item.value as item.label for item in items">
+                                        <option disabled value="">-- 選擇分數 --</option>
+                                    </select>
+                                </div>
+                                @*<input type="text" class="borderlessInput" ng-model="skill.score" name="myinput1{{$index}}" placeholder="分數" required>*@
+                                <input type="text" class="borderlessInput" ng-model="skill.comment" name="myinput2{{$index}}" placeholder="填寫說明">
+
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer d-flex justify-content-around">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-disabled="myform.$invalid" ng-click="saveChanges()">儲存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+

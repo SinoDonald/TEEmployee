@@ -52,10 +52,11 @@
             display: flex;
             position: fixed;
             top: 80px;
+            left: 65%;
             /*right: 0;
             left: 0;*/
             z-index: 999;
-            margin-left: 22em;
+            /*margin-left: 22em;*/
             align-items: center;
             width: 500px;
         }
@@ -158,8 +159,25 @@
             border: 5px solid grey;
         }
 
-        .sega h2{            
+        .sega h2 {            
             padding: 0.5em;
+        }
+
+        .score {
+            /*width: 100px;*/
+            /*border: 5px solid #666;*/
+            width: 2em;
+            height: 2em;
+            /* width: 20px;
+            height: 20px;*/
+            border-radius: 50%;
+            background-color: rgb(230, 99, 107);
+            color: white;
+            vertical-align: central;
+            font-size: 1.5em;
+            text-align: center;
+            font-family: 'Agdasima', sans-serif;
+            line-height: 2em;
         }
     </style>
 }
@@ -185,7 +203,7 @@
                     <a class="nav-item nav-link" ui-sref="Chart">長條圖</a>
                     <a class="nav-item nav-link" ui-sref="Scatter">散佈圖</a>
                 }
-                <a class="nav-item nav-link" ui-sref="Future">個人專業盤點</a>
+                <a class="nav-item nav-link" ui-sref="Personal">個人專業盤點</a>
             </div>
         </div>
     </nav>

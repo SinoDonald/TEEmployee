@@ -178,6 +178,7 @@
     <Compile Include="Controllers\GScheduleController.cs" />
     <Compile Include="Controllers\KpiController.cs" />
     <Compile Include="Controllers\ProfessionController.cs" />
+    <Compile Include="Controllers\PromotionController.cs" />
     <Compile Include="Controllers\ScheduleController.cs" />
     <Compile Include="Controllers\TalentController.cs" />
     <Compile Include="Controllers\TasklogController.cs" />
@@ -212,10 +213,15 @@
     <Compile Include="Models\ManageAssessmentTxtRepository.cs" />
     <Compile Include="Models\MixResponse.cs" />
     <Compile Include="Models\Profession\IProfessionRepository.cs" />
+    <Compile Include="Models\Profession\Personal.cs" />
     <Compile Include="Models\Profession\ProfessionRepository.cs" />
     <Compile Include="Models\Profession\ProfessionService.cs" />
     <Compile Include="Models\Profession\Score.cs" />
     <Compile Include="Models\Profession\Skill.cs" />
+    <Compile Include="Models\Promotion\IPromotionRepository.cs" />
+    <Compile Include="Models\Promotion\Promotion.cs" />
+    <Compile Include="Models\Promotion\PromotionRepository.cs" />
+    <Compile Include="Models\Promotion\PromotionService.cs" />
     <Compile Include="Models\Response.cs" />
     <Compile Include="Models\ResponseTxtRepository.cs" />
     <Compile Include="Models\Schedule\IScheduleRepository.cs" />
@@ -363,6 +369,7 @@
     <Content Include="Scripts\Webapp\Kpi\KpiCtrl.js" />
     <Content Include="Scripts\Webapp\Profession\ProfessionChart.js" />
     <Content Include="Scripts\Webapp\Profession\ProfessionCtrl.js" />
+    <Content Include="Scripts\Webapp\Promotion\PromotionCtrl.js" />
     <Content Include="Scripts\Webapp\Schedule\GanttPlot.js" />
     <Content Include="Scripts\Webapp\Schedule\ScatterPlot.js" />
     <Content Include="Scripts\Webapp\Schedule\ScheduleCtrl.js" />
@@ -458,6 +465,8 @@
     <Content Include="Views\GKpi\Fillin.cshtml" />
     <Content Include="Views\GKpi\Feedback.cshtml" />
     <Content Include="Views\Profession\Scatter.cshtml" />
+    <Content Include="Views\Profession\Personal.cshtml" />
+    <Content Include="Views\Promotion\Index.cshtml" />
     <Content Include="Views\Talent\TalentHighPerformers.cshtml" />
     <Content Include="Views\Talent\TalentSuccessExample.cshtml" />
   </ItemGroup>

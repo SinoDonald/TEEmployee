@@ -1,5 +1,5 @@
 ﻿var app = angular.module('app', ['ui.router']);
-var config = { responseType: 'blob' };
+var config = { responseType: 'blob' };  // important
 
 app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
