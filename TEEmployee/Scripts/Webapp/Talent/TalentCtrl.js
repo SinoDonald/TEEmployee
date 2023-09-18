@@ -267,9 +267,37 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
 
 app.controller('TalentHighPerformersCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', 'dataservice', 'highperformers', function ($scope, $location, $window, appService, $rootScope, dataservice, highperformers) {
 
-    $scope.data = highperformers.get(); // 取得員工履歷
+    $scope.GetAll = highperformers.get(); // 取得員工履歷
     $scope.positions = ['', '技術經理', '計畫經理', '組長'];
+    $scope.groups = ['全部顯示', '技術經理', '計畫經理', '組長'];
+    $scope.selectedGroup = $scope.groups[0];
 
+    // 依群組顯示
+    $scope.FilterDataByGroup = function (selectedGroup) {
+        $scope.data = [];
+        for (let item of $scope.GetAll) {
+            if (selectedGroup === '全部顯示') {
+                $scope.data.push(item);
+            }
+            else if (item.position === selectedGroup) {
+                $scope.data.push(item);
+            }
+        }
+    }
+    $scope.FilterDataByGroup($scope.selectedGroup); // 預設全選
+
+    // 三個勾選才開放下拉選單
+    $scope.isChecked = function (user) {
+        user.selectPosition = true;
+        var count = 0;
+        if (user.choice1 === true) {count++;}
+        if (user.choice2 === true) {count++;}
+        if (user.choice3 === true) {count++;}
+        if (user.choice4 === true) {count++;}
+        if (user.choice5 === true) { count++; }
+        if (count >= 3) { user.selectPosition = false; }
+        else { user.selectPosition = true; }
+    }
     // 回上頁
     $scope.ToTalent = function () {
         $window.location.href = 'Talent#!/TalentOption';

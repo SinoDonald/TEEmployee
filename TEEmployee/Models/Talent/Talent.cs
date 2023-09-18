@@ -16,5 +16,6 @@ namespace TEEmployee.Models
         public bool choice3 { get; set; } // 責任心驅動的主動性 - 捨我其誰
         public bool choice4 { get; set; } // 建立系統性、計畫性的學習能力 - 學習力具體
         public bool choice5 { get; set; } // 適應變化的韌性 - 懂得取捨、不放棄
+        public bool selectPosition { get; set; } // 開放身份選擇
     }
 }

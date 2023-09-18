@@ -642,6 +642,16 @@ namespace TEEmployee.Models.Talent
                         userAbility.choice3 = userCV.choice3;
                         userAbility.choice4 = userCV.choice4;
                         userAbility.choice5 = userCV.choice5;
+
+                        // 身份是否可進行選擇
+                        int count = 0;
+                        if (userAbility.choice1 == true) { count++; }
+                        if (userAbility.choice2 == true) { count++; }
+                        if (userAbility.choice3 == true) { count++; }
+                        if (userAbility.choice4 == true) { count++; }
+                        if (userAbility.choice5 == true) { count++; }
+                        if (count >= 3) { userAbility.selectPosition = false; }
+                        else { userAbility.selectPosition = true; }
                     }
                     users.Add(userAbility);
                 }

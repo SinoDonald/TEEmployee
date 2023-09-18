@@ -12,44 +12,58 @@
             </div>
         </header>
 
+        <div class="row">
+            <div class="col-5">
+                <br />
+                <label for="SelectGroup">請選擇組別</label>
+                <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
+                    <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
+                </select>
+            </div>
+            <div class="col-5">
+            </div>
+        </div>
+
+        <div class="row"><br /></div>
+
         <div class="row container border" ng-repeat="user in data">
             <div class="col text-center w-50 p-3 h-50 d-inline-block">
                 <img type="submit" value={{user.name}} src="~/Content/CV/{{user.empno}}.jpg" class="img-thumbnail" alt="{{user.name}}">
                 <h5>{{user.name}}</h5>
             </div>
             <div class="col text-md-left align-items-center">
-                <select class="form-select w-50 p-0" id="SelectPosition" name="SelectPosition" ng-model="user.position" ng-change="FilterDataByGroup(selectedPosition)" aria-label="Select the Position">
+                <select class="form-select w-50 p-0" id="selectPosition" name="selectPosition" ng-model="user.position" ng-disabled="user.selectPosition" aria-label="Select the Position">
                     <option ng-repeat="position in positions">{{position}}</option>
                 </select>
             </div>
             <div class="col text-md-left align-items-center w-50 p-3 h-50 d-inline-block">
                 <div class="row">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" ng-model="user.choice1" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox1{{$index}}" value="option1" required>
+                        <input class="form-check-input" type="checkbox" ng-model="user.choice1" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox1{{$index}}" value="option1" ng-change="isChecked(user)" required>
                         <label class="form-check-label" for="inlineCheckbox1">專業性 – 專家的潛質</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" ng-model="user.choice2" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox2{{$index}}" value="option2" required>
+                        <input class="form-check-input" type="checkbox" ng-model="user.choice2" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox2{{$index}}" value="option2" ng-change="isChecked(user)" required>
                         <label class="form-check-label" for="inlineCheckbox2">格局、視野大 - 舉一反三</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" ng-model="user.choice3" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox3{{$index}}" value="option3" required>
+                        <input class="form-check-input" type="checkbox" ng-model="user.choice3" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox3{{$index}}" value="option3" ng-change="isChecked(user)" required>
                         <label class="form-check-label" for="inlineCheckbox3">責任心驅動的主動性 - 捨我其誰</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" ng-model="user.choice4" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox4{{$index}}" value="option4" required>
+                        <input class="form-check-input" type="checkbox" ng-model="user.choice4" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox4{{$index}}" value="option4" ng-change="isChecked(user)" required>
                         <label class="form-check-label" for="inlineCheckbox4">建立系統性、計畫性的學習能力 - 學習力具體</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" ng-model="user.choice5" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox5{{$index}}" value="option5" required>
+                        <input class="form-check-input" type="checkbox" ng-model="user.choice5" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox5{{$index}}" value="option5" ng-change="isChecked(user)" required>
                         <label class="form-check-label" for="inlineCheckbox5">適應變化的韌性 - 懂得取捨、不放棄</label>
                     </div>
                 </div>
