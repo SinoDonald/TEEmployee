@@ -19,7 +19,10 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             url: '/Scatter',
             templateUrl: 'Profession/Scatter'
         })
-
+        .state('Personal', {
+            url: '/Personal',
+            templateUrl: 'Profession/Personal'
+        })
 }]);
 
 app.run(['$http', '$window', function ($http, $window) {
@@ -47,7 +50,15 @@ app.service('appService', ['$http', function ($http) {
     this.UpsertScores = (o) => {
         return $http.post('Profession/UpsertScores', o);
     };
-    
+    this.GetPersonal = (o) => {
+        return $http.post('Profession/GetPersonal', o);
+    };
+    this.UpsertPersonal = (o) => {
+        return $http.post('Profession/UpsertPersonal', o);
+    };
+    this.DeletePersonal = (o) => {
+        return $http.post('Profession/DeletePersonal', o);
+    };
 }]);
 
 app.factory('dataservice', function () {
@@ -92,7 +103,7 @@ app.controller('ProfessionCtrl', ['$scope', '$location', 'appService', '$rootSco
     //})
 
     dataservice.set(appService.GetAuthorization({}));
-       
+
 
 }]);
 
@@ -129,7 +140,7 @@ app.controller('SkillCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         $scope.GetAllSkillsByRole();
     });
 
-    
+
 
 
     // deep clone skills object to modal
@@ -149,7 +160,7 @@ app.controller('SkillCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         $scope.modal.data.push({
             id: 0,
             content: newSkill,
-            role: ($scope.modal.skill_type === 'core' || $scope.modal.skill_type === "manage") ? 'shared' :$scope.selectedGroup,
+            role: ($scope.modal.skill_type === 'core' || $scope.modal.skill_type === "manage") ? 'shared' : $scope.selectedGroup,
             skill_type: $scope.modal.skill_type,
         })
 
@@ -335,7 +346,7 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         if (Number.isInteger(num) && num >= 0 && num <= 5) {
             return false;
         }
-        else {           
+        else {
             return true;
         }
 
@@ -365,7 +376,7 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
             }
         }
 
-        
+
 
         if (savedScores.length === 0) return;
 
@@ -449,7 +460,7 @@ app.controller('ChartCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         //$scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
         $scope.GetAllScoresByRole();
 
-        
+
     });
 
 }]);
@@ -492,6 +503,176 @@ app.controller('ScatterCtrl', ['$scope', '$location', 'appService', '$rootScope'
     });
 
 }]);
+
+app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', function ($scope, $location, appService, $rootScope, $q, dataservice) {
+
+    document.documentElement.scrollTop = 0;
+
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+    })
+
+    let data;
+
+    $scope.items = [{
+        label: '0分 「非所需技能」',
+        value: 0
+    }, {
+        label: '1分「安排學習技能」',
+        value: 1
+    }, {
+        label: '2分「學習中」',
+        value: 2
+    }, {
+        label: '3分「可獨立作業」',
+        value: 3
+    }, {
+        label: '4分「精通且可指導他人」',
+        value: 4
+    }, {
+        label: '5分「專家，從事專業達五年以上',
+        value: 5
+    },];
+
+
+    $scope.GetAllSkillsByRole = () => {
+
+        dataservice.setGroup($scope.selectedGroup);
+
+        $scope.selectGroup();
+
+        appService.GetAllSkillsByRole({ role: $scope.selectedGroup }).then((ret) => {
+
+            data = ret.data;
+
+            $scope.domain = ret.data.filter(x => x.skill_type === 'domain').sort((a, b) => a.custom_order - b.custom_order);
+            $scope.core = ret.data.filter(x => x.skill_type === 'core').sort((a, b) => a.custom_order - b.custom_order);
+            $scope.manage = ret.data.filter(x => x.skill_type === 'manage').sort((a, b) => a.custom_order - b.custom_order);
+        });
+    }
+
+    dataservice.get().then((ret) => {
+
+        $scope.auth = ret.data;
+
+        if (dataservice.getGroup()) {
+            $scope.selectedGroup = dataservice.getGroup()
+        }
+        else {
+            $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+        }
+
+        $scope.GetAllSkillsByRole();
+    });
+
+    $scope.GetPersonal = (empno) => {
+
+        $scope.editable = ($scope.auth.User.empno === $scope.selectedMember);
+
+        appService.GetPersonal({ empno: empno }).then((ret) => {
+
+            $scope.personal = ret.data;
+
+            $scope.personalDomain = ret.data.filter(x => x.skill_type === 'domain').sort((a, b) => a.custom_order - b.custom_order);
+            $scope.personalCore = ret.data.filter(x => x.skill_type === 'core').sort((a, b) => a.custom_order - b.custom_order);
+            $scope.personalManage = ret.data.filter(x => x.skill_type === 'manage').sort((a, b) => a.custom_order - b.custom_order);
+
+        });
+    }
+
+
+
+    $scope.selectGroup = () => {
+        $scope.members = $scope.auth.GroupAuthorities.find(x => x.GroupName === $scope.selectedGroup).Members;
+        $scope.selectedMember = $scope.members[0].empno;
+        $scope.GetPersonal($scope.selectedMember);
+    }
+
+
+
+    // deep clone skills object to modal
+    $scope.deletedSkills = [];
+    $scope.modal = {};
+    $scope.cloneDeepToModal = (skills, skill_type, skillSet) => {
+
+        $scope.newSkill = '';
+        $scope.modal.data = structuredClone(skills);
+        $scope.modal.skill_type = skill_type;
+        $scope.deletedSkills = [];
+        let skillids = skills.map(x => x.skill_id);
+        $scope.skillSet = skillSet;
+        //$scope.skillSet = skillSet.filter(x => !skillids.includes(x.id));
+    };
+
+    $scope.isInSkillSet = (id) => {
+        if ($scope.modal.data.find(x => x.skill_id === id)) return true;
+        return false;
+    }
+
+    $scope.addSkill = (newSkill) => {
+
+        if (!newSkill) return;
+
+        let cloneSkill = structuredClone(data.find(x => x.id === Number(newSkill)));
+        cloneSkill.skill_id = cloneSkill.id;
+        cloneSkill.empno = $scope.selectedMember;
+
+        $scope.modal.data.push(cloneSkill);
+
+        /*$scope.skillSet.splice($scope.skillSet.findIndex(x => x.id === Number(newSkill)), 1);*/
+
+        // clear input
+        $scope.newSkill = '';
+    }
+
+    $scope.deleteSkill = (idx) => {
+
+        if ($scope.modal.data[idx].id !== 0) {
+            $scope.deletedSkills.push($scope.modal.data[idx]);
+        }
+
+        $scope.modal.data.splice(idx, 1);
+    }
+
+    //$scope.moveUp = (idx) => {
+    //    if (idx === 0) return;
+    //    [$scope.modal.data[idx], $scope.modal.data[idx - 1]] = [$scope.modal.data[idx - 1], $scope.modal.data[idx]];
+    //}
+
+    //$scope.moveDown = (idx) => {
+    //    if (idx === $scope.modal.data.length - 1) return;
+    //    [$scope.modal.data[idx], $scope.modal.data[idx + 1]] = [$scope.modal.data[idx + 1], $scope.modal.data[idx]];
+    //}
+
+    $scope.saveChanges = () => {
+
+        // reassign the customOrder
+        //for (let i = 0; i !== $scope.modal.data.length; i++) {
+        //    $scope.modal.data[i].custom_order = i + 1;
+        //}
+
+        let promiseA = Promise.resolve('a');
+        let promiseB = Promise.resolve('b');
+
+        if ($scope.deletedSkills.length !== 0) {
+            promiseA = appService.DeletePersonal({ personals: $scope.deletedSkills })
+        }
+
+        if ($scope.modal.data.length !== 0) {
+            promiseB = appService.UpsertPersonal({ personals: $scope.modal.data });
+        }
+
+        $q.all([promiseA, promiseB]).then((ret) => {
+
+            // easy peasy
+            $scope.GetPersonal($scope.selectedMember);
+
+        });
+
+    }
+
+}]);
+
 
 
 //app.controller('SkillCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', function ($scope, $location, appService, $rootScope, $q, dataservice) {

@@ -242,7 +242,8 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
     formKpiElem.onsubmit = async (e) => {
         e.preventDefault();
 
-        let response = await fetch('/GKpi/UploadKpiFile', {
+        // don't add '/' before MVC controller
+        let response = await fetch('GKpi/UploadKpiFile', {
             method: 'POST',
             body: new FormData(formKpiElem)
         });

@@ -42,6 +42,10 @@ namespace TEEmployee.Controllers
         {
             return PartialView();
         }
+        public ActionResult Personal()
+        {
+            return PartialView();
+        }
 
         /*........................  Web api  ...........................*/
 
@@ -96,6 +100,29 @@ namespace TEEmployee.Controllers
         {
             var ret = _service.GetAll(Session["empno"].ToString());
 
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult GetPersonal(string empno)
+        {
+            //var ret = _service.GetPersonal(Session["empno"].ToString());
+            var ret = _service.GetPersonal(empno);
+
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult UpsertPersonal(List<Personal> personals)
+        {
+            var ret = _service.UpsertPersonal(personals, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult DeletePersonal(List<Personal> personals)
+        {
+            var ret = _service.DeletePersonal(personals, Session["empno"].ToString());
             return Json(ret);
         }
 

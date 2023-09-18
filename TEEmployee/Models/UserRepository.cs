@@ -150,7 +150,7 @@ namespace TEEmployee.Models
 
             if (user.department_manager)
             {
-                groups.AddRange(new List<string> { "計畫管理組", "行政組" });
+                groups.AddRange(new List<string> { /*"計畫管理組",*/ "行政組" });
             }
 
             // sub group manager

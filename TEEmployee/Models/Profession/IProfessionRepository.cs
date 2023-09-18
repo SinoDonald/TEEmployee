@@ -14,6 +14,10 @@ namespace TEEmployee.Models.Profession
         List<Skill> UpsertSkills(List<Skill> skills);
         bool UpsertScores(List<Score> scores);
         bool DeleteSkills(List<Skill> skills);
+        List<Personal> GetPersonal(string empno);
+        bool UpsertPersonal(List<Personal> personals);
+        bool DeletePersonal(List<Personal> personals);
+
         //Schedule Update(Schedule schedule);
         //bool Update(List<Schedule> schedules);
         //Schedule Insert(Schedule schedule);

@@ -399,6 +399,8 @@ namespace TEEmployee.Models.GKpi
         // Insert, Update and Delete KpiModels based on current Users in database and kpi relationships this year
         public List<KpiModel> InsertKpiModelsNew()
         {
+            throw new NullReferenceException();
+
             List<User> users = _userRepository.GetAll();
             List<KpiModel> kpimodels = new List<KpiModel>();
             int year = DateTime.Now.Year;

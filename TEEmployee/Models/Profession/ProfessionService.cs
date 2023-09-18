@@ -182,7 +182,26 @@ namespace TEEmployee.Models.Profession
         }
 
 
+        public List<Personal> GetPersonal(string empno)
+        {
+            return _professionRepository.GetPersonal(empno);
+        }
 
+        public bool UpsertPersonal(List<Personal> personals, string empno)
+        {
+            var ret = _professionRepository.UpsertPersonal(personals);
+            //if (!CheckIsAuthorized(schedule, empno))
+
+            return ret;
+        }
+
+        public bool DeletePersonal(List<Personal> personals, string empno)
+        {
+            var ret = _professionRepository.DeletePersonal(personals);
+            //if (!CheckIsAuthorized(schedule, empno))
+
+            return ret;
+        }
 
         // private method
 
