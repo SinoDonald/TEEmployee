@@ -471,6 +471,7 @@
     <Content Include="Views\Talent\TalentSuccessExample.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\Promotion\" />
     <Folder Include="App_Data\Response\" />
   </ItemGroup>
   <ItemGroup>
