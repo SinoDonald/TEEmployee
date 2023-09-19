@@ -37,9 +37,12 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetByUser()
+        public JsonResult GetByUser(string empno)
         {
-            var ret = _service.GetByUser(Session["empno"].ToString());
+            if (string.IsNullOrEmpty(empno))
+                empno = Session["empno"].ToString();
+
+            var ret = _service.GetByUser(empno);
 
             return Json(ret);
         }

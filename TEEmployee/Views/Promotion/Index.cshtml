@@ -51,8 +51,9 @@
             margin-top: 100px;
         }
 
-        td {
+        td.title {
             font-family: 'Noto Sans TC', sans-serif;
+            white-space: pre-line;
         }
 
         .form-check-input {
@@ -70,7 +71,31 @@
 
 <div ng-controller="PromotionCtrl" class="container mt100">
 
-    <h2 class="bg-secondary text-white p-2 d-inline-block">升等規劃與條件</h2>
+    <div class="d-flex justify-content-between">
+        <div>
+            <h2 class="bg-secondary text-white p-2 d-inline-block">升等規劃與條件</h2>
+        </div>
+
+        @if (Session["leader"] is object)
+        {
+            <div class="d-flex justify-content-between">
+                <div class="mr-5">
+                    <select class="form-select" id="SelectTitle" name="SelectTitle" ng-model="selectedTitle" ng-change="selectTitle()" aria-label="Select the Year">
+                        <option ng-repeat="title in titles" value="{{title}}" ng-bind="title"></option>
+                    </select>
+                </div>
+                <div class="mr-5">
+                    <select class="form-select" id="SelectName" name="SelectName" ng-model="selectedName" ng-change="selectName()" aria-label="Select the Category">
+                        <option value="" disabled selected>請選擇員工</option>
+                        <option ng-repeat="name in names" value="{{name}}" ng-bind="name"></option>
+                    </select>
+                </div>
+            </div>
+        }
+
+    </div>
+
+
 
     <table class="table mt-3 posr">
         <thead class="thead">
@@ -83,7 +108,7 @@
         </thead>
         <tbody>
             <tr ng-repeat="item in data">
-                <td ng-bind="item.content"></td>
+                <td class="title" ng-bind="item.content"></td>
                 <td>
                     <div class="form-check">
                         <input ng-model="item.achieved" class="form-check-input" type="checkbox" ng-change="UpdatePromotion(item)">
@@ -113,9 +138,13 @@
         </tbody>
     </table>
 
+    <div class="alert alert-warning" role="alert" style="width:30%">
+        檔案限定格式為.pdf，檔案大小不得超過10MB
+    </div>
+
     <div>
         <form id="formElem">
-            <input type="file" id="filepicker" name="file" hidden>
+            <input type="file" id="filepicker" name="file" accept=".pdf" hidden>
             @*<input type="submit">*@
         </form>
     </div>

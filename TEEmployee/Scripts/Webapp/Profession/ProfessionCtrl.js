@@ -573,7 +573,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
             $scope.personal = ret.data;
 
-            $scope.personalDomain = ret.data.filter(x => x.skill_type === 'domain').sort((a, b) => a.custom_order - b.custom_order);
+            $scope.personalDomain = ret.data.filter(x => x.skill_type === 'domain' && x.role === $scope.selectedGroup).sort((a, b) => a.custom_order - b.custom_order);
             $scope.personalCore = ret.data.filter(x => x.skill_type === 'core').sort((a, b) => a.custom_order - b.custom_order);
             $scope.personalManage = ret.data.filter(x => x.skill_type === 'manage').sort((a, b) => a.custom_order - b.custom_order);
 

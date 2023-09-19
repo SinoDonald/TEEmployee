@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using TEEmployee.Models.Talent;
 
 namespace TEEmployee.Models.Promotion
 {
@@ -12,11 +13,13 @@ namespace TEEmployee.Models.Promotion
     {
         private IPromotionRepository _promotionRepository;
         private IUserRepository _userRepository;
+        private ITalentRepository _talentRepository;
 
         public PromotionService()
         {
             _promotionRepository = new PromotionRepository();
             _userRepository = new UserRepository();
+            _talentRepository = new TalentRepository();
         }
 
         public List<Promotion> GetAll(string empno)
@@ -94,13 +97,15 @@ namespace TEEmployee.Models.Promotion
             catch
             {
                 return null;
-            }           
-            
+            }
+
         }
 
         private void TransformContent(List<Promotion> promotions, string empno)
         {
             User user = _userRepository.Get(empno);
+
+            List<CV> cvs = (_talentRepository as TalentRepository).Get(empno);
 
             string[] strs = new string[4];
             //string nextPro = "";
@@ -194,12 +199,31 @@ namespace TEEmployee.Models.Promotion
             {
                 case "主任工程師":
                     promotions.RemoveRange(0, 2);
-                    break;
+                    return;
+                    //break;
 
                 case "製圖師":
                     promotions.RemoveRange(0, 2);
-                    break;
+                    return;
+                    //break;
             }
+
+            // add performance
+            string[] stringSeparators = new string[] { "\r\n" };
+            string[] performances = cvs[0].performance.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+            int count = Math.Min(int.Parse(strs[2]), performances.Length);
+            string performanceStr = $"\n近{strs[2]}年的考績為:";
+
+            for (int i = 0; i != count; i++)
+            {
+                performanceStr = performanceStr + $" {performances[i]},";
+            }
+
+            if (count > 0)
+                performanceStr = performanceStr.Substring(0, performanceStr.Length - 1);
+
+            promotions[1].content += performanceStr;
 
             return;
         }
@@ -207,37 +231,30 @@ namespace TEEmployee.Models.Promotion
         public dynamic GetAuthorization(string empno)
         {
             User user = _userRepository.Get(empno);
+            List<User> users = new List<User>();
+
+            if (user.department_manager)
+            {
+                users = _userRepository.GetAll();
+
+                List<string> titleOrder = new List<string> { "主任工程師", "正工程師", "工程師一", "工程師二", "工程師三", "工程師四",
+                "正規劃師", "規劃師一", "規劃師二", "規劃師三", "規劃師四",
+                "正建築師", "建築師一", "建築師二", "建築師三", "建築師四",
+                "製圖師", "專員一", "專員二", "專員三" };
+
+                users = users.OrderBy(x =>
+                {
+                    int engIdx = titleOrder.IndexOf(x.profTitle);
+
+                    return engIdx;
+                }).ThenBy(x => x.name).ToList();
+
+            }
+
 
             dynamic authorization = new JObject();
             authorization.User = JObject.FromObject(user);
-            authorization.GroupAuthorities = new JArray();
-
-            var managerGroups = GetManagerGroups(empno);
-            var employeeGroups = GetEmployeeGroups(empno);
-            var groups = managerGroups.Concat(employeeGroups).Distinct();
-
-            foreach (var group in groups)
-            {
-                dynamic groupAuthority = new JObject();
-                groupAuthority.GroupName = group;
-                //groupAuthority.Members = new List<string>();
-                groupAuthority.Members = new JArray();
-                groupAuthority.Editable = false;
-
-                if (managerGroups.Contains(group))
-                {
-                    //groupAuthority.Members = JArray.FromObject(GetGroupMembers(group).Select(x => x.name).ToList());
-                    groupAuthority.Members = JArray.FromObject(GetGroupMembers(group).ToList());
-                    groupAuthority.Editable = true;
-                }
-                else
-                {
-                    //groupAuthority.Members.Add(authorization.User.name);
-                    groupAuthority.Members.Add(JObject.FromObject(user));
-                }
-
-                authorization.GroupAuthorities.Add(groupAuthority);
-            }
+            authorization.Users = JArray.FromObject((users).ToList());
 
             return JsonConvert.SerializeObject(authorization);
         }
@@ -247,7 +264,10 @@ namespace TEEmployee.Models.Promotion
         private List<string> GetManagerGroups(string empno)
         {
             User user = _userRepository.Get(empno);
-            List<string> groups = (_userRepository as UserRepository).GetSubGroups(empno);
+            List<string> groups = new List<string>();
+
+            if (user.department_manager)
+                groups = (_userRepository as UserRepository).GetSubGroups(empno);
 
             return groups;
         }
@@ -273,7 +293,7 @@ namespace TEEmployee.Models.Promotion
             return groups;
         }
 
-        public List<User> GetGroupMembers(string group)
+        private List<User> GetGroupMembers(string group)
         {
             List<User> users = _userRepository.GetAll();
             return users.Where(x => x.group_one == group || x.group_two == group || x.group_three == group).ToList();

@@ -17,6 +17,9 @@ app.service('appService', ['$http', function ($http) {
     this.DownloadFile = (o) => {
         return $http.post('Promotion/DownloadFile', o, config);
     };
+    this.GetAuthorization = (o) => {
+        return $http.post('Promotion/GetAuthorization', o);
+    };
 }]);
 
 app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', function ($scope, $location, appService, $rootScope, $q) {
@@ -25,17 +28,30 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
     filepicker.addEventListener('change', (e) => {
         //const file = e.target.files[0];
         // todo: use file pointer
-        console.log("what have you done");
 
-        if (e.target.files[0]) {
 
-            uploading().then(() => {
-
-                $scope.$apply(function () {
-                    $scope.data[$scope.num].filepath = e.target.files[0].name;
-                });
-            });
+        if (!e.target.files[0]) {
+            return;            
         }
+
+        const maxAllowedSize = 10 * 1024 * 1024;
+        if (e.target.files[0].size > maxAllowedSize) {
+            alert("檔案超過10MB");
+            return;
+        }
+
+        const fileType = 'application/pdf';
+        if (e.target.files[0].type !== fileType) {
+            alert("檔案限定格式為.pdf");
+            return;
+        }
+
+        uploading().then(() => {
+
+            $scope.$apply(function () {
+                $scope.data[$scope.num].filepath = e.target.files[0].name;
+            });
+        });
 
         //$scope.data[$scope.num].filepath = e.target.files[0].name;
     });
@@ -54,23 +70,24 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
         let result = await response.json();
     }
 
-    // client to server
-    //formKpiElem.onsubmit = async (e) => {
-    //    e.preventDefault();
-
-    //    // don't add '/' before MVC controller
-    //    let response = await fetch('GKpi/UploadKpiFile', {
-    //        method: 'POST',
-    //        body: new FormData(formKpiElem)
-    //    });
-
-    //    let result = await response.json();
-
-    //    alert(result);
-    //};
-
-
     $scope.num = 0;
+
+    
+    appService.GetAuthorization({}).then((ret) => {
+
+        $scope.auth = ret.data;
+
+        let title_array = $scope.auth.Users.map(x => x.profTitle);
+        $scope.titles = [...new Set(title_array)];
+
+        if ($scope.auth.User.department_manager) {
+            $scope.selectedTitle = $scope.auth.User.profTitle;
+            $scope.selectTitle();
+            $scope.selectedName = $scope.auth.User.name;
+        }
+
+
+    })
 
     appService.GetByUser({}).then((ret) => {
         $scope.data = ret.data;
@@ -128,6 +145,22 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
             saveAs(blob, fileName);
 
         });
+    }
+
+    $scope.selectTitle = () => {
+
+        $scope.names = $scope.auth.Users.filter(x => x.profTitle === $scope.selectedTitle).map(x => x.name).sort();
+    }
+
+    $scope.selectName = () => {
+
+        if (!$scope.selectedName) return;
+            
+        let empno = $scope.auth.Users.find(x => x.name === $scope.selectedName).empno;
+
+        appService.GetByUser({empno: empno}).then((ret) => {
+            $scope.data = ret.data;
+        })
     }
 
 }]);
