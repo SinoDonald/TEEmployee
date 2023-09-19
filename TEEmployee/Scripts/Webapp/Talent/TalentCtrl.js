@@ -74,6 +74,8 @@ app.factory('dataservice', function () {
         user.group_three = data.group_three;
         user.birthday = data.birthday;
         user.age = data.age;
+        user.workYears = data.workYears;
+        user.companyYears = data.companyYears;
         user.educational = data.educational.split('\n');
         user.performance = data.performance.split('\n');
         user.experience = data.experience.split('\n');
@@ -298,6 +300,7 @@ app.controller('TalentHighPerformersCtrl', ['$scope', '$location', '$window', 'a
         if (count >= 3) { user.selectPosition = false; }
         else { user.selectPosition = true; }
     }
+
     // 回上頁
     $scope.ToTalent = function () {
         $window.location.href = 'Talent#!/TalentOption';

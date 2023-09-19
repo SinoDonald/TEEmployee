@@ -153,7 +153,40 @@ namespace TEEmployee.Models.Talent
                     age--;
                 }
                 userCV.age = age.ToString();
-                
+
+                // Regex解析文字後, 儲存年月份
+                List<DateTime> matchYears = new List<DateTime>();
+                Regex regex = new Regex(@"\) .*\~", RegexOptions.IgnoreCase);
+                //將比對後集合傳給 MatchCollection 
+                MatchCollection matches = regex.Matches(userCV.project);
+                foreach (Match match in matches)
+                {
+                    try
+                    {
+                        string matchYear = match.Value.Replace(") ", "").Replace("~", "");
+                        // 如果年份小於3位數則開頭補0
+                        string[] yearMonth = matchYear.Split('.');
+                        if(yearMonth[0].Count() < 3)
+                        {
+                            matchYear = matchYear.Insert(0, "0");
+                        }
+                        DateTime dt = DateTime.Parse(matchYear, culture);
+                        matchYears.Add(dt);
+                    }
+                    catch (Exception ex) { string error = ex.Message + "\n" + ex.ToString(); }
+                }
+                // 最早與最晚的日期
+                try
+                {
+                    DateTime minMatchYear = matchYears[0];
+                    DateTime maxMatchYear = matchYears[matchYears.Count - 1];
+                    (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(minMatchYear, now); // 公司年資
+                    userCV.companyYears = calcYMD.y + "年" + calcYMD.m + "月";
+                    calcYMD = CalcYMD(maxMatchYear, now); // 工作年資
+                    userCV.workYears = calcYMD.y + "年" + calcYMD.m + "月";
+                }
+                catch(Exception ex) { string error = ex.Message + "\n" + ex.ToString(); }
+
                 // 取得核心專業盤點的專業與管理能力分數
                 List<Skill> getAllScores = new ProfessionRepository().GetAll();
                 // 專業能力_領域技能
@@ -243,6 +276,26 @@ namespace TEEmployee.Models.Talent
             }
 
             return ret;
+        }
+        // 驗證與當天相差幾年幾月
+        (DateTime st, DateTime ed, int y, int m, int d) CalcYMD(DateTime start, DateTime end)
+        {
+            if (end.CompareTo(start) < 0) (start, end) = (end, start);
+            int years = (end.Year - start.Year);
+            int months = (end.Month - start.Month);
+            int days = (end.Day - start.Day);
+            if (days < 0)
+            {
+                months--;
+                var lastMon = end.AddMonths(-1);
+                days += DateTime.DaysInMonth(lastMon.Year, lastMon.Month);
+            }
+            if (months < 0)
+            {
+                years--;
+                months += 12;
+            }
+            return (start, end, years, months, days);
         }
         // 比對上傳的檔案更新時間
         public List<string> CompareLastestUpdate(List<string> filesInfo)
