@@ -11,7 +11,7 @@
         </header>
 
         <div class="row">
-            @if (Session["empno"] is "4125" @*|| Session["empno"] is "7291"*@)
+            @if (Session["empno"] is "4125" || Session["empno"] is "7291")
             {
                 <div class="col-sm-3">
                     <input type="submit" value="High Performers Pool" ng-click="TalentHighPerformers()" class="btn btn-outline-primary" style="text-align:center" />
@@ -25,11 +25,14 @@
             <br />
         </div>
 
-        @if (Session["empno"] is "4125" @*|| Session["empno"] is "7291"*@)
+        @if (Session["empno"] is "4125" || Session["empno"] is "7291")
         {
             <div class="row">
                 <span></span>
-                <div class="col-sm-3">
+                <div class="row">
+                    <label>請選擇年度績效檔案：</label>
+                </div>
+                <div class="col-sm-3">                    
                     <input class="form-control" type="file" name="importFile" id="importFile" />
                 </div>
                 <div class="col-sm-3">

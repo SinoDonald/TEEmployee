@@ -156,14 +156,14 @@ namespace TEEmployee.Models.Talent
 
                 // Regex解析文字後, 儲存年月份
                 List<DateTime> matchYears = new List<DateTime>();
-                Regex regex = new Regex(@"\) .*\~", RegexOptions.IgnoreCase);
+                Regex regex = new Regex(@"\) (.*)\~", RegexOptions.IgnoreCase);
                 //將比對後集合傳給 MatchCollection 
                 MatchCollection matches = regex.Matches(userCV.project);
                 foreach (Match match in matches)
                 {
                     try
                     {
-                        string matchYear = match.Value.Replace(") ", "").Replace("~", "");
+                        string matchYear = match.Groups[1].Value;
                         // 如果年份小於3位數則開頭補0
                         string[] yearMonth = matchYear.Split('.');
                         if(yearMonth[0].Count() < 3)
