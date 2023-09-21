@@ -85,14 +85,14 @@ namespace TEEmployee.Models.Talent
 
             if (user.department_manager)
             {
-                if (empno.Equals("4125"))
-                {
-                    groups = new List<string> { "High Performer", "全部顯示", "規劃", "設計", "專管" };
-                }
-                else
-                {
+                //if (empno.Equals("4125"))
+                //{
+                //    groups = new List<string> { "High Performer", "全部顯示", "規劃", "設計", "專管" };
+                //}
+                //else
+                //{
                     groups = new List<string> { "全部顯示", "規劃", "設計", "專管" };
-                }
+                //}
             }
             else
             {

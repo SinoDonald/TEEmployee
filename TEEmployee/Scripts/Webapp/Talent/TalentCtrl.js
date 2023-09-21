@@ -288,6 +288,28 @@ app.controller('TalentHighPerformersCtrl', ['$scope', '$location', '$window', 'a
     }
     $scope.FilterDataByGroup($scope.selectedGroup); // 預設全選
 
+    // 即時監測checkbox三個勾選後才開放下拉選單
+    function onExpandableTextareaInput({ target: elem }) {
+
+        // 統計checkbox勾選數量
+        const count = 0;
+        if (elem.id.includes('inlineCheckbox')) {
+            var index = elem.id.substr(-1); // 點選checkbox的index
+            for (let i = 1; i <= 5; i++) {
+                var elemId = 'inlineCheckbox' + i + index;
+                var targetElem = document.getElementById(elemId);
+                if (targetElem.checked) {
+                    count += 1;
+                }
+            }
+            if (count >= 3) { user.selectPosition = false; }
+            else { user.selectPosition = true; }
+        }
+    }
+
+    // global delegated event listener
+    document.addEventListener('input', onExpandableTextareaInput)
+
     // 三個勾選才開放下拉選單
     $scope.isChecked = function (user) {
         user.selectPosition = true;
@@ -304,6 +326,20 @@ app.controller('TalentHighPerformersCtrl', ['$scope', '$location', '$window', 'a
     // 回上頁
     $scope.ToTalent = function () {
         $window.location.href = 'Talent#!/TalentOption';
+    }
+
+    // 選擇要看的成員
+    $scope.TalentRecord = function (data) {
+        // 取得員工履歷
+        appService.Get({ empno: data })
+            .then(function (ret) {
+                $scope.Get = ret.data;
+                dataservice.set(ret.data[0]);
+                $location.path('/TalentRecord');
+            })
+            .catch(function (ret) {
+                alert('Error');
+            });
     }
 
     // 儲存

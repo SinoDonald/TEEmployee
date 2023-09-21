@@ -32,7 +32,7 @@
                 <h5>{{user.name}}</h5>
             </div>
             <div class="col text-md-left align-items-center">
-                <select class="form-select w-50 p-0" id="selectPosition" name="selectPosition" ng-model="user.position" ng-disabled="user.selectPosition" aria-label="Select the Position">
+                <select class="form-select w-50 p-0" id="selectPosition" name="selectPosition" ng-model="user.position" @*ng-disabled="user.selectPosition"*@ ng-disabled="selectPosition{{$index}}" aria-label="Select the Position">
                     <option ng-repeat="position in positions">{{position}}</option>
                 </select>
             </div>
