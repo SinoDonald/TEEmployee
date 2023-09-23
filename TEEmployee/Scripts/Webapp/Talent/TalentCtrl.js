@@ -289,39 +289,26 @@ app.controller('TalentHighPerformersCtrl', ['$scope', '$location', '$window', 'a
     $scope.FilterDataByGroup($scope.selectedGroup); // 預設全選
 
     // 即時監測checkbox三個勾選後才開放下拉選單
-    function onExpandableTextareaInput({ target: elem }) {
-
+    function onExpandableCheckBox({ target: elem }) {
         // 統計checkbox勾選數量
-        const count = 0;
+        var count = 0;
         if (elem.id.includes('inlineCheckbox')) {
             var index = elem.id.substr(-1); // 點選checkbox的index
             for (let i = 1; i <= 5; i++) {
                 var elemId = 'inlineCheckbox' + i + index;
                 var targetElem = document.getElementById(elemId);
                 if (targetElem.checked) {
-                    count += 1;
+                    count = count + 1;
                 }
             }
-            if (count >= 3) { user.selectPosition = false; }
-            else { user.selectPosition = true; }
+            var selectPositionId = 'selectPosition' + index;
+            var selectPositionElem = document.getElementById(selectPositionId);
+            if (count >= 3) { selectPositionElem.disabled = false; $scope.data[index].selectPosition = false; }
+            else { selectPositionElem.disabled = true; $scope.data[index].selectPosition = true; }
         }
     }
-
-    // global delegated event listener
-    document.addEventListener('input', onExpandableTextareaInput)
-
-    // 三個勾選才開放下拉選單
-    $scope.isChecked = function (user) {
-        user.selectPosition = true;
-        var count = 0;
-        if (user.choice1 === true) {count++;}
-        if (user.choice2 === true) {count++;}
-        if (user.choice3 === true) {count++;}
-        if (user.choice4 === true) {count++;}
-        if (user.choice5 === true) { count++; }
-        if (count >= 3) { user.selectPosition = false; }
-        else { user.selectPosition = true; }
-    }
+    // 監聽checkbox
+    document.addEventListener('change', onExpandableCheckBox);
 
     // 回上頁
     $scope.ToTalent = function () {
@@ -381,6 +368,64 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
         else {
             break;
         }
+    }
+
+    // 上傳PDF檔
+    filepicker.addEventListener('change', (e) => {
+
+        if (!e.target.files[0]) {
+            return;
+        }
+
+        const maxAllowedSize = 10 * 1024 * 1024;
+        if (e.target.files[0].size > maxAllowedSize) {
+            alert("檔案超過10MB");
+            return;
+        }
+
+        const fileType = 'application/pdf';
+        if (e.target.files[0].type !== fileType) {
+            alert("檔案限定格式為.pdf");
+            return;
+        }
+
+        uploading().then(() => {
+
+            $scope.$apply(function () {
+                $scope.data[$scope.num].filepath = e.target.files[0].name;
+            });
+        });
+
+    });
+    $scope.uploadFile = (idx) => {
+
+        $scope.num = idx;
+        filepicker.click();
+
+    }
+
+    $scope.downloadFile = (promotion) => {
+
+        appService.DownloadFile({ promotion: promotion }).then((ret) => {
+
+            // set response type of angular http to 'blob', or the default it string or JSON
+
+            // get the file name from response header
+            const contentDispositionHeader = ret.headers('Content-Disposition');
+
+            /*const fileName = contentDispositionHeader.split(';')[1].trim().split('=')[1].replace(/"/g, '');*/
+
+            let fileName = contentDispositionHeader.split(';')[1].trim().split('=')[1].replace(/"/g, '');
+            fileName = decodeURIComponent(fileName).replace(`UTF-8''`, '');
+
+            // Create blob object with type(optional, used for createObjectURL)
+            var blob = new Blob([ret.data], { type: 'application/octet-stream' });
+
+            // Call Filesaver.js to save it with filename(type inclueded)
+            // Benefit: filename
+            saveAs(blob, fileName);
+
+        });
     }
 
     // 上傳測評資料檔案

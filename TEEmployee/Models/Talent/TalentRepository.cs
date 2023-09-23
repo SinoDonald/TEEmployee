@@ -130,6 +130,8 @@ namespace TEEmployee.Models.Talent
         // 取得員工履歷
         public List<CV> Get(string empno)
         {
+            // 測試
+            empno = "5526";
             List<CV> ret;
 
             string sql = @"SELECT * FROM userCV WHERE empno=@empno";
@@ -154,38 +156,10 @@ namespace TEEmployee.Models.Talent
                 }
                 userCV.age = age.ToString();
 
-                // Regex解析文字後, 儲存年月份
-                List<DateTime> matchYears = new List<DateTime>();
-                Regex regex = new Regex(@"\) (.*)\~", RegexOptions.IgnoreCase);
-                //將比對後集合傳給 MatchCollection 
-                MatchCollection matches = regex.Matches(userCV.project);
-                foreach (Match match in matches)
-                {
-                    try
-                    {
-                        string matchYear = match.Groups[1].Value;
-                        // 如果年份小於3位數則開頭補0
-                        string[] yearMonth = matchYear.Split('.');
-                        if(yearMonth[0].Count() < 3)
-                        {
-                            matchYear = matchYear.Insert(0, "0");
-                        }
-                        DateTime dt = DateTime.Parse(matchYear, culture);
-                        matchYears.Add(dt);
-                    }
-                    catch (Exception ex) { string error = ex.Message + "\n" + ex.ToString(); }
-                }
-                // 最早與最晚的日期
-                try
-                {
-                    DateTime minMatchYear = matchYears[0];
-                    DateTime maxMatchYear = matchYears[matchYears.Count - 1];
-                    (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(minMatchYear, now); // 公司年資
-                    userCV.companyYears = calcYMD.y + "年" + calcYMD.m + "月";
-                    calcYMD = CalcYMD(maxMatchYear, now); // 工作年資
-                    userCV.workYears = calcYMD.y + "年" + calcYMD.m + "月";
-                }
-                catch(Exception ex) { string error = ex.Message + "\n" + ex.ToString(); }
+                // Regex解析文字後, 儲存工作與公司年資
+                Tuple<string, string> seniority = Seniority(userCV.project);
+                userCV.companyYears = seniority.Item1; // 公司年資
+                userCV.workYears = seniority.Item2; // 工作年資
 
                 // 取得核心專業盤點的專業與管理能力分數
                 List<Skill> getAllScores = new ProfessionRepository().GetAll();
@@ -276,6 +250,78 @@ namespace TEEmployee.Models.Talent
             }
 
             return ret;
+        }
+        // Regex解析文字後, 儲存工作與公司年資
+        private Tuple<string, string> Seniority(string project)
+        {
+            string companyYears = string.Empty; // 公司年資
+            string workYears = string.Empty; // 工作年資
+
+            foreach (string readLine in project.Split('\n'))
+            {
+                Regex rg = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))");
+                if (rg.IsMatch(readLine))
+                {
+                    if (readLine.Contains("迄今"))
+                    {
+                        rg = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))\s*(\d*.\d*)~([\u4e00-\u9fa5][\u4e00-\u9fa5])\s*(.*)", RegexOptions.IgnoreCase);
+                        //將比對後集合傳給 MatchCollection 
+                        MatchCollection items = rg.Matches(readLine);
+                        foreach (Match item in items)
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        rg = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))\s*(\d*.\d*)~(\d*.\d*)(.*)\s(.*)", RegexOptions.IgnoreCase);
+                        //將比對後集合傳給 MatchCollection 
+                        MatchCollection items = rg.Matches(readLine);
+                        foreach (Match item in items)
+                        {
+
+                        }
+                    }
+                }
+            }
+
+            List<DateTime> matchYears = new List<DateTime>();
+            Regex regex = new Regex(@"\) (.*)\~", RegexOptions.IgnoreCase);
+            //將比對後集合傳給 MatchCollection 
+            MatchCollection matches = regex.Matches(project);
+            foreach (Match match in matches)
+            {
+                try
+                {
+                    string matchYear = match.Groups[1].Value;
+                    // 如果年份小於3位數則開頭補0
+                    string[] yearMonth = matchYear.Split('.');
+                    if (yearMonth[0].Count() < 3)
+                    {
+                        matchYear = matchYear.Insert(0, "0");
+                    }
+                    // 計算年齡, 民國轉西元後計算年齡
+                    CultureInfo culture = new CultureInfo("zh-TW");
+                    culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                    DateTime dt = DateTime.Parse(matchYear, culture);
+                    matchYears.Add(dt);
+                }
+                catch (Exception ex) { string error = ex.Message + "\n" + ex.ToString(); }
+            }
+            // 最早與最晚的日期
+            try
+            {
+                DateTime now = DateTime.Now;
+                DateTime minMatchYear = matchYears[0];
+                DateTime maxMatchYear = matchYears[matchYears.Count - 1];
+                (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(minMatchYear, now); // 公司年資
+                companyYears = calcYMD.y + "年" + calcYMD.m + "月";
+                calcYMD = CalcYMD(maxMatchYear, now); // 工作年資
+                workYears = calcYMD.y + "年" + calcYMD.m + "月";
+            }
+            catch (Exception ex) { string error = ex.Message + "\n" + ex.ToString(); }
+            
+            return new Tuple<string, string>(companyYears, workYears);
         }
         // 驗證與當天相差幾年幾月
         (DateTime st, DateTime ed, int y, int m, int d) CalcYMD(DateTime start, DateTime end)
@@ -532,7 +578,7 @@ namespace TEEmployee.Models.Talent
                             userCV.experience = ReturnParagraph(cells);
                             break;
                         case "經　　歷：":
-                            userCV.project = ReturnParagraph(cells);
+                            userCV.project = ReturnProjectParagraph(cells);
                             break;
                         default:
                             break;
@@ -570,6 +616,84 @@ namespace TEEmployee.Models.Talent
                         returnParagraph += splitString[2] + splitString[3] + "　" + splitString[0] + "　" + splitString[1] + "\n";
                     }
                     catch (Exception) { }
+                }
+            }
+            if (returnParagraph.Length > 2)
+            {
+                returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
+            }
+            return returnParagraph;
+        }
+        // 大學學歷以上才加入
+        private string ReturnProjectParagraph(TableCell[] cells)
+        {
+            // 讀取user.db內所有的職稱
+            List<string> jobTitles = new List<string>();
+            foreach(string jobTitle in new UserRepository().GetAll().Select(x => x.profTitle).Distinct().ToList())
+            {
+                if(jobTitle.Contains("一") || jobTitle.Contains("二") || jobTitle.Contains("三") || jobTitle.Contains("四"))
+                {
+                    jobTitles.Add(jobTitle.Remove(jobTitle.Length - 1, 1));
+                }
+                else
+                {
+                    jobTitles.Add(jobTitle);
+                }
+            }
+            jobTitles.Add("正建築師");
+            jobTitles = jobTitles.Distinct().OrderByDescending(x => x.Length).ToList();
+            // jobTitle = new List<string>() { "主任工程師", "專員", "工程師", "建築師", "正工程師", "主任工程師", "製圖師", "規劃師" };
+
+            string returnParagraph = string.Empty;
+            foreach (string paragraph in cells[1].Elements<Paragraph>().Select(o => o.InnerText).ToList())
+            {
+                string paragraphRemoveSpace = paragraph.Replace(" ", "");
+                string changeParagraph = string.Empty;
+                if (paragraphRemoveSpace.Contains(")"))
+                {
+                    int index = paragraphRemoveSpace.IndexOf(")");
+                    changeParagraph = paragraphRemoveSpace.Insert(index + 1, " ");
+                }
+                if (paragraphRemoveSpace.Contains("迄今"))
+                {
+                    int index = paragraphRemoveSpace.IndexOf("迄今"); 
+                    if (changeParagraph != "")
+                    {
+                        changeParagraph = changeParagraph.Insert(index + 3, " ");
+                    }
+                    else
+                    {
+                        changeParagraph = paragraphRemoveSpace.Insert(index + 2, " ");
+                    }
+                }
+                if(jobTitles.Any(s => paragraphRemoveSpace.Contains(s)))
+                {
+                    string jobTitle = jobTitles.Where(s => paragraphRemoveSpace.Contains(s)).FirstOrDefault();
+                    // 前面加空白
+                    int index = paragraphRemoveSpace.IndexOf(jobTitle);
+                    if (changeParagraph != "")
+                    {
+                        if (paragraphRemoveSpace.Contains("迄今"))
+                        {
+                            changeParagraph = changeParagraph.Insert(index + 2, " ");
+                        }
+                        else
+                        {
+                            changeParagraph = changeParagraph.Insert(index + 1, " ");
+                        }
+                    }
+                    else
+                    {
+                        changeParagraph = paragraphRemoveSpace.Insert(index, " ");
+                    }
+                }
+                if (changeParagraph != "")
+                {
+                    returnParagraph += changeParagraph + "\n";
+                }
+                else
+                {
+                    returnParagraph += paragraphRemoveSpace + "\n";
                 }
             }
             if (returnParagraph.Length > 2)
