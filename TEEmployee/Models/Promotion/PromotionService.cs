@@ -43,7 +43,7 @@ namespace TEEmployee.Models.Promotion
         {
             List<Promotion> promotions = new List<Promotion>();
 
-            for (int i = 0; i != 6; i++)
+            for (int i = 0; i != 7; i++)
             {
                 promotions.Add(new Promotion { empno = empno, condition = i + 1 });
             }
@@ -107,87 +107,9 @@ namespace TEEmployee.Models.Promotion
 
             List<CV> cvs = (_talentRepository as TalentRepository).Get(empno);
 
-            string[] strs = new string[4];
-            //string nextPro = "";
-            //string nextYear = "";
-            //string score = "";
-            //string scoreYear = "";
-
-            // modify content
-            switch (user.profTitle)
-            {
-                case "正工程師":
-                    strs = new string[] { "正工程師", "5", "5", "88" };
-                    break;
-
-                case "工程師一":
-                    strs = new string[] { "工程師(一)", "4", "4", "88" };
-                    break;
-
-                case "工程師二":
-                    strs = new string[] { "工程師(二)", "3", "3", "87" };
-                    break;
-
-                case "工程師三":
-                    strs = new string[] { "工程師(三)", "3", "3", "86" };
-                    break;
-
-                case "工程師四":
-                    strs = new string[] { "工程師(四)", "3", "3", "85" };
-                    break;
-
-                case "專員一":
-                    strs = new string[] { "專員(一)", "4", "4", "88" };
-                    break;
-
-                case "專員二":
-                    strs = new string[] { "專員(二)", "3", "3", "88" };
-                    break;
-
-                case "專員三":
-                    strs = new string[] { "專員(三)", "3", "3", "86" };
-                    break;
-
-                case "正建築師":
-                    strs = new string[] { "正建築師", "5", "5", "88" };
-                    break;
-
-                case "建築師一":
-                    strs = new string[] { "建築師(一)", "4", "4", "88" };
-                    break;
-
-                case "建築師二":
-                    strs = new string[] { "建築師(二)", "3", "3", "87" };
-                    break;
-
-                case "建築師三":
-                    strs = new string[] { "建築師(三)", "3", "3", "86" };
-                    break;
-
-                case "建築師四":
-                    strs = new string[] { "建築師(四)", "3", "3", "85" };
-                    break;
-
-                case "正規劃師":
-                    strs = new string[] { "正規劃師", "5", "5", "88" };
-                    break;
-
-                case "規劃師一":
-                    strs = new string[] { "規劃師(一)", "4", "4", "88" };
-                    break;
-
-                case "規劃師二":
-                    strs = new string[] { "規劃師(二)", "3", "3", "87" };
-                    break;
-
-                case "規劃師三":
-                    strs = new string[] { "規劃師(三)", "3", "3", "86" };
-                    break;
-
-                case "規劃師四":
-                    strs = new string[] { "規劃師(四)", "3", "3", "85" };
-                    break;
-            }
+            string[] strs = this.NextConditions(user.profTitle);
+            
+            // modify content            
 
             promotions[0].content = promotions[0].content.Replace("xxx", strs[0]);
             promotions[0].content = promotions[0].content.Replace("yyy", strs[1]);
@@ -200,7 +122,7 @@ namespace TEEmployee.Models.Promotion
                 case "主任工程師":
                     promotions.RemoveRange(0, 2);
                     return;
-                    //break;
+                //break;
 
                 case "製圖師":
                     promotions.RemoveRange(0, 2);
@@ -232,15 +154,23 @@ namespace TEEmployee.Models.Promotion
         {
             User user = _userRepository.Get(empno);
             List<User> users = new List<User>();
+            dynamic authorization = new JObject();
+            authorization.Users = new JArray();
 
-            if (user.department_manager)
+
+            if (user.department_manager || user.group_manager)
             {
                 users = _userRepository.GetAll();
 
-                List<string> titleOrder = new List<string> { "主任工程師", "正工程師", "工程師一", "工程師二", "工程師三", "工程師四",
-                "正規劃師", "規劃師一", "規劃師二", "規劃師三", "規劃師四",
-                "正建築師", "建築師一", "建築師二", "建築師三", "建築師四",
-                "製圖師", "專員一", "專員二", "專員三" };
+                if (user.group_manager)
+                    users = users.Where(x => x.group == user.group).ToList();
+
+                // order in selection component
+                List<string> titleOrder = new List<string> {
+                    "主任工程師", "正工程師一", "正工程師二", "工程師一", "工程師二", "工程師三", "工程師四",
+                    "主任規劃師", "正規劃師一", "正規劃師二", "規劃師一", "規劃師二", "規劃師三", "規劃師四",
+                    "主任建築師", "正建築師一", "正建築師二", "建築師一", "建築師二", "建築師三", "建築師四",
+                    "製圖師", "資深專員一", "資深專員二", "資深專員三", "專員一", "專員二", "專員三" };
 
                 users = users.OrderBy(x =>
                 {
@@ -249,56 +179,260 @@ namespace TEEmployee.Models.Promotion
                     return engIdx;
                 }).ThenBy(x => x.name).ToList();
 
+
+                foreach (var item in users)
+                {
+                    dynamic userObj = JObject.FromObject(item);
+                    userObj.nextProfTitle = this.NextProfTitle(item.profTitle);
+                    userObj.upgrade = this.CanUpgrade(user);
+                    authorization.Users.Add(userObj);
+
+                }
+
             }
 
 
-            dynamic authorization = new JObject();
+
             authorization.User = JObject.FromObject(user);
-            authorization.Users = JArray.FromObject((users).ToList());
+            //authorization.Users = JArray.FromObject((users).ToList());
+            authorization.User.nextProfTitle = this.NextProfTitle(user.profTitle);
 
             return JsonConvert.SerializeObject(authorization);
         }
 
         // private method
-
-        private List<string> GetManagerGroups(string empno)
+        private string NextProfTitle(string profTitle)
         {
-            User user = _userRepository.Get(empno);
-            List<string> groups = new List<string>();
+            string next = "";
 
-            if (user.department_manager)
-                groups = (_userRepository as UserRepository).GetSubGroups(empno);
+            switch (profTitle)
+            {
+                case "正工程師一":
+                    next = "主任工程師";
+                    break;
 
-            return groups;
+                case "正工程師二":
+                    next = "正工程師(一)";
+                    break;
+
+                case "工程師一":
+                    next = "正工程師(二)";
+                    break;
+
+                case "工程師二":
+                    next = "工程師(一)";
+                    break;
+
+                case "工程師三":
+                    next = "工程師(二)";
+                    break;
+
+                case "工程師四":
+                    next = "工程師(三)";
+                    break;
+
+                case "資深專員三":
+                    next = "資深專員(二)";
+                    break;
+
+                case "專員一":
+                    next = "資深專員(三)";
+                    break;
+
+                case "專員二":
+                    next = "專員(一)";
+                    break;
+
+                case "專員三":
+                    next = "專員(二)";
+                    break;
+
+                case "正建築師一":
+                    next = "主任建築師";
+                    break;
+
+                case "正建築師二":
+                    next = "正建築師(一)";
+                    break;
+
+                case "建築師一":
+                    next = "正建築師(二)";
+                    break;
+
+                case "建築師二":
+                    next = "建築師(一)";
+                    break;
+
+                case "建築師三":
+                    next = "建築師(二)";
+                    break;
+
+                case "建築師四":
+                    next = "建築師(三)";
+                    break;
+
+                case "正規劃師一":
+                    next = "主任規劃師";
+                    break;
+
+                case "正規劃師二":
+                    next = "正規劃師(一)";
+                    break;
+
+                case "規劃師一":
+                    next = "正規劃師(二)";
+                    break;
+
+                case "規劃師二":
+                    next = "規劃師(一)";
+                    break;
+
+                case "規劃師三":
+                    next = "規劃師(二)";
+                    break;
+
+                case "規劃師四":
+                    next = "規劃師(三)";
+                    break;
+            }
+
+            return next;
         }
 
-        private List<string> GetEmployeeGroups(string empno)
+        // private method
+        private string[] NextConditions(string profTitle)
         {
-            User user = _userRepository.Get(empno);
-            List<string> groups = new List<string>();
+            // nextPro nextYear score scoreYear
 
-            // add sub group if as a member
-            if (!String.IsNullOrEmpty(user.group_one))
-                groups.Add(user.group_one);
+            string[] strs;
 
-            if (!String.IsNullOrEmpty(user.group_two))
-                groups.Add(user.group_two);
+            switch (profTitle)
+            {
+                case "正工程師一":
+                    strs = new string[] { "正工程師(一)", "5", "5", "88" };
+                    break;
 
-            if (!String.IsNullOrEmpty(user.group_three))
-                groups.Add(user.group_three);
+                case "正工程師二":
+                    strs = new string[] { "正工程師(二)", "4", "4", "88" };
+                    break;
 
-            // remove duplicates
-            groups = groups.Distinct().ToList();
+                case "工程師一":
+                    strs = new string[] { "工程師(一)", "3", "3", "88" };
+                    break;
 
-            return groups;
+                case "工程師二":
+                    strs = new string[] { "工程師(二)", "3", "3", "87" };
+                    break;
+
+                case "工程師三":
+                    strs = new string[] { "工程師(三)", "3", "3", "86" };
+                    break;
+
+                case "工程師四":
+                    strs = new string[] { "工程師(四)", "3", "3", "85" };
+                    break;
+
+                case "資深專員三":
+                    strs = new string[] { "資深專員(三)", "5", "5", "88" };
+                    break;
+
+                case "專員一":
+                    strs = new string[] { "專員(一)", "4", "4", "88" };
+                    break;
+
+                case "專員二":
+                    strs = new string[] { "專員(二)", "3", "3", "88" };
+                    break;
+
+                case "專員三":
+                    strs = new string[] { "專員(三)", "3", "3", "86" };
+                    break;
+
+                case "正建築師一":
+                    strs = new string[] { "正建築師(一)", "5", "5", "88" };
+                    break;
+
+                case "正建築師二":
+                    strs = new string[] { "正建築師(二)", "4", "4", "88" };
+                    break;
+
+                case "建築師一":
+                    strs = new string[] { "建築師(一)", "3", "3", "88" };
+                    break;
+
+                case "建築師二":
+                    strs = new string[] { "建築師(二)", "3", "3", "87" };
+                    break;
+
+                case "建築師三":
+                    strs = new string[] { "建築師(三)", "3", "3", "86" };
+                    break;
+
+                case "建築師四":
+                    strs = new string[] { "建築師(四)", "3", "3", "85" };
+                    break;
+
+                case "正規劃師一":
+                    strs = new string[] { "正規劃師(一)", "5", "5", "88" };
+                    break;
+
+                case "正規劃師二":
+                    strs = new string[] { "正規劃師(二)", "4", "4", "88" };
+                    break;
+
+                case "規劃師一":
+                    strs = new string[] { "規劃師(一)", "3", "3", "88" };
+                    break;
+
+                case "規劃師二":
+                    strs = new string[] { "規劃師(二)", "3", "3", "87" };
+                    break;
+
+                case "規劃師三":
+                    strs = new string[] { "規劃師(三)", "3", "3", "86" };
+                    break;
+
+                case "規劃師四":
+                    strs = new string[] { "規劃師(四)", "3", "3", "85" };
+                    break;
+                default:
+                    strs = new string[4];
+                    break;
+            }
+
+            return strs;
         }
 
-        private List<User> GetGroupMembers(string group)
+        private string CanUpgrade(User user)
         {
-            List<User> users = _userRepository.GetAll();
-            return users.Where(x => x.group_one == group || x.group_two == group || x.group_three == group).ToList();
-        }
+            string canUpgrade = "";
 
+            // CAN'T UPGRADE TITLE
+            List<string> cantUpgradeTitles = new List<string> { "主任工程師", "主任建築師", "主任規劃師", "製圖師", "資深專員二", "資深專員一" };
+            if (cantUpgradeTitles.Contains(user.profTitle))
+                return canUpgrade;
+
+
+            CV cv = (_talentRepository as TalentRepository).Get(user.empno).First();
+            List<Promotion> promotions = this.GetByUser(user.empno);
+            string[] strs = this.NextConditions(user.profTitle); // nextPro nextYear score scoreYear
+
+            // If user can upgrade in normay way, use normal
+            // Else try special way.
+
+            // Year Condition
+            // TODO
+
+
+            // Score Condition 
+
+
+
+
+
+
+            return canUpgrade;
+        }
 
         public void Dispose()
         {

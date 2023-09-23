@@ -7,7 +7,7 @@ app.run(['$http', '$window', function ($http, $window) {
 }]);
 
 app.service('appService', ['$http', function ($http) {
-
+       
     this.GetByUser = (o) => {
         return $http.post('Promotion/GetByUser', o);
     };
@@ -80,15 +80,17 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
         let title_array = $scope.auth.Users.map(x => x.profTitle);
         $scope.titles = [...new Set(title_array)];
 
-        if ($scope.auth.User.department_manager) {
+        $scope.nextProfTitle = $scope.auth.User.nextProfTitle;
+
+        if ($scope.auth.User.department_manager || $scope.auth.User.group_manager) {
             $scope.selectedTitle = $scope.auth.User.profTitle;
             $scope.selectTitle();
-            $scope.selectedName = $scope.auth.User.name;
+            $scope.selectedName = $scope.auth.User.name;            
         }
 
 
     })
-
+    
     appService.GetByUser({}).then((ret) => {
         $scope.data = ret.data;
     })
@@ -155,10 +157,12 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
     $scope.selectName = () => {
 
         if (!$scope.selectedName) return;
-            
-        let empno = $scope.auth.Users.find(x => x.name === $scope.selectedName).empno;
 
-        appService.GetByUser({empno: empno}).then((ret) => {
+        let user = $scope.auth.Users.find(x => x.name === $scope.selectedName);
+
+        $scope.nextProfTitle = user.nextProfTitle;
+
+        appService.GetByUser({empno: user.empno}).then((ret) => {
             $scope.data = ret.data;
         })
     }
