@@ -69,10 +69,10 @@ namespace TEEmployee.Controllers
         }
         // 上傳測評資料檔案
         [HttpPost]
-        public ActionResult ImportPDFFile(HttpPostedFileBase importPDFFile)
+        public ActionResult ImportPDFFile(HttpPostedFileBase file)
         {
-            if (importPDFFile == null) return Json(new { Status = 0, Message = "No File Selected" });
-            var ret = _service.ImportPDFFile(importPDFFile);
+            if (file == null) return Json(new { Status = 0, Message = "No File Selected" });
+            var ret = _service.ImportPDFFile(file);
             return Json(ret);
         }
         // High Performer

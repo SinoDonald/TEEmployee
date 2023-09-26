@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Web.Script.Serialization;
 
 namespace TEEmployee.Models
@@ -17,5 +18,21 @@ namespace TEEmployee.Models
         public bool choice4 { get; set; } // 建立系統性、計畫性的學習能力 - 學習力具體
         public bool choice5 { get; set; } // 適應變化的韌性 - 懂得取捨、不放棄
         public bool selectPosition { get; set; } // 開放身份選擇
+    }
+    public class Seniority
+    {
+        public string empno { get; set; }
+        public string name { get; set; }
+        public string start { get; set; }
+        public string end { get; set; }
+        public string company { get; set; }
+        public string department { get; set; }        
+        public string position { get; set; }
+        public string manager { get; set; }
+    }
+    public class StartEndDate
+    {
+        public DateTime startDate { get; set; }
+        public DateTime endDate { get; set; }
     }
 }

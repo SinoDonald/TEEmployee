@@ -23,6 +23,8 @@
                 <div class="col-3">
                     <h3>工作年資：{{user.workYears}}</h3>
                     <h3>公司年資：{{user.companyYears}}</h3>
+                    <h3>職位經歷：</h3>
+                    <h5>{{user.seniority}}</h5>
                 </div>
             </div>
             <br />
@@ -188,23 +190,24 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-4"></div>
-                                        <div class="col-sm-1">
-                                            <div>
-                                                <button class="btn-lg" type="button" ng-click="uploadFile($index)">
-                                                    <span class="material-icons">upload_file</span>
-                                                </button>
-                                                <a ng-bind="item.filepath" href="" ng-click="downloadFile(item)"></a>
-                                            </div>
+                                    <div class="col-sm-1">
+                                        <div>
+                                            <button class="btn-lg" type="button" ng-click="uploadFile()">
+                                                <span class="material-icons">upload_file</span>
+                                            </button>
                                         </div>
-                                        @*<div class="col-sm-4">
-                    <input class="form-control" type="file" name="importPDFFile" id="importPDFFile" />
-                </div>
-                <div class="col-sm-1">
-                    <input class="btn btn-primary" id="btnPDFUpload" type="button" value="上傳" />
-                </div>*@
-                                        }
                                     </div>
-                                </div>
+                                    @*<div class="row">
+                                        <div class="col-sm-4">
+                                            <input class="form-control" type="file" name="importPDFFile" id="importPDFFile" />
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <input class="btn btn-primary" id="btnPDFUpload" type="button" value="上傳" />
+                                        </div>
+                                    </div>*@
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row">

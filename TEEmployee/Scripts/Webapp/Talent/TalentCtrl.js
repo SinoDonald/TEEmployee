@@ -76,6 +76,7 @@ app.factory('dataservice', function () {
         user.age = data.age;
         user.workYears = data.workYears;
         user.companyYears = data.companyYears;
+        user.seniority = data.seniority;
         user.educational = data.educational.split('\n');
         user.performance = data.performance.split('\n');
         user.experience = data.experience.split('\n');
@@ -370,91 +371,70 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
         }
     }
 
-    // 上傳PDF檔
+    // 上傳測評資料檔案
+    $scope.uploadFile = () => {
+        filepicker.click();
+    }
     filepicker.addEventListener('change', (e) => {
-
         if (!e.target.files[0]) {
             return;
         }
-
         const maxAllowedSize = 10 * 1024 * 1024;
         if (e.target.files[0].size > maxAllowedSize) {
             alert("檔案超過10MB");
             return;
         }
-
         const fileType = 'application/pdf';
         if (e.target.files[0].type !== fileType) {
             alert("檔案限定格式為.pdf");
             return;
         }
-
-        uploading().then(() => {
-
-            $scope.$apply(function () {
-                $scope.data[$scope.num].filepath = e.target.files[0].name;
+        uploading(e).then(() => {
+            $scope.$apply(function (ret) {
+                alert("更新完成");
             });
         });
-
     });
-    $scope.uploadFile = (idx) => {
+    const uploading = async (e) => {
+        let form = new FormData(formElem);
+        let response = await fetch('/Talent/ImportPDFFile', {
+            method: 'POST',
+            body: form,
+        });
 
-        $scope.num = idx;
-        filepicker.click();
-
+        let result = await response.json();
+        $scope.user.advantage = result[0].advantage;
+        $scope.user.disadvantage = result[0].disadvantage;
+        $scope.user.test = result[0].test;
     }
 
-    $scope.downloadFile = (promotion) => {
+    //// 上傳測評資料檔案
+    //$(document).on("click", "#btnPDFUpload", function () {
+    //    var files = $("#importPDFFile").get(0).files;
 
-        appService.DownloadFile({ promotion: promotion }).then((ret) => {
+    //    var formData = new FormData();
+    //    formData.append('file', files[0]);
 
-            // set response type of angular http to 'blob', or the default it string or JSON
-
-            // get the file name from response header
-            const contentDispositionHeader = ret.headers('Content-Disposition');
-
-            /*const fileName = contentDispositionHeader.split(';')[1].trim().split('=')[1].replace(/"/g, '');*/
-
-            let fileName = contentDispositionHeader.split(';')[1].trim().split('=')[1].replace(/"/g, '');
-            fileName = decodeURIComponent(fileName).replace(`UTF-8''`, '');
-
-            // Create blob object with type(optional, used for createObjectURL)
-            var blob = new Blob([ret.data], { type: 'application/octet-stream' });
-
-            // Call Filesaver.js to save it with filename(type inclueded)
-            // Benefit: filename
-            saveAs(blob, fileName);
-
-        });
-    }
-
-    // 上傳測評資料檔案
-    $(document).on("click", "#btnPDFUpload", function () {
-        var files = $("#importPDFFile").get(0).files;
-
-        var formData = new FormData();
-        formData.append('importPDFFile', files[0]);
-
-        $.ajax({
-            url: '/Talent/ImportPDFFile',
-            data: formData,
-            type: 'POST',
-            contentType: false,
-            processData: false,
-            success: function (data) {
-                if (data != "") {
-                    $scope.user.advantage = data[0].advantage;
-                    $scope.user.disadvantage = data[0].disadvantage;
-                    $scope.user.test = data[0].test;
-                    $scope.$apply(); // 用$apply強制刷新數據
-                    alert("更新完成");
-                }
-                else {
-                    alert("上傳格式錯誤");
-                }
-            }
-        });
-    });
+    //    $.ajax({
+    //        url: '/Talent/ImportPDFFile',
+    //        data: formData,
+    //        type: 'POST',
+    //        contentType: false,
+    //        processData: false,
+    //        success: function (data) {
+    //            if (data != "") {
+    //                $scope.user.advantage = data[0].advantage;
+    //                $scope.user.disadvantage = data[0].disadvantage;
+    //                $scope.user.test = data[0].test;
+    //                $scope.$apply(); // 用$apply強制刷新數據
+    //                alert("更新完成");
+    //            }
+    //            else {
+    //                alert("上傳格式錯誤");
+    //            }
+    //        }
+    //    });
+    //});
 
     // 回上頁
     $scope.ToTalent = function () {
