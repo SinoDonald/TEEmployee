@@ -108,7 +108,7 @@ namespace TEEmployee.Models.Promotion
             List<CV> cvs = (_talentRepository as TalentRepository).Get(empno);
 
             string[] strs = this.NextConditions(user.profTitle);
-            
+
             // modify content            
 
             promotions[0].content = promotions[0].content.Replace("xxx", strs[0]);
@@ -131,7 +131,7 @@ namespace TEEmployee.Models.Promotion
             }
 
             // add performance
-            string[] stringSeparators = new string[] { "\r\n" };
+            string[] stringSeparators = new string[] { "\n" };
             string[] performances = cvs[0].performance.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
             int count = Math.Min(int.Parse(strs[2]), performances.Length);
@@ -184,7 +184,7 @@ namespace TEEmployee.Models.Promotion
                 {
                     dynamic userObj = JObject.FromObject(item);
                     userObj.nextProfTitle = this.NextProfTitle(item.profTitle);
-                    userObj.upgrade = this.CanUpgrade(user);
+                    userObj.upgrade = this.CanUpgrade(item, user.department_manager);
                     authorization.Users.Add(userObj);
 
                 }
@@ -302,7 +302,7 @@ namespace TEEmployee.Models.Promotion
         // private method
         private string[] NextConditions(string profTitle)
         {
-            // nextPro nextYear score scoreYear
+            // nextPro nextYear scoreYear score 
 
             string[] strs;
 
@@ -403,35 +403,81 @@ namespace TEEmployee.Models.Promotion
             return strs;
         }
 
-        private string CanUpgrade(User user)
+        private string CanUpgrade(User user, bool department_manager)
         {
-            string canUpgrade = "";
-
             // CAN'T UPGRADE TITLE
             List<string> cantUpgradeTitles = new List<string> { "主任工程師", "主任建築師", "主任規劃師", "製圖師", "資深專員二", "資深專員一" };
             if (cantUpgradeTitles.Contains(user.profTitle))
-                return canUpgrade;
+                return "";
 
 
-            CV cv = (_talentRepository as TalentRepository).Get(user.empno).First();
-            List<Promotion> promotions = this.GetByUser(user.empno);
-            string[] strs = this.NextConditions(user.profTitle); // nextPro nextYear score scoreYear
+            try
+            {
+                CV cv = (_talentRepository as TalentRepository).Get(user.empno).First();
+                List<Promotion> promotions = this.GetByUser(user.empno);
 
-            // If user can upgrade in normay way, use normal
-            // Else try special way.
+                if (department_manager)
+                {
+                    if (promotions.Where(x => x.condition == 7).First().achieved == false && user.group_one != "行政組")
+                        return "";
+                }
 
-            // Year Condition
-            // TODO
-
-
-            // Score Condition 
-
-
-
+                bool hasBonus = promotions.Where(x => x.condition > 2 && x.condition < 7 && x.achieved).Count() > 0;
+                string[] strs = this.NextConditions(user.profTitle); // nextPro nextYear score scoreYear
 
 
 
-            return canUpgrade;
+
+
+                // If user can upgrade in normay way, use normal
+                // Else try special way.
+
+                // Year Condition
+                // TODO
+                bool passYear, passYearByBonus;
+                passYear = true;
+                passYearByBonus = false;
+
+                // Score Condition 
+                bool passScore = false, passScoreByBonus = false;
+                int scoreYear = int.Parse(strs[2]);
+                int score = int.Parse(strs[3]);
+                string[] stringSeparators = new string[] { "\n" };
+                string[] performances = cv.performance.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+                int a = 0;
+
+                if (performances.Length >= scoreYear)
+                {
+                    int sum = 0;
+
+                    for (int i = 0; i != scoreYear; i++)
+                        sum += int.Parse(performances[i]);
+
+                    if ((double)sum / scoreYear >= score)
+                    {
+                        passScore = true;
+                    }
+                    else if (hasBonus && (double)sum / scoreYear >= score - 1)
+                    {
+                        passScoreByBonus = true;
+                    }
+                }
+
+                if (passYear && passScore)
+                    return "normal";
+
+                if ((passYear || passYearByBonus) && (passScore || passScoreByBonus))
+                    return "bonus";
+            }
+            catch
+            {
+
+            }
+
+
+            return "";
+
         }
 
         public void Dispose()
