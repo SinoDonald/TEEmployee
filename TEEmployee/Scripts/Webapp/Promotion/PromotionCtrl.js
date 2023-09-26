@@ -83,17 +83,20 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
         $scope.nextProfTitle = $scope.auth.User.nextProfTitle;
 
         if ($scope.auth.User.department_manager || $scope.auth.User.group_manager) {
+            $scope.upgradeUsers = $scope.auth.Users
             $scope.selectedTitle = $scope.auth.User.profTitle;
             $scope.selectTitle();
-            $scope.selectedName = $scope.auth.User.name;            
+            $scope.selectedName = $scope.auth.User.name;
         }
-
+        else {
+            appService.GetByUser({}).then((ret) => {
+                $scope.data = ret.data;
+            })
+        }
 
     })
     
-    appService.GetByUser({}).then((ret) => {
-        $scope.data = ret.data;
-    })
+    
 
     $scope.modal = {};
 
@@ -149,9 +152,30 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
         });
     }
 
+    $scope.selectUpgrade = () => {
+
+        if ($scope.selectedUpgrade)
+            $scope.upgradeUsers = $scope.auth.Users.filter(x => x.upgrade === $scope.selectedUpgrade);
+        else
+            $scope.upgradeUsers = $scope.auth.Users
+
+        let title_array = $scope.upgradeUsers.map(x => x.profTitle);
+        $scope.titles = [...new Set(title_array)];
+
+        
+            $scope.selectedTitle = $scope.titles[0];
+            $scope.selectTitle();
+
+        
+    }
+
     $scope.selectTitle = () => {
 
-        $scope.names = $scope.auth.Users.filter(x => x.profTitle === $scope.selectedTitle).map(x => x.name).sort();
+        //$scope.names = $scope.auth.Users.filter(x => x.profTitle === $scope.selectedTitle).map(x => x.name).sort();
+        $scope.names = $scope.upgradeUsers.filter(x => x.profTitle === $scope.selectedTitle).map(x => x.name).sort();
+        $scope.selectedName = $scope.names[0];
+        $scope.selectName();
+
     }
 
     $scope.selectName = () => {
@@ -165,6 +189,17 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
         appService.GetByUser({empno: user.empno}).then((ret) => {
             $scope.data = ret.data;
         })
+    }
+
+    $scope.showPromotion = (item) => {
+
+        if (item.condition < 7)
+            return true;
+        if (!$scope.selectedUpgrade)
+            return false;
+        if (item.condition === 7 && ($scope.auth.User.department_manager || $scope.auth.User.group_manager))
+            return true;
+        return false;
     }
 
 }]);
