@@ -24,7 +24,9 @@
                     <h3>工作年資：{{user.workYears}}</h3>
                     <h3>公司年資：{{user.companyYears}}</h3>
                     <h3>職位經歷：</h3>
-                    <h5>{{user.seniority}}</h5>
+                    <div ng-repeat="seniority in user.seniority track by $index">
+                        <h5>{{seniority}}</h5>
+                    </div>
                 </div>
             </div>
             <br />

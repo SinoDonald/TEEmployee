@@ -28,7 +28,7 @@
 
         <div class="row container border" ng-repeat="user in data">
             <div class="col text-center w-50 p-3 h-50 d-inline-block">
-                <img type="submit" value={{user.name}} src="~/Content/CV/{{user.empno}}.jpg" class="img-thumbnail" alt="{{user.name}}">
+                <img type="submit" value={{user.name}} ng-click="TalentRecord(user.empno)" src="~/Content/CV/{{user.empno}}.jpg" class="img-thumbnail" alt="{{user.name}}">
                 <h5>{{user.name}}</h5>
             </div>
             <div class="col text-md-left align-items-center">

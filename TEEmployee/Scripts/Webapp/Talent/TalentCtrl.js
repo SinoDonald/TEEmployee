@@ -76,7 +76,7 @@ app.factory('dataservice', function () {
         user.age = data.age;
         user.workYears = data.workYears;
         user.companyYears = data.companyYears;
-        user.seniority = data.seniority;
+        user.seniority = data.seniority.split('\n');
         user.educational = data.educational.split('\n');
         user.performance = data.performance.split('\n');
         user.experience = data.experience.split('\n');
@@ -375,26 +375,31 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
     $scope.uploadFile = () => {
         filepicker.click();
     }
-    filepicker.addEventListener('change', (e) => {
-        if (!e.target.files[0]) {
-            return;
-        }
-        const maxAllowedSize = 10 * 1024 * 1024;
-        if (e.target.files[0].size > maxAllowedSize) {
-            alert("檔案超過10MB");
-            return;
-        }
-        const fileType = 'application/pdf';
-        if (e.target.files[0].type !== fileType) {
-            alert("檔案限定格式為.pdf");
-            return;
-        }
-        uploading(e).then(() => {
-            $scope.$apply(function (ret) {
-                alert("更新完成");
+    try {
+        filepicker.addEventListener('change', (e) => {
+            if (!e.target.files[0]) {
+                return;
+            }
+            const maxAllowedSize = 10 * 1024 * 1024;
+            if (e.target.files[0].size > maxAllowedSize) {
+                alert("檔案超過10MB");
+                return;
+            }
+            const fileType = 'application/pdf';
+            if (e.target.files[0].type !== fileType) {
+                alert("檔案限定格式為.pdf");
+                return;
+            }
+            uploading(e).then(() => {
+                $scope.$apply(function (ret) {
+                    alert("更新完成");
+                });
             });
         });
-    });
+    }
+    catch(error){
+
+    }
     const uploading = async (e) => {
         let form = new FormData(formElem);
         let response = await fetch('/Talent/ImportPDFFile', {

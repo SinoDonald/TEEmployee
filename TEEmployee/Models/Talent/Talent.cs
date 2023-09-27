@@ -25,6 +25,7 @@ namespace TEEmployee.Models
         public string name { get; set; }
         public string start { get; set; }
         public string end { get; set; }
+        public bool now { get; set; }        
         public string company { get; set; }
         public string department { get; set; }        
         public string position { get; set; }
@@ -32,7 +33,9 @@ namespace TEEmployee.Models
     }
     public class StartEndDate
     {
+        public string position { get; set; }
         public DateTime startDate { get; set; }
         public DateTime endDate { get; set; }
+        public string interval { get; set; }
     }
 }

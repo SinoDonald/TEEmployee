@@ -154,12 +154,11 @@ namespace TEEmployee.Models.Talent
                 }
                 userCV.age = age.ToString();
 
-                // Regex解析文字後, 儲存工作與公司年資
-                List<Seniority> senioritys = ProjectRegex(userCV.project);                                
-                Tuple<string, string, string> seniority =  Seniority(senioritys); // 中興工程資料
-                userCV.workYears = seniority.Item1; // 工作年資
-                userCV.companyYears = seniority.Item2; // 公司年資
-                userCV.seniority = seniority.Item3; // 職務經歷
+                // 解析SQL seniority文字, 儲存工作、公司與職位年資
+                Tuple<string, string, string> analyzeSeniority = AnalyzeSeniority(userCV.seniority);
+                userCV.workYears = analyzeSeniority.Item1; // 工作年資
+                userCV.companyYears = analyzeSeniority.Item2; // 公司年資
+                userCV.seniority = analyzeSeniority.Item3; // 職務經歷
 
                 // 取得核心專業盤點的專業與管理能力分數
                 List<Skill> getAllScores = new ProfessionRepository().GetAll();
@@ -251,108 +250,9 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
-        // Regex解析文字後, 儲存工作與公司年資
-        private List<Seniority> ProjectRegex(string project)
+        // 解析SQL seniority文字, 儲存工作、公司與職位年資
+        public Tuple<string, string, string> AnalyzeSeniority(string analyzeSeniority)
         {
-            List<Seniority> senioritys = new List<Seniority>();
-            string company = string.Empty;
-            foreach (string readLine in project.Split('\n'))
-            {
-                try
-                {
-                    Regex rg = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))");
-                    if (rg.IsMatch(readLine))
-                    {
-                        Seniority seniority = new Seniority();
-                        // 先查詢有幾個space
-                        int spaceCount = readLine.Split(' ').Length;
-                        if (spaceCount <= 3)
-                        {
-                            rg = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))\ (\d*\.\d*)~(.*)\ (.*)", RegexOptions.IgnoreCase);
-                            MatchCollection m = rg.Matches(readLine); //將比對後集合傳給 MatchCollection
-                            Match match = m[0];
-                            string[] startStr = match.Groups[2].Value.Split('.');
-                            string start = startStr[0].PadLeft(3, '0') + "." + startStr[1].PadLeft(2, '0');
-                            seniority.start = start;
-                            if (match.Groups[3].Value.Equals("迄今"))
-                            {
-                                string year = (DateTime.Now.Year - 1911).ToString("000");
-                                string month = DateTime.Now.Month.ToString("00");
-                                seniority.end = year + "." + month;
-                            }
-                            else
-                            {
-                                string[] endStr = match.Groups[3].Value.Split('.');
-                                string end = endStr[0].PadLeft(3, '0') + "." + endStr[1].PadLeft(2, '0');
-                                seniority.end = end;
-                            }
-                            if (match.Groups[4].Value.Contains("中興"))
-                            {
-                                company = "中興工程";
-                                seniority.company = company;
-                            }
-                            else
-                            {
-                                rg = new Regex(@"(\([\u4e00-\u9fa5]\))\ (\d*\.\d*)~(.*)\ (.*)", RegexOptions.IgnoreCase);
-                                if (rg.IsMatch(readLine))
-                                {
-                                    company = match.Groups[4].Value;
-                                    seniority.company = company;
-                                }
-                                else
-                                {
-                                    seniority.company = company;
-                                    seniority.department = match.Groups[4].Value;
-                                }
-                            }
-                            senioritys.Add(seniority);
-                        }
-                        else
-                        {
-                            rg = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))\ (\d*\.\d*)~(.*)\ (.*)\ (.*)", RegexOptions.IgnoreCase);                            
-                            MatchCollection m = rg.Matches(readLine); //將比對後集合傳給 MatchCollection
-                            Match match = m[0];
-                            string[] startStr = match.Groups[2].Value.Split('.');
-                            string start = startStr[0].PadLeft(3, '0') + "." + startStr[1].PadLeft(2, '0');
-                            seniority.start = start;
-                            if (match.Groups[3].Value.Equals("迄今"))
-                            {
-                                string year = (DateTime.Now.Year - 1911).ToString("000");
-                                string month = DateTime.Now.Month.ToString("00");
-                                seniority.end = year + "." + month;
-                            }
-                            else
-                            {
-                                string[] endStr = match.Groups[3].Value.Split('.');
-                                string end = endStr[0].PadLeft(3, '0') + "." + endStr[1].PadLeft(2, '0');
-                                seniority.end = end;
-                            }
-                            seniority.company = company;
-                            seniority.department = match.Groups[4].Value;
-                            if (match.Groups[5].Value.Contains("兼"))
-                            {
-                                string changeName = match.Groups[5].Value.Replace("重大", "");
-                                int index = changeName.IndexOf('兼');
-                                seniority.position = changeName.Substring(0, index);
-                                seniority.manager = changeName.Substring(index + 1, changeName.Length - index - 1);
-                            }
-                            else
-                            {
-                                seniority.position = match.Groups[5].Value;
-                            }
-                            senioritys.Add(seniority);
-                        }
-                    }
-                }
-                catch (Exception) { }
-            }
-            
-            return senioritys;
-        }
-        // 中興工程資料
-        private Tuple<string, string, string> Seniority(List<Seniority> senioritys)
-        {
-            // 公司年資&職位年資
             string workYears = string.Empty;
             string companyYears = string.Empty;
             string positionSeniority = string.Empty;
@@ -360,126 +260,55 @@ namespace TEEmployee.Models.Talent
             // 計算年齡, 民國轉西元後計算年齡
             CultureInfo culture = new CultureInfo("zh-TW");
             culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-
-            // 開始工作的年資
-            string startWorkDate = senioritys.Select(x => x.start).OrderBy(x => x).FirstOrDefault();
-            DateTime start = DateTime.Parse(startWorkDate, culture);
-            DateTime end = DateTime.Now;
-            (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, end);
-            workYears = calcYMD.y + "年" + calcYMD.m + "月";
-
-            // 在中興工程累積的年資
-            int yearSum = 0;
-            int monthSum = 0;
-            List<Seniority> SEC = senioritys.Where(x => x.company.Equals("中興工程")).Where(x => x.position == null).ToList();
-            foreach (Seniority item in SEC)
+            DateTime now = DateTime.Now;
+            Regex regex = new Regex(@"(.*)\：(.*\..*)\~(.*)", RegexOptions.IgnoreCase);
+            string[] senioritys = analyzeSeniority.Split('\n');
+            // 工作年資
+            try
             {
-                start = DateTime.Parse(item.start, culture);
-                end = DateTime.Parse(item.end, culture);
-                calcYMD = CalcYMD(start, end);
-                yearSum += calcYMD.y;
-                monthSum += calcYMD.m;
+                MatchCollection matches = regex.Matches(senioritys[0]);
+                Match match = matches[0];
+                DateTime start = DateTime.Parse(match.Groups[2].Value, culture);
+                (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, now);
+                workYears = calcYMD.y + "年" + calcYMD.m + "月";
             }
-            double addYears = Math.Floor(Convert.ToDouble(monthSum / 12));
-            yearSum += (int)addYears;
-            monthSum = monthSum % 12;
-            companyYears = yearSum + "年" + monthSum + "月";
-
-            List<Seniority> SECSenioritys = senioritys.Where(x => x.company.Contains("中興")).Where(x => x.position != null).ToList();
-            foreach (string position in SECSenioritys.Select(x => x.position).Distinct().OrderBy(x => x).ToList())
+            catch { }
+            try
             {
-                yearSum = 0;
-                monthSum = 0;
-                positionSeniority += position + "：";
-                try
+                // 公司年資
+                MatchCollection matches = regex.Matches(senioritys[1]);
+                Match match = matches[0];
+                DateTime start = DateTime.Parse(match.Groups[2].Value, culture);
+                (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, now);
+                companyYears = calcYMD.y + "年" + calcYMD.m + "月";
+            }
+            catch { }
+            // 職位年資
+            try
+            {
+                for (int i = 2; i < senioritys.Length; i++)
                 {
-                    List<Seniority> SECbyPosition = SECSenioritys.Where(x => x.position.Equals(position)).ToList();
-                    if(SECbyPosition.Count > 0)
+                    if (senioritys[i].Contains("迄今"))
                     {
-                        // 比對到職日期, 如果有重疊則合併
-                        List<StartEndDate> startEndDates = new List<StartEndDate>();
-                        DateTime startDate = DateTime.Parse(SECbyPosition[0].start, culture);
-                        DateTime endDate = DateTime.Parse(SECbyPosition[0].end, culture);
-                        for (int i = 0; i < SECbyPosition.Count(); i++)
-                        {
-                            StartEndDate startEndDate = new StartEndDate();
-                            DateTime startisInDay = DateTime.Parse(SECbyPosition[i].start, culture);
-                            DateTime endisInDay = DateTime.Parse(SECbyPosition[i].end, culture);
-                            bool isInDate1 = IsInDate(startisInDay, startDate, endDate);
-                            bool isInDate2 = IsInDate(endisInDay, startDate, endDate);
-                            if (isInDate1 && isInDate2)
-                            {
-                                startEndDate.startDate = startDate;
-                                startEndDate.endDate = endDate;
-                                startEndDates.Add(startEndDate);
-                            }
-                            else if(isInDate1 && isInDate2 == false)
-                            {
-                                endDate = endisInDay;
-                                startEndDate.startDate = startDate;
-                                startEndDate.endDate = endDate;
-                                startEndDates.Add(startEndDate);
-                            }
-                            else if (isInDate1 == false && isInDate2)
-                            {
-                                startDate = startisInDay;
-                                startEndDate.startDate = startDate;
-                                startEndDate.endDate = endDate;
-                                startEndDates.Add(startEndDate);
-                            }
-                            else
-                            {
-                                startDate = startisInDay;
-                                endDate = endisInDay;
-                                startEndDate.startDate = startisInDay;
-                                startEndDate.endDate = endisInDay;
-                                startEndDates.Add(startEndDate);
-                            }
-                        }
-                        foreach (Seniority SECSeniority in SECbyPosition)
-                        {
-                            start = DateTime.Parse(SECSeniority.start, culture);
-                            end = DateTime.Parse(SECSeniority.end, culture);
-                            calcYMD = CalcYMD(start, end);
-                            yearSum += calcYMD.y;
-                            monthSum += calcYMD.m;
-                        }
-                        addYears = Math.Floor(Convert.ToDouble(monthSum / 12));
-                        yearSum += (int)addYears;
-                        monthSum = monthSum % 12;
-                        positionSeniority += yearSum + "年" + monthSum + "月" + "\n";
+                        MatchCollection matches = regex.Matches(senioritys[i]);
+                        Match match = matches[0];
+                        DateTime start = DateTime.Parse(match.Groups[2].Value, culture);
+                        (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, now);
+                        positionSeniority += match.Groups[1].Value + "：" + calcYMD.y + "年" + calcYMD.m + "月\n"; ;
+                    }
+                    else
+                    {
+                        positionSeniority += senioritys[i] + "\n";
                     }
                 }
-                catch (Exception) { }
+                if (positionSeniority.Length > 1)
+                {
+                    positionSeniority = positionSeniority.Substring(0, positionSeniority.Length - 1);
+                }
             }
-            positionSeniority = positionSeniority.Substring(0, positionSeniority.Length - 1);
+            catch { }
 
             return new Tuple<string, string, string>(workYears, companyYears, positionSeniority);
-        }
-        // 驗證與當天相差幾年幾月
-        (DateTime st, DateTime ed, int y, int m, int d) CalcYMD(DateTime start, DateTime end)
-        {
-            if (end.CompareTo(start) < 0) (start, end) = (end, start);
-            int years = (end.Year - start.Year);
-            int months = (end.Month - start.Month);
-            int days = (end.Day - start.Day);
-            if (days < 0)
-            {
-                months--;
-                var lastMon = end.AddMonths(-1);
-                days += DateTime.DaysInMonth(lastMon.Year, lastMon.Month);
-            }
-            if (months < 0)
-            {
-                years--;
-                months += 12;
-            }
-            return (start, end, years, months, days);
-        }
-        // 判斷某日期是否在日期區間內
-        private bool IsInDate(DateTime isInDay, DateTime startDate, DateTime endDate)
-        {
-            return isInDay.CompareTo(startDate) >= 0 && isInDay.CompareTo(endDate) <= 0;
         }
         // 比對上傳的檔案更新時間
         public List<string> CompareLastestUpdate(List<string> filesInfo)
@@ -716,7 +545,9 @@ namespace TEEmployee.Models.Talent
                             userCV.experience = ReturnParagraph(cells);
                             break;
                         case "經　　歷：":
-                            userCV.project = ReturnProjectParagraph(cells);
+                            Tuple<string, string> projectAndSeiority = ReturnProjectParagraph(cells);
+                            userCV.project = projectAndSeiority.Item1;
+                            userCV.seniority = projectAndSeiority.Item2;
                             break;
                         default:
                             break;
@@ -763,7 +594,7 @@ namespace TEEmployee.Models.Talent
             return returnParagraph;
         }
         // 經歷文字解析
-        private string ReturnProjectParagraph(TableCell[] cells)
+        private Tuple<string, string> ReturnProjectParagraph(TableCell[] cells)
         {
             List<string> removeStr = new List<string>() { "一", "二", "三", "四" }; // 職稱內要移除的文字
             // 讀取user.db內所有的職稱
@@ -834,7 +665,330 @@ namespace TEEmployee.Models.Talent
             {
                 returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
             }
-            return returnParagraph;
+            // 中興工程職務經歷
+            List<Seniority> senioritys = ProjectRegex(returnParagraph);
+            Tuple<string, string, string> seniority = Seniority(senioritys);
+
+            return new Tuple<string, string>(returnParagraph, seniority.Item3);
+        }
+        // Regex解析文字後, 儲存工作、公司與職位年資
+        private List<Seniority> ProjectRegex(string project)
+        {
+            List<Seniority> senioritys = new List<Seniority>();
+            string company = string.Empty;
+            foreach (string readLine in project.Split('\n'))
+            {
+                try
+                {
+                    Regex rg = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))");
+                    if (rg.IsMatch(readLine))
+                    {
+                        Seniority seniority = new Seniority();
+                        // 先查詢有幾個space
+                        int spaceCount = readLine.Split(' ').Length;
+                        if (spaceCount <= 3)
+                        {
+                            rg = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))\ (\d*\.\d*)~(.*)\ (.*)", RegexOptions.IgnoreCase);
+                            MatchCollection m = rg.Matches(readLine); //將比對後集合傳給 MatchCollection
+                            Match match = m[0];
+                            string[] startStr = match.Groups[2].Value.Split('.');
+                            string start = startStr[0].PadLeft(3, '0') + "." + startStr[1].PadLeft(2, '0');
+                            seniority.start = start;
+                            if (match.Groups[3].Value.Equals("迄今"))
+                            {
+                                string year = (DateTime.Now.Year - 1911).ToString("000");
+                                string month = DateTime.Now.Month.ToString("00");
+                                seniority.end = year + "." + month;
+                                seniority.now = true;
+                            }
+                            else
+                            {
+                                string[] endStr = match.Groups[3].Value.Split('.');
+                                string end = endStr[0].PadLeft(3, '0') + "." + endStr[1].PadLeft(2, '0');
+                                seniority.end = end;
+                            }
+                            if (match.Groups[4].Value.Contains("中興"))
+                            {
+                                company = "中興工程";
+                                seniority.company = company;
+                            }
+                            else
+                            {
+                                rg = new Regex(@"(\([\u4e00-\u9fa5]\))\ (\d*\.\d*)~(.*)\ (.*)", RegexOptions.IgnoreCase);
+                                if (rg.IsMatch(readLine))
+                                {
+                                    company = match.Groups[4].Value;
+                                    seniority.company = company;
+                                }
+                                else
+                                {
+                                    seniority.company = company;
+                                    seniority.department = match.Groups[4].Value;
+                                }
+                            }
+                            senioritys.Add(seniority);
+                        }
+                        else
+                        {
+                            rg = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))\ (\d*\.\d*)~(.*)\ (.*)\ (.*)", RegexOptions.IgnoreCase);
+                            MatchCollection m = rg.Matches(readLine); //將比對後集合傳給 MatchCollection
+                            Match match = m[0];
+                            string[] startStr = match.Groups[2].Value.Split('.');
+                            string start = startStr[0].PadLeft(3, '0') + "." + startStr[1].PadLeft(2, '0');
+                            seniority.start = start;
+                            if (match.Groups[3].Value.Equals("迄今"))
+                            {
+                                string year = (DateTime.Now.Year - 1911).ToString("000");
+                                string month = DateTime.Now.Month.ToString("00");
+                                seniority.end = year + "." + month;
+                                seniority.now = true;
+                            }
+                            else
+                            {
+                                string[] endStr = match.Groups[3].Value.Split('.');
+                                string end = endStr[0].PadLeft(3, '0') + "." + endStr[1].PadLeft(2, '0');
+                                seniority.end = end;
+                            }
+                            seniority.company = company;
+                            seniority.department = match.Groups[4].Value;
+                            if (match.Groups[5].Value.Contains("兼"))
+                            {
+                                string changeName = match.Groups[5].Value.Replace("重大", "");
+                                int index = changeName.IndexOf('兼');
+                                seniority.position = changeName.Substring(0, index);
+                                seniority.manager = changeName.Substring(index + 1, changeName.Length - index - 1);
+                            }
+                            else
+                            {
+                                seniority.position = match.Groups[5].Value;
+                            }
+                            senioritys.Add(seniority);
+                        }
+                    }
+                }
+                catch (Exception) { }
+            }
+
+            return senioritys;
+        }
+        // 中興工程資料
+        private Tuple<string, string, string> Seniority(List<Seniority> senioritys)
+        {
+            // 公司年資&職位年資
+            string workYears = string.Empty;
+            string companyYears = string.Empty;
+            string positionSeniority = string.Empty;
+
+            // 計算年齡, 民國轉西元後計算年齡
+            CultureInfo culture = new CultureInfo("zh-TW");
+            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+
+            // 開始工作的年資
+            string startWorkDate = senioritys.Select(x => x.start).OrderBy(x => x).FirstOrDefault();
+            DateTime start = DateTime.Parse(startWorkDate, culture);
+            DateTime end = DateTime.Now;
+            (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, end);
+            workYears = calcYMD.y + "年" + calcYMD.m + "月";
+            positionSeniority += "工作年資：" + startWorkDate + "~" + "迄今\n";
+
+            // 在中興工程累積的年資
+            int yearSum = 0;
+            int monthSum = 0;
+            List<Seniority> SEC = senioritys.Where(x => x.company.Equals("中興工程")).Where(x => x.position == null).ToList();
+            foreach (Seniority item in SEC)
+            {
+                start = DateTime.Parse(item.start, culture);
+                end = DateTime.Parse(item.end, culture);
+                calcYMD = CalcYMD(start, end);
+                yearSum += calcYMD.y;
+                monthSum += calcYMD.m;
+            }
+            double addYears = Math.Floor(Convert.ToDouble(monthSum / 12));
+            yearSum += (int)addYears;
+            monthSum = monthSum % 12;
+            companyYears = yearSum + "年" + monthSum + "月";
+
+            SEC = senioritys.Where(x => x.position == null).ToList();
+            foreach(Seniority item in SEC.OrderByDescending(x => x.start).ToList())
+            {
+                if (item.company.Contains("中興")){ startWorkDate = item.start; }
+                else{ break; }
+            }
+            positionSeniority += "公司年資：" + startWorkDate + "~" + "迄今\n";
+
+            // 比對在中興的職位日期, 如果有重疊則合併
+            List<Seniority> SECSenioritys = senioritys.Where(x => x.company.Contains("中興")).Where(x => x.position != null).ToList();
+            Seniority nowPosition = SECSenioritys.Where(x => x.now == true).FirstOrDefault(); // 找到目前職位
+            List<StartEndDate> startEndDates = new List<StartEndDate>();
+            if(nowPosition != null)
+            {
+                List<string> removeStr = new List<string>() { "一", "二", "三", "四" }; // 職稱內要判斷有無()
+                string changeName = nowPosition.position;
+                if (removeStr.Any(s => changeName.Contains(s)))
+                {
+                    if (!changeName.Contains("(") && !changeName.Contains(")"))
+                    {
+                        changeName = changeName.Insert(changeName.Length - 1, "(").Insert(changeName.Length + 1, ")");
+                    }
+                    else if (!changeName.Contains("("))
+                    {
+                        int index = changeName.LastIndexOf(")");
+                        changeName = changeName.Insert(changeName.Length - 2, "(");
+                    }
+                    else if (!changeName.Contains(")"))
+                    {
+                        changeName = changeName.Insert(changeName.Length + 1, ")");
+                    }
+                }
+                else
+                {
+                    if (changeName.Contains("(") || changeName.Contains(")"))
+                    {
+                        changeName = changeName.Replace("(", "").Replace(")", "");
+                    }
+                }
+                startEndDates.Add(new StartEndDate() { position = changeName, startDate = DateTime.Parse(nowPosition.start, culture), endDate = DateTime.Now, interval = changeName + "：" + nowPosition.start + "~" + "迄今\n" });
+
+                foreach (string position in SECSenioritys.Where(x => x.position != nowPosition.position).Select(x => x.position).Distinct().OrderBy(x => x).ToList())
+                {
+                    try
+                    {
+                        List<Seniority> SECbyPosition = SECSenioritys.Where(x => x.position.Equals(position)).ToList();
+                        if (SECbyPosition.Count > 0)
+                        {
+                            MergyDate(culture, SECbyPosition, startEndDates);
+                        }
+                    }
+                    catch (Exception) { }
+                }
+            }
+            foreach (StartEndDate startEndDate in startEndDates.OrderByDescending(x => x.startDate).ToList())
+            {
+                positionSeniority += startEndDate.interval;
+            }
+            if (positionSeniority != "")
+            {
+                positionSeniority = positionSeniority.Substring(0, positionSeniority.Length - 1);
+            }
+
+            return new Tuple<string, string, string>(workYears, companyYears, positionSeniority);
+        }
+        // 驗證與當天相差幾年幾月
+        (DateTime st, DateTime ed, int y, int m, int d) CalcYMD(DateTime start, DateTime end)
+        {
+            if (end.CompareTo(start) < 0) (start, end) = (end, start);
+            int years = (end.Year - start.Year);
+            int months = (end.Month - start.Month);
+            int days = (end.Day - start.Day);
+            if (days < 0)
+            {
+                months--;
+                var lastMon = end.AddMonths(-1);
+                days += DateTime.DaysInMonth(lastMon.Year, lastMon.Month);
+            }
+            if (months < 0)
+            {
+                years--;
+                months += 12;
+            }
+            return (start, end, years, months, days);
+        }
+        // 比對職位日期, 如果有重疊則合併
+        private StartEndDate MergyDate(CultureInfo culture, List<Seniority> SECbyPosition, List<StartEndDate> startEndDates)
+        {
+            List<Seniority> senioritys = new List<Seniority>(); // 儲存未重疊區間的日期
+
+            Seniority seniority = new Seniority();
+            seniority.position = SECbyPosition.Select(x => x.position).FirstOrDefault();
+
+            DateTime startDate = DateTime.Parse(SECbyPosition[0].start, culture);
+            DateTime endDate = DateTime.Parse(SECbyPosition[0].end, culture);
+            StartEndDate startEndDate = new StartEndDate();
+            for (int i = 0; i < SECbyPosition.Count(); i++)
+            {
+                startEndDate = new StartEndDate();
+                DateTime startisInDay = DateTime.Parse(SECbyPosition[i].start, culture);
+                DateTime endisInDay = DateTime.Parse(SECbyPosition[i].end, culture);
+                bool isInDate1 = IsInDate(startisInDay, startDate, endDate);
+                bool isInDate2 = IsInDate(endisInDay, startDate, endDate);
+                if (isInDate1 && isInDate2 == false)
+                {
+                    endDate = endisInDay;
+                }
+                else if (isInDate1 == false && isInDate2)
+                {
+                    startDate = startisInDay;
+                }
+                else if (isInDate1 == false && isInDate2 == false)
+                {
+                    (DateTime st, DateTime ed, int y, int m, int d) startDateCompare = CalcYMD(startDate, endisInDay);
+                    (DateTime st, DateTime ed, int y, int m, int d) endDateCompare = CalcYMD(endDate, startisInDay);
+                    // 比包含區間大
+                    if (startisInDay.CompareTo(startDate) <= 0 && endisInDay.CompareTo(endDate) >= 0)
+                    {
+                        startDate = startisInDay;
+                        endDate = endisInDay;
+                    }
+                    // 落差一個月內的做合併
+                    else if (startDateCompare.y == 0 && startDateCompare.m == 1)
+                    {
+                        startDate = startisInDay;
+                    }
+                    else if (endDateCompare.y == 0 && endDateCompare.m == 1)
+                    {
+                        endDate = endisInDay;
+                    }
+                    else
+                    {
+                        seniority.start = SECbyPosition[i].start;
+                        seniority.end = SECbyPosition[i].end;
+                        senioritys.Add(seniority);
+                    }
+                }
+            }
+            startEndDate.startDate = startDate;
+            startEndDate.endDate = endDate;
+            string position = SECbyPosition.Select(x => x.position).FirstOrDefault();
+            List<string> removeStr = new List<string>() { "一", "二", "三", "四" }; // 職稱內要判斷有無()
+            if (removeStr.Any(s => position.Contains(s)))
+            {
+                if(!position.Contains("(") && !position.Contains(")"))
+                {
+                    position = position.Insert(position.Length - 1, "(").Insert(position.Length + 1, ")");
+                }
+                else if (!position.Contains("("))
+                {
+                    int index = position.LastIndexOf(")");
+                    position = position.Insert(position.Length - 2, "(");
+                }
+                else if (!position.Contains(")"))
+                {
+                    position = position.Insert(position.Length + 1, ")");
+                }
+            }
+            else
+            {
+                if(position.Contains("(") || position.Contains(")"))
+                {
+                    position = position.Replace("(", "").Replace(")", "");
+                }
+            }
+            startEndDate.position = position;
+            (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(startDate, endDate);
+            startEndDate.interval = position + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n";
+            startEndDates.Add(startEndDate);
+
+            if (senioritys.Count > 0)
+            {
+                MergyDate(culture, senioritys, startEndDates);
+            }
+
+            return startEndDate;
+        }
+        // 判斷某日期是否在日期區間內
+        private bool IsInDate(DateTime isInDay, DateTime startDate, DateTime endDate)
+        {
+            return isInDay.CompareTo(startDate) >= 0 && isInDay.CompareTo(endDate) <= 0;
         }
         // 更新資料庫
         public bool UpdateUserCV(List<CV> userCVs)
@@ -849,10 +1003,10 @@ namespace TEEmployee.Models.Talent
                 {
                     //string sql = @"DELETE FROM userCV";
                     //_conn.Execute(sql);
-                    string sql = @"INSERT INTO userCV (empno, name, 'group', group_one, group_two, group_three, birthday, address, educational, performance, expertise, treatise, language, academic, license, training, honor, experience, project, lastest_update, planning, test, advantage, disadvantage, developed, future)
-                            VALUES(@empno, @name, @group, @group_one, @group_two, @group_three, @birthday, @address, @educational, @performance, @expertise, @treatise, @language, @academic, @license, @training, @honor, @experience, @project, @lastest_update, @planning, @test, @advantage, @disadvantage, @developed, @future)
+                    string sql = @"INSERT INTO userCV (empno, name, 'group', group_one, group_two, group_three, birthday, address, educational, performance, expertise, treatise, language, academic, license, training, honor, experience, project, seniority, lastest_update, planning, test, advantage, disadvantage, developed, future)
+                            VALUES(@empno, @name, @group, @group_one, @group_two, @group_three, @birthday, @address, @educational, @performance, @expertise, @treatise, @language, @academic, @license, @training, @honor, @experience, @project, @seniority, @lastest_update, @planning, @test, @advantage, @disadvantage, @developed, @future)
                             ON CONFLICT(empno)
-                            DO UPDATE SET name=@name, 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three, birthday=@birthday, address=@address, educational=@educational, performance=@performance, expertise=@expertise, treatise=@treatise, language=@language, academic=@academic, license=@license, training=@training, honor=@honor, experience=@experience, project=@project, lastest_update=@lastest_update";
+                            DO UPDATE SET name=@name, 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three, birthday=@birthday, address=@address, educational=@educational, performance=@performance, expertise=@expertise, treatise=@treatise, language=@language, academic=@academic, license=@license, training=@training, honor=@honor, experience=@experience, project=@project, seniority=@seniority, lastest_update=@lastest_update";
                     _conn.Execute(sql, userCVs);
 
                     tran.Commit();
