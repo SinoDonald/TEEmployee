@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using TEEmployee.Models.Talent;
 
@@ -130,8 +131,26 @@ namespace TEEmployee.Models.Promotion
                     //break;
             }
 
-            // add performance
+
             string[] stringSeparators = new string[] { "\n" };
+
+            // add seniority
+            string seniorityStr = "\n";
+            string[] seniorities = cvs[0].seniority.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var s in seniorities)
+            {
+                if (s.Contains(strs[0]))
+                {
+                    seniorityStr += "已任職";
+                    seniorityStr += s;
+                    break;
+                }
+            }
+
+            promotions[0].content += seniorityStr;
+
+            // add performance
+
             string[] performances = cvs[0].performance.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
             int count = Math.Min(int.Parse(strs[2]), performances.Length);
@@ -414,7 +433,7 @@ namespace TEEmployee.Models.Promotion
             try
             {
                 CV cv = (_talentRepository as TalentRepository).Get(user.empno).First();
-                List<Promotion> promotions = this.GetByUser(user.empno);
+                List<Promotion> promotions = _promotionRepository.GetByUser(user.empno);
 
                 if (department_manager)
                 {
@@ -424,28 +443,46 @@ namespace TEEmployee.Models.Promotion
 
                 bool hasBonus = promotions.Where(x => x.condition > 2 && x.condition < 7 && x.achieved).Count() > 0;
                 string[] strs = this.NextConditions(user.profTitle); // nextPro nextYear score scoreYear
-
-
-
-
+                string[] stringSeparators = new string[] { "\n" };
 
                 // If user can upgrade in normay way, use normal
                 // Else try special way.
 
-                // Year Condition
-                // TODO
-                bool passYear, passYearByBonus;
-                passYear = true;
-                passYearByBonus = false;
+
+                // Year Condition                
+                bool passYear = false, passYearByBonus = false;
+                int seniorityYear = int.Parse(strs[1]);
+                
+                string[] seniorities = cv.seniority.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var s in seniorities)
+                {
+                    if (s.Contains(strs[0]))
+                    {
+                        Regex rx = new Regex(@"\d*年", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+                        Match match = rx.Match(s);
+
+                        string year = match.Value;
+                        year = year.Substring(0, year.Length - 1);
+
+                        if (int.Parse(year) >= seniorityYear)
+                        {
+                            passYear = true;
+                        }
+                        else if (hasBonus && (int.Parse(year) >= seniorityYear - 1))
+                        {
+                            passYearByBonus = true;
+                        }
+
+                    }
+                }                
 
                 // Score Condition 
                 bool passScore = false, passScoreByBonus = false;
                 int scoreYear = int.Parse(strs[2]);
                 int score = int.Parse(strs[3]);
-                string[] stringSeparators = new string[] { "\n" };
                 string[] performances = cv.performance.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
-
-                int a = 0;
 
                 if (performances.Length >= scoreYear)
                 {
@@ -463,6 +500,8 @@ namespace TEEmployee.Models.Promotion
                         passScoreByBonus = true;
                     }
                 }
+
+                // decide upgrade method
 
                 if (passYear && passScore)
                     return "normal";
