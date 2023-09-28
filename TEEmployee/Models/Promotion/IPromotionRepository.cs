@@ -12,5 +12,6 @@ namespace TEEmployee.Models.Promotion
         List<Promotion> GetByUser(string empno);
         bool Insert(List<Promotion> promotions);
         bool Update(Promotion promotion);
+        bool DeleteAll();
     }
 }

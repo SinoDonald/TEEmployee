@@ -55,6 +55,14 @@ namespace TEEmployee.Models.Promotion
             return ret > 0;
         }
 
+        public bool DeleteAll()
+        {
+            string sql = @"DELETE FROM Promotion";
+            int ret = _conn.Execute(sql);
+            
+            return ret > 0;
+        }
+
         public void Dispose()
         {
             _conn.Close();

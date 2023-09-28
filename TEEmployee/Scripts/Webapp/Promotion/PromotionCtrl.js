@@ -20,6 +20,9 @@ app.service('appService', ['$http', function ($http) {
     this.GetAuthorization = (o) => {
         return $http.post('Promotion/GetAuthorization', o);
     };
+    this.DeleteAll = (o) => {
+        return $http.post('Promotion/DeleteAll', o);
+    };
 }]);
 
 app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', function ($scope, $location, appService, $rootScope, $q) {
@@ -184,7 +187,12 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
 
     $scope.selectName = () => {
 
-        if (!$scope.selectedName) return;
+        if (!$scope.selectedName) {
+            $scope.data = [];
+            return;
+        }
+
+            
 
         let user = $scope.auth.Users.find(x => x.name === $scope.selectedName);
 
@@ -204,6 +212,14 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
         if (item.condition === 7 && ($scope.auth.User.department_manager || $scope.auth.User.group_manager))
             return true;
         return false;
+    }
+
+    $scope.deleteAll = () => {
+
+        appService.DeleteAll({}).then((ret) => {
+            
+        });
+
     }
 
 }]);

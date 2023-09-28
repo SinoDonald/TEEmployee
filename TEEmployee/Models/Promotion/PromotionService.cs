@@ -106,7 +106,11 @@ namespace TEEmployee.Models.Promotion
         {
             User user = _userRepository.Get(empno);
 
-            List<CV> cvs = (_talentRepository as TalentRepository).Get(empno);
+
+            CV cv = (_talentRepository as TalentRepository).Get(empno).FirstOrDefault();
+
+            if (cv == null)
+                return;
 
             string[] strs = this.NextConditions(user.profTitle);
 
@@ -136,7 +140,7 @@ namespace TEEmployee.Models.Promotion
 
             // add seniority
             string seniorityStr = "\n";
-            string[] seniorities = cvs[0].seniority.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+            string[] seniorities = cv.seniority.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
             foreach (var s in seniorities)
             {
                 if (s.Contains(strs[0]))
@@ -151,7 +155,7 @@ namespace TEEmployee.Models.Promotion
 
             // add performance
 
-            string[] performances = cvs[0].performance.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+            string[] performances = cv.performance.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
             int count = Math.Min(int.Parse(strs[2]), performances.Length);
             string performanceStr = $"\n近{strs[2]}年的考績為:";
@@ -452,7 +456,7 @@ namespace TEEmployee.Models.Promotion
                 // Year Condition                
                 bool passYear = false, passYearByBonus = false;
                 int seniorityYear = int.Parse(strs[1]);
-                
+
                 string[] seniorities = cv.seniority.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
                 foreach (var s in seniorities)
@@ -474,9 +478,9 @@ namespace TEEmployee.Models.Promotion
                         {
                             passYearByBonus = true;
                         }
-
+                        break;
                     }
-                }                
+                }
 
                 // Score Condition 
                 bool passScore = false, passScoreByBonus = false;
@@ -517,6 +521,25 @@ namespace TEEmployee.Models.Promotion
 
             return "";
 
+        }
+
+        public bool DeleteAll(string empno)
+        {
+            var ret = _promotionRepository.DeleteAll();
+
+            if (!ret)
+                return false;
+
+            string dir = HttpContext.Current.Server.MapPath("~/App_Data/Promotion");
+
+            DirectoryInfo di = new DirectoryInfo(dir);
+
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+
+            return true;
         }
 
         public void Dispose()

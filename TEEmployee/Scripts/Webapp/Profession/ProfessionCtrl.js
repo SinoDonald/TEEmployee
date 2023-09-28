@@ -331,7 +331,28 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
     $scope.IamInvalid = true;
 
-    $scope.isInvalidScore = (score) => {
+    $scope.isInvalidManageCoreScore = (score) => {
+
+        if (!score)
+            return false;
+
+        let num = Number(score);
+
+        if (isNaN(num)) {
+            return true;
+        }
+
+
+        if (Number.isInteger(num) && num >= 1 && num <= 5) {
+            return false;
+        }
+        else {
+            return true;
+        }
+
+    }
+
+    $scope.isInvalidDomainScore = (score) => {
 
         if (!score)
             return false;
@@ -369,10 +390,20 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
                 if (isNaN(num))
                     continue;
 
-                if (Number.isInteger(num) && num >= 0 && num <= 5) {
-                    emp.score = num;
-                    savedScores.push(emp);
+                if (skill.skill_type === 'domain') {
+                    if (Number.isInteger(num) && num >= 0 && num <= 5) {
+                        emp.score = num;
+                        savedScores.push(emp);
+                    }
                 }
+                else {
+                    if (Number.isInteger(num) && num >= 1 && num <= 5) {
+                        emp.score = num;
+                        savedScores.push(emp);
+                    }
+                }
+
+                
             }
         }
 
@@ -514,7 +545,28 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
     let data;
 
-    $scope.items = [{
+    //$scope.items = [{
+    //    label: '0分 「非所需技能」',
+    //    value: 0
+    //}, {
+    //    label: '1分「安排學習技能」',
+    //    value: 1
+    //}, {
+    //    label: '2分「學習中」',
+    //    value: 2
+    //}, {
+    //    label: '3分「可獨立作業」',
+    //    value: 3
+    //}, {
+    //    label: '4分「精通且可指導他人」',
+    //    value: 4
+    //}, {
+    //    label: '5分「專家，從事專業達五年以上',
+    //    value: 5
+    //},];
+    $scope.items = [];
+
+    const DomainItems = [{
         label: '0分 「非所需技能」',
         value: 0
     }, {
@@ -533,6 +585,24 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
         label: '5分「專家，從事專業達五年以上',
         value: 5
     },];
+
+    const ManageCoreItems = [{
+        label: '1分 「非常不熟悉」',
+        value: 1
+    }, {
+        label: '2分「不熟悉」',
+        value: 2
+    }, {
+        label: '3分「普通」',
+        value: 3
+    }, {
+        label: '4分「熟悉」',
+        value: 4
+    }, {
+        label: '5分「非常熟悉',
+        value: 5
+    },];
+
 
 
     $scope.GetAllSkillsByRole = () => {
@@ -601,6 +671,12 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
         $scope.deletedSkills = [];
         let skillids = skills.map(x => x.skill_id);
         $scope.skillSet = skillSet;
+
+        if (skill_type === 'domain')
+            $scope.items = DomainItems;
+        else
+            $scope.items = ManageCoreItems;
+
         //$scope.skillSet = skillSet.filter(x => !skillids.includes(x.id));
     };
 
