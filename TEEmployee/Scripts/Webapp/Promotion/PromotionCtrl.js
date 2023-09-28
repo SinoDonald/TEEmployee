@@ -85,12 +85,16 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
         if ($scope.auth.User.department_manager || $scope.auth.User.group_manager) {
             $scope.upgradeUsers = $scope.auth.Users
             $scope.selectedTitle = $scope.auth.User.profTitle;
-            $scope.selectTitle();
+        /*$scope.selectTitle();*/
+            $scope.names = $scope.upgradeUsers.filter(x => x.profTitle === $scope.selectedTitle).map(x => x.name).sort();
+            
+
             $scope.selectedName = $scope.auth.User.name;
+            $scope.selectName();
         }
         else {
-            appService.GetByUser({}).then((ret) => {
-                $scope.data = ret.data;
+            appService.GetByUser({}).then((ret2) => {
+                $scope.data = ret2.data;
             })
         }
 
