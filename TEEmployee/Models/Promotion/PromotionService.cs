@@ -106,7 +106,11 @@ namespace TEEmployee.Models.Promotion
         {
             User user = _userRepository.Get(empno);
 
-            List<CV> cvs = (_talentRepository as TalentRepository).Get(empno);
+
+            CV cv = (_talentRepository as TalentRepository).Get(empno).FirstOrDefault();
+
+            if (cv == null)
+                return;
 
             string[] strs = this.NextConditions(user.profTitle);
 
@@ -136,7 +140,7 @@ namespace TEEmployee.Models.Promotion
 
             // add seniority
             string seniorityStr = "\n";
-            string[] seniorities = cvs[0].seniority.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+            string[] seniorities = cv.seniority.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
             foreach (var s in seniorities)
             {
                 if (s.Contains(strs[0]))
@@ -151,7 +155,7 @@ namespace TEEmployee.Models.Promotion
 
             // add performance
 
-            string[] performances = cvs[0].performance.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+            string[] performances = cv.performance.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
             int count = Math.Min(int.Parse(strs[2]), performances.Length);
             string performanceStr = $"\n近{strs[2]}年的考績為:";
@@ -474,7 +478,7 @@ namespace TEEmployee.Models.Promotion
                         {
                             passYearByBonus = true;
                         }
-
+                        break;
                     }
                 }                
 

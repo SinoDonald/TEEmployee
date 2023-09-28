@@ -184,7 +184,12 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
 
     $scope.selectName = () => {
 
-        if (!$scope.selectedName) return;
+        if (!$scope.selectedName) {
+            $scope.data = [];
+            return;
+        }
+
+            
 
         let user = $scope.auth.Users.find(x => x.name === $scope.selectedName);
 

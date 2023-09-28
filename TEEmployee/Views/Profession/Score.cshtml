@@ -10,8 +10,13 @@
         </div>
 
         <div>
-            <a tabindex="0" class="btn btn-sm btn-secondary pop" role="button" data-toggle="popover" data-trigger="hover" title="評分說明" data-html="true"
-               data-content="分數區間為 0 ~ 5分</br>0分「非所需技能」</br>1分「安排學習技能」</br>2分「學習中」</br>3分「可獨立作業」</br>4分「精通且可指導他人」</br>5分「專家，從事專業達五年以上」">評分說明</a>
+            <a tabindex="0" class="btn btn-sm btn-secondary pop" role="button" data-toggle="popover" data-trigger="hover" title="領域技能評分說明" data-html="true"
+               data-content="分數區間為 0 ~ 5分</br>0分「非所需技能」</br>1分「安排學習技能」</br>2分「學習中」</br>3分「可獨立作業」</br>4分「精通且可指導他人」</br>5分「專家，從事專業達五年以上」">領域技能評分說明</a>
+        </div>
+
+        <div>
+            <a tabindex="0" class="btn btn-sm btn-secondary pop" role="button" data-toggle="popover" data-trigger="hover" title="核心及管理技能評分說明" data-html="true"
+               data-content="分數區間為 1 ~ 5分</br>1分「非常不熟悉」</br>2分「不熟悉」</br>3分「普通」</br>4分「熟悉」</br>5分「非常熟悉」">核心及管理技能評分說明</a>
         </div>
 
 
@@ -39,7 +44,7 @@
                             <th scope="row" class="text-center" ng-bind="member.name"></th>
                             <td class="p-0" ng-repeat="skill in domain">
                                 <div class="h-100 d-flex">
-                                    <input type="text" class="scoreInput" ng-class="{'has-error': isInvalidScore(skill.scores[$parent.$index].score)}" ng-model="skill.scores[$parent.$index].score">
+                                    <input type="text" class="scoreInput" ng-class="{'has-error': isInvalidDomainScore(skill.scores[$parent.$index].score)}" ng-model="skill.scores[$parent.$index].score">
                                 </div>
                                 @*<div ng-bind="skill.scores[$parent.$index].score"></div>*@
                             </td>
@@ -62,7 +67,7 @@
                             <th scope="row" class="text-center" ng-bind="member.name"></th>
                             <td class="p-0" ng-repeat="skill in core">
                                 <div class="h-100 d-flex">
-                                    <input type="text" class="scoreInput" ng-class="{'has-error': isInvalidScore(skill.scores[$parent.$index].score)}" ng-model="skill.scores[$parent.$index].score">
+                                    <input type="text" class="scoreInput" ng-class="{'has-error': isInvalidManageCoreScore(skill.scores[$parent.$index].score)}" ng-model="skill.scores[$parent.$index].score">
                                 </div>
                                 @*<div ng-bind="skill.scores[$parent.$index].score"></div>*@
                             </td>
@@ -91,7 +96,7 @@
                         <th scope="row" class="text-center" ng-bind="member.name"></th>
                         <td class="p-0" ng-repeat="skill in manage">
                             <div class="h-100 d-flex">
-                                <input type="text" class="scoreInput" ng-model="skill.scores[$parent.$index].score" ng-class="{'has-error': isInvalidScore(skill.scores[$parent.$index].score)}">
+                                <input type="text" class="scoreInput" ng-model="skill.scores[$parent.$index].score" ng-class="{'has-error': isInvalidManageCoreScore(skill.scores[$parent.$index].score)}">
                             </div>
                             @*<div ng-bind="skill.scores[$parent.$index].score"></div>*@
                         </td>
