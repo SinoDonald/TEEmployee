@@ -1256,19 +1256,28 @@ namespace TEEmployee.Models.Talent
 
                 string empno = Regex.Replace(Path.GetFileName(file.FileName), "[^0-9]", ""); // 僅保留數字
                 FilterReader rilterReader = new FilterReader(path);
-                string line = rilterReader.ReadToEnd();
+                string line = rilterReader.ReadToEnd().Replace(" ", "");
                 // 解析PDF內的優、缺點
-                int advantages = line.LastIndexOf("1.3 典型優勢");
-                int disadvantage = line.LastIndexOf("1.4 典型劣勢");
-                int life = line.LastIndexOf("1.5 關鍵的⼈⽣問題");
-                int work = line.IndexOf("4.2 價值觀: ⼯作成果");
-                int values = line.IndexOf("4.3 價值觀: ⼈⽣價值觀");
+                int advantages = line.LastIndexOf("1.3典型優勢");
+                int disadvantage = line.LastIndexOf("1.4典型劣勢");
+                int life = line.LastIndexOf("1.5關鍵的⼈⽣問題");
+                int work = line.IndexOf("4.2價值觀:⼯作成果");
+                int values = line.IndexOf("4.3價值觀:⼈⽣價值觀");
 
                 CV userCV = new CV();
                 userCV.empno = empno;
-                userCV.advantage = line.Substring(advantages, disadvantage - advantages).Trim().Replace("1.3 典型優勢", "").Replace(".", "。\n").Replace("\uff00", ";"); // 優勢
-                userCV.disadvantage = line.Substring(disadvantage, life - disadvantage).Trim().Replace("1.4 典型劣勢", "").Replace(".", "。\n").Replace("\uff00", ";"); // 劣勢
-                userCV.test = line.Substring(work, values - work).Trim().Replace("4.2 價值觀: ⼯作成果", "").Replace(".", "。\n").Replace("\uff00", ";"); // 工作成果
+                userCV.advantage = line.Substring(advantages, disadvantage - advantages).Trim().Replace("1.3典型優勢", "").Replace(".", "。\n").Replace("\uff00", ";"); // 優勢
+                userCV.disadvantage = line.Substring(disadvantage, life - disadvantage).Trim().Replace("1.4典型劣勢", "").Replace(".", "。\n").Replace("\uff00", ";"); // 劣勢
+                string test = line.Substring(work, values - work).Trim().Replace("4.2價值觀:⼯作成果", "").Replace(".", "。\n").Replace("\uff00", ";"); // 工作成果
+                int index = test.LastIndexOf("12345678");
+                if(index != 0)
+                {
+                    userCV.test = test.Substring(0, index);
+                }
+                else
+                {
+                    userCV.test = test;
+                }
                 userCVs.Add(userCV);
                 if(SaveTest(userCVs) == true)
                 {
