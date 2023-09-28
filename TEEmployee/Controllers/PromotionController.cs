@@ -82,6 +82,14 @@ namespace TEEmployee.Controllers
             return Content(ret, "application/json");
         }
 
+        [HttpPost]
+        public JsonResult DeleteAll()
+        {
+            var ret = _service.DeleteAll(Session["empno"].ToString());
+
+            return Json(ret);
+        }
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

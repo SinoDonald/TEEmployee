@@ -456,7 +456,7 @@ namespace TEEmployee.Models.Promotion
                 // Year Condition                
                 bool passYear = false, passYearByBonus = false;
                 int seniorityYear = int.Parse(strs[1]);
-                
+
                 string[] seniorities = cv.seniority.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
                 foreach (var s in seniorities)
@@ -480,7 +480,7 @@ namespace TEEmployee.Models.Promotion
                         }
                         break;
                     }
-                }                
+                }
 
                 // Score Condition 
                 bool passScore = false, passScoreByBonus = false;
@@ -521,6 +521,25 @@ namespace TEEmployee.Models.Promotion
 
             return "";
 
+        }
+
+        public bool DeleteAll(string empno)
+        {
+            var ret = _promotionRepository.DeleteAll();
+
+            if (!ret)
+                return false;
+
+            string dir = HttpContext.Current.Server.MapPath("~/App_Data/Promotion");
+
+            DirectoryInfo di = new DirectoryInfo(dir);
+
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+
+            return true;
         }
 
         public void Dispose()
