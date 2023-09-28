@@ -654,7 +654,14 @@ namespace TEEmployee.Models.Talent
                         {
                             string jobTitle = jobTitles.Where(s => changeParagraph.Contains(s)).FirstOrDefault();
                             index = changeParagraph.IndexOf(jobTitle);
-                            changeParagraph = changeParagraph.Insert(index, " ");
+                            if(changeParagraph.Substring(index - 1, 1) == "(")
+                            {
+                                changeParagraph = changeParagraph.Insert(index - 1, " ");
+                            }
+                            else
+                            {
+                                changeParagraph = changeParagraph.Insert(index, " ");
+                            }
                         }
                     }
                 }
@@ -753,14 +760,23 @@ namespace TEEmployee.Models.Talent
                             seniority.department = match.Groups[4].Value;
                             if (match.Groups[5].Value.Contains("兼"))
                             {
-                                string changeName = match.Groups[5].Value.Replace("重大", "");
+                                string changeName = match.Groups[5].Value.Replace("重大", "").Replace("（", "(").Replace("）", ")");
                                 int index = changeName.IndexOf('兼');
+                                seniority.position = changeName.Substring(0, index);
+                                seniority.manager = changeName.Substring(index + 1, changeName.Length - index - 1);
+                            }
+                            else if (match.Groups[5].Value.Contains("/"))
+                            {
+                                string changeName = match.Groups[5].Value.Replace("重大", "").Replace("（", "(").Replace("）", ")");
+                                int index = changeName.IndexOf('/');
                                 seniority.position = changeName.Substring(0, index);
                                 seniority.manager = changeName.Substring(index + 1, changeName.Length - index - 1);
                             }
                             else
                             {
-                                seniority.position = match.Groups[5].Value;
+                                string changeName = match.Groups[5].Value.Replace("（", "(").Replace("）", ")");
+                                changeName = ChangeName(changeName);
+                                seniority.position = changeName;
                             }
                             senioritys.Add(seniority);
                         }
@@ -820,47 +836,48 @@ namespace TEEmployee.Models.Talent
             List<Seniority> SECSenioritys = senioritys.Where(x => x.company.Contains("中興")).Where(x => x.position != null).ToList();
             Seniority nowPosition = SECSenioritys.Where(x => x.now == true).FirstOrDefault(); // 找到目前職位
             List<StartEndDate> startEndDates = new List<StartEndDate>();
-            if(nowPosition != null)
+            if(nowPosition == null)
             {
-                List<string> removeStr = new List<string>() { "一", "二", "三", "四" }; // 職稱內要判斷有無()
-                string changeName = nowPosition.position;
-                if (removeStr.Any(s => changeName.Contains(s)))
+                nowPosition = SECSenioritys.Where(x => x.position != null).FirstOrDefault(); // 找到目前職位
+            }
+            List<string> removeStr = new List<string>() { "一", "二", "三", "四" }; // 職稱內要判斷有無()
+            string changeName = nowPosition.position;
+            if (removeStr.Any(s => changeName.Contains(s)))
+            {
+                if (!changeName.Contains("(") && !changeName.Contains(")"))
                 {
-                    if (!changeName.Contains("(") && !changeName.Contains(")"))
-                    {
-                        changeName = changeName.Insert(changeName.Length - 1, "(").Insert(changeName.Length + 1, ")");
-                    }
-                    else if (!changeName.Contains("("))
-                    {
-                        int index = changeName.LastIndexOf(")");
-                        changeName = changeName.Insert(changeName.Length - 2, "(");
-                    }
-                    else if (!changeName.Contains(")"))
-                    {
-                        changeName = changeName.Insert(changeName.Length + 1, ")");
-                    }
+                    changeName = changeName.Insert(changeName.Length - 1, "(").Insert(changeName.Length + 1, ")");
                 }
-                else
+                else if (!changeName.Contains("("))
                 {
-                    if (changeName.Contains("(") || changeName.Contains(")"))
-                    {
-                        changeName = changeName.Replace("(", "").Replace(")", "");
-                    }
+                    int index = changeName.LastIndexOf(")");
+                    changeName = changeName.Insert(changeName.Length - 2, "(");
                 }
-                startEndDates.Add(new StartEndDate() { position = changeName, startDate = DateTime.Parse(nowPosition.start, culture), endDate = DateTime.Now, interval = changeName + "：" + nowPosition.start + "~" + "迄今\n" });
+                else if (!changeName.Contains(")"))
+                {
+                    changeName = changeName.Insert(changeName.Length + 1, ")");
+                }
+            }
+            else
+            {
+                if (changeName.Contains("(") || changeName.Contains(")"))
+                {
+                    changeName = changeName.Replace("(", "").Replace(")", "");
+                }
+            }
+            startEndDates.Add(new StartEndDate() { position = changeName, startDate = DateTime.Parse(nowPosition.start, culture), endDate = DateTime.Now, interval = changeName + "：" + nowPosition.start + "~" + "迄今\n" });
 
-                foreach (string position in SECSenioritys.Where(x => x.position != nowPosition.position).Select(x => x.position).Distinct().OrderBy(x => x).ToList())
+            foreach (string position in SECSenioritys.Where(x => x.position != nowPosition.position).Select(x => x.position).Distinct().OrderBy(x => x).ToList())
+            {
+                try
                 {
-                    try
+                    List<Seniority> SECbyPosition = SECSenioritys.Where(x => x.position.Equals(position)).ToList();
+                    if (SECbyPosition.Count > 0)
                     {
-                        List<Seniority> SECbyPosition = SECSenioritys.Where(x => x.position.Equals(position)).ToList();
-                        if (SECbyPosition.Count > 0)
-                        {
-                            MergyDate(culture, SECbyPosition, startEndDates);
-                        }
+                        MergyDate(culture, SECbyPosition, startEndDates);
                     }
-                    catch (Exception) { }
                 }
+                catch (Exception) { }
             }
             foreach (StartEndDate startEndDate in startEndDates.OrderByDescending(x => x.startDate).ToList())
             {
@@ -949,31 +966,12 @@ namespace TEEmployee.Models.Talent
             startEndDate.startDate = startDate;
             startEndDate.endDate = endDate;
             string position = SECbyPosition.Select(x => x.position).FirstOrDefault();
-            List<string> removeStr = new List<string>() { "一", "二", "三", "四" }; // 職稱內要判斷有無()
-            if (removeStr.Any(s => position.Contains(s)))
-            {
-                if(!position.Contains("(") && !position.Contains(")"))
-                {
-                    position = position.Insert(position.Length - 1, "(").Insert(position.Length + 1, ")");
-                }
-                else if (!position.Contains("("))
-                {
-                    int index = position.LastIndexOf(")");
-                    position = position.Insert(position.Length - 2, "(");
-                }
-                else if (!position.Contains(")"))
-                {
-                    position = position.Insert(position.Length + 1, ")");
-                }
-            }
-            else
-            {
-                if(position.Contains("(") || position.Contains(")"))
-                {
-                    position = position.Replace("(", "").Replace(")", "");
-                }
-            }
-            startEndDate.position = position;
+            startEndDate.position = ChangeName(position); // 職稱文字判斷
+            //string manager = SECbyPosition.Where(x => x.position.Contains(position)).Where(x => x.manager != null).Select(x => x.manager).FirstOrDefault();
+            //if(manager != null)
+            //{
+            //    position += "、" + ChangeName(manager); // 管理職職稱文字判斷
+            //}
             (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(startDate, endDate);
             startEndDate.interval = position + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n";
             startEndDates.Add(startEndDate);
@@ -989,6 +987,27 @@ namespace TEEmployee.Models.Talent
         private bool IsInDate(DateTime isInDay, DateTime startDate, DateTime endDate)
         {
             return isInDay.CompareTo(startDate) >= 0 && isInDay.CompareTo(endDate) <= 0;
+        }
+        // 職稱文字判斷
+        private string ChangeName(string changeName)
+        {
+            List<string> removeStr = new List<string>() { "一", "二", "三", "四" }; // 職稱內要判斷有無()
+            string word = removeStr.Where(s => changeName.Contains(s)).Select(s => s).FirstOrDefault();
+            if (word != null)
+            {
+                changeName = changeName.Replace("(", "").Replace(")", "");
+                int index = changeName.LastIndexOf(word);
+                changeName = changeName.Insert(index, "(").Insert(index + 2, ")");
+            }
+            else
+            {
+                if (changeName.Contains("(") || changeName.Contains(")"))
+                {
+                    changeName = changeName.Replace("(", "").Replace(")", "");
+                }
+            }
+
+            return changeName;
         }
         // 更新資料庫
         public bool UpdateUserCV(List<CV> userCVs)
