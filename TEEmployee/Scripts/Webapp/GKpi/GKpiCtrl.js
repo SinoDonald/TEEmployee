@@ -66,22 +66,40 @@ app.controller('FillinCtrl', ['$scope', '$location', 'appService', '$rootScope',
         });
     }
 
-    //$scope.selectGroup = () => {
-
-    //    if (!$scope.data) return;
-
-    //    let employee_array = $scope.data.filter(x => x.group_name === $scope.selectedGroup).map(x => x.name);
-    //    $scope.employees = [...new Set(employee_array)]
-    //    $scope.selectedEmployee = $scope.employees[0];
-    //    $scope.selectEmployee();
-    //}
-
     $scope.selectRole = () => {
 
         if (!$scope.data) return;
 
+        //$scope.kpiTypes = $scope.data
+        //    .filter(x => x.role === $scope.selectedRole).map(x => x.kpi_type);        
+
+        //$scope.selectedType = $scope.kpiTypes[0];
+        //$scope.selectType();
+
+        let group_array = $scope.data.filter(x => x.role === $scope.selectedRole).map(x => x.group_name);
+        $scope.groups = [...new Set(group_array)];
+
+        $scope.selectedGroup = $scope.groups[0];
+        $scope.selectGroup();
+
+    }
+
+    $scope.selectGroup = () => {
+
+        if (!$scope.data) return;
+
+        //let employee_array = $scope.data.filter(x => x.group_name === $scope.selectedGroup).map(x => x.name);
+        //$scope.employees = [...new Set(employee_array)]
+        //$scope.selectedEmployee = $scope.employees[0];
+        //$scope.selectEmployee();
+
+        //let role_array = $scope.data.filter(x => x.group_name === $scope.selectedGroup).map(x => x.role);
+        //$scope.roles = [...new Set(role_array)]
+        //$scope.selectedRole = $scope.roles[0];
+        //$scope.selectRole();
+
         $scope.kpiTypes = $scope.data
-            .filter(x => x.role === $scope.selectedRole).map(x => x.kpi_type);
+            .filter(x => x.group_name === $scope.selectedGroup && x.role === $scope.selectedRole).map(x => x.kpi_type);
 
         $scope.selectedType = $scope.kpiTypes[0];
         $scope.selectType();
@@ -105,8 +123,11 @@ app.controller('FillinCtrl', ['$scope', '$location', 'appService', '$rootScope',
 
         if (!$scope.data) return;
 
+        //$scope.datum = $scope.data
+        //    .find(x => x.kpi_type === $scope.selectedType);
+
         $scope.datum = $scope.data
-            .find(x => x.kpi_type === $scope.selectedType);
+            .find(x => x.kpi_type === $scope.selectedType && x.role === $scope.selectedRole && x.group_name === $scope.selectedGroup);
 
         destructFeedbacks();
 

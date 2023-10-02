@@ -42,20 +42,6 @@
                 <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
             </select>
         </div>
-        @*<div>
-                <label for="SelectManager">群組</label>
-                <select class="form-select manager" id="SelectManager" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
-                    <option value="" disabled selected>Select your option</option>
-                    <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
-                </select>
-            </div>*@
-        @*<div>
-                <label for="SelectCategory">員工</label>
-                <select class="form-select" id="SelectCategory" name="SelectEmployee" ng-model="selectedEmployee" ng-change="selectEmployee()" aria-label="Select the Category">
-                    <option value="" disabled selected>Select your option</option>
-                    <option ng-repeat="employee in employees" value="{{employee}}">{{employee}}</option>
-                </select>
-            </div>*@
         <div>
             <label for="SelectCategory">職位</label>
             <select class="form-select" id="SelectCategory" name="SelectType" ng-model="selectedRole" ng-change="selectRole()" aria-label="Select the Category">
@@ -63,6 +49,20 @@
                 <option ng-repeat="role in roles" value="{{role}}">{{role}}</option>
             </select>
         </div>
+        <div>
+            <label for="SelectGroup">群組</label>
+            <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
+                <option value="" disabled selected>Select your option</option>
+                <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
+            </select>
+        </div>
+        @*<div>
+            <label for="SelectCategory">員工</label>
+            <select class="form-select" id="SelectCategory" name="SelectEmployee" ng-model="selectedEmployee" ng-change="selectEmployee()" aria-label="Select the Category">
+                <option value="" disabled selected>Select your option</option>
+                <option ng-repeat="employee in employees" value="{{employee}}">{{employee}}</option>
+            </select>
+        </div>*@
         <div>
             <label for="SelectCategory">類型</label>
             <select class="form-select" id="SelectCategory" name="SelectType" ng-model="selectedType" ng-change="selectType()" aria-label="Select the Category">
@@ -137,10 +137,10 @@
                     <input ng-model="item.h1_reason" class="form-control" type="text" placeholder="說明詳細情形">
                 </td>
                 @*<td ng-show="!showLast">
-                    <div class="form-check">
-                        <input ng-model="item.h1_manager_check" ng-disabled="auth[0] == datum.empno" class="form-check-input" type="checkbox">
-                    </div>
-                </td>*@
+                        <div class="form-check">
+                            <input ng-model="item.h1_manager_check" ng-disabled="auth[0] == datum.empno" class="form-check-input" type="checkbox">
+                        </div>
+                    </td>*@
                 @*<td ng-show="!showLast" ng-bind="item.h1_feedback"></td>*@
                 <td ng-show="!showLast">
                     <p ng-repeat="fb in item.h1_feedbacks"><span class="badge badge-secondary" style="font-size: 1em" ng-bind="fb.slice(0,3)"></span><span ng-bind="fb.slice(3)"></span></p>
@@ -154,10 +154,10 @@
                     <input ng-model="item.h2_reason" class="form-control" type="text" placeholder="說明詳細情形">
                 </td>
                 @*<td ng-show="showLast">
-                    <div class="form-check">
-                        <input ng-model="item.h2_manager_check" ng-disabled="auth[0] == datum.empno" class="form-check-input" type="checkbox">
-                    </div>
-                </td>*@
+                        <div class="form-check">
+                            <input ng-model="item.h2_manager_check" ng-disabled="auth[0] == datum.empno" class="form-check-input" type="checkbox">
+                        </div>
+                    </td>*@
                 @*<td ng-show="showLast" ng-bind="item.h2_feedback"></td>*@
                 <td ng-show="showLast">
                     @*<p ng-repeat="fb in item.h2_feedbacks" ng-bind="fb"></p>*@
