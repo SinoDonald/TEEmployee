@@ -186,6 +186,21 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
             alert('Error');
         });
 
+    // 條件篩選
+    $scope.senioritys = ["工程師一", "工程師二"];
+    $scope.educationals = ["高中", "學士", "碩士", "博士"];
+    $scope.filter = {
+        age1: null,
+        age2: null,
+        companyYear1: null,
+        companyYear2: null,
+        educational: null,
+        seniority: null
+    };
+    $scope.ConditionFilter = function (filter) {
+        //alert(filter.educational);
+    }
+
     // 依群組顯示
     $scope.FilterDataByGroup = function (selectedGroup) {
         $scope.data = [];
