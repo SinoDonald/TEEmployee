@@ -402,7 +402,7 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
     }
     const uploading = async (e) => {
         let form = new FormData(formElem);
-        let response = await fetch('/Talent/ImportPDFFile', {
+        let response = await fetch('Talent/ImportPDFFile', {
             method: 'POST',
             body: form,
         });
@@ -413,33 +413,33 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
         $scope.user.test = result[0].test;
     }
 
-    //// 上傳測評資料檔案
-    //$(document).on("click", "#btnPDFUpload", function () {
-    //    var files = $("#importPDFFile").get(0).files;
+    // 上傳測評資料檔案
+    $(document).on("click", "#btnPDFUpload", function () {
+        var files = $("#importPDFFile").get(0).files;
 
-    //    var formData = new FormData();
-    //    formData.append('file', files[0]);
+        var formData = new FormData();
+        formData.append('file', files[0]);
 
-    //    $.ajax({
-    //        url: '/Talent/ImportPDFFile',
-    //        data: formData,
-    //        type: 'POST',
-    //        contentType: false,
-    //        processData: false,
-    //        success: function (data) {
-    //            if (data != "") {
-    //                $scope.user.advantage = data[0].advantage;
-    //                $scope.user.disadvantage = data[0].disadvantage;
-    //                $scope.user.test = data[0].test;
-    //                $scope.$apply(); // 用$apply強制刷新數據
-    //                alert("更新完成");
-    //            }
-    //            else {
-    //                alert("上傳格式錯誤");
-    //            }
-    //        }
-    //    });
-    //});
+        $.ajax({
+            url: 'Talent/ImportPDFFile',
+            data: formData,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data != "") {
+                    $scope.user.advantage = data[0].advantage;
+                    $scope.user.disadvantage = data[0].disadvantage;
+                    $scope.user.test = data[0].test;
+                    $scope.$apply(); // 用$apply強制刷新數據
+                    alert("更新完成");
+                }
+                else {
+                    alert("上傳格式錯誤");
+                }
+            }
+        });
+    });
 
     // 回上頁
     $scope.ToTalent = function () {
