@@ -50,6 +50,10 @@ app.service('appService', ['$http', function ($http) {
     this.GetAll = function (o) {
         return $http.post('Talent/GetAll', o);
     };
+    // 取得所有員工職等職級
+    this.GetSenioritys = function (o) {
+        return $http.post('Talent/GetSenioritys', o);
+    };
     // 取得員工履歷
     this.Get = function (o) {
         return $http.post('Talent/Get', o);
@@ -186,8 +190,13 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
             alert('Error');
         });
 
+    // 取得所有員工職等職級
+    appService.GetSenioritys({})
+        .then(function (ret) {
+            $scope.senioritys = ret.data;
+        });
+
     // 條件篩選
-    $scope.senioritys = ["工程師一", "工程師二"];
     $scope.educationals = ["高中", "學士", "碩士", "博士"];
     $scope.filter = {
         age1: null,

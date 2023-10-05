@@ -16,6 +16,7 @@ namespace TEEmployee.Models.Talent
         List<CV> ImportPDFFile(HttpPostedFileBase file); // 上傳測評資料檔案
         CV SaveResponse(CV userCV, string planning); // 儲存回覆
         List<Ability> HighPerformer(List<Skill> getAllScores); // High Performer
+        List<string> GetSenioritys(); // 取得所有員工職等職級
         void Dispose();
     }
 }

@@ -34,6 +34,7 @@ namespace TEEmployee.Models
     public class StartEndDate
     {
         public string position { get; set; }
+        public string manager { get; set; }
         public DateTime startDate { get; set; }
         public DateTime endDate { get; set; }
         public string interval { get; set; }

@@ -145,6 +145,12 @@ namespace TEEmployee.Models.Talent
 
             return groups;
         }
+        // 取得所有員工職等職級
+        internal List<string> GetSenioritys()
+        {
+            List<string> senioritys = _talentRepository.GetSenioritys();
+            return senioritys;
+        }
         // 儲存選項
         public bool SaveChoice(List<Ability> users)
         {

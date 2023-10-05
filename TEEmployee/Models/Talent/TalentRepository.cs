@@ -71,6 +71,31 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
+        // 取得所有員工職等職級
+        public List<string> GetSenioritys()
+        {
+            string sql = @"SELECT * FROM userCV ORDER BY empno";
+            List<string> senioritys = _conn.Query<CV>(sql, new {}).Where(x => x.seniority != null).Select(x => x.seniority).Distinct().OrderBy(x => x).ToList();
+            List<string> ret = new List<string>();
+            foreach(string seniority in senioritys)
+            {
+                string[] analyzeSeniority = seniority.Split('\n');
+                if(analyzeSeniority.Length > 2)
+                {
+                    for(int i = 2; i < analyzeSeniority.Length; i++)
+                    {
+                        try
+                        {
+                            ret.Add(analyzeSeniority[i].Split('：')[0]);
+                        }
+                        catch (Exception) { }
+                    }
+                }
+            }
+
+            ret = ret.Distinct().OrderBy(x => x).ToList();
+            return ret;
+        }
         // 更新SQL員工當前所屬群組
         public bool UpdateUsersGroup(List<User> users)
         {
@@ -772,6 +797,13 @@ namespace TEEmployee.Models.Talent
                                 seniority.position = changeName.Substring(0, index);
                                 seniority.manager = changeName.Substring(index + 1, changeName.Length - index - 1);
                             }
+                            else if(match.Groups[5].Value.Contains(")") && match.Groups[5].Value.IndexOf(')') != match.Groups[5].Value.Length - 1)
+                            {
+                                string changeName = match.Groups[5].Value.Replace("重大", "").Replace("（", "(").Replace("）", ")");
+                                int index = changeName.IndexOf(')');
+                                seniority.position = changeName.Substring(0, index + 1);
+                                seniority.manager = changeName.Substring(index + 1, changeName.Length - index - 1);
+                            }
                             else
                             {
                                 string changeName = match.Groups[5].Value.Replace("（", "(").Replace("）", ")");
@@ -865,8 +897,19 @@ namespace TEEmployee.Models.Talent
                     changeName = changeName.Replace("(", "").Replace(")", "");
                 }
             }
-            startEndDates.Add(new StartEndDate() { position = changeName, startDate = DateTime.Parse(nowPosition.start, culture), endDate = DateTime.Now, interval = changeName + "：" + nowPosition.start + "~" + "迄今\n" });
+            StartEndDate info = new StartEndDate();
+            info.position = changeName;
+            info.startDate = DateTime.Parse(nowPosition.start, culture);
+            info.endDate = DateTime.Now;
+            info.interval = changeName + "：" + nowPosition.start + "~" + "迄今\n";
+            if(nowPosition.manager != null)
+            {
+                info.manager = nowPosition.manager;
+                info.interval = changeName + "：" + nowPosition.start + "~" + "迄今\n" + nowPosition.manager + "：" + nowPosition.start + "~" + "迄今\n";
+            }
+            startEndDates.Add(info);
 
+            // 工程師
             foreach (string position in SECSenioritys.Where(x => x.position != nowPosition.position).Select(x => x.position).Distinct().OrderBy(x => x).ToList())
             {
                 try
@@ -882,10 +925,6 @@ namespace TEEmployee.Models.Talent
             foreach (StartEndDate startEndDate in startEndDates.OrderByDescending(x => x.startDate).ToList())
             {
                 positionSeniority += startEndDate.interval;
-            }
-            if (positionSeniority != "")
-            {
-                positionSeniority = positionSeniority.Substring(0, positionSeniority.Length - 1);
             }
 
             return new Tuple<string, string, string>(workYears, companyYears, positionSeniority);
@@ -967,13 +1006,14 @@ namespace TEEmployee.Models.Talent
             startEndDate.endDate = endDate;
             string position = SECbyPosition.Select(x => x.position).FirstOrDefault();
             startEndDate.position = ChangeName(position); // 職稱文字判斷
-            //string manager = SECbyPosition.Where(x => x.position.Contains(position)).Where(x => x.manager != null).Select(x => x.manager).FirstOrDefault();
-            //if(manager != null)
-            //{
-            //    position += "、" + ChangeName(manager); // 管理職職稱文字判斷
-            //}
             (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(startDate, endDate);
             startEndDate.interval = position + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n";
+            string manager = SECbyPosition.Select(x => x.manager).FirstOrDefault();
+            if (manager != null)
+            {
+                startEndDate.manager = manager;
+                startEndDate.interval = position + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n" + manager + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n";
+            }
             startEndDates.Add(startEndDate);
 
             if (senioritys.Count > 0)

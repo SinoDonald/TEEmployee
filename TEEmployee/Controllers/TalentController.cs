@@ -106,6 +106,14 @@ namespace TEEmployee.Controllers
             var ret = _service.GetAll(Session["empno"].ToString());
             return Json(ret);
         }
+        // 取得所有員工職等職級
+        [HttpPost]
+        public JsonResult GetSenioritys()
+        {
+            var ret = _service.GetSenioritys();
+            return Json(ret);
+        }
+
         // 取得員工履歷
         [HttpPost]
         public JsonResult Get(string empno)
