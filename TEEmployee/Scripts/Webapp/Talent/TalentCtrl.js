@@ -265,7 +265,7 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
         formData.append('importFile', files[0]);
 
         $.ajax({
-            url: '/Talent/ImportFile',
+            url: 'Talent/ImportFile',
             data: formData,
             type: 'POST',
             contentType: false,
