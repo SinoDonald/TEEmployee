@@ -43,22 +43,22 @@
             </select>
         </div>
         <div>
-            <label for="SelectManager">群組</label>
-            <select class="form-select manager" id="SelectManager" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
+            <label for="SelectGroup">群組</label>
+            <select class="form-select manager" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
                 <option value="" disabled selected>Select your option</option>
                 <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
             </select>
         </div>
         <div>
-            <label for="SelectCategory">員工</label>
-            <select class="form-select" id="SelectCategory" name="SelectEmployee" ng-model="selectedEmployee" ng-change="selectEmployee()" aria-label="Select the Category">
+            <label for="SelectEmployee">員工</label>
+            <select class="form-select" id="SelectEmployee" name="SelectEmployee" ng-model="selectedEmployee" ng-change="selectEmployee()" aria-label="Select the Category">
                 <option value="" disabled selected>Select your option</option>
                 <option ng-repeat="employee in employees" value="{{employee}}">{{employee}}</option>
             </select>
         </div>
         <div>
-            <label for="SelectCategory">類型</label>
-            <select class="form-select" id="SelectCategory" name="SelectType" ng-model="selectedType" ng-change="selectType()" aria-label="Select the Category">
+            <label for="SelectType">類型</label>
+            <select class="form-select" id="SelectType" name="SelectType" ng-model="selectedType" ng-change="selectType()" aria-label="Select the Category">
                 <option value="" disabled selected>Select your option</option>
                 <option ng-repeat="kpiType in kpiTypes" value="{{kpiType}}">{{kpiType}}</option>
             </select>

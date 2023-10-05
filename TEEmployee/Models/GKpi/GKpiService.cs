@@ -399,8 +399,7 @@ namespace TEEmployee.Models.GKpi
         // Insert, Update and Delete KpiModels based on current Users in database and kpi relationships this year
         public List<KpiModel> InsertKpiModelsNew()
         {
-            throw new NullReferenceException();
-
+           
             List<User> users = _userRepository.GetAll();
             List<KpiModel> kpimodels = new List<KpiModel>();
             int year = DateTime.Now.Year;
@@ -434,7 +433,7 @@ namespace TEEmployee.Models.GKpi
                 {
                     kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "管理", role = "組長" });
                     kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "專業", role = "組長" });
-                    isNormal = false;
+                    //isNormal = false;
                 }
                 // 行政
                 if (user.group_one == "行政")
@@ -445,12 +444,12 @@ namespace TEEmployee.Models.GKpi
                 // 一般員工
                 if (isNormal)
                 {
-                    if (!String.IsNullOrEmpty(user.group_one))
+                    if (!String.IsNullOrEmpty(user.group_one) && !user.group_one_manager)
                         kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group_one, kpi_type = "專業", role = "一般工程師" });
-                    //if (!String.IsNullOrEmpty(user.group_two))
-                    //    kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group_two, kpi_type = "專業" });
-                    //if (!String.IsNullOrEmpty(user.group_three))
-                    //    kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group_three, kpi_type = "專業" });
+                    if (!String.IsNullOrEmpty(user.group_two) && !user.group_two_manager)
+                        kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group_two, kpi_type = "專業", role = "一般工程師" });
+                    if (!String.IsNullOrEmpty(user.group_three) && !user.group_three_manager)
+                        kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group_three, kpi_type = "專業", role = "一般工程師" });
                 }
             }
 
