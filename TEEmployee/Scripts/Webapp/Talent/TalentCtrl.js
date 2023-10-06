@@ -54,6 +54,10 @@ app.service('appService', ['$http', function ($http) {
     this.GetSenioritys = function (o) {
         return $http.post('Talent/GetSenioritys', o);
     };
+    // 條件篩選
+    this.ConditionFilter = function (o) {
+        return $http.post('Talent/ConditionFilter', o);
+    };
     // 取得員工履歷
     this.Get = function (o) {
         return $http.post('Talent/Get', o);
@@ -197,17 +201,20 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
         });
 
     // 條件篩選
-    $scope.educationals = ["高中", "學士", "碩士", "博士"];
+    $scope.educationals = ["", "學士", "碩士", "博士"];
     $scope.filter = {
-        age1: null,
-        age2: null,
-        companyYear1: null,
-        companyYear2: null,
-        educational: null,
-        seniority: null
+        age1: 0,
+        age2: 100,
+        companyYear1: 0,
+        companyYear2: 100,
+        educational: "",
+        seniority: ""
     };
     $scope.ConditionFilter = function (filter) {
-        //alert(filter.educational);
+        appService.ConditionFilter({ filter: filter, json: angular.toJson($scope.data) })
+            .then(function (ret) {
+                $scope.senioritys = ret.data;
+            });
     }
 
     // 依群組顯示

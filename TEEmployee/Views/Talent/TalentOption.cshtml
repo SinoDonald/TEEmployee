@@ -70,16 +70,17 @@
                                             </div>
                                         </div>
                                         <div class="row">
+                                            @*onkeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))" <-- 避免輸入英文字母'e'*@
                                             <div class="col-sm-3">
-                                                <input class="col-md-3" type="text" data-ng-model="filter.age1" />
+                                                <input class="col-md-4" type="number" data-ng-model="filter.age1" onkeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))" />
                                                 <label>~</label>
-                                                <input class="col-md-3" type="text" data-ng-model="filter.age2" />
+                                                <input class="col-md-4" type="number" data-ng-model="filter.age2" onkeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))" />
                                                 <label>歲</label>
                                             </div>
                                             <div class="col-sm-3">
-                                                <input class="col-md-3" type="text" data-ng-model="filter.companyYear1" />
+                                                <input class="col-md-4" type="number" data-ng-model="filter.companyYear1" onkeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))" />
                                                 <label>~</label>
-                                                <input class="col-md-3" type="text" data-ng-model="filter.companyYear2" />
+                                                <input class="col-md-4" type="number" data-ng-model="filter.companyYear2" onkeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))" />
                                                 <label>年</label>
                                             </div>
                                             <div class="col-sm-3">

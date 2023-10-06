@@ -4,6 +4,15 @@ using System.Web.Script.Serialization;
 
 namespace TEEmployee.Models
 {
+    public class ConditionFilter
+    {
+        public int age1 { get; set; }
+        public int age2 { get; set; }
+        public int companyYear1 { get; set; }
+        public int companyYear2 { get; set; }
+        public string educational { get; set; }
+        public string seniority { get; set; }
+    }
     public class Ability
     {
         public string empno { get; set; }

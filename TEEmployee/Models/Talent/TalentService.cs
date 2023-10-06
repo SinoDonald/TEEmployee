@@ -145,6 +145,12 @@ namespace TEEmployee.Models.Talent
 
             return groups;
         }
+        // 條件篩選
+        internal List<CV> ConditionFilter(ConditionFilter filter, List<CV> userCVs)
+        {
+            List<CV> filterUserCVs = _talentRepository.ConditionFilter(filter, userCVs);
+            return filterUserCVs;
+        }
         // 取得所有員工職等職級
         internal List<string> GetSenioritys()
         {

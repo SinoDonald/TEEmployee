@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Models;
@@ -113,7 +114,14 @@ namespace TEEmployee.Controllers
             var ret = _service.GetSenioritys();
             return Json(ret);
         }
-
+        // 條件篩選
+        [HttpPost]
+        public JsonResult ConditionFilter(ConditionFilter filter, string json)
+        {
+            List<CV> userCVs = JsonConvert.DeserializeObject<List<CV>>(json); //反序列化
+            var ret = _service.ConditionFilter(filter, userCVs);
+            return Json(ret);
+        }
         // 取得員工履歷
         [HttpPost]
         public JsonResult Get(string empno)

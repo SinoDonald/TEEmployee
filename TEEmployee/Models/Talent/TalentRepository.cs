@@ -76,8 +76,8 @@ namespace TEEmployee.Models.Talent
         {
             string sql = @"SELECT * FROM userCV ORDER BY empno";
             List<string> senioritys = _conn.Query<CV>(sql, new {}).Where(x => x.seniority != null).Select(x => x.seniority).Distinct().OrderBy(x => x).ToList();
-            List<string> ret = new List<string>();
-            foreach(string seniority in senioritys)
+            List<string> ret = new List<string>() { "" };
+            foreach (string seniority in senioritys)
             {
                 string[] analyzeSeniority = seniority.Split('\n');
                 if(analyzeSeniority.Length > 2)
@@ -86,7 +86,11 @@ namespace TEEmployee.Models.Talent
                     {
                         try
                         {
-                            ret.Add(analyzeSeniority[i].Split('：')[0]);
+                            string saveSeniority = analyzeSeniority[i].Split('：')[0];
+                            if (saveSeniority != "")
+                            {
+                                ret.Add(saveSeniority);
+                            }
                         }
                         catch (Exception) { }
                     }
@@ -95,6 +99,59 @@ namespace TEEmployee.Models.Talent
 
             ret = ret.Distinct().OrderBy(x => x).ToList();
             return ret;
+        }
+        // 條件篩選
+        public List<CV> ConditionFilter(ConditionFilter filter, List<CV> userCVs)
+        {
+            List<CV> filterUserCVs = new List<CV>();
+            foreach(CV userCV in userCVs)
+            {
+                List<bool> trueOrFalse = new List<bool>();
+                // 計算年齡, 民國轉西元後計算年齡
+                CultureInfo culture = new CultureInfo("zh-TW");
+                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                DateTime birthday = DateTime.Parse(userCV.birthday, culture);
+                DateTime now = DateTime.Now;
+                int age = now.Year - birthday.Year;
+                if (now.Month < birthday.Month || (now.Month == birthday.Month && now.Day < birthday.Day)) { age--; }
+                userCV.age = age.ToString();
+                if (filter.age1 <= age && age <= filter.age2) { trueOrFalse.Add(true); }
+
+                // 解析SQL seniority文字, 儲存工作、公司與職位年資
+                Tuple<string, string, string> analyzeSeniority = AnalyzeSeniority(userCV.seniority);
+                userCV.workYears = analyzeSeniority.Item1; // 工作年資
+                userCV.companyYears = analyzeSeniority.Item2; // 公司年資
+                userCV.seniority = analyzeSeniority.Item3; // 職務經歷
+                int index = analyzeSeniority.Item2.IndexOf("年");
+                string year = analyzeSeniority.Item2.Substring(0, index);
+                int companyYear = Convert.ToInt32(year); // 公司年資
+                if (filter.companyYear1 <= companyYear && companyYear <= filter.companyYear2){ trueOrFalse.Add(true); }
+                // 現任職等職級
+                string nowSeniority = analyzeSeniority.Item3.Split('\n')[0].Split('：')[0];
+                if(filter.seniority == null) { trueOrFalse.Add(true); }
+                else if(filter.seniority.Equals(nowSeniority)){trueOrFalse.Add(true);}
+                // 解析學歷
+                string educational = EducationalName(userCV.educational.Split('\n')[0]);
+                if (filter.educational == null) { trueOrFalse.Add(true); }
+                else if (filter.educational.Equals(educational)) { trueOrFalse.Add(true); }
+
+                // 如果都符合條件則加入顯示清單
+                if (trueOrFalse.Count.Equals(4)) { filterUserCVs.Add(userCV); }
+            }
+
+            return filterUserCVs;
+        }
+        // 學歷文字判斷
+        private string EducationalName(string educational)
+        {
+            List<string> removeStr = new List<string>() { "學士", "碩士", "博士" }; // 職稱內要判斷有無()
+            string word = removeStr.Where(s => educational.Contains(s)).Select(s => s).FirstOrDefault();
+            if (word != null)
+            {
+                educational = word;
+            }
+
+            return educational;
         }
         // 更新SQL員工當前所屬群組
         public bool UpdateUsersGroup(List<User> users)
