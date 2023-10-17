@@ -86,11 +86,10 @@ app.factory('dataservice', function () {
 
 app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', function ($scope, $location, appService, $rootScope, $q, dataservice) {
 
+    
+    dataservice.set(appService.GetAllSchedules({}));
 
-    let promiseA = appService.GetAllSchedules({}).then((ret) => {
-        dataservice.set(ret.data);
-    })
-    let promiseB = appService.GetAuthorization({}).then((ret) => {
+    let promise = appService.GetAuthorization({}).then((ret) => {
 
         // transform member data for multi-selection
         ret.data.GroupAuthorities.forEach(group => {
@@ -100,15 +99,36 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
             }));
         })
 
-        dataservice.setAuth(ret.data);
-        
+        return ret.data;
+
     })
 
-    $q.all([promiseA, promiseB]).then((ret) => {
+    dataservice.setAuth(promise);
 
-        $location.path('/Group');
+    $location.path('/Group');
 
-    });
+    //let promiseA = appService.GetAllSchedules({}).then((ret) => {
+    //    dataservice.set(ret.data);
+    //})
+    //let promiseB = appService.GetAuthorization({}).then((ret) => {
+
+    //    // transform member data for multi-selection
+    //    ret.data.GroupAuthorities.forEach(group => {
+    //        group.Members = group.Members.map((name, index) => ({
+    //            id: index,
+    //            label: name,
+    //        }));
+    //    })
+
+    //    dataservice.setAuth(ret.data);
+        
+    //})
+
+    //$q.all([promiseA, promiseB]).then((ret) => {
+
+    //    $location.path('/Group');
+
+    //});
 
     
 
@@ -164,12 +184,12 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     }
 
 
-    $scope.data = dataservice.get();
-    $scope.auth = dataservice.getAuth();
+    //$scope.data = dataservice.get();
+    //$scope.auth = dataservice.getAuth();
 
-    // default group
-    $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
-    $scope.filteredMembers = $scope.auth.GroupAuthorities[0].Members
+    //// default group
+    //$scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+    //$scope.filteredMembers = $scope.auth.GroupAuthorities[0].Members
 
 
     // gantt
@@ -542,12 +562,15 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
                     calMemberHours($scope.data[groupIndex]);
 
-                    $timeout(function () {
-                        const svg = select('#svg' + groupIndex.toString())
-                            .call(plot.type('group').data([$scope.data[groupIndex].Group])); // update Group gantt
-                    }, 0);
 
+                    //
+                    //$timeout(function () {
+                    //    const svg = select('#svg' + groupIndex.toString())
+                    //        .call(plot.type('group').data([$scope.data[groupIndex].Group])); // update Group gantt
+                    //}, 0);
 
+                    // why not just update all?
+                    $scope.UpdateAllPlots();
 
                 }
                 else if (ret.data.type === 2) {
@@ -606,6 +629,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
                 //$timeout(function () {
                 //    $scope.UpdateAllPlots();
                 //}, 0);
+
                 $scope.UpdateAllPlots();
             }
 
@@ -666,8 +690,8 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     }
 
 
-    // transform all member hours
-    $scope.data.forEach(calMemberHours);
+    //transform all member hours
+    //$scope.data.forEach(calMemberHours);
 
     function calMemberHours(groupSchedule) {
 
@@ -675,7 +699,6 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         const yy = +yymm.slice(0, 4) - 1911;
         const mm = yymm.slice(4);
         yymm = `${yy}${mm}`;
-
 
         const projectHours = groupSchedule.ManHours;
         const project = groupSchedule.Group;
@@ -796,8 +819,32 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         return outputObject;
     }
 
+
+    let promiseA = dataservice.get();
+    let promiseB = dataservice.getAuth();
+
+    $q.all([promiseA, promiseB]).then((ret) => {
+
+        $scope.data = ret[0].data;
+        $scope.auth = ret[1];
+
+        $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+        $scope.filteredMembers = $scope.auth.GroupAuthorities[0].Members
+
+        $scope.data.forEach(calMemberHours);
+        $scope.filterMembers();
+        $scope.UpdateAllPlots();
+    });
+
+
+
+    // default group
+    //$scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+    //$scope.filteredMembers = $scope.auth.GroupAuthorities[0].Members
+
+
     // filter 
-    $scope.filterMembers();
+    //$scope.filterMembers();
 
     // draw all gantt at first
 
@@ -806,7 +853,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     //}, 0);
 
 
-    $scope.UpdateAllPlots();
+    //$scope.UpdateAllPlots();
 
 }]);
 
@@ -829,11 +876,11 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
     }
 
 
-    $scope.data = dataservice.get();
-    $scope.auth = dataservice.getAuth();
+    //$scope.data = dataservice.get();
+    //$scope.auth = dataservice.getAuth();
 
     // default group
-    $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+    //$scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
     //$scope.filteredMembers = $scope.auth.GroupAuthorities[0].Members
 
     // project multi-select
@@ -1279,13 +1326,28 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
         return outputObject;
     }
 
-    $scope.filterMembers();
+    let promiseA = dataservice.get();
+    let promiseB = dataservice.getAuth();
+
+    $q.all([promiseA, promiseB]).then((ret) => {
+
+        $scope.data = ret[0].data;
+        $scope.auth = ret[1];
+
+        $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+
+        $scope.filterMembers();
+        $scope.UpdateAllPlots();
+    });
+
+
+    //$scope.filterMembers();
 
     // draw all gantt at first
     //$timeout(function () {
     //    $scope.UpdateAllPlots();
     //}, 0);
-    $scope.UpdateAllPlots();
+    //$scope.UpdateAllPlots();
 
 
 }]);
@@ -1293,16 +1355,16 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
 app.controller('FutureCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$timeout', function ($scope, $location, appService, $rootScope, $q, dataservice, $timeout) {
 
-    appService.GetAllFutures({}).then((ret) => {
-        $scope.data = ret.data;
-        $scope.UpdateAllPlots();
-    })
+    //appService.GetAllFutures({}).then((ret) => {
+    //    $scope.data = ret.data;
+    //    $scope.UpdateAllPlots();
+    //})
 
-    $scope.auth = dataservice.getAuth();
+    //$scope.auth = dataservice.getAuth();
 
-    // default group
-    $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
-    $scope.filteredMembers = $scope.auth.GroupAuthorities[0].Members
+    //// default group
+    //$scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+    //$scope.filteredMembers = $scope.auth.GroupAuthorities[0].Members
 
     // gantt
 
@@ -1607,8 +1669,26 @@ app.controller('FutureCtrl', ['$scope', '$location', 'appService', '$rootScope',
         return outputObject;
     }
 
-    // filter 
-    $scope.filterMembers();
+    
+    let promiseA = appService.GetAllFutures({});
+    let promiseB = dataservice.getAuth();
+
+    $q.all([promiseA, promiseB]).then((ret) => {
+
+        $scope.data = ret[0].data;
+        $scope.auth = ret[1];
+
+        $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
+        $scope.filteredMembers = $scope.auth.GroupAuthorities[0].Members
+
+        $scope.filterMembers();
+        $scope.UpdateAllPlots();
+    });
+
+
+
+    //// filter 
+    //$scope.filterMembers();
     
 
 }]);
