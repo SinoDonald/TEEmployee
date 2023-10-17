@@ -87,12 +87,10 @@ app.factory('dataservice', function () {
 app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', function ($scope, $location, appService, $rootScope, $q, dataservice) {
 
 
-
-    appService.GetAllSchedules({}).then((ret) => {
+    let promiseA = appService.GetAllSchedules({}).then((ret) => {
         dataservice.set(ret.data);
     })
-
-    appService.GetAuthorization({}).then((ret) => {
+    let promiseB = appService.GetAuthorization({}).then((ret) => {
 
         // transform member data for multi-selection
         ret.data.GroupAuthorities.forEach(group => {
@@ -103,7 +101,36 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
         })
 
         dataservice.setAuth(ret.data);
+        
     })
+
+    $q.all([promiseA, promiseB]).then((ret) => {
+
+        $location.path('/Group');
+
+    });
+
+    
+
+    //appService.GetAllSchedules({}).then((ret) => {
+    //    dataservice.set(ret.data);
+    //})
+
+    //appService.GetAuthorization({}).then((ret) => {
+
+    //    // transform member data for multi-selection
+    //    ret.data.GroupAuthorities.forEach(group => {
+    //        group.Members = group.Members.map((name, index) => ({
+    //            id: index,
+    //            label: name,
+    //        }));
+    //    })
+
+    //    dataservice.setAuth(ret.data);
+    //    $location.path('/Skill');
+    //})
+
+    
 
 }]);
 

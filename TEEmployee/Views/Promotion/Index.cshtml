@@ -15,7 +15,7 @@
             background-repeat: no-repeat;
         }*/
         body {
-            overflow: hidden; /* Hide scrollbars */
+            /*overflow: hidden;*/
         }
 
         /*.container {
@@ -64,12 +64,30 @@
         footer, hr {
             display: none;
         }
+
+        .xbox {           
+            position: absolute;            
+            top: 70px;
+            left: -80px;
+        }
+
+        .xbox2 {
+            position: absolute;
+            top: 200px;
+            left: -80px;
+        }
+
+        .outbox {
+            position: relative;
+        }
     </style>
 }
 
 
 
 <div ng-controller="PromotionCtrl" class="container mt100">
+
+
 
     <div class="d-flex justify-content-between">
         <div>
@@ -82,9 +100,16 @@
             <div class="d-flex justify-content-between">
                 <div class="mr-5">
                     <select class="form-select" id="SelectUpgrade" name="SelectUpgrade" ng-model="selectedUpgrade" ng-change="selectUpgrade()" aria-label="Select the Upgrade type">
-                        <option value="" selected>全部</option>
+                        <option value="" selected>全部員工</option>
                         <option value="normal">一般升等</option>
-                        <option value="bonus">特別升等</option>
+                        <option value="bonus">特別升等</option>                        
+                    </select>
+                </div>
+                <div class="mr-5">
+                    <select class="form-select" id="SelectRecommended" name="SelectRecommended" ng-model="selectedRecommended" ng-change="selectRecommended()" ng-hide="selectedUpgrade===''" aria-label="Select the Recommended">
+                        <option value="" selected>全部</option>
+                        <option value="unrecommended">未提報</option>
+                        <option value="recommended">已提報</option>                        
                     </select>
                 </div>
                 <div class="mr-5">
@@ -98,14 +123,23 @@
                         <option ng-repeat="name in names" value="{{name}}" ng-bind="name"></option>
                     </select>
                 </div>
+                <div>
+                    <button type="button" class="btn" ng-click="downloadAuthExcel()">
+                        <span class="material-icons">download</span>
+                    </button>
+                </div>
             </div>
         }
 
     </div>
 
-
+    <div class="outbox">
+        <div class="xbox p-2 bg-primary text-white">一般</div>
+        <div class="xbox2 p-2 bg-primary text-white">特別</div>
+    </div>
 
     <table class="table mt-3 posr">
+
         <thead class="thead">
             <tr>
                 <th scope="col" width="30%">升等條件</th>
@@ -148,6 +182,10 @@
 
     <div class="alert alert-warning" role="alert" style="width:30%">
         檔案限定格式為.pdf，檔案大小不得超過10MB
+    </div>
+
+    <div>
+        <img src="~/Content/assets/img/promotion_conditions.jpg" class="img-fluid" alt="Responsive image">
     </div>
 
     <div>

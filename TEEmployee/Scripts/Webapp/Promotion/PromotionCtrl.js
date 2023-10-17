@@ -7,7 +7,7 @@ app.run(['$http', '$window', function ($http, $window) {
 }]);
 
 app.service('appService', ['$http', function ($http) {
-       
+
     this.GetByUser = (o) => {
         return $http.post('Promotion/GetByUser', o);
     };
@@ -23,9 +23,14 @@ app.service('appService', ['$http', function ($http) {
     this.DeleteAll = (o) => {
         return $http.post('Promotion/DeleteAll', o);
     };
+    this.DownloadAuthExcel = (o) => {
+        return $http.post('Promotion/DownloadAuthExcel', o, config);
+    };
 }]);
 
 app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', function ($scope, $location, appService, $rootScope, $q) {
+
+    $scope.selectedUpgrade = '';
 
     //const upload = document.querySelector(`#filepicker`);
     filepicker.addEventListener('change', (e) => {
@@ -34,7 +39,7 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
 
 
         if (!e.target.files[0]) {
-            return;            
+            return;
         }
 
         const maxAllowedSize = 10 * 1024 * 1024;
@@ -75,7 +80,7 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
 
     $scope.num = 0;
 
-    
+
     appService.GetAuthorization({}).then((ret) => {
 
         $scope.auth = ret.data;
@@ -86,11 +91,13 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
         $scope.nextProfTitle = $scope.auth.User.nextProfTitle;
 
         if ($scope.auth.User.department_manager || $scope.auth.User.group_manager) {
+
+            
             $scope.upgradeUsers = $scope.auth.Users
             $scope.selectedTitle = $scope.auth.User.profTitle;
-        /*$scope.selectTitle();*/
+            /*$scope.selectTitle();*/
             $scope.names = $scope.upgradeUsers.filter(x => x.profTitle === $scope.selectedTitle).map(x => x.name).sort();
-            
+
 
             $scope.selectedName = $scope.auth.User.name;
             $scope.selectName();
@@ -102,8 +109,8 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
         }
 
     })
-    
-    
+
+
 
     $scope.modal = {};
 
@@ -111,6 +118,12 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
         appService.UpdatePromotion({ promotion: promotion }).then((ret) => {
 
         });
+
+        // update auth
+        if (promotion.condition === 7)
+            $scope.auth.Users.find(x => x.name === $scope.selectedName).isRecommended = promotion.achieved;
+
+
     }
 
     $scope.copyComment = (promotion) => {
@@ -151,7 +164,7 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
 
             // Create blob object with type(optional, used for createObjectURL)
             var blob = new Blob([ret.data], { type: 'application/octet-stream' });
-            
+
             // Call Filesaver.js to save it with filename(type inclueded)
             // Benefit: filename
             saveAs(blob, fileName);
@@ -161,19 +174,56 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
 
     $scope.selectUpgrade = () => {
 
-        if ($scope.selectedUpgrade)
-            $scope.upgradeUsers = $scope.auth.Users.filter(x => x.upgrade === $scope.selectedUpgrade);
-        else
+        //if ($scope.selectedUpgrade)
+        //    $scope.upgradeUsers = $scope.auth.Users.filter(x => x.upgrade === $scope.selectedUpgrade);
+        //else
+        //    $scope.upgradeUsers = $scope.auth.Users
+
+        //let title_array = $scope.upgradeUsers.map(x => x.profTitle);
+        //$scope.titles = [...new Set(title_array)];
+
+        //$scope.selectedTitle = $scope.titles[0];
+        //$scope.selectTitle();
+
+        if ($scope.selectedUpgrade) {
+
+            if ($scope.auth.User.department_manager) {
+                $scope.selectedRecommended = 'recommended';
+            }
+            else if ($scope.auth.User.group_manager) {
+                $scope.selectedRecommended = 'unrecommended';
+            }
+
+        }        
+
+        $scope.selectRecommended();
+
+    }
+
+    $scope.selectRecommended = () => {
+
+        if ($scope.selectedUpgrade) {
+            if ($scope.selectedRecommended === 'unrecommended') {
+                $scope.upgradeUsers = $scope.auth.Users.filter(x => x.upgrade === $scope.selectedUpgrade && x.isRecommended !== true);
+            }
+            else if ($scope.selectedRecommended === 'recommended') {
+                $scope.upgradeUsers = $scope.auth.Users.filter(x => x.upgrade === $scope.selectedUpgrade && x.isRecommended === true);
+            }
+            else {
+                $scope.upgradeUsers = $scope.auth.Users.filter(x => x.upgrade === $scope.selectedUpgrade);
+            }
+        }
+        else {
             $scope.upgradeUsers = $scope.auth.Users
+        }
+              
 
         let title_array = $scope.upgradeUsers.map(x => x.profTitle);
         $scope.titles = [...new Set(title_array)];
 
-        
-            $scope.selectedTitle = $scope.titles[0];
-            $scope.selectTitle();
+        $scope.selectedTitle = $scope.titles[0];
+        $scope.selectTitle();
 
-        
     }
 
     $scope.selectTitle = () => {
@@ -192,13 +242,13 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
             return;
         }
 
-            
+
 
         let user = $scope.auth.Users.find(x => x.name === $scope.selectedName);
 
         $scope.nextProfTitle = user.nextProfTitle;
 
-        appService.GetByUser({empno: user.empno}).then((ret) => {
+        appService.GetByUser({ empno: user.empno }).then((ret) => {
             $scope.data = ret.data;
         })
     }
@@ -209,17 +259,40 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
             return true;
         if (!$scope.selectedUpgrade)
             return false;
-        if (item.condition === 7 && ($scope.auth.User.department_manager || $scope.auth.User.group_manager))
+        if (item.condition === 7 && ($scope.auth.User.department_manager || $scope.auth.User.group_manager)) {
+
+            let upgradeType = '';
+            if ($scope.selectedUpgrade === 'normal')
+                upgradeType = '一般';
+            else
+                upgradeType = '特別';
+
+            $scope.data.find(x => x.condition === 7).content = upgradeType + '升等提報';
             return true;
+        }
+
         return false;
     }
 
     $scope.deleteAll = () => {
 
         appService.DeleteAll({}).then((ret) => {
-            
+
         });
 
+    }
+
+    $scope.downloadAuthExcel = () => {
+
+        appService.DownloadAuthExcel({ authStr: JSON.stringify($scope.auth) }).then((ret) => {
+            
+            const contentDispositionHeader = ret.headers('Content-Disposition');
+            let fileName = contentDispositionHeader.split(';')[1].trim().split('=')[1].replace(/"/g, '');
+            fileName = decodeURIComponent(fileName).replace(`UTF-8''`, '');
+            var blob = new Blob([ret.data], { type: 'application/octet-stream' });
+            saveAs(blob, fileName);
+
+        });
     }
 
 }]);
