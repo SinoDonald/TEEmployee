@@ -17,7 +17,7 @@ namespace TEEmployee.Models.GSchedule
             _scheduleRepository = new GScheduleRepository();
             _userRepository = new UserRepository();
             _projectItemRepository = new ProjectItemRepository();
-        }        
+        }
 
         public List<GroupSchedule> GetAllSchedules()
         {
@@ -46,7 +46,7 @@ namespace TEEmployee.Models.GSchedule
                         .ToList();
                 }
             }
-                       
+
 
             return groupSchedules;
         }
@@ -55,7 +55,7 @@ namespace TEEmployee.Models.GSchedule
         {
             // get user information
             User user = _userRepository.Get(empno);
-            
+
             var managerGroups = GetManagerGroups(empno);
             var employeeGroups = GetEmployeeGroups(empno);
             var groups = managerGroups.Concat(employeeGroups).Distinct();
@@ -63,7 +63,7 @@ namespace TEEmployee.Models.GSchedule
 
             var allGroupSchedules = new List<GroupSchedule>();
 
-            foreach(var group in groups)
+            foreach (var group in groups)
             {
                 var schedules = _scheduleRepository.GetAllGroupSchedules(group);
 
@@ -98,15 +98,15 @@ namespace TEEmployee.Models.GSchedule
                         {
                             detailSchedule.Personals = personalSchedules
                             .Where(x => x.empno == empno)
-                            .Where(x => x.parent_id == detailSchedule.Detail.id)                            
+                            .Where(x => x.parent_id == detailSchedule.Detail.id)
                             .ToList();
-                        }                        
+                        }
                     }
 
                     // project man hours
 
-                    groupSchedule.ManHours = new List<ManHour>();                    
-                   
+                    groupSchedule.ManHours = new List<ManHour>();
+
                     var filteredProjectItems = projectItems.Where(x => (x.projno == groupSchedule.Group.projno) && (groupMemberEmpnos.Contains(x.empno)));
 
                     foreach (var item in filteredProjectItems)
@@ -128,12 +128,31 @@ namespace TEEmployee.Models.GSchedule
             List<string> engOrder = new List<string> { "D", "C", "E", "B", "Z", "N" };
 
             allGroupSchedules = allGroupSchedules
-                .OrderByDescending(x => {
+                .OrderByDescending(x =>
+                {
 
-                int engIdx = engOrder.IndexOf(x.Group.projno?.Substring(4));
+                    int engIdx = 0;
 
-                return engIdx;})
-                .ThenByDescending(x => x.Group.projno?.Substring(0, 4)).ToList();
+                    if (x.Group.projno?.Length == 5)
+                    {
+                        engIdx = engOrder.IndexOf(x.Group.projno?.Substring(4));
+                    }
+
+                    return engIdx;
+                })
+                .ThenByDescending(x =>
+                {
+                    string num = "";
+
+                    if (x.Group.projno?.Length == 5)
+                    {
+                        num = x.Group.projno?.Substring(0, 4);
+                    }
+
+                    return num;
+                    
+                    })
+                .ToList();
 
 
             return allGroupSchedules;
@@ -192,10 +211,10 @@ namespace TEEmployee.Models.GSchedule
                 .Where(x => x.type < 4)
                 .Where(x => x.percent_complete != 100).ToList();
 
-            foreach(var schedule in schedules)
+            foreach (var schedule in schedules)
             {
-                schedule.last_percent_complete = schedule.percent_complete;                
-            }            
+                schedule.last_percent_complete = schedule.percent_complete;
+            }
 
             return _scheduleRepository.Update(schedules);
         }
@@ -203,7 +222,7 @@ namespace TEEmployee.Models.GSchedule
         public Authorization GetAuthorization(string empno)
         {
             Authorization authorization = new Authorization() { User = _userRepository.Get(empno), GroupAuthorities = new List<GroupAuthority>() };
-            
+
             var managerGroups = GetManagerGroups(empno);
             var employeeGroups = GetEmployeeGroups(empno);
             var groups = managerGroups.Concat(employeeGroups).Distinct();
@@ -216,7 +235,7 @@ namespace TEEmployee.Models.GSchedule
                 {
                     groupAuthority.Members = GetGroupMembers(group).Select(x => x.name).ToList();
                     groupAuthority.Editable = true;
-                }                    
+                }
                 else
                     groupAuthority.Members.Add(authorization.User.name);
 
@@ -233,7 +252,7 @@ namespace TEEmployee.Models.GSchedule
 
             var managerGroups = GetManagerGroups(empno);
             var employeeGroups = GetEmployeeGroups(empno);
-            var groups = managerGroups.Concat(employeeGroups).Distinct();            
+            var groups = managerGroups.Concat(employeeGroups).Distinct();
 
             var allGroupFutureSchedules = new List<GroupSchedule>();
 
@@ -245,7 +264,7 @@ namespace TEEmployee.Models.GSchedule
 
                 groupFutureSchedules = schedules.Where(x => x.type == 4).Select(x => new GroupSchedule() { Group = x }).ToList();
                 var detailFutureSchedules = schedules.Where(x => x.type == 5);
-                
+
 
                 var groupMembers = GetGroupMembers(group);
                 var groupMemberEmpnos = groupMembers.Select(x => x.empno);
@@ -261,14 +280,14 @@ namespace TEEmployee.Models.GSchedule
 
                 allGroupFutureSchedules.AddRange(groupFutureSchedules);
             }
-                        
+
             return allGroupFutureSchedules;
         }
 
         private List<string> GetManagerGroups(string empno)
         {
             User user = _userRepository.Get(empno);
-            List<string> groups = (_userRepository as UserRepository).GetSubGroups(empno);           
+            List<string> groups = (_userRepository as UserRepository).GetSubGroups(empno);
 
             return groups;
         }
@@ -306,8 +325,8 @@ namespace TEEmployee.Models.GSchedule
             {
                 return GetManagerGroups(empno).Contains(schedule.role);
             }
-            
-        }       
+
+        }
 
         public List<User> GetGroupMembers(string group)
         {

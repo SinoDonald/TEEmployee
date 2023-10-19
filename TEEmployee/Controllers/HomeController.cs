@@ -9,6 +9,7 @@ using TEEmployee.Models.TaskLog;
 using TEEmployee.Models.GSchedule;
 using System.Web.Services.Description;
 using TEEmployee.Models.Talent;
+using Newtonsoft.Json;
 
 namespace TEEmployee.Controllers
 {
@@ -228,9 +229,11 @@ namespace TEEmployee.Controllers
 
 
         [HttpPost]
-        public bool InsertUserExtra(List<User> users)
+        public bool InsertUserExtra(string usersJson)
         {
             bool ret = false;
+
+            List<User> users = JsonConvert.DeserializeObject<List<User>>(usersJson);
 
             //if (Session["Admin"] is object)
             //{               
@@ -240,7 +243,7 @@ namespace TEEmployee.Controllers
             //    }
             //}
 
-            
+
             using (TasklogService service = new TasklogService())
             {
                 ret = service.InsertUserExtra(users);
@@ -249,6 +252,29 @@ namespace TEEmployee.Controllers
 
             return ret;
         }
+
+        //[HttpPost]
+        //public bool InsertUserExtra(List<User> users)
+        //{
+        //    bool ret = false;
+
+        //    //if (Session["Admin"] is object)
+        //    //{               
+        //    //    using (TasklogService service = new TasklogService())
+        //    //    {
+        //    //        ret = service.InsertUserExtra(users);
+        //    //    }
+        //    //}
+
+
+        //    using (TasklogService service = new TasklogService())
+        //    {
+        //        ret = service.InsertUserExtra(users);
+        //    }
+
+
+        //    return ret;
+        //}
 
 
         [HttpPost]
