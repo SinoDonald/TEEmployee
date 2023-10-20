@@ -92,17 +92,20 @@
                     <div class="row">
                         <h4>能力檢視</h4>
                         <div class="col form-group">
-                            <h4>專業能力</h4>
+                            <h4>領域技能</h4>
                             <div ng-repeat="domainSkill in user.domainSkill track by $index">
                                 <h5>{{domainSkill}}</h5>
                             </div>
-                            <div ng-repeat="coreSkill in user.coreSkill">
+                        </div>
+                        <div class="col form-group">
+                            <h4>核心技能</h4>
+                            <div ng-repeat="coreSkill in user.coreSkill track by $index">
                                 <h5>{{coreSkill}}</h5>
                             </div>
                         </div>
                         <div class="col form-group">
                             <h4>管理能力</h4>
-                            <div ng-repeat="manageSkill in user.manageSkill">
+                            <div ng-repeat="manageSkill in user.manageSkill track by $index">
                                 <h5>{{manageSkill}}</h5>
                             </div>
                         </div>
@@ -179,30 +182,27 @@
                         <div class="form-group">
                             <div class="row">
                                 <h4>測評資料</h4>
-                                @if (Session["empno"] is "4125" || Session["empno"] is "7291")
-                                {
-                                    <div class="col-sm-6">
-                                        <div class="alert alert-warning" role="alert" style="width:30%">
-                                            檔案限定格式為.pdf，檔案大小不得超過10MB
-                                        </div>
-                                        <div>
-                                            <form id="formElem">
-                                                <input type="file" id="filepicker" name="file" accept=".pdf" hidden>
-                                            </form>
-                                        </div>
+                                <div class="col-sm-6">
+                                    <div class="alert alert-warning" role="alert" style="width:30%">
+                                        檔案限定格式為.pdf，檔案大小不得超過10MB
                                     </div>
-                                    <div class="col-sm-1">
-                                        <button class="btn-lg" type="button" ng-click="uploadFile()">
-                                            <span class="material-icons">upload_file</span>
-                                        </button>
+                                    <div>
+                                        <form id="formElem">
+                                            <input type="file" id="filepicker" name="file" accept=".pdf" hidden>
+                                        </form>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <input class="form-control" type="file" name="importPDFFile" id="importPDFFile" />
-                                    </div>
-                                    <div class="col-sm-1">
-                                        <input class="btn btn-primary" id="btnPDFUpload" type="button" value="上傳" />
-                                    </div>
-                                }
+                                </div>
+                                <div class="col-sm-1">
+                                    <button class="btn-lg" type="button" ng-click="uploadFile()">
+                                        <span class="material-icons">upload_file</span>
+                                    </button>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input class="form-control" type="file" name="importPDFFile" id="importPDFFile" />
+                                </div>
+                                <div class="col-sm-1">
+                                    <input class="btn btn-primary" id="btnPDFUpload" type="button" value="上傳" />
+                                </div>
                             </div>
                         </div>
                     </div>

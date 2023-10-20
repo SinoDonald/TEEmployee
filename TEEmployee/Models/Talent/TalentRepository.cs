@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using TEEmployee.Models.Profession;
 using Image = System.Drawing.Image;
+using Personal = TEEmployee.Models.Profession.Personal;
 using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
 
 namespace TEEmployee.Models.Talent
@@ -243,26 +244,12 @@ namespace TEEmployee.Models.Talent
                 userCV.seniority = analyzeSeniority.Item3; // 職務經歷
 
                 // 取得核心專業盤點的專業與管理能力分數
-                List<Skill> getAllScores = new ProfessionRepository().GetAll();
+                List<Personal> getPersonal = new ProfessionRepository().GetPersonal(userCV.empno);
                 // 專業能力_領域技能
-                List<Skill> domainScores = getAllScores.Where(x => x.skill_type.Equals("domain")).ToList();
-                foreach (Skill skill in domainScores)
+                List<Personal> domainScores = getPersonal.Where(x => x.skill_type.Equals("domain") && x.score >= 4).OrderBy(x => x.custom_order).ToList();
+                foreach (Personal domainScore in domainScores)
                 {
-                    if (skill.scores != null)
-                    {
-                        try
-                        {
-                            Score score = skill.scores.Where(x => x.empno.Equals(empno)).FirstOrDefault();
-                            if (score != null)
-                            {
-                                if (score.score >= 4)
-                                {
-                                    userCV.domainSkill += skill.content + "：" + score.score + "\n";
-                                }
-                            }
-                        }
-                        catch (Exception) { }
-                    }
+                    userCV.domainSkill += domainScore.content + "：" + domainScore.score + "\n";
                 }
                 if (userCV.domainSkill != null)
                 {
@@ -273,26 +260,12 @@ namespace TEEmployee.Models.Talent
                     userCV.domainSkill = "\n";
                 }
                 // 專業能力_核心技能
-                List<Skill> coreScores = getAllScores.Where(x => x.skill_type.Equals("core")).ToList();
-                foreach (Skill skill in coreScores)
+                List<Personal> coreScores = getPersonal.Where(x => x.skill_type.Equals("core") && x.score >= 4).OrderBy(x => x.custom_order).ToList();
+                foreach (Personal coreScore in coreScores)
                 {
-                    if (skill.scores != null)
-                    {
-                        try
-                        {
-                            Score score = skill.scores.Where(x => x.empno.Equals(empno)).FirstOrDefault();
-                            if (score != null)
-                            {
-                                if (score.score >= 4)
-                                {
-                                    userCV.coreSkill += skill.content + "：" + score.score + "\n";
-                                }
-                            }
-                        }
-                        catch (Exception) { }
-                    }
+                    userCV.coreSkill += coreScore.content + "：" + coreScore.score + "\n";
                 }
-                if(userCV.coreSkill != null)
+                if (userCV.coreSkill != null)
                 {
                     userCV.coreSkill = userCV.coreSkill.Substring(0, userCV.coreSkill.Length - 1); // 移除最後的"/n"
                 }
@@ -301,26 +274,12 @@ namespace TEEmployee.Models.Talent
                     userCV.coreSkill = "\n";
                 }
                 // 管理能力
-                List<Skill> manageScores = getAllScores.Where(x => x.skill_type.Equals("manage")).ToList();
-                foreach (Skill skill in manageScores)
+                List<Personal> manageScores = getPersonal.Where(x => x.skill_type.Equals("manage") && x.score >= 4).OrderBy(x => x.custom_order).ToList();
+                foreach (Personal manageScore in manageScores)
                 {
-                    if (skill.scores != null)
-                    {
-                        try
-                        {
-                            Score score = skill.scores.Where(x => x.empno.Equals(empno)).FirstOrDefault();
-                            if (score != null)
-                            {
-                                if (score.score >= 4)
-                                {
-                                    userCV.manageSkill += skill.content + "：" + score.score + "\n";
-                                }
-                            }
-                        }
-                        catch (Exception) { }
-                    }
+                    userCV.manageSkill += manageScore.content + "：" + manageScore.score + "\n";
                 }
-                if(userCV.manageSkill != null)
+                if (userCV.manageSkill != null)
                 {
                     userCV.manageSkill = userCV.manageSkill.Substring(0, userCV.manageSkill.Length - 1); // 移除最後的"/n"
                 }
@@ -355,9 +314,9 @@ namespace TEEmployee.Models.Talent
                 workYears = calcYMD.y + "年" + calcYMD.m + "月";
             }
             catch { }
+            // 公司年資
             try
             {
-                // 公司年資
                 MatchCollection matches = regex.Matches(senioritys[1]);
                 Match match = matches[0];
                 DateTime start = DateTime.Parse(match.Groups[2].Value, culture);
@@ -756,9 +715,9 @@ namespace TEEmployee.Models.Talent
             }
             // 中興工程職務經歷
             List<Seniority> senioritys = ProjectRegex(returnParagraph);
-            Tuple<string, string, string> seniority = Seniority(senioritys);
+            string seniority = Seniority(senioritys);
 
-            return new Tuple<string, string>(returnParagraph, seniority.Item3);
+            return new Tuple<string, string>(returnParagraph, seniority);
         }
         // Regex解析文字後, 儲存工作、公司與職位年資
         private List<Seniority> ProjectRegex(string project)
@@ -877,11 +836,9 @@ namespace TEEmployee.Models.Talent
             return senioritys;
         }
         // 中興工程資料
-        private Tuple<string, string, string> Seniority(List<Seniority> senioritys)
+        private string Seniority(List<Seniority> senioritys)
         {
             // 公司年資&職位年資
-            string workYears = string.Empty;
-            string companyYears = string.Empty;
             string positionSeniority = string.Empty;
 
             // 計算年齡, 民國轉西元後計算年齡
@@ -893,36 +850,33 @@ namespace TEEmployee.Models.Talent
             DateTime start = DateTime.Parse(startWorkDate, culture);
             DateTime end = DateTime.Now;
             (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, end);
-            workYears = calcYMD.y + "年" + calcYMD.m + "月";
             positionSeniority += "工作年資：" + startWorkDate + "~" + "迄今\n";
 
             // 在中興工程累積的年資
-            int yearSum = 0;
-            int monthSum = 0;
-            List<Seniority> SEC = senioritys.Where(x => x.company.Equals("中興工程")).Where(x => x.position == null).ToList();
-            foreach (Seniority item in SEC)
+            Seniority SECtoNow = senioritys.Where(x => x.company.Equals("中興工程")).Where(x => x.position == null && x.now == true).FirstOrDefault();
+            start = DateTime.Parse(SECtoNow.start, culture);
+            end = DateTime.Parse(SECtoNow.end, culture); // 迄今
+            List<Seniority> SEC = senioritys.Where(x => x.company.Equals("中興工程")).Where(x => x.position == null && x != SECtoNow).ToList();
+            foreach(Seniority item in SEC)
             {
-                start = DateTime.Parse(item.start, culture);
-                end = DateTime.Parse(item.end, culture);
-                calcYMD = CalcYMD(start, end);
-                yearSum += calcYMD.y;
-                monthSum += calcYMD.m;
+                // 結束日+1月如果在迄今的時間內, 則比對開始工作日期
+                DateTime endDate = DateTime.Parse(item.end, culture).AddMonths(1);
+                if(IsInDate(endDate, start, end))
+                {
+                    // 開始工作日期取較小值
+                    DateTime startDate = DateTime.Parse(item.start, culture);
+                    if((startDate - start).Days < 0)
+                    {
+                        start = startDate;
+                    }
+                }
             }
-            double addYears = Math.Floor(Convert.ToDouble(monthSum / 12));
-            yearSum += (int)addYears;
-            monthSum = monthSum % 12;
-            companyYears = yearSum + "年" + monthSum + "月";
-
-            SEC = senioritys.Where(x => x.position == null).ToList();
-            foreach(Seniority item in SEC.OrderByDescending(x => x.start).ToList())
-            {
-                if (item.company.Contains("中興")){ startWorkDate = item.start; }
-                else{ break; }
-            }
-            positionSeniority += "公司年資：" + startWorkDate + "~" + "迄今\n";
+            string year = (start.Year - 1911).ToString("000");
+            string month = start.Month.ToString("00");
+            positionSeniority += "公司年資：" + year + "." + month + "~" + "迄今\n";
 
             // 比對在中興的職位日期, 如果有重疊則合併
-            List<Seniority> SECSenioritys = senioritys.Where(x => x.company.Contains("中興")).Where(x => x.position != null).ToList();
+            List<Seniority> SECSenioritys = senioritys.Where(x => x.company.Contains("中興")).Where(x => x.position != null).Where(x => IsInDate(DateTime.Parse(x.start, culture), start, end)).ToList();
             Seniority nowPosition = SECSenioritys.Where(x => x.now == true).FirstOrDefault(); // 找到目前職位
             List<StartEndDate> startEndDates = new List<StartEndDate>();
             if(nowPosition == null)
@@ -966,7 +920,7 @@ namespace TEEmployee.Models.Talent
             }
             startEndDates.Add(info);
 
-            // 工程師
+            // 只計算現在公司年資內的職位
             foreach (string position in SECSenioritys.Where(x => x.position != nowPosition.position).Select(x => x.position).Distinct().OrderBy(x => x).ToList())
             {
                 try
@@ -979,12 +933,26 @@ namespace TEEmployee.Models.Talent
                 }
                 catch (Exception) { }
             }
+            // 只計算現在公司年資內管理的職位
+            List<string> managers = SECSenioritys.Where(x => x.manager != null).Select(x => x.manager).Distinct().OrderBy(x => x).ToList();
+            foreach (string manager in managers)
+            {
+                try
+                {
+                    List<Seniority> SECbyManager = SECSenioritys.Where(x => x.manager != null && x.manager.Equals(manager)).ToList();
+                    if (SECbyManager.Count > 0)
+                    {
+                        MergyManagerDate(culture, SECbyManager, startEndDates);
+                    }
+                }
+                catch (Exception) { }
+            }
             foreach (StartEndDate startEndDate in startEndDates.OrderByDescending(x => x.startDate).ToList())
             {
                 positionSeniority += startEndDate.interval;
             }
 
-            return new Tuple<string, string, string>(workYears, companyYears, positionSeniority);
+            return positionSeniority;
         }
         // 驗證與當天相差幾年幾月
         (DateTime st, DateTime ed, int y, int m, int d) CalcYMD(DateTime start, DateTime end)
@@ -1065,17 +1033,85 @@ namespace TEEmployee.Models.Talent
             startEndDate.position = ChangeName(position); // 職稱文字判斷
             (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(startDate, endDate);
             startEndDate.interval = position + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n";
-            string manager = SECbyPosition.Select(x => x.manager).FirstOrDefault();
-            if (manager != null)
-            {
-                startEndDate.manager = manager;
-                startEndDate.interval = position + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n" + manager + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n";
-            }
+            //string manager = SECbyPosition.Select(x => x.manager).FirstOrDefault();
+            //if (manager != null)
+            //{
+            //    startEndDate.manager = manager;
+            //    startEndDate.interval = position + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n" + manager + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n";
+            //}
             startEndDates.Add(startEndDate);
 
             if (senioritys.Count > 0)
             {
                 MergyDate(culture, senioritys, startEndDates);
+            }
+
+            return startEndDate;
+        }
+        // 比對職位日期, 如果有重疊則合併
+        private StartEndDate MergyManagerDate(CultureInfo culture, List<Seniority> SECbyManager, List<StartEndDate> startEndDates)
+        {
+            List<Seniority> senioritys = new List<Seniority>(); // 儲存未重疊區間的日期
+
+            Seniority seniority = new Seniority();
+            seniority.manager = SECbyManager.Select(x => x.manager).FirstOrDefault();
+
+            DateTime startDate = DateTime.Parse(SECbyManager[0].start, culture);
+            DateTime endDate = DateTime.Parse(SECbyManager[0].end, culture);
+            StartEndDate startEndDate = new StartEndDate();
+            for (int i = 0; i < SECbyManager.Count(); i++)
+            {
+                startEndDate = new StartEndDate();
+                DateTime startisInDay = DateTime.Parse(SECbyManager[i].start, culture);
+                DateTime endisInDay = DateTime.Parse(SECbyManager[i].end, culture);
+                bool isInDate1 = IsInDate(startisInDay, startDate, endDate);
+                bool isInDate2 = IsInDate(endisInDay, startDate, endDate);
+                if (isInDate1 && isInDate2 == false)
+                {
+                    endDate = endisInDay;
+                }
+                else if (isInDate1 == false && isInDate2)
+                {
+                    startDate = startisInDay;
+                }
+                else if (isInDate1 == false && isInDate2 == false)
+                {
+                    (DateTime st, DateTime ed, int y, int m, int d) startDateCompare = CalcYMD(startDate, endisInDay);
+                    (DateTime st, DateTime ed, int y, int m, int d) endDateCompare = CalcYMD(endDate, startisInDay);
+                    // 比包含區間大
+                    if (startisInDay.CompareTo(startDate) <= 0 && endisInDay.CompareTo(endDate) >= 0)
+                    {
+                        startDate = startisInDay;
+                        endDate = endisInDay;
+                    }
+                    // 落差一個月內的做合併
+                    else if (startDateCompare.y == 0 && startDateCompare.m == 1)
+                    {
+                        startDate = startisInDay;
+                    }
+                    else if (endDateCompare.y == 0 && endDateCompare.m == 1)
+                    {
+                        endDate = endisInDay;
+                    }
+                    else
+                    {
+                        seniority.start = SECbyManager[i].start;
+                        seniority.end = SECbyManager[i].end;
+                        senioritys.Add(seniority);
+                    }
+                }
+            }
+            startEndDate.startDate = startDate;
+            startEndDate.endDate = endDate;
+            string manager = SECbyManager.Select(x => x.manager).FirstOrDefault();
+            startEndDate.manager = ChangeName(manager); // 職稱文字判斷
+            (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(startDate, endDate);
+            startEndDate.interval = manager + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n";
+            startEndDates.Add(startEndDate);
+
+            if (senioritys.Count > 0)
+            {
+                MergyManagerDate(culture, senioritys, startEndDates);
             }
 
             return startEndDate;
@@ -1140,75 +1176,46 @@ namespace TEEmployee.Models.Talent
             List<User> allUser = new UserRepository().GetAll().ToList();
             foreach (User user in allUser)
             {
+                List<Personal> getPersonal = new ProfessionRepository().GetPersonal(user.empno); // 取得核心專業盤點的專業與管理能力分數
                 Ability userAbility = new Ability();
                 // 專業能力_領域技能
-                List<Skill> domainScores = getAllScores.Where(x => x.skill_type.Equals("domain")).ToList();
+                List<Personal> domainScores = getPersonal.Where(x => x.skill_type.Equals("domain")).OrderBy(x => x.custom_order).ToList();
+                int domainSkills = new ProfessionRepository().GetAll().Where(x => x.skill_type.Equals("domain") && x.role.Equals(user.group_one)).Count();
                 double domainScore = 0.0;
-                foreach (Skill skill in domainScores)
+                foreach (Personal userDomainScore in domainScores)
                 {
-                    if (skill.scores != null)
+                    domainScore += userDomainScore.score;
+                    if(userDomainScore.score >= 4)
                     {
-                        try
-                        {
-                            Score score = skill.scores.Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
-                            if (score != null)
-                            {
-                                domainScore += score.score;
-                                if (score.score >= 4)
-                                {
-                                    userAbility.domainSkill += skill.content + "：" + score.score + "\n";
-                                }
-                            }
-                        }
-                        catch (Exception) { }
+                        userAbility.domainSkill += userDomainScore.content + "：" + userDomainScore.score + "\n";
                     }
                 }
                 // 專業能力_核心技能
-                List<Skill> coreScores = getAllScores.Where(x => x.skill_type.Equals("core")).ToList();
+                List<Personal> coreScores = getPersonal.Where(x => x.skill_type.Equals("core")).OrderBy(x => x.custom_order).ToList();
+                int coreSkills = new ProfessionRepository().GetAll().Where(x => x.skill_type.Equals("core") && x.role.Equals("shared")).Count();
                 double coreScore = 0.0;
-                foreach(Skill skill in coreScores)
+                foreach (Personal userCoreScore in coreScores)
                 {
-                    if(skill.scores != null)
+                    coreScore += userCoreScore.score;
+                    if (userCoreScore.score >= 4)
                     {
-                        try
-                        {
-                            Score score = skill.scores.Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
-                            if(score != null)
-                            {
-                                coreScore += score.score;
-                                if(score.score >= 4)
-                                {
-                                    userAbility.coreSkill += skill.content + "：" + score.score + "\n";
-                                }
-                            }
-                        }
-                        catch (Exception) { }
+                        userAbility.coreSkill += userCoreScore.content + "：" + userCoreScore.score + "\n";
                     }
                 }
-                double professionScore = (domainScore + coreScore) / (domainScores.Count() + coreScores.Count());
+                double professionScore = (domainScore + coreScore) / (domainSkills + coreSkills);
                 // 管理能力
-                List<Skill> manageScores = getAllScores.Where(x => x.skill_type.Equals("manage")).ToList();
+                List<Personal> manageScores = getPersonal.Where(x => x.skill_type.Equals("manage")).OrderBy(x => x.custom_order).ToList();
+                int managekills = new ProfessionRepository().GetAll().Where(x => x.skill_type.Equals("manage") && x.role.Equals("shared")).Count();
                 double manageScore = 0.0;
-                foreach(Skill skill in manageScores)
+                foreach (Personal userManageScore in manageScores)
                 {
-                    if (skill.scores != null)
+                    manageScore += userManageScore.score;
+                    if (userManageScore.score >= 4)
                     {
-                        try
-                        {
-                            Score score = skill.scores.Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
-                            if (score != null)
-                            {
-                                manageScore += score.score;
-                                if (score.score >= 4)
-                                {
-                                    userAbility.manageSkill += skill.content + "：" + score.score + "\n";
-                                }
-                            }
-                        }
-                        catch (Exception) { }
+                        userAbility.manageSkill += userManageScore.content + "：" + userManageScore.score + "\n";
                     }
                 }
-                manageScore = manageScore / manageScores.Count();
+                manageScore = manageScore / managekills;
                 if(professionScore > 3 && manageScore > 3)
                 {
                     userAbility.empno = user.empno;

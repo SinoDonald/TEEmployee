@@ -34,7 +34,7 @@ namespace TEEmployee.Models
         public string name { get; set; }
         public string start { get; set; }
         public string end { get; set; }
-        public bool now { get; set; }        
+        public bool now { get; set; }
         public string company { get; set; }
         public string department { get; set; }        
         public string position { get; set; }
