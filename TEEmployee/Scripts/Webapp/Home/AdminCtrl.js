@@ -134,7 +134,9 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
                 $scope.dada.push(newdata);
             }
 
-            appService.InsertUserExtra({ users: $scope.dada })
+            
+
+            appService.InsertUserExtra({ usersJson: JSON.stringify($scope.dada) })
                 .then((ret) => {
                     if (ret.data === 'True') alert('Successfully updated')
                     //else alert('No data found')
@@ -143,6 +145,16 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
                 .catch((ret) => {
                     alert('Error');
                 });
+
+            //appService.InsertUserExtra({ users: $scope.dada })
+            //    .then((ret) => {
+            //        if (ret.data === 'True') alert('Successfully updated')
+            //        //else alert('No data found')
+            //        $window.location.href = 'Home';
+            //    })
+            //    .catch((ret) => {
+            //        alert('Error');
+            //    });
 
             //rows.forEach(function (item) {
 

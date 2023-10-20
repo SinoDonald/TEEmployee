@@ -103,7 +103,7 @@ app.controller('ProfessionCtrl', ['$scope', '$location', 'appService', '$rootSco
     //})
 
     dataservice.set(appService.GetAuthorization({}));
-
+    $location.path('/Skill');
 
 }]);
 

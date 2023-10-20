@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -147,6 +148,19 @@ namespace TEEmployee.Models.Promotion
                 {
                     seniorityStr += "已任職";
                     seniorityStr += s;
+
+                    Regex rx = new Regex(@"\d*年", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+                    Match match = rx.Match(s);
+
+                    string year = match.Value;
+                    year = year.Substring(0, year.Length - 1);
+
+                    if (int.Parse(year) >= int.Parse(strs[1]))
+                    {
+                        promotions[0].achieved = true;
+                    }
+
                     break;
                 }
             }
@@ -155,7 +169,11 @@ namespace TEEmployee.Models.Promotion
 
             // add performance
 
-            string[] performances = cv.performance.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+            string[] spilt_performances = cv.performance.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+            string[] performances = spilt_performances.Where(x => x != " ").ToArray();
+
+
 
             int count = Math.Min(int.Parse(strs[2]), performances.Length);
             string performanceStr = $"\n近{strs[2]}年的考績為:";
@@ -163,6 +181,30 @@ namespace TEEmployee.Models.Promotion
             for (int i = 0; i != count; i++)
             {
                 performanceStr = performanceStr + $" {performances[i]},";
+            }
+
+            try
+            {
+                if (count >= int.Parse(strs[2]))
+                {
+                    int sum = 0;
+
+                    for (int i = 0; i != count; i++)
+                    {
+                        sum += int.Parse(performances[i]);
+                    }
+
+                    if ((double)sum / int.Parse(strs[2]) >= int.Parse(strs[3]))
+                    {
+                        promotions[1].achieved = true;
+                    }
+
+                }
+
+            }
+            catch
+            {
+
             }
 
             if (count > 0)
@@ -207,7 +249,12 @@ namespace TEEmployee.Models.Promotion
                 {
                     dynamic userObj = JObject.FromObject(item);
                     userObj.nextProfTitle = this.NextProfTitle(item.profTitle);
-                    userObj.upgrade = this.CanUpgrade(item, user.department_manager);
+
+                    List<Promotion> promotions = _promotionRepository.GetByUser(item.empno);
+
+                    userObj.upgrade = this.CanUpgrade(item, promotions, user.department_manager);
+
+                    userObj.isRecommended = promotions.Where(x => x.condition == 7).FirstOrDefault()?.achieved;
                     authorization.Users.Add(userObj);
 
                 }
@@ -426,7 +473,7 @@ namespace TEEmployee.Models.Promotion
             return strs;
         }
 
-        private string CanUpgrade(User user, bool department_manager)
+        private string CanUpgrade(User user, List<Promotion> promotions, bool department_manager)
         {
             // CAN'T UPGRADE TITLE
             List<string> cantUpgradeTitles = new List<string> { "主任工程師", "主任建築師", "主任規劃師", "製圖師", "資深專員二", "資深專員一" };
@@ -437,12 +484,16 @@ namespace TEEmployee.Models.Promotion
             try
             {
                 CV cv = (_talentRepository as TalentRepository).Get(user.empno).First();
-                List<Promotion> promotions = _promotionRepository.GetByUser(user.empno);
+                //List<Promotion> promotions = _promotionRepository.GetByUser(user.empno);
 
                 if (department_manager)
                 {
-                    if (promotions.Where(x => x.condition == 7).First().achieved == false && user.group_one != "行政組")
-                        return "";
+                    //if (promotions.Where(x => x.condition == 7).First().achieved == false && user.group_one != "行政組")
+                    //    return "";
+
+                    //if (promotions.Where(x => x.condition == 7).First().achieved == false && user.group_one != "行政組")
+                    //    return "";
+
                 }
 
                 bool hasBonus = promotions.Where(x => x.condition > 2 && x.condition < 7 && x.achieved).Count() > 0;
@@ -486,7 +537,11 @@ namespace TEEmployee.Models.Promotion
                 bool passScore = false, passScoreByBonus = false;
                 int scoreYear = int.Parse(strs[2]);
                 int score = int.Parse(strs[3]);
-                string[] performances = cv.performance.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+                //string[] performances = cv.performance.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+                string[] spilt_performances = cv.performance.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+                string[] performances = spilt_performances.Where(x => x != " ").ToArray();
 
                 if (performances.Length >= scoreYear)
                 {
@@ -540,6 +595,76 @@ namespace TEEmployee.Models.Promotion
             }
 
             return true;
+        }
+
+        public byte[] DownloadAuthExcel(string authStr)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            //var auth = GetAuthorization("");
+
+            dynamic auth = JsonConvert.DeserializeObject<dynamic>(authStr);
+
+
+
+            using (var package = new ExcelPackage())
+            {
+                var sheet = package.Workbook.Worksheets.Add("一般升等");
+
+                sheet.Cells["A:B"].Style.Font.Size = 12f;
+
+                int count = 0;
+
+                foreach (var user in auth.Users)
+                {
+                    if (user.upgrade == "normal")
+                    {
+                        count++;
+
+                        sheet.Cells[count, 1].Value = (string)user.name;
+                        sheet.Cells[count, 2].Value = (string)user.profTitle;
+
+                        if (user.isRecommended == true)
+                        {
+                            sheet.Cells[count, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            sheet.Cells[count, 1].Style.Fill.BackgroundColor.SetColor(1, 247, 239, 217);
+                        }
+
+                    }
+                }
+
+                sheet = package.Workbook.Worksheets.Add("特別升等");
+
+                sheet.Cells["A:B"].Style.Font.Size = 12f;
+
+                count = 0;
+
+                foreach (var user in auth.Users)
+                {
+                    if (user.upgrade == "bonus")
+                    {
+                        count++;
+
+                        sheet.Cells[count, 1].Value = (string)user.name;
+                        sheet.Cells[count, 2].Value = (string)user.profTitle;
+
+                        if (user.isRecommended == true)
+                        {
+                            sheet.Cells[count, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            sheet.Cells[count, 1].Style.Fill.BackgroundColor.SetColor(1, 247, 239, 217);
+                        }
+                    }
+                }
+
+                //sheet.Cells["A1"].Value = name;
+
+
+
+
+                var excelData = package.GetAsByteArray();  // byte or stream
+
+
+                return excelData;
+            }
         }
 
         public void Dispose()

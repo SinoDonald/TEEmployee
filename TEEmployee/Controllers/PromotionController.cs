@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -88,6 +89,16 @@ namespace TEEmployee.Controllers
             var ret = _service.DeleteAll(Session["empno"].ToString());
 
             return Json(ret);
+        }
+
+        [HttpPost]
+        public FileContentResult DownloadAuthExcel(string authStr)
+        {            
+            string contentType = "application/octet-stream"; // byte 
+            var fileName = $"{DateTime.Now.Year}升等名單.xlsx";
+            var excelData = _service.DownloadAuthExcel(authStr);
+            
+            return File(excelData, contentType, fileName);
         }
 
         protected override void Dispose(bool disposing)
