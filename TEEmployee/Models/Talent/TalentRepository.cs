@@ -913,11 +913,6 @@ namespace TEEmployee.Models.Talent
             info.startDate = DateTime.Parse(nowPosition.start, culture);
             info.endDate = DateTime.Now;
             info.interval = changeName + "：" + nowPosition.start + "~" + "迄今\n";
-            if(nowPosition.manager != null)
-            {
-                info.manager = nowPosition.manager;
-                info.interval = changeName + "：" + nowPosition.start + "~" + "迄今\n" + nowPosition.manager + "：" + nowPosition.start + "~" + "迄今\n";
-            }
             startEndDates.Add(info);
 
             // 只計算現在公司年資內的職位
@@ -928,7 +923,7 @@ namespace TEEmployee.Models.Talent
                     List<Seniority> SECbyPosition = SECSenioritys.Where(x => x.position.Equals(position)).ToList();
                     if (SECbyPosition.Count > 0)
                     {
-                        MergyDate(culture, SECbyPosition, startEndDates);
+                        MergyDate(culture, SECbyPosition, startEndDates, false);
                     }
                 }
                 catch (Exception) { }
@@ -942,12 +937,17 @@ namespace TEEmployee.Models.Talent
                     List<Seniority> SECbyManager = SECSenioritys.Where(x => x.manager != null && x.manager.Equals(manager)).ToList();
                     if (SECbyManager.Count > 0)
                     {
-                        MergyManagerDate(culture, SECbyManager, startEndDates);
+                        MergyDate(culture, SECbyManager, startEndDates, true);
                     }
                 }
                 catch (Exception) { }
             }
-            foreach (StartEndDate startEndDate in startEndDates.OrderByDescending(x => x.startDate).ToList())
+
+            foreach (StartEndDate startEndDate in startEndDates.Where(x => x.position != null).OrderByDescending(x => x.startDate).ToList()) // 工程師
+            {
+                positionSeniority += startEndDate.interval;
+            }
+            foreach (StartEndDate startEndDate in startEndDates.Where(x => x.manager != null).OrderByDescending(x => x.startDate).ToList()) // 管理職
             {
                 positionSeniority += startEndDate.interval;
             }
@@ -975,12 +975,9 @@ namespace TEEmployee.Models.Talent
             return (start, end, years, months, days);
         }
         // 比對職位日期, 如果有重疊則合併
-        private StartEndDate MergyDate(CultureInfo culture, List<Seniority> SECbyPosition, List<StartEndDate> startEndDates)
+        private StartEndDate MergyDate(CultureInfo culture, List<Seniority> SECbyPosition, List<StartEndDate> startEndDates, bool isManager)
         {
             List<Seniority> senioritys = new List<Seniority>(); // 儲存未重疊區間的日期
-
-            Seniority seniority = new Seniority();
-            seniority.position = SECbyPosition.Select(x => x.position).FirstOrDefault();
 
             DateTime startDate = DateTime.Parse(SECbyPosition[0].start, culture);
             DateTime endDate = DateTime.Parse(SECbyPosition[0].end, culture);
@@ -988,10 +985,12 @@ namespace TEEmployee.Models.Talent
             for (int i = 0; i < SECbyPosition.Count(); i++)
             {
                 startEndDate = new StartEndDate();
-                DateTime startisInDay = DateTime.Parse(SECbyPosition[i].start, culture);
-                DateTime endisInDay = DateTime.Parse(SECbyPosition[i].end, culture);
+                DateTime startisInDay = DateTime.Parse(SECbyPosition[i].start, culture).AddMonths(-1); // 落差一個月內的做合併
+                DateTime endisInDay = DateTime.Parse(SECbyPosition[i].end, culture).AddMonths(1); // 落差一個月內的做合併
                 bool isInDate1 = IsInDate(startisInDay, startDate, endDate);
                 bool isInDate2 = IsInDate(endisInDay, startDate, endDate);
+                startisInDay = startisInDay.AddMonths(1);
+                endisInDay = endisInDay.AddMonths(-1);
                 if (isInDate1 && isInDate2 == false)
                 {
                     endDate = endisInDay;
@@ -1010,17 +1009,11 @@ namespace TEEmployee.Models.Talent
                         startDate = startisInDay;
                         endDate = endisInDay;
                     }
-                    // 落差一個月內的做合併
-                    else if (startDateCompare.y == 0 && startDateCompare.m == 1)
-                    {
-                        startDate = startisInDay;
-                    }
-                    else if (endDateCompare.y == 0 && endDateCompare.m == 1)
-                    {
-                        endDate = endisInDay;
-                    }
                     else
                     {
+                        Seniority seniority = new Seniority();
+                        if (isManager) { seniority.manager = SECbyPosition[i].manager; }
+                        else { seniority.position = SECbyPosition[i].position; }
                         seniority.start = SECbyPosition[i].start;
                         seniority.end = SECbyPosition[i].end;
                         senioritys.Add(seniority);
@@ -1029,89 +1022,24 @@ namespace TEEmployee.Models.Talent
             }
             startEndDate.startDate = startDate;
             startEndDate.endDate = endDate;
-            string position = SECbyPosition.Select(x => x.position).FirstOrDefault();
-            startEndDate.position = ChangeName(position); // 職稱文字判斷
+            string position = string.Empty;
+            if (isManager)
+            {
+                position = ChangeName(SECbyPosition.Select(x => x.manager).FirstOrDefault()); // 職稱文字判斷
+                startEndDate.manager = position;
+            }
+            else
+            {
+                position = ChangeName(SECbyPosition.Select(x => x.position).FirstOrDefault()); // 職稱文字判斷
+                startEndDate.position = position;
+            }
             (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(startDate, endDate);
             startEndDate.interval = position + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n";
-            //string manager = SECbyPosition.Select(x => x.manager).FirstOrDefault();
-            //if (manager != null)
-            //{
-            //    startEndDate.manager = manager;
-            //    startEndDate.interval = position + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n" + manager + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n";
-            //}
             startEndDates.Add(startEndDate);
 
             if (senioritys.Count > 0)
             {
-                MergyDate(culture, senioritys, startEndDates);
-            }
-
-            return startEndDate;
-        }
-        // 比對職位日期, 如果有重疊則合併
-        private StartEndDate MergyManagerDate(CultureInfo culture, List<Seniority> SECbyManager, List<StartEndDate> startEndDates)
-        {
-            List<Seniority> senioritys = new List<Seniority>(); // 儲存未重疊區間的日期
-
-            Seniority seniority = new Seniority();
-            seniority.manager = SECbyManager.Select(x => x.manager).FirstOrDefault();
-
-            DateTime startDate = DateTime.Parse(SECbyManager[0].start, culture);
-            DateTime endDate = DateTime.Parse(SECbyManager[0].end, culture);
-            StartEndDate startEndDate = new StartEndDate();
-            for (int i = 0; i < SECbyManager.Count(); i++)
-            {
-                startEndDate = new StartEndDate();
-                DateTime startisInDay = DateTime.Parse(SECbyManager[i].start, culture);
-                DateTime endisInDay = DateTime.Parse(SECbyManager[i].end, culture);
-                bool isInDate1 = IsInDate(startisInDay, startDate, endDate);
-                bool isInDate2 = IsInDate(endisInDay, startDate, endDate);
-                if (isInDate1 && isInDate2 == false)
-                {
-                    endDate = endisInDay;
-                }
-                else if (isInDate1 == false && isInDate2)
-                {
-                    startDate = startisInDay;
-                }
-                else if (isInDate1 == false && isInDate2 == false)
-                {
-                    (DateTime st, DateTime ed, int y, int m, int d) startDateCompare = CalcYMD(startDate, endisInDay);
-                    (DateTime st, DateTime ed, int y, int m, int d) endDateCompare = CalcYMD(endDate, startisInDay);
-                    // 比包含區間大
-                    if (startisInDay.CompareTo(startDate) <= 0 && endisInDay.CompareTo(endDate) >= 0)
-                    {
-                        startDate = startisInDay;
-                        endDate = endisInDay;
-                    }
-                    // 落差一個月內的做合併
-                    else if (startDateCompare.y == 0 && startDateCompare.m == 1)
-                    {
-                        startDate = startisInDay;
-                    }
-                    else if (endDateCompare.y == 0 && endDateCompare.m == 1)
-                    {
-                        endDate = endisInDay;
-                    }
-                    else
-                    {
-                        seniority.start = SECbyManager[i].start;
-                        seniority.end = SECbyManager[i].end;
-                        senioritys.Add(seniority);
-                    }
-                }
-            }
-            startEndDate.startDate = startDate;
-            startEndDate.endDate = endDate;
-            string manager = SECbyManager.Select(x => x.manager).FirstOrDefault();
-            startEndDate.manager = ChangeName(manager); // 職稱文字判斷
-            (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(startDate, endDate);
-            startEndDate.interval = manager + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n";
-            startEndDates.Add(startEndDate);
-
-            if (senioritys.Count > 0)
-            {
-                MergyManagerDate(culture, senioritys, startEndDates);
+                MergyDate(culture, senioritys, startEndDates, isManager);
             }
 
             return startEndDate;
