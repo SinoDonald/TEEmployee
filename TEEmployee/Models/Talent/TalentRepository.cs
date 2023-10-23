@@ -105,42 +105,46 @@ namespace TEEmployee.Models.Talent
         public List<CV> ConditionFilter(ConditionFilter filter, List<CV> userCVs)
         {
             List<CV> filterUserCVs = new List<CV>();
-            foreach(CV userCV in userCVs)
+            try{ filterUserCVs = userCVs.Where(x => filter.age1 <= Age(x.birthday) && Age(x.birthday) <= filter.age2).ToList(); } // 年齡 
+            catch (Exception) { }
+            try { filterUserCVs = filterUserCVs.Where(x => filter.companyYear1 <= CompanyYears(x.seniority) && CompanyYears(x.seniority) <= filter.companyYear2).ToList(); } // 公司年資 
+            catch (Exception) { }
+            try { filterUserCVs = filterUserCVs.Where(x => x.seniority.Contains(filter.seniority)).ToList(); } // 曾任職等
+            catch (Exception) { }
+            try { filterUserCVs = filterUserCVs.Where(x => x.educational.Contains(filter.educational)).ToList(); } // 學歷文字判斷 
+            catch (Exception) { }
+
+            return filterUserCVs;
+        }
+        // 年齡
+        private int Age(string userBirthday)
+        {
+            // 計算年齡, 民國轉西元後計算年齡
+            CultureInfo culture = new CultureInfo("zh-TW");
+            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+            DateTime birthday = DateTime.Parse(userBirthday, culture);
+            DateTime now = DateTime.Now;
+            int age = now.Year - birthday.Year;
+
+            return age;
+        }
+        // 公司年資
+        private int CompanyYears(string seniority)
+        {
+            int companyYears = 0;
+            try
             {
-                List<bool> trueOrFalse = new List<bool>();
                 // 計算年齡, 民國轉西元後計算年齡
                 CultureInfo culture = new CultureInfo("zh-TW");
                 culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-                DateTime birthday = DateTime.Parse(userCV.birthday, culture);
-                DateTime now = DateTime.Now;
-                int age = now.Year - birthday.Year;
-                if (now.Month < birthday.Month || (now.Month == birthday.Month && now.Day < birthday.Day)) { age--; }
-                userCV.age = age.ToString();
-                if (filter.age1 <= age && age <= filter.age2) { trueOrFalse.Add(true); }
-
-                // 解析SQL seniority文字, 儲存工作、公司與職位年資
-                Tuple<string, string, string> analyzeSeniority = AnalyzeSeniority(userCV.seniority);
-                userCV.workYears = analyzeSeniority.Item1; // 工作年資
-                userCV.companyYears = analyzeSeniority.Item2; // 公司年資
-                userCV.seniority = analyzeSeniority.Item3; // 職務經歷
-                int index = analyzeSeniority.Item2.IndexOf("年");
-                string year = analyzeSeniority.Item2.Substring(0, index);
-                int companyYear = Convert.ToInt32(year); // 公司年資
-                if (filter.companyYear1 <= companyYear && companyYear <= filter.companyYear2){ trueOrFalse.Add(true); }
-                // 現任職等職級
-                string nowSeniority = analyzeSeniority.Item3.Split('\n')[0].Split('：')[0];
-                if(filter.seniority == null) { trueOrFalse.Add(true); }
-                else if(filter.seniority.Equals(nowSeniority)){trueOrFalse.Add(true);}
-                // 解析學歷
-                string educational = EducationalName(userCV.educational.Split('\n')[0]);
-                if (filter.educational == null) { trueOrFalse.Add(true); }
-                else if (filter.educational.Equals(educational)) { trueOrFalse.Add(true); }
-
-                // 如果都符合條件則加入顯示清單
-                if (trueOrFalse.Count.Equals(4)) { filterUserCVs.Add(userCV); }
+                string companyYearStr = seniority.Split('\n')[1].Split('：')[1].Split('~')[0];
+                DateTime start = DateTime.Parse(companyYearStr, culture);
+                (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, DateTime.Now);
+                companyYears = calcYMD.y;
             }
+            catch { }
 
-            return filterUserCVs;
+            return companyYears;
         }
         // 學歷文字判斷
         private string EducationalName(string educational)
@@ -640,9 +644,9 @@ namespace TEEmployee.Models.Talent
             List<string> removeStr = new List<string>() { "一", "二", "三", "四" }; // 職稱內要移除的文字
             // 讀取user.db內所有的職稱
             List<string> jobTitles = new List<string>();
-            foreach(string jobTitle in new UserRepository().GetAll().Select(x => x.profTitle).Distinct().ToList())
+            foreach (string jobTitle in new UserRepository().GetAll().Select(x => x.profTitle).Distinct().ToList())
             {
-                if(removeStr.Any(s => jobTitle.Contains(s)))
+                if (removeStr.Any(s => jobTitle.Contains(s)))
                 {
                     jobTitles.Add(jobTitle.Remove(jobTitle.Length - 1, 1));
                 }
@@ -652,9 +656,19 @@ namespace TEEmployee.Models.Talent
                 }
             }
             jobTitles.Add("正建築師");
+            jobTitles.Add("製圖員");
+            jobTitles.Add("製圖師");
+            jobTitles.Add("繪圖員");
+            jobTitles.Add("製圖工程師");
             jobTitles.Add("實習生");
             jobTitles = jobTitles.Distinct().OrderByDescending(x => x.Length).ToList();
-            // jobTitle = new List<string>() { "主任工程師", "專員", "工程師", "建築師", "正工程師", "主任工程師", "製圖師", "規劃師" };
+
+            //// 讀取jobTitle資料庫內公司所有職等
+            //string sql = @"SELECT * FROM jobTitle";
+            //jobTitles = _conn.Query<JobTitle>(sql).ToList().Select(x => x.name.Replace("(", "").Replace(")", "")).ToList();
+            //jobTitles.Add("製圖工程師");
+            //jobTitles.Add("繪圖員");
+            //jobTitles.Add("實習生");
 
             string returnParagraph = string.Empty;
             foreach (string paragraph in cells[1].Elements<Paragraph>().Select(o => o.InnerText).ToList())

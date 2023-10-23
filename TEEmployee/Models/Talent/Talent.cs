@@ -48,4 +48,11 @@ namespace TEEmployee.Models
         public DateTime endDate { get; set; }
         public string interval { get; set; }
     }
+    public class JobTitle
+    {
+        public string level { get; set; }
+        public string name { get; set; }
+        public string job { get; set; }
+        public string condition { get; set; }
+    }
 }

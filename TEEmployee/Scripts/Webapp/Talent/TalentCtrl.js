@@ -211,9 +211,12 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
         seniority: ""
     };
     $scope.ConditionFilter = function (filter) {
-        appService.ConditionFilter({ filter: filter, json: angular.toJson($scope.data) })
+        appService.ConditionFilter({ filter: filter, json: angular.toJson($scope.GetAll) })
             .then(function (ret) {
-                $scope.senioritys = ret.data;
+                $scope.data = [];
+                for (let item of ret.data) {
+                    $scope.data.push(item);
+                }
             });
     }
 
