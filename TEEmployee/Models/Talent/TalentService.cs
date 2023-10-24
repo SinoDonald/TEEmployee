@@ -62,9 +62,9 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
         // 上傳測評資料檔案
-        public List<CV> ImportPDFFile(HttpPostedFileBase file)
+        public List<CV> ImportPDFFile(HttpPostedFileBase file, string empno)
         {
-            List<CV> ret = _talentRepository.ImportPDFFile(file);
+            List<CV> ret = _talentRepository.ImportPDFFile(file, empno);
             return ret;
         }
         // High Performer

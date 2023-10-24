@@ -75,31 +75,11 @@ namespace TEEmployee.Models.Talent
         // 取得所有員工職等職級
         public List<string> GetSenioritys()
         {
-            string sql = @"SELECT * FROM userCV ORDER BY empno";
-            List<string> senioritys = _conn.Query<CV>(sql, new {}).Where(x => x.seniority != null).Select(x => x.seniority).Distinct().OrderBy(x => x).ToList();
-            List<string> ret = new List<string>() { "" };
-            foreach (string seniority in senioritys)
-            {
-                string[] analyzeSeniority = seniority.Split('\n');
-                if(analyzeSeniority.Length > 2)
-                {
-                    for(int i = 2; i < analyzeSeniority.Length; i++)
-                    {
-                        try
-                        {
-                            string saveSeniority = analyzeSeniority[i].Split('：')[0];
-                            if (saveSeniority != "")
-                            {
-                                ret.Add(saveSeniority);
-                            }
-                        }
-                        catch (Exception) { }
-                    }
-                }
-            }
+            string sql = @"SELECT * FROM jobTitle";
+            List<string> jobTitles = _conn.Query<JobTitle>(sql).ToList().Select(x => x.name).ToList();
+            jobTitles.Insert(0, "");
 
-            ret = ret.Distinct().OrderBy(x => x).ToList();
-            return ret;
+            return jobTitles;
         }
         // 條件篩選
         public List<CV> ConditionFilter(ConditionFilter filter, List<CV> userCVs)
@@ -641,39 +621,27 @@ namespace TEEmployee.Models.Talent
         // 經歷文字解析
         private Tuple<string, string> ReturnProjectParagraph(TableCell[] cells)
         {
-            List<string> removeStr = new List<string>() { "一", "二", "三", "四" }; // 職稱內要移除的文字
-            // 讀取user.db內所有的職稱
+            // 讀取jobTitle資料庫內公司所有職等
             List<string> jobTitles = new List<string>();
-            foreach (string jobTitle in new UserRepository().GetAll().Select(x => x.profTitle).Distinct().ToList())
+            string sql = @"SELECT * FROM jobTitle";
+            jobTitles = _conn.Query<JobTitle>(sql).ToList().Select(x => x.name/*.Replace("(", "").Replace(")", "")*/).ToList();
+            foreach(string jobTitle in _conn.Query<JobTitle>(sql).ToList().Select(x => x.name.Replace("(", "").Replace(")", "")).ToList())
             {
-                if (removeStr.Any(s => jobTitle.Contains(s)))
-                {
-                    jobTitles.Add(jobTitle.Remove(jobTitle.Length - 1, 1));
-                }
-                else
+                if(jobTitles.Where(x => x.Equals(jobTitle)).FirstOrDefault() == null)
                 {
                     jobTitles.Add(jobTitle);
                 }
             }
-            jobTitles.Add("正建築師");
-            jobTitles.Add("製圖員");
-            jobTitles.Add("製圖師");
-            jobTitles.Add("繪圖員");
             jobTitles.Add("製圖工程師");
+            jobTitles.Add("正工程師");
+            jobTitles.Add("工程師");
+            jobTitles.Add("繪圖員");
             jobTitles.Add("實習生");
-            jobTitles = jobTitles.Distinct().OrderByDescending(x => x.Length).ToList();
-
-            //// 讀取jobTitle資料庫內公司所有職等
-            //string sql = @"SELECT * FROM jobTitle";
-            //jobTitles = _conn.Query<JobTitle>(sql).ToList().Select(x => x.name.Replace("(", "").Replace(")", "")).ToList();
-            //jobTitles.Add("製圖工程師");
-            //jobTitles.Add("繪圖員");
-            //jobTitles.Add("實習生");
 
             string returnParagraph = string.Empty;
             foreach (string paragraph in cells[1].Elements<Paragraph>().Select(o => o.InnerText).ToList())
             {
-                string changeParagraph = paragraph.Replace(" ", "");
+                string changeParagraph = paragraph.Replace(" ", "").Replace("（", "(").Replace("）", ")");
                 if (changeParagraph.Contains(")"))
                 {
                     int index = changeParagraph.IndexOf(")");
@@ -701,7 +669,7 @@ namespace TEEmployee.Models.Talent
                         }
                         catch (Exception) { }
                     }
-                    // 職稱前面加空白
+                    // 檢查職等是否包含(), 並在職稱前面加空白
                     if (jobTitles.Any(s => changeParagraph.Contains(s)))
                     {
                         Regex rg = new Regex(@"(\([_a-zA-Z0-9]\))");
@@ -712,10 +680,15 @@ namespace TEEmployee.Models.Talent
                             if(changeParagraph.Substring(index - 1, 1) == "(")
                             {
                                 changeParagraph = changeParagraph.Insert(index - 1, " ");
+                                string position = changeParagraph.Split(' ')[changeParagraph.Split(' ').Length - 1].Replace("(", "").Replace(")", "");
+                                string changeName = ChangeName(position); // 職稱文字判斷
+                                changeParagraph = changeParagraph.Replace(changeParagraph.Split(' ')[changeParagraph.Split(' ').Length - 1], changeName);
                             }
                             else
                             {
                                 changeParagraph = changeParagraph.Insert(index, " ");
+                                string changeName = ChangeName(changeParagraph.Split(' ')[changeParagraph.Split(' ').Length - 1]); // 職稱文字判斷
+                                changeParagraph = changeParagraph.Replace(changeParagraph.Split(' ')[changeParagraph.Split(' ').Length - 1], changeName);
                             }
                         }
                     }
@@ -837,7 +810,7 @@ namespace TEEmployee.Models.Talent
                             else
                             {
                                 string changeName = match.Groups[5].Value.Replace("（", "(").Replace("）", ")");
-                                changeName = ChangeName(changeName);
+                                changeName = ChangeName(changeName); // 職稱文字判斷
                                 seniority.position = changeName;
                             }
                             senioritys.Add(seniority);
@@ -897,38 +870,18 @@ namespace TEEmployee.Models.Talent
             {
                 nowPosition = SECSenioritys.Where(x => x.position != null).FirstOrDefault(); // 找到目前職位
             }
-            List<string> removeStr = new List<string>() { "一", "二", "三", "四" }; // 職稱內要判斷有無()
-            string changeName = nowPosition.position;
-            if (removeStr.Any(s => changeName.Contains(s)))
-            {
-                if (!changeName.Contains("(") && !changeName.Contains(")"))
-                {
-                    changeName = changeName.Insert(changeName.Length - 1, "(").Insert(changeName.Length + 1, ")");
-                }
-                else if (!changeName.Contains("("))
-                {
-                    int index = changeName.LastIndexOf(")");
-                    changeName = changeName.Insert(changeName.Length - 2, "(");
-                }
-                else if (!changeName.Contains(")"))
-                {
-                    changeName = changeName.Insert(changeName.Length + 1, ")");
-                }
-            }
-            else
-            {
-                if (changeName.Contains("(") || changeName.Contains(")"))
-                {
-                    changeName = changeName.Replace("(", "").Replace(")", "");
-                }
-            }
-            StartEndDate info = new StartEndDate();
-            info.position = changeName;
-            info.startDate = DateTime.Parse(nowPosition.start, culture);
-            info.endDate = DateTime.Now;
-            info.interval = changeName + "：" + nowPosition.start + "~" + "迄今\n";
-            startEndDates.Add(info);
+            string changeName = ChangeName(nowPosition.position); // 職稱文字判斷
 
+            // 公司年資內當前的職位
+            try
+            {
+                List<Seniority> SECbyPosition = SECSenioritys.Where(x => x.position.Equals(nowPosition.position)).ToList();
+                if (SECbyPosition.Count > 0)
+                {
+                    MergyDate(culture, SECbyPosition, startEndDates, false, true);
+                }
+            }
+            catch (Exception) { }
             // 只計算現在公司年資內的職位
             foreach (string position in SECSenioritys.Where(x => x.position != nowPosition.position).Select(x => x.position).Distinct().OrderBy(x => x).ToList())
             {
@@ -937,7 +890,7 @@ namespace TEEmployee.Models.Talent
                     List<Seniority> SECbyPosition = SECSenioritys.Where(x => x.position.Equals(position)).ToList();
                     if (SECbyPosition.Count > 0)
                     {
-                        MergyDate(culture, SECbyPosition, startEndDates, false);
+                        MergyDate(culture, SECbyPosition, startEndDates, false, false);
                     }
                 }
                 catch (Exception) { }
@@ -951,7 +904,7 @@ namespace TEEmployee.Models.Talent
                     List<Seniority> SECbyManager = SECSenioritys.Where(x => x.manager != null && x.manager.Equals(manager)).ToList();
                     if (SECbyManager.Count > 0)
                     {
-                        MergyDate(culture, SECbyManager, startEndDates, true);
+                        MergyDate(culture, SECbyManager, startEndDates, true, false);
                     }
                 }
                 catch (Exception) { }
@@ -989,7 +942,7 @@ namespace TEEmployee.Models.Talent
             return (start, end, years, months, days);
         }
         // 比對職位日期, 如果有重疊則合併
-        private StartEndDate MergyDate(CultureInfo culture, List<Seniority> SECbyPosition, List<StartEndDate> startEndDates, bool isManager)
+        private StartEndDate MergyDate(CultureInfo culture, List<Seniority> SECbyPosition, List<StartEndDate> startEndDates, bool isManager, bool isNowPosition)
         {
             List<Seniority> senioritys = new List<Seniority>(); // 儲存未重疊區間的日期
 
@@ -1048,12 +1001,21 @@ namespace TEEmployee.Models.Talent
                 startEndDate.position = position;
             }
             (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(startDate, endDate);
-            startEndDate.interval = position + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n";
+            if (isNowPosition)
+            {
+                string year = (startDate.Year - 1911).ToString("000");
+                string month = startDate.Month.ToString("00");
+                startEndDate.interval = position + "：" + year + "." + month + "~" + "迄今\n";
+            }
+            else
+            {
+                startEndDate.interval = position + "：" + calcYMD.y + "年" + calcYMD.m + "月" + "\n";
+            }
             startEndDates.Add(startEndDate);
 
             if (senioritys.Count > 0)
             {
-                MergyDate(culture, senioritys, startEndDates, isManager);
+                MergyDate(culture, senioritys, startEndDates, isManager, isNowPosition);
             }
 
             return startEndDate;
@@ -1283,24 +1245,26 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
         // 上傳測評資料檔案
-        public List<CV> ImportPDFFile(HttpPostedFileBase file)
+        public List<CV> ImportPDFFile(HttpPostedFileBase file, string empno)
         {
             string ret = "";
             List<CV> userCVs = new List<CV>();
             try
             {
                 if (Path.GetExtension(file.FileName) != ".pdf") throw new ApplicationException("請使用PDF(.pdf)格式");
-                string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"));
+
+                //string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"));
+                string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data"), "Talent");
                 // 檢查資料夾是否存在
                 if (!Directory.Exists(folderPath))
                 {
                     Directory.CreateDirectory(folderPath);
                 }
 
-                var path = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"), file.FileName);
+                string extension = Path.GetExtension(file.FileName);
+                var path = Path.Combine(folderPath, file.FileName);
                 file.SaveAs(path); // 將檔案存到Server
 
-                string empno = Regex.Replace(Path.GetFileName(file.FileName), "[^0-9]", ""); // 僅保留數字
                 FilterReader rilterReader = new FilterReader(path);
                 string line = rilterReader.ReadToEnd().Replace(" ", "");
                 // 解析PDF內的優、缺點
@@ -1339,11 +1303,18 @@ namespace TEEmployee.Models.Talent
                     directory.EnumerateFiles().ToList().ForEach(f => f.Delete());
                     directory.EnumerateDirectories().ToList().ForEach(d => d.Delete(true));
                 }
-                catch (Exception) { }
+                catch (Exception ex)
+                {
+                    userCV = new CV();
+                    userCV.academic = ex.Message;
+                    userCVs.Add(userCV);
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                CV userCV = new CV();
+                userCV.academic = ex.Message;
+                userCVs.Add(userCV);
             }
 
             return userCVs;

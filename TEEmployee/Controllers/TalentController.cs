@@ -73,7 +73,7 @@ namespace TEEmployee.Controllers
         public ActionResult ImportPDFFile(HttpPostedFileBase file)
         {
             if (file == null) return Json(new { Status = 0, Message = "No File Selected" });
-            var ret = _service.ImportPDFFile(file);
+            var ret = _service.ImportPDFFile(file, Session["empno"].ToString());
             return Json(ret);
         }
         // High Performer
