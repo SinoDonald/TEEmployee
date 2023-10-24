@@ -10,8 +10,9 @@ namespace TEEmployee.Models
         public int age2 { get; set; }
         public int companyYear1 { get; set; }
         public int companyYear2 { get; set; }
-        public string educational { get; set; }
         public string seniority { get; set; }
+        public string nowPosition { get; set; }
+        public string educational { get; set; }
     }
     public class Ability
     {

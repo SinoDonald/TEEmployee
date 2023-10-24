@@ -89,9 +89,11 @@ namespace TEEmployee.Models.Talent
             catch (Exception) { }
             try { filterUserCVs = filterUserCVs.Where(x => filter.companyYear1 <= CompanyYears(x.seniority) && CompanyYears(x.seniority) <= filter.companyYear2).ToList(); } // 公司年資 
             catch (Exception) { }
-            try { filterUserCVs = filterUserCVs.Where(x => x.seniority.Contains(filter.seniority)).ToList(); } // 曾任職等
+            try { if (filter.seniority != null) { filterUserCVs = filterUserCVs.Where(x => x.seniority.Contains(filter.seniority)).ToList(); } } // 曾任職等
             catch (Exception) { }
-            try { filterUserCVs = filterUserCVs.Where(x => x.educational.Contains(filter.educational)).ToList(); } // 學歷文字判斷 
+            try { if (filter.nowPosition != null) { filterUserCVs = filterUserCVs.Where(x => NowPosition(x.seniority).Equals(filter.nowPosition)).ToList(); } } // 當前職等
+            catch (Exception) { }
+            try { if (filter.educational != null) { filterUserCVs = filterUserCVs.Where(x => x.educational.Contains(filter.educational)).ToList(); } } // 學歷判斷 
             catch (Exception) { }
 
             return filterUserCVs;
@@ -126,10 +128,17 @@ namespace TEEmployee.Models.Talent
 
             return companyYears;
         }
-        // 學歷文字判斷
+        // 當前職等
+        private string NowPosition(string seniority)
+        {
+            string nowPosition = seniority.Split('\n')[2].Split('：')[0];
+
+            return nowPosition;
+        }
+        // 學歷判斷
         private string EducationalName(string educational)
         {
-            List<string> removeStr = new List<string>() { "學士", "碩士", "博士" }; // 職稱內要判斷有無()
+            List<string> removeStr = new List<string>() { "學士", "碩士", "博士" };
             string word = removeStr.Where(s => educational.Contains(s)).Select(s => s).FirstOrDefault();
             if (word != null)
             {

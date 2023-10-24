@@ -63,9 +63,6 @@
                                                 <label class="form-check-label" for="inlineCheckbox1">公司年資：</label>
                                             </div>
                                             <div class="col-sm-3">
-                                                <label class="form-check-label" for="inlineCheckbox1">職等：</label>
-                                            </div>
-                                            <div class="col-sm-3">
                                                 <label class="form-check-label" for="inlineCheckbox1">教育程度：</label>
                                             </div>
                                         </div>
@@ -84,13 +81,28 @@
                                                 <label>年</label>
                                             </div>
                                             <div class="col-sm-3">
+                                                <select class="form-select w-50" id="SelectedEducational" name="SelectedEducational" data-ng-model="filter.educational">
+                                                    <option ng-repeat="educational in educationals" value="{{educational}}">{{educational}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <label class="form-check-label" for="inlineCheckbox1">曾任職等：</label>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="form-check-label" for="inlineCheckbox1">當前職等：</label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-3">
                                                 <select class="form-select w-50" id="SelectedSeniority" name="SelectedSeniority" data-ng-model="filter.seniority">
                                                     <option ng-repeat="seniority in senioritys" value="{{seniority}}">{{seniority}}</option>
                                                 </select>
                                             </div>
                                             <div class="col-sm-3">
-                                                <select class="form-select w-50" id="SelectedEducational" name="SelectedEducational" data-ng-model="filter.educational">
-                                                    <option ng-repeat="educational in educationals" value="{{educational}}">{{educational}}</option>
+                                                <select class="form-select w-50" id="SelectedNowPosition" name="SelectedNowPosition" data-ng-model="filter.nowPosition">
+                                                    <option ng-repeat="seniority in senioritys" value="{{seniority}}">{{seniority}}</option>
                                                 </select>
                                             </div>
                                         </div>
