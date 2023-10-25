@@ -74,12 +74,42 @@ namespace TEEmployee.Models.Talent
         }
         // 取得所有員工職等職級
         public List<string> GetSenioritys()
-        {
+        { 
+            // 公司所有職等
             string sql = @"SELECT * FROM jobTitle";
             List<string> jobTitles = _conn.Query<JobTitle>(sql).ToList().Select(x => x.name).ToList();
-            jobTitles.Insert(0, "");
+            
+            // 部門同仁所有職等
+            sql = @"SELECT * FROM userCV ORDER BY empno";
+            List<string> senioritys = _conn.Query<CV>(sql, new { }).Where(x => x.seniority != null).Select(x => x.seniority).Distinct().OrderBy(x => x).ToList();
+            List<string> seniorityList = new List<string>();
+            foreach (string seniority in senioritys)
+            {
+                string[] analyzeSeniority = seniority.Split('\n');
+                if (analyzeSeniority.Length > 2)
+                {
+                    for (int i = 2; i < analyzeSeniority.Length; i++)
+                    {
+                        try
+                        {
+                            string saveSeniority = analyzeSeniority[i].Split('：')[0];
+                            string jobTitle = jobTitles.Where(s => saveSeniority.Equals(s)).Select(s => s).FirstOrDefault();
+                            if (jobTitle != null)
+                            {
+                                if(seniorityList.Where(x => x.Equals(jobTitle)).FirstOrDefault() == null)
+                                {
+                                    seniorityList.Add(jobTitle);
+                                }
+                            }
+                        }
+                        catch (Exception) { }
+                    }
+                }
+            }
+            seniorityList = seniorityList.Distinct().OrderBy(x => x).ToList();
+            seniorityList.Insert(0, "");
 
-            return jobTitles;
+            return seniorityList;
         }
         // 條件篩選
         public List<CV> ConditionFilter(ConditionFilter filter, List<CV> userCVs)
@@ -89,11 +119,11 @@ namespace TEEmployee.Models.Talent
             catch (Exception) { }
             try { filterUserCVs = filterUserCVs.Where(x => filter.companyYear1 <= CompanyYears(x.seniority) && CompanyYears(x.seniority) <= filter.companyYear2).ToList(); } // 公司年資 
             catch (Exception) { }
+            try { if (filter.educational != null) { filterUserCVs = filterUserCVs.Where(x => EducationalName(x.educational).Equals(filter.educational)).ToList(); } } // 教育程度 
+            catch (Exception) { }
             try { if (filter.seniority != null) { filterUserCVs = filterUserCVs.Where(x => x.seniority.Contains(filter.seniority)).ToList(); } } // 曾任職等
             catch (Exception) { }
             try { if (filter.nowPosition != null) { filterUserCVs = filterUserCVs.Where(x => NowPosition(x.seniority).Equals(filter.nowPosition)).ToList(); } } // 當前職等
-            catch (Exception) { }
-            try { if (filter.educational != null) { filterUserCVs = filterUserCVs.Where(x => x.educational.Contains(filter.educational)).ToList(); } } // 學歷判斷 
             catch (Exception) { }
 
             return filterUserCVs;
@@ -128,17 +158,10 @@ namespace TEEmployee.Models.Talent
 
             return companyYears;
         }
-        // 當前職等
-        private string NowPosition(string seniority)
-        {
-            string nowPosition = seniority.Split('\n')[2].Split('：')[0];
-
-            return nowPosition;
-        }
-        // 學歷判斷
+        // 教育程度
         private string EducationalName(string educational)
         {
-            List<string> removeStr = new List<string>() { "學士", "碩士", "博士" };
+            List<string> removeStr = new List<string>() { "博士", "碩士", "學士" };
             string word = removeStr.Where(s => educational.Contains(s)).Select(s => s).FirstOrDefault();
             if (word != null)
             {
@@ -146,6 +169,13 @@ namespace TEEmployee.Models.Talent
             }
 
             return educational;
+        }
+        // 當前職等
+        private string NowPosition(string seniority)
+        {
+            string nowPosition = seniority.Split('\n')[2].Split('：')[0];
+
+            return nowPosition;
         }
         // 更新SQL員工當前所屬群組
         public bool UpdateUsersGroup(List<User> users)
