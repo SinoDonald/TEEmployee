@@ -914,7 +914,7 @@ namespace TEEmployee.Models.Talent
             // 公司年資內當前的職位
             try
             {
-                List<Seniority> SECbyPosition = SECSenioritys.Where(x => x.position.Equals(nowPosition.position)).ToList();
+                List<Seniority> SECbyPosition = SECSenioritys.Where(x => x.position.Equals(nowPosition.position)).OrderByDescending(x => DateTime.Parse(x.start, culture)).ToList();
                 if (SECbyPosition.Count > 0)
                 {
                     MergyDate(culture, SECbyPosition, startEndDates, false, true);
@@ -926,7 +926,7 @@ namespace TEEmployee.Models.Talent
             {
                 try
                 {
-                    List<Seniority> SECbyPosition = SECSenioritys.Where(x => x.position.Equals(position)).ToList();
+                    List<Seniority> SECbyPosition = SECSenioritys.Where(x => x.position.Equals(position)).OrderByDescending(x => DateTime.Parse(x.start, culture)).ToList();
                     if (SECbyPosition.Count > 0)
                     {
                         MergyDate(culture, SECbyPosition, startEndDates, false, false);
@@ -940,7 +940,7 @@ namespace TEEmployee.Models.Talent
             {
                 try
                 {
-                    List<Seniority> SECbyManager = SECSenioritys.Where(x => x.manager != null && x.manager.Equals(manager)).ToList();
+                    List<Seniority> SECbyManager = SECSenioritys.Where(x => x.manager != null && x.manager.Equals(manager)).OrderByDescending(x => DateTime.Parse(x.start, culture)).ToList();
                     if (SECbyManager.Count > 0)
                     {
                         MergyDate(culture, SECbyManager, startEndDates, true, false);
