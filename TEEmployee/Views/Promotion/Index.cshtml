@@ -102,14 +102,14 @@
                     <select class="form-select" id="SelectUpgrade" name="SelectUpgrade" ng-model="selectedUpgrade" ng-change="selectUpgrade()" aria-label="Select the Upgrade type">
                         <option value="" selected>全部員工</option>
                         <option value="normal">一般升等</option>
-                        <option value="bonus">特別升等</option>                        
+                        <option value="bonus">特別升等</option>
                     </select>
                 </div>
                 <div class="mr-5">
                     <select class="form-select" id="SelectRecommended" name="SelectRecommended" ng-model="selectedRecommended" ng-change="selectRecommended()" ng-hide="selectedUpgrade===''" aria-label="Select the Recommended">
                         <option value="" selected>全部</option>
                         <option value="unrecommended">未提報</option>
-                        <option value="recommended">已提報</option>                        
+                        <option value="recommended">已提報</option>
                     </select>
                 </div>
                 <div class="mr-5">
@@ -124,9 +124,11 @@
                     </select>
                 </div>
                 <div>
-                    <button type="button" class="btn" ng-click="downloadAuthExcel()">
+
+                    <button type="button" class="btn btn-outline-primary btn-sm" ng-click="downloadAuthExcel()">
                         <span class="material-icons">download</span>
                     </button>
+                    <label style="font-size: 0.9em">升等名單下載</label>
                 </div>
             </div>
         }
@@ -179,6 +181,19 @@
             </tr>
         </tbody>
     </table>
+
+    <div ng-show="showRecommended(recommendedItem)" class="row my-5">
+        <div class="col-sm-4">
+            <div class="card border-primary">
+                <div class="card-body">
+                    <div class="form-check">
+                        <input ng-model="recommendedItem.achieved" type="checkbox" class="form-check-input" id="exampleCheck1" ng-change="UpdatePromotion(recommendedItem)" style="width:2em; height: 2em">
+                        <label ng-bind="recommendedItem.content" class="form-check-label ml-5" for="exampleCheck1" style="font-size:2em"></label>                        
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </div>
 
     <div class="alert alert-warning" role="alert" style="width:30%">
         檔案限定格式為.pdf，檔案大小不得超過10MB

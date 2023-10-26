@@ -105,6 +105,7 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
         else {
             appService.GetByUser({}).then((ret2) => {
                 $scope.data = ret2.data;
+                $scope.recommendedItem = $scope.data.find(x => x.condition === 7);
             })
         }
 
@@ -239,6 +240,7 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
 
         if (!$scope.selectedName) {
             $scope.data = [];
+            $scope.recommendedItem = null;
             return;
         }
 
@@ -250,13 +252,41 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
 
         appService.GetByUser({ empno: user.empno }).then((ret) => {
             $scope.data = ret.data;
+            $scope.recommendedItem = $scope.data.find(x => x.condition === 7);
         })
     }
 
     $scope.showPromotion = (item) => {
 
+        if (!item)
+            return false;
+
         if (item.condition < 7)
             return true;
+        if (!$scope.selectedUpgrade)
+            return false;
+        //if (item.condition === 7 && ($scope.auth.User.department_manager || $scope.auth.User.group_manager)) {
+
+        //    let upgradeType = '';
+        //    if ($scope.selectedUpgrade === 'normal')
+        //        upgradeType = '一般';
+        //    else
+        //        upgradeType = '特別';
+
+        //    $scope.data.find(x => x.condition === 7).content = upgradeType + '升等提報';
+        //    return true;
+        //}
+
+        return false;
+    }
+
+    $scope.showRecommended = (item) => {
+
+        if (!item)
+            return false;
+
+        //if (item.condition < 7)
+        //    return true;
         if (!$scope.selectedUpgrade)
             return false;
         if (item.condition === 7 && ($scope.auth.User.department_manager || $scope.auth.User.group_manager)) {
@@ -273,6 +303,7 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
 
         return false;
     }
+
 
     $scope.deleteAll = () => {
 

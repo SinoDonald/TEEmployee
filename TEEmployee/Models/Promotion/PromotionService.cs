@@ -126,7 +126,7 @@ namespace TEEmployee.Models.Promotion
             switch (user.profTitle)
             {
                 case "主任工程師":
-                    promotions.RemoveRange(0, 2);
+                    promotions.RemoveRange(0, 7);
                     return;
                 //break;
 
@@ -605,66 +605,179 @@ namespace TEEmployee.Models.Promotion
             dynamic auth = JsonConvert.DeserializeObject<dynamic>(authStr);
 
 
+            // version 1: color
+
+            //using (var package = new ExcelPackage())
+            //{
+            //    var sheet = package.Workbook.Worksheets.Add("一般升等");
+
+            //    sheet.Cells["A:B"].Style.Font.Size = 12f;
+
+            //    int count = 0;
+
+            //    foreach (var user in auth.Users)
+            //    {
+            //        if (user.upgrade == "normal")
+            //        {
+            //            count++;
+
+            //            sheet.Cells[count, 1].Value = (string)user.name;
+            //            sheet.Cells[count, 2].Value = (string)user.profTitle;
+
+            //            if (user.isRecommended == true)
+            //            {
+            //                sheet.Cells[count, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+            //                sheet.Cells[count, 1].Style.Fill.BackgroundColor.SetColor(1, 247, 239, 217);
+            //            }
+
+            //        }
+            //    }
+
+            //    sheet = package.Workbook.Worksheets.Add("特別升等");
+
+            //    sheet.Cells["A:B"].Style.Font.Size = 12f;
+
+            //    count = 0;
+
+            //    foreach (var user in auth.Users)
+            //    {
+            //        if (user.upgrade == "bonus")
+            //        {
+            //            count++;
+
+            //            sheet.Cells[count, 1].Value = (string)user.name;
+            //            sheet.Cells[count, 2].Value = (string)user.profTitle;
+
+            //            if (user.isRecommended == true)
+            //            {
+            //                sheet.Cells[count, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+            //                sheet.Cells[count, 1].Style.Fill.BackgroundColor.SetColor(1, 247, 239, 217);
+            //            }
+            //        }
+            //    }
+
+            //    var excelData = package.GetAsByteArray();  // byte or stream
+
+
+            //    return excelData;
+            //}
+
+            // version 2 - formal
 
             using (var package = new ExcelPackage())
             {
                 var sheet = package.Workbook.Worksheets.Add("一般升等");
+                int row = 1;
 
-                sheet.Cells["A:B"].Style.Font.Size = 12f;
+                sheet.Cells["A:D"].Style.Font.Size = 12f;
+                sheet.Cells["A:D"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;                
 
-                int count = 0;
+                sheet.Cells["A1:D1"].Merge = true;
+                sheet.Cells[row, 1].Value = "已提報";
+                row++;
+
+                sheet.Cells[row, 1].Value = "員工編號";
+                sheet.Cells[row, 2].Value = "員工名稱";
+                sheet.Cells[row, 3].Value = "目前職等";
+                sheet.Cells[row, 4].Value = "目標職等";
+                row++;
 
                 foreach (var user in auth.Users)
                 {
-                    if (user.upgrade == "normal")
+                    if (user.upgrade == "normal" && user.isRecommended == true)
                     {
-                        count++;
-
-                        sheet.Cells[count, 1].Value = (string)user.name;
-                        sheet.Cells[count, 2].Value = (string)user.profTitle;
-
-                        if (user.isRecommended == true)
-                        {
-                            sheet.Cells[count, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                            sheet.Cells[count, 1].Style.Fill.BackgroundColor.SetColor(1, 247, 239, 217);
-                        }
-
+                        sheet.Cells[row, 1].Value = (string)user.empno;
+                        sheet.Cells[row, 2].Value = (string)user.name;
+                        sheet.Cells[row, 3].Value = (string)user.profTitle;
+                        sheet.Cells[row, 4].Value = (string)user.nextProfTitle;
+                        row++;
                     }
                 }
+                row++;
+
+                sheet.Cells[row, 1, row, 4].Merge = true;
+                sheet.Cells[row, 1].Value = "未提報";
+                row++;
+
+                sheet.Cells[row, 1].Value = "員工編號";
+                sheet.Cells[row, 2].Value = "員工名稱";
+                sheet.Cells[row, 3].Value = "目前職等";
+                sheet.Cells[row, 4].Value = "目標職等";
+                row++;
+
+                foreach (var user in auth.Users)
+                {
+                    if (user.upgrade == "normal" && user.isRecommended != true)
+                    {
+                        sheet.Cells[row, 1].Value = (string)user.empno;
+                        sheet.Cells[row, 2].Value = (string)user.name;
+                        sheet.Cells[row, 3].Value = (string)user.profTitle;
+                        sheet.Cells[row, 4].Value = (string)user.nextProfTitle;
+                        row++;
+                    }
+                }
+
+                sheet.Cells["A:D"].AutoFitColumns();
 
                 sheet = package.Workbook.Worksheets.Add("特別升等");
+                row = 1;
 
-                sheet.Cells["A:B"].Style.Font.Size = 12f;
+                sheet.Cells["A:D"].Style.Font.Size = 12f;
+                sheet.Cells["A1:D1"].Merge = true;
+                sheet.Cells["A:D"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
-                count = 0;
+                sheet.Cells[row, 1].Value = "已提報";
+                row++;
+
+                sheet.Cells[row, 1].Value = "員工編號";
+                sheet.Cells[row, 2].Value = "員工名稱";
+                sheet.Cells[row, 3].Value = "目前職等";
+                sheet.Cells[row, 4].Value = "目標職等";
+                row++;
 
                 foreach (var user in auth.Users)
                 {
-                    if (user.upgrade == "bonus")
+                    if (user.upgrade == "bonus" && user.isRecommended == true)
                     {
-                        count++;
+                        sheet.Cells[row, 1].Value = (string)user.empno;
+                        sheet.Cells[row, 2].Value = (string)user.name;
+                        sheet.Cells[row, 3].Value = (string)user.profTitle;
+                        sheet.Cells[row, 4].Value = (string)user.nextProfTitle;
+                        row++;
+                    }
+                }
+                row++;
 
-                        sheet.Cells[count, 1].Value = (string)user.name;
-                        sheet.Cells[count, 2].Value = (string)user.profTitle;
+                sheet.Cells[row, 1, row, 4].Merge = true;
+                sheet.Cells[row, 1].Value = "未提報";
+                row++;
 
-                        if (user.isRecommended == true)
-                        {
-                            sheet.Cells[count, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                            sheet.Cells[count, 1].Style.Fill.BackgroundColor.SetColor(1, 247, 239, 217);
-                        }
+                sheet.Cells[row, 1].Value = "員工編號";
+                sheet.Cells[row, 2].Value = "員工名稱";
+                sheet.Cells[row, 3].Value = "目前職等";
+                sheet.Cells[row, 4].Value = "目標職等";
+                row++;
+
+                foreach (var user in auth.Users)
+                {
+                    if (user.upgrade == "bonus" && user.isRecommended != true)
+                    {
+                        sheet.Cells[row, 1].Value = (string)user.empno;
+                        sheet.Cells[row, 2].Value = (string)user.name;
+                        sheet.Cells[row, 3].Value = (string)user.profTitle;
+                        sheet.Cells[row, 4].Value = (string)user.nextProfTitle;
+                        row++;
                     }
                 }
 
-                //sheet.Cells["A1"].Value = name;
-
-
-
+                sheet.Cells["A:D"].AutoFitColumns();
 
                 var excelData = package.GetAsByteArray();  // byte or stream
 
 
                 return excelData;
             }
+
         }
 
         public void Dispose()
