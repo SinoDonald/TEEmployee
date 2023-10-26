@@ -56,7 +56,7 @@ namespace TEEmployee.Models
         public int freeback { get; set; }
         public int future { get; set; }
     }
-    // 人才資料庫 <-- 培文
+    // 人才培訓資料庫 <-- 培文
     public class CV
     {
         public string empno { get; set; }

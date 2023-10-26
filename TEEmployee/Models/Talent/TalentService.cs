@@ -179,7 +179,7 @@ namespace TEEmployee.Models.Talent
 
             return cv;
         }
-        // 人才資料庫 <-- 培文
+        // 人才培訓資料庫 <-- 培文
         public void TalentUpdate()
         {
             List<User> userGroups = new UserRepository().UserGroups(); // 取得員工群組

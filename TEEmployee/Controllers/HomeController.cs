@@ -115,7 +115,7 @@ namespace TEEmployee.Controllers
 
             return Json(ret);
         }
-        // 人才資料庫 <-- 培文
+        // 人才培訓資料庫 <-- 培文
         [HttpPost]
         public JsonResult TalentUpdate()
         {

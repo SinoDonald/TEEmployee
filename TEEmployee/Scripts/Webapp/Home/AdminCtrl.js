@@ -39,7 +39,7 @@ app.service('appService', ['$http', function ($http) {
     this.NotifyUpdate = function (o) {
         return $http.post('Home/NotifyUpdate', o);
     };
-    // 人才資料庫 <-- 培文
+    // 人才培訓資料庫 <-- 培文
     this.TalentUpdate = function (o) {
         return $http.post('Home/TalentUpdate', o);
     };
@@ -240,7 +240,7 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
         //});
     });
 
-    // 人才資料庫 <-- 培文
+    // 人才培訓資料庫 <-- 培文
     $scope.TalentUpdate = () => {
         appService.TalentUpdate({ }).then((ret) => {
             if (ret.data) {
