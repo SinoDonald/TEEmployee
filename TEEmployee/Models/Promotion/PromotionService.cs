@@ -29,7 +29,7 @@ namespace TEEmployee.Models.Promotion
             return _promotionRepository.GetAll();
         }
 
-        public List<Promotion> GetByUser(string empno)
+        public List<Promotion> GetByUser(string empno, bool isAdmin)
         {
             var promotions = _promotionRepository.GetByUser(empno);
 
@@ -37,6 +37,14 @@ namespace TEEmployee.Models.Promotion
                 promotions = CreatePromotion(empno);
 
             this.TransformContent(promotions, empno);
+
+            // Hide sensitive infomation for admin
+            if (isAdmin)
+            {
+                Promotion performance = promotions.Where(x => x.condition == 2).FirstOrDefault();
+                if (performance != null)
+                    performance.content = "機敏資料";
+            }        
 
             return promotions;
         }

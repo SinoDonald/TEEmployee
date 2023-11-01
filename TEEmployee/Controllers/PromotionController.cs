@@ -43,7 +43,14 @@ namespace TEEmployee.Controllers
             if (string.IsNullOrEmpty(empno))
                 empno = Session["empno"].ToString();
 
-            var ret = _service.GetByUser(empno);
+            // Hide sensitive data for Admin
+            bool isAdmin = false;
+            if (Session["empno"].ToString() != Session["original_empno"].ToString())
+            {
+                isAdmin = true;
+            }                
+
+            var ret = _service.GetByUser(empno, isAdmin);
 
             return Json(ret);
         }

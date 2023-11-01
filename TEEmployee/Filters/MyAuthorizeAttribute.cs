@@ -59,9 +59,10 @@ namespace TEEmployee.Filters
                 //    ret = _userRepository.Get(filterContext.HttpContext.Session["empno"].ToString());
                 //}
 
-                if (ret != null) {                                     
+                if (ret != null) {
                     //Get Userinfo
                     //filterContext.HttpContext.Session["empno"] = loginUser;
+                    filterContext.HttpContext.Session["original_empno"] = ret.empno;
                     filterContext.HttpContext.Session["empno"] = ret.empno;
                     filterContext.HttpContext.Session["empname"] = ret.name;
                     filterContext.HttpContext.Session["group"] = ret.group;
