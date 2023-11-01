@@ -33,6 +33,7 @@ namespace TEEmployee.Models
                 // 檢查資料庫中, userNotify是否為當季資料, 不是的話則新建
                 string date = year.ToString() + month.ToString("00");
                 List<User> users = _notifyRepository.GetAll();
+                users = users.Where(x => x.group != null && x.group_one != null && x.group_two != null && x.group_three != null).ToList(); // 移除沒有群組的使用者
                 ret = _notifyRepository.GetNotify(season, users, date, empno);
             }
 

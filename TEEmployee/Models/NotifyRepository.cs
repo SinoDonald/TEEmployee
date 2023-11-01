@@ -90,7 +90,7 @@ namespace TEEmployee.Models
 
                     foreach (User user in users)
                     {
-                        List<bool> bools = NotifyUpdate(season, user.empno); // 目前各項通知回覆狀況
+                        List<bool> bools = NotifyUpdate(season, user.empno, users); // 目前各項通知回覆狀況
                         UserNotify userNotify = new UserNotify();
                         userNotify.empno = user.empno;
                         userNotify.date = date;
@@ -131,7 +131,7 @@ namespace TEEmployee.Models
             return ret;
         }
         // 目前各項通知回覆狀況
-        public List<bool> NotifyUpdate(string season, string empno)
+        public List<bool> NotifyUpdate(string season, string empno, List<User> users)
         {
             string _appData = HttpContext.Current.Server.MapPath("~/App_Data");
             List<bool> bools = new List<bool>();
@@ -190,7 +190,6 @@ namespace TEEmployee.Models
                     List<string> sentEmpnos = new List<string>();
 
                     // 找到同group的user
-                    List<User> users = _notifyRepository.GetAll();
                     List<User> sameGroupUsers = new List<User>();
                     if (empno.Equals("4125"))
                     {
@@ -311,13 +310,16 @@ namespace TEEmployee.Models
         public List<User> UserManagers(string empno, string state)
         {
             List<List<User>> managerList = new List<List<User>>();
-            managerList.Add(GetAll().Where(x => x.empno.Equals("4125")).ToList()); // 協理
-            managerList.Add(GetAll().Where(x => x.group.Equals(Get(empno).group) && x.group_manager.Equals(true)).ToList());
+            List<User> users = GetAll();
+            User user = Get(empno);
+            managerList.Add(users.Where(x => x.empno.Equals("4125")).ToList()); // 協理
+            users = users.Where(x => x.group != null && x.group_one != null && x.group_two != null && x.group_three != null).ToList();
+            managerList.Add(users.Where(x => x.group.Equals(user.group) && x.group_manager.Equals(true)).ToList());
             if (state.Equals("freeback"))
             {
-                managerList.Add(GetAll().Where(x => x.group_one.Equals(Get(empno).group_one) && x.group_one_manager.Equals(true)).ToList());
-                managerList.Add(GetAll().Where(x => x.group_two.Equals(Get(empno).group_two) && x.group_two_manager.Equals(true)).ToList());
-                managerList.Add(GetAll().Where(x => x.group_three.Equals(Get(empno).group_three) && x.group_three_manager.Equals(true)).ToList());
+                managerList.Add(users.Where(x => x.group_one.Equals(user.group_one) && x.group_one_manager.Equals(true)).ToList());
+                managerList.Add(users.Where(x => x.group_two.Equals(user.group_two) && x.group_two_manager.Equals(true)).ToList());
+                managerList.Add(users.Where(x => x.group_three.Equals(user.group_three) && x.group_three_manager.Equals(true)).ToList());
             }
             List<User> userManagers = new List<User>(); // 使用者的主管們
             foreach(List<User> managers in managerList)
