@@ -879,7 +879,7 @@ namespace TEEmployee.Models.Talent
             positionSeniority += "工作年資：" + startWorkDate + "~" + "迄今\n";
 
             // 在中興工程累積的年資
-            Seniority SECtoNow = senioritys.Where(x => x.company.Equals("中興工程")).Where(x => x.position == null && x.now == true).FirstOrDefault();
+            Seniority SECtoNow = senioritys.Where(x => x.company.Equals("中興工程")).Where(x => x.position == null && x.now == true).OrderBy(x => DateTime.Parse(x.start, culture)).FirstOrDefault();
             start = DateTime.Parse(SECtoNow.start, culture);
             end = DateTime.Parse(SECtoNow.end, culture); // 迄今
             List<Seniority> SEC = senioritys.Where(x => x.company.Equals("中興工程")).Where(x => x.position == null && x != SECtoNow).ToList();
