@@ -25,7 +25,7 @@ app.service('appService', ['$http', function ($http) {
 
 }]);
 
-app.controller('FillinCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', function ($scope, $location, appService, $rootScope, $q) {
+app.controller('FillinCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', '$timeout', function ($scope, $location, appService, $rootScope, $q, $timeout) {
 
     appService.GetAuth({}).then((ret) => {
         $scope.auth = ret.data;
@@ -131,6 +131,16 @@ app.controller('FillinCtrl', ['$scope', '$location', 'appService', '$rootScope',
 
         destructFeedbacks();
 
+        $timeout(function () {
+
+            var pp = document.querySelectorAll(".autoExpand");
+            for (var elm of pp) {
+                elm.style.height = "";
+                elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+            }
+
+        }, 0);
+
         // reset removed items
         //$scope.removedItems = [];
     }
@@ -209,6 +219,17 @@ app.controller('FillinCtrl', ['$scope', '$location', 'appService', '$rootScope',
                     }, 1500);
                 }, 1500);
 
+
+                $timeout(function () {
+
+                    var pp = document.querySelectorAll(".autoExpand");
+                    for (var elm of pp) {
+                        elm.style.height = "";
+                        elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+                    }
+
+                }, 0);
+
             }
 
         });
@@ -226,6 +247,32 @@ app.controller('FillinCtrl', ['$scope', '$location', 'appService', '$rootScope',
 
         //return $scope.datum.items.reduce((a, c) => (a.consensual ? a.weight : 0) + (c.consensual ? c.weight : 0)).toFixed(2);
     }
+
+    var limit = 250;
+
+    function onExpandableTextareaInput({ target: elm }) {
+
+        if (!elm.classList.contains('autoExpand') || !elm.nodeName === 'TEXTAREA') return
+
+        elm.style.height = "";
+        elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+    }
+
+    // global delegated event listener
+    document.addEventListener('input', onExpandableTextareaInput);
+
+    $scope.autoExpand = () => {
+        $timeout(function () {
+
+            var pp = document.querySelectorAll(".autoExpand");
+            for (var elm of pp) {
+                elm.style.height = "";
+                elm.style.height = Math.min(elm.scrollHeight, limit) + "px";
+            }
+
+        }, 0);
+    }
+
 
 }]);
 
@@ -496,5 +543,7 @@ app.controller('FeedbackCtrl', ['$scope', '$location', 'appService', '$rootScope
 
         //return $scope.datum.items.reduce((a, c) => (a.consensual ? a.weight : 0) + (c.consensual ? c.weight : 0)).toFixed(2);
     }
+
+    
 
 }]);

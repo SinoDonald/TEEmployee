@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "年度行事曆目標";
 }
 
 
@@ -75,7 +75,7 @@
             right: 0;
             left: 0;
             z-index: 999;
-            margin-left: 35em;
+            margin-left: 40em;
             align-items:center;
         }
 
@@ -110,6 +110,11 @@
                     border-width: 2px;
                 }
         */
+
+        .nav-isActive {
+            border-bottom: 2px solid #f4623a;
+        }
+
     </style>
 }
 
@@ -127,9 +132,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-item nav-link" ui-sref="Group">群組行事曆</a>
-                <a class="nav-item nav-link" ui-sref="Personal">個人行事曆</a>
-                <a class="nav-item nav-link" ui-sref="Future">未來3年數位轉型規劃</a>
+                <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Future')}" ui-sref="Future">未來3年數位轉型規劃</a>
+                <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Project')}" ui-sref="Project">計畫行事曆</a>
+                <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Group')}" ui-sref="Group">群組行事曆</a>
+                <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Personal')}" ui-sref="Personal">個人行事曆</a>
             </div>
         </div>            
     </nav>

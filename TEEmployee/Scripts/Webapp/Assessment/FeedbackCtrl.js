@@ -196,7 +196,7 @@ app.controller('EmployeeListCtrl', ['$scope', '$location', 'appService', '$rootS
 
 app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', '$timeout', function ($scope, $window, appService, $rootScope, myFactory, $timeout) {
 
-    const optionText = ['優良', '普通', '尚可', '待加強', 'N/A'];
+    const optionText = ['優良', '好', '普通', '待加強', 'N/A'];
     const limit = 250; // textarea height limit
 
     $scope.name = myFactory.get().EmployeeInfo.Employee.name;
@@ -394,7 +394,7 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
 
 app.controller('ReviewEmployeeCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', '$timeout', '$q', function ($scope, $window, appService, $rootScope, myFactory, $timeout, $q) {
 
-    const optionText = ['優良', '普通', '尚可', '待加強', 'N/A'];
+    const optionText = ['優良', '好', '普通', '待加強', 'N/A'];
 
     $scope.empData = myFactory.getReview();
     $scope.name = $scope.empData.EmployeeInfo.Employee.name;

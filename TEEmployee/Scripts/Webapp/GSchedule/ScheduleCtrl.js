@@ -105,6 +105,12 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
 
     dataservice.setAuth(promise);
 
+    $scope.isActive = (destination) => {
+        return destination === $location.path();
+    }
+
+
+
     $location.path('/Group');
 
     //let promiseA = appService.GetAllSchedules({}).then((ret) => {
