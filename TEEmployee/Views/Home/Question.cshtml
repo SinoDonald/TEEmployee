@@ -1,0 +1,72 @@
+﻿
+@{
+    ViewBag.Title = "Q & A";
+}
+
+@section Styles {
+
+    <style>
+        header {
+            margin-top: 100px;
+        }
+        .answer {
+            background-color: #F5F5DC;
+        }
+    </style>
+}
+
+<div class="container">
+    <header>
+        <h2>Q & A</h2>
+    </header>
+    <section>
+
+        <div class="mb-5">
+            <div class="jumbotron mb-1">
+                <p class="h2">給予主管建議評估表是否真的主管看不到是誰寫的？</p>
+            </div>
+            <div class="jumbotron mt-1 answer">
+                <p class="h4">是，後台在儲存資料時，並不會儲存ID或名稱等任何具識別身分之相關資料，請詳附圖。</p>
+                <img src="~/Content/assets/img/qa1.png" class="img-fluid rounded mx-auto d-block mt-5" alt="Responsive image1">
+                <img src="~/Content/assets/img/qa2.png" class="img-fluid rounded mx-auto d-block mt-5" alt="Responsive image2">
+                <img src="~/Content/assets/img/qa3.png" class="img-fluid rounded mx-auto d-block mt-5" alt="Responsive image3">                
+            </div>
+        </div>
+        <div class="mb-5">
+            <div class="jumbotron mb-1">
+                <p class="h2">KPI是否是全部門同仁皆相同？</p>
+            </div>
+            <div class="jumbotron mt-1 answer">
+                <p class="h4">否，各組別皆有不同KPI項目，並且按照職務類別，技術經理及組長有管理KPI、計畫經理有計畫KPI，一般工程師與行政專員亦有各自的KPI。</p>
+            </div>
+        </div>
+        <div class="mb-5">
+            <div class="jumbotron mb-1">
+                <p class="h2">KPI上下半年是要分開計算還是算一整年？  </p>
+            </div>
+            <div class="jumbotron mt-1 answer">
+                <p class="h4">
+                    KPI係以整年度表現來計算，分上下半年僅是為了於上半年年中面談時確認KPI是否能在下半年年末面談前達成，並且是否有需要調整工作方向。
+                    舉例：參與部門備標次數≧1件，表示全年至少1件，並非上下半年各需至少1件。
+                </p>
+            </div>
+        </div>        
+        <div class="mb-5">
+            <div class="jumbotron mb-1">
+                <p class="h2">人才培育資料庫履歷年資計算有誤</p>
+            </div>
+            <div class="jumbotron mt-1 answer">
+                <p class="h4">目前因各員填寫履歷方式不同，或發生年資計算錯誤問題，若發現此問題，請先依照「公司規定格式」更新公司「員工專區人員履歷」，待部門主管簽核後，即更新於員工平台中。</p>
+            </div>
+        </div>
+        <div class="mb-5">
+            <div class="jumbotron mb-1">
+                <p class="h2">升等條件與規劃及人才培育資料庫模組考績有誤 </p>
+            </div>
+            <div class="jumbotron mt-1 answer">
+                <p class="h4">目前兩模組仍未正式上線，僅供同仁測試使用，因此考績是測試資料，並非正確資料，待明年正式上線後會將正確考績匯入，故請各技術經理今年度升等提報仍先按照往年方式辦理。</p>
+            </div>
+        </div>
+    </section>
+
+</div>

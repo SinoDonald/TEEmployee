@@ -469,6 +469,8 @@
     <Content Include="Views\Promotion\Index.cshtml" />
     <Content Include="Views\Talent\TalentHighPerformers.cshtml" />
     <Content Include="Views\Talent\TalentSuccessExample.cshtml" />
+    <Content Include="Views\Home\Question.cshtml" />
+    <Content Include="Views\Home\History.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Promotion\" />
