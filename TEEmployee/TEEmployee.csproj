@@ -192,6 +192,7 @@
     <Compile Include="Models\GKpi\IGKpiRepository.cs" />
     <Compile Include="Models\GKpi\KpiItem.cs" />
     <Compile Include="Models\GKpi\KpiModel.cs" />
+    <Compile Include="Models\GSchedule\ProjectSchedule.cs" />
     <Compile Include="Models\INotifyRepository.cs" />
     <Compile Include="Models\Kpi\IKpiRepository.cs" />
     <Compile Include="Models\Kpi\KpiItem.cs" />
@@ -471,6 +472,7 @@
     <Content Include="Views\Talent\TalentSuccessExample.cshtml" />
     <Content Include="Views\Home\Question.cshtml" />
     <Content Include="Views\Home\History.cshtml" />
+    <Content Include="Views\GSchedule\Project.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Promotion\" />

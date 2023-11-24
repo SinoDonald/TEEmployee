@@ -16,6 +16,10 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             url: '/Future',
             templateUrl: 'GSchedule/Future'
         })
+        .state('Project', {
+            url: '/Project',
+            templateUrl: 'GSchedule/Project'
+        })
 
 }]);
 
@@ -50,6 +54,15 @@ app.service('appService', ['$http', function ($http) {
     }
     this.GetAllFutures = (o) => {
         return $http.post('GSchedule/GetAllFutures', o);
+    };
+    this.GetAllProjectSchedules = (o) => {
+        return $http.post('GSchedule/GetAllProjectSchedules', o);
+    };
+    this.InsertProjectSchedule = (o) => {
+        return $http.post('GSchedule/InsertProjectSchedule', o);
+    };
+    this.DeleteProjectSchedule = (o) => {
+        return $http.post('GSchedule/DeleteProjectSchedule', o);
     };
 
 }]);
@@ -86,7 +99,7 @@ app.factory('dataservice', function () {
 
 app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', function ($scope, $location, appService, $rootScope, $q, dataservice) {
 
-    
+
     dataservice.set(appService.GetAllSchedules({}));
 
     let promise = appService.GetAuthorization({}).then((ret) => {
@@ -127,7 +140,7 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
     //    })
 
     //    dataservice.setAuth(ret.data);
-        
+
     //})
 
     //$q.all([promiseA, promiseB]).then((ret) => {
@@ -136,7 +149,7 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
 
     //});
 
-    
+
 
     //appService.GetAllSchedules({}).then((ret) => {
     //    dataservice.set(ret.data);
@@ -156,7 +169,7 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
     //    $location.path('/Skill');
     //})
 
-    
+
 
 }]);
 
@@ -267,7 +280,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         //    }
         //})
 
-        
+
         //if (!$scope.selection_filtered_projects) {
         //    $scope.selection_filtered_projects = [];
         //    for (let name of groupProjectNames) {
@@ -275,7 +288,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         //        if (!name.finished)
         //            $scope.multi_selected_projects.push(name);
         //    }
-            
+
         //}
         //else {
         //    let temp_range_projects = $scope.selection_filtered_projects;
@@ -309,7 +322,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         //}
 
 
-        
+
 
 
     }
@@ -333,12 +346,12 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
                 new Date(x.Group.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate() ||
                 new Date(x.Group.end_date) < moment($scope.ganttStartMonth).toDate()))
             .map(x => {
-            count++;
-            return {
-                id: count,
-                label: x.Group.projno
-            }
-        })
+                count++;
+                return {
+                    id: count,
+                    label: x.Group.projno
+                }
+            })
 
         if (!$scope.selection_filtered_projects) {
             $scope.selection_filtered_projects = [];
@@ -350,7 +363,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         else {
             let temp_range_projects = $scope.selection_filtered_projects;
             let temp_selected_projects = $scope.multi_selected_projects;
-            $scope.selection_filtered_projects = [];            
+            $scope.selection_filtered_projects = [];
             $scope.multi_selected_projects = [];
 
             for (let name of groupProjectNames) {
@@ -422,14 +435,14 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         $scope.modal.createMode = false;
         //$scope.modal.history = JSON.stringify(sData);
 
-        
+
         if (groupSchedule) {
             // show group schedule content in detail schedule modal 
             $scope.modal.parentContent = groupSchedule.content;
             // update projno from group schedule
             $scope.modal.projno = groupSchedule.projno;
         }
-                  
+
 
         // MEMBER FILTER
 
@@ -443,9 +456,9 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
                 if (groupSchedule.member?.includes(emp.label))
                     $scope.selectionFilteredMembers.push(emp);
             }
-        }      
+        }
 
-        
+
 
     };
 
@@ -688,7 +701,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
         // (Group Only) Additional filter for comparing specific projexts       
         if (schedule.type === 1) {
-            if (!$scope.multi_selected_projects.find(x => x.label === schedule.projno))            
+            if (!$scope.multi_selected_projects.find(x => x.label === schedule.projno))
                 return false;
         }
 
@@ -982,7 +995,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
         let count = 0;
         let groupProjectNames = $scope.data
             .filter(x => x.Group.role === $scope.selectedGroup)
-            .filter(x => x.Group.member?.includes($scope.selectedMember) )
+            .filter(x => x.Group.member?.includes($scope.selectedMember))
             .filter(x => !(
                 new Date(x.Group.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate() ||
                 new Date(x.Group.end_date) < moment($scope.ganttStartMonth).toDate()))
@@ -1169,7 +1182,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
     $scope.addMilestone = () => {
         $scope.modal.milestones.splice($scope.modal.milestones.length, 0, { schedule_id: $scope.modal.id });
     };
-       
+
     $scope.removeMilestone = (milestone) => {
         const idx = $scope.modal.milestones.indexOf(milestone);
         $scope.modal.milestones.splice(idx, 1);
@@ -1555,7 +1568,7 @@ app.controller('FutureCtrl', ['$scope', '$location', 'appService', '$rootScope',
                         Group: ret.data,
                         Details: [],
                     });
-                                        
+
                     // lazy 
                     $scope.UpdateAllPlots();
 
@@ -1675,7 +1688,7 @@ app.controller('FutureCtrl', ['$scope', '$location', 'appService', '$rootScope',
         return outputObject;
     }
 
-    
+
     let promiseA = appService.GetAllFutures({});
     let promiseB = dataservice.getAuth();
 
@@ -1695,6 +1708,134 @@ app.controller('FutureCtrl', ['$scope', '$location', 'appService', '$rootScope',
 
     //// filter 
     //$scope.filterMembers();
-    
+
+
+}]);
+
+app.controller('ProjectCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$timeout', function ($scope, $location, appService, $rootScope, $q, dataservice, $timeout) {
+
+    dataservice.getAuth().then((ret) => {
+        $scope.auth = ret;
+        $scope.editable = $scope.auth.User.department_manager || $scope.auth.User.group_manager;
+    });
+
+    const reg = /^\d{4}[a-zA-Z]$/;
+    $scope.modal = {};
+
+    $scope.alertContent = '';
+
+    const imageInput = document.querySelector("#imageInput");
+    const tempImage = document.querySelector('#tempImage');
+
+    imageInput.addEventListener("change", (e) => {
+        const file = e.target.files[0]; // this Object holds a reference to the file on disk
+        const url = URL.createObjectURL(file); // this points to the File object we just created
+        tempImage.src = url;
+    })    
+
+    $scope.getAll = () => {
+        appService.GetAllProjectSchedules({}).then((ret) => {
+            $scope.data = ret.data;
+        })
+    }
+
+    let checkProject = (projno) => {
+
+        if (reg.test(projno) === false) {
+            $scope.alertContent = '不符合計畫編號格式';
+            return false;
+        }
+
+        if ($scope.data.find(x => x.projno === projno)) {
+            $scope.alertContent = '計畫編號已存在';
+            return false;
+        }
+
+        return true;
+    }
+
+    $scope.getAll();
+
+    $scope.createProjectSchedule = () => {
+        $scope.modal = {};
+        $scope.alertContent = '';
+    }
+
+    $scope.insertProjectSchedule = () => {
+
+        $scope.modal.projno = $scope.modal.projno.toUpperCase();
+
+        if (checkProject($scope.modal.projno) === false) return;
+
+        appService.InsertProjectSchedule($scope.modal).then((ret) => {
+            if (ret.data) {       
+                $('#projectModal').modal('toggle');
+                $scope.getAll();
+            }
+        })
+    }
+
+    $scope.deleteProjectSchedule = (projectSchedule) => {        
+        appService.DeleteProjectSchedule(projectSchedule).then((ret) => {
+            if (ret.data) {
+                let idx = $scope.data.findIndex(x => x.projno === projectSchedule.projno);
+                $scope.data.splice(idx, 1);
+            }
+        })
+    }
+
+    $scope.clearUpload = () => {
+        tempImage.src = '';
+        imageInput.value = null;
+        document.querySelector('.custom-file-label').textContent = '請上傳圖片';
+    }
+
+    // Add file name on bs custom file input
+    $('#imageInput').on('change', function () {
+        var fileName = $(this).val();
+        $(this).next('.custom-file-label').html(fileName);
+    })
+
+    // Upsert project schedule (projno & image)client to server
+
+    $scope.uploadProjectSchedule = () => {
+
+        uploading().then(() => {
+            $scope.getAll();
+        })
+    }
+
+    const uploading = async () => {
+
+        let form = new FormData(formElem);
+        form.append('projectSchedule', JSON.stringify($scope.modal));
+
+        let response = await fetch('GSchedule/UploadProjectSchedule', {
+            method: 'POST',
+            body: form,
+        });
+
+        let result = await response.json();
+    }
+
+    $scope.clickPicture = (item) => {
+        if (!item.filepath) return;
+        $scope.modal = item;
+        $('#pictureModal').modal('toggle');
+    }
+
+    $scope.clickDelete = (e, item) => {
+        e.stopPropagation();
+        $scope.modal = item;
+        $('#deleteModal').modal('toggle');
+        
+    }
+
+    $scope.clickUpload = (e, item) => {
+        e.stopPropagation();
+        $scope.clearUpload();
+        $scope.modal = item;
+        $('#uploadModal').modal('toggle');        
+    }
 
 }]);

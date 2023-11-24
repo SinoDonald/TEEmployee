@@ -613,11 +613,15 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
         appService.GetAllSkillsByRole({ role: $scope.selectedGroup }).then((ret) => {
 
+            $scope.data = ret.data;
             data = ret.data;
 
             $scope.domain = ret.data.filter(x => x.skill_type === 'domain').sort((a, b) => a.custom_order - b.custom_order);
             $scope.core = ret.data.filter(x => x.skill_type === 'core').sort((a, b) => a.custom_order - b.custom_order);
             $scope.manage = ret.data.filter(x => x.skill_type === 'manage').sort((a, b) => a.custom_order - b.custom_order);
+
+            // new place
+            $scope.GetPersonal($scope.selectedMember);
         });
     }
 
@@ -639,15 +643,56 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
         $scope.editable = ($scope.auth.User.empno === $scope.selectedMember);
 
+        // version 1: Add personal skill yourself
+
+        //appService.GetPersonal({ empno: empno }).then((ret) => {
+
+        //    $scope.personal = ret.data;
+
+        //    $scope.personalDomain = ret.data.filter(x => x.skill_type === 'domain' && x.role === $scope.selectedGroup).sort((a, b) => a.custom_order - b.custom_order);
+        //    $scope.personalCore = ret.data.filter(x => x.skill_type === 'core').sort((a, b) => a.custom_order - b.custom_order);
+        //    $scope.personalManage = ret.data.filter(x => x.skill_type === 'manage').sort((a, b) => a.custom_order - b.custom_order);
+
+        //});
+
+        // version 2: Add ALL by default
+
         appService.GetPersonal({ empno: empno }).then((ret) => {
 
             $scope.personal = ret.data;
 
-            $scope.personalDomain = ret.data.filter(x => x.skill_type === 'domain' && x.role === $scope.selectedGroup).sort((a, b) => a.custom_order - b.custom_order);
-            $scope.personalCore = ret.data.filter(x => x.skill_type === 'core').sort((a, b) => a.custom_order - b.custom_order);
-            $scope.personalManage = ret.data.filter(x => x.skill_type === 'manage').sort((a, b) => a.custom_order - b.custom_order);
+            for (let datum of $scope.data) {
+
+                if ($scope.personal.find(x => x.skill_id === datum.id)) {
+                    
+                    continue;
+                }
+
+                $scope.personal.push({
+                    comment: '',
+                    content: datum.content,
+                    custom_order: datum.custom_order,
+                    empno: $scope.auth.User.empno,
+                    role: datum.role,
+                    score: 0,
+                    skill_id: datum.id,
+                    skill_type: datum.skill_type,
+                })
+
+            }
+
+            //$scope.personalDomain = ret.data.filter(x => x.skill_type === 'domain' && x.role === $scope.selectedGroup).sort((a, b) => a.custom_order - b.custom_order);
+            //$scope.personalCore = ret.data.filter(x => x.skill_type === 'core').sort((a, b) => a.custom_order - b.custom_order);
+            //$scope.personalManage = ret.data.filter(x => x.skill_type === 'manage').sort((a, b) => a.custom_order - b.custom_order);
+
+            $scope.personalDomain = $scope.personal.filter(x => x.skill_type === 'domain' && x.role === $scope.selectedGroup).sort((a, b) => a.custom_order - b.custom_order);
+            $scope.personalCore = $scope.personal.filter(x => x.skill_type === 'core').sort((a, b) => a.custom_order - b.custom_order);
+            $scope.personalManage = $scope.personal.filter(x => x.skill_type === 'manage').sort((a, b) => a.custom_order - b.custom_order);
 
         });
+
+
+
     }
 
 
@@ -655,7 +700,8 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
     $scope.selectGroup = () => {
         $scope.members = $scope.auth.GroupAuthorities.find(x => x.GroupName === $scope.selectedGroup).Members;
         $scope.selectedMember = $scope.members[0].empno;
-        $scope.GetPersonal($scope.selectedMember);
+        // old place
+        //$scope.GetPersonal($scope.selectedMember);
     }
 
 

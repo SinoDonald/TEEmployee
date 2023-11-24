@@ -14,6 +14,10 @@ namespace TEEmployee.Models.GSchedule
         bool Update(List<Schedule> schedules);
         Schedule Insert(Schedule schedule);
         bool Delete(List<Schedule> schedules);
+        List<ProjectSchedule> GetAllProjectSchedules();
+        bool Insert(ProjectSchedule projectSchedule);
+        bool Update(ProjectSchedule projectSchedule);
+        bool Delete(ProjectSchedule projectSchedule);
         void Dispose();
     }
 }

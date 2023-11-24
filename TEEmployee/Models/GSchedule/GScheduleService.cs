@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using TEEmployee.Models.TaskLog;
@@ -367,6 +368,76 @@ namespace TEEmployee.Models.GSchedule
             public string empno { get; set; }
             public int hours { get; set; }
             public string yymm { get; set; }
+        }
+
+        public List<ProjectSchedule> GetAllProjectSchedules(string empno)
+        {
+            var projectSchedules = _scheduleRepository.GetAllProjectSchedules();
+            return projectSchedules;
+        }
+
+        public bool InsertProjectSchedule(ProjectSchedule projectSchedule, string empno)
+        {
+            var ret = _scheduleRepository.Insert(projectSchedule);
+            return ret;
+        }
+
+        public bool DeleteProjectSchedule(ProjectSchedule projectSchedule, string empno)
+        {
+            var ret = _scheduleRepository.Delete(projectSchedule);
+
+            try
+            {
+                string _appData = HttpContext.Current.Server.MapPath("~/Content/assets/img/project");
+                string fn = Path.Combine(_appData, projectSchedule.filepath);
+                File.Delete(fn);
+            }
+            catch
+            {
+                
+            }
+
+            return ret;
+        }
+
+        public bool UploadProjectSchedule(HttpPostedFileBase file, ProjectSchedule projectSchedule)
+        {
+            string _appData = HttpContext.Current.Server.MapPath("~/Content/assets/img/project");
+
+            // delete origin image
+            try
+            {
+                var originSchedule = _scheduleRepository.GetAllProjectSchedules().Where(x => x.projno == projectSchedule.projno).First();
+                string fn = Path.Combine(_appData, originSchedule.filepath);
+                File.Delete(fn);
+            }
+            catch
+            {
+
+            }
+
+            // upload new image (filepath = projno + datetime)
+            try
+            {
+                string filepath = "";
+
+                if (file != null)
+                {
+                    string extension = Path.GetExtension(file.FileName);
+                    string datetime = DateTime.Now.ToString("yyyyMMddhhmmss");
+                    filepath = $"{projectSchedule.projno}_{datetime}{extension}";
+                    string fn = Path.Combine(_appData, filepath);
+                    file.SaveAs(fn);
+                }                
+                
+                projectSchedule.filepath = filepath;
+                return _scheduleRepository.Update(projectSchedule);
+            }
+            catch
+            {
+                return false;
+            }
+
         }
 
         public void Dispose()

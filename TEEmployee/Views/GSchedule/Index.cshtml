@@ -76,15 +76,16 @@
             left: 0;
             z-index: 999;
             margin-left: 40em;
-            align-items:center;
+            align-items: center;
         }
 
-        .chartmenu > div {
-            flex: 1;
-            margin: 0 20px;            
-        }
+            .chartmenu > div {
+                flex: 1;
+                margin: 0 20px;
+            }
+
         #timespan {
-            flex: 1 200px;                     
+            flex: 1 200px;
         }
 
         #mainNav, #mainNav.navbar-shrink {
@@ -105,7 +106,7 @@
             border-collapse: collapse;
             border-bottom: 3px solid rgb(93,91,81);
         }
-        
+
         /*.schedulehead {
                     border-width: 2px;
                 }
@@ -115,6 +116,15 @@
             border-bottom: 2px solid #f4623a;
         }
 
+        .font-project {
+            font-family: 'Agdasima', sans-serif;
+        }
+
+        .icon-project:hover {
+            color: #f4623a;
+            transition: 0.2s;
+        }
+       
     </style>
 }
 
@@ -137,7 +147,7 @@
                 <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Group')}" ui-sref="Group">群組行事曆</a>
                 <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Personal')}" ui-sref="Personal">個人行事曆</a>
             </div>
-        </div>            
+        </div>
     </nav>
 
 

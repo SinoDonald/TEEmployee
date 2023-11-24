@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div>
             <div class="p-3 mb-2 bg-secondary text-white d-flex justify-content-center align-items-center">
                 <h2>核心技能</h2>
@@ -65,7 +65,7 @@
             </div>
 
         </div>
-        
+
         <div>
             <div class="p-3 mb-2 bg-secondary text-white d-flex justify-content-center align-items-center">
                 <h2>管理能力</h2>
@@ -75,7 +75,7 @@
                     </button>
                 </div>
             </div>
-           
+
             <div class="card" ng-repeat="skill in personalManage">
                 <div class="card-body">
                     <h5 class="card-title d-inline mr-1">{{skill.content}}</h5>
@@ -84,7 +84,7 @@
                 </div>
             </div>
         </div>
-       
+
     </div>
 
     <!-- Modal -->
@@ -102,27 +102,28 @@
 
 
                     @*<div>
-                        <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="GetAllSkillsByRole()" aria-label="Select the Group">
-                            <option ng-repeat="group in auth.GroupAuthorities" value="{{group.GroupName}}">{{group.GroupName}}</option>
-                        </select>
-                    </div>*@
+                            <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="GetAllSkillsByRole()" aria-label="Select the Group">
+                                <option ng-repeat="group in auth.GroupAuthorities" value="{{group.GroupName}}">{{group.GroupName}}</option>
+                            </select>
+                        </div>*@
 
-                    <div class="input-group">
-                        <select class="form-select" id="inputGroupSelect" ng-model="newSkill">
-                            <option value="" disabled selected>選擇技能</option>
-                            <option ng-hide="isInSkillSet(skill.id)" ng-repeat="skill in skillSet" value="{{skill.id}}">{{skill.content}}</option>
-                        </select>
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" ng-click="addSkill(newSkill)" type="button">新增</button>
-                        </div>
-                    </div>
+                    @* 231121 暫時不需要*@
+                    @*<div class="input-group">
+                            <select class="form-select" id="inputGroupSelect" ng-model="newSkill">
+                                <option value="" disabled selected>選擇技能</option>
+                                <option ng-hide="isInSkillSet(skill.id)" ng-repeat="skill in skillSet" value="{{skill.id}}">{{skill.content}}</option>
+                            </select>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" ng-click="addSkill(newSkill)" type="button">新增</button>
+                            </div>
+                        </div>*@
 
                     @*<div class="input-group mb-3">
-            <input type="text" class="form-control" ng-model="newSkill" placeholder="專業名稱" aria-label="專業名稱" aria-describedby="basic-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-primary" ng-click="addSkill(newSkill)" type="button">新增</button>
-            </div>
-        </div>*@
+                            <input type="text" class="form-control" ng-model="newSkill" placeholder="專業名稱" aria-label="專業名稱" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" ng-click="addSkill(newSkill)" type="button">新增</button>
+                            </div>
+                        </div>*@
 
                     <form name="myform">
                         <div class="list-group list-group-flush">
@@ -132,12 +133,13 @@
 
                                     <h5 class="w-100" ng-bind="skill.content"></h5>
 
-                                    <div class="d-flex w-100 justify-content-end tooltipChild">
+                                    @*231121 暫時不需要*@
+                                    @*<div class="d-flex w-100 justify-content-end tooltipChild">
 
-                                        <button type="button" class="btn btn-sm" ng-click="deleteSkill($index)">
-                                            <span class="material-icons">delete</span>
-                                        </button>
-                                    </div>
+                                            <button type="button" class="btn btn-sm" ng-click="deleteSkill($index)">
+                                                <span class="material-icons">delete</span>
+                                            </button>
+                                        </div>*@
                                 </div>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
@@ -163,6 +165,7 @@
         </div>
     </div>
 
+    
 
 </div>
 

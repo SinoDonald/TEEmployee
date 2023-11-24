@@ -241,6 +241,44 @@ namespace TEEmployee.Models.GSchedule
             return ret > 0;
         }
 
+        public List<ProjectSchedule> GetAllProjectSchedules()
+        {
+            List<ProjectSchedule> ret;
+
+            string sql = @"SELECT * FROM Project ORDER BY projno";
+            ret = _conn.Query<ProjectSchedule>(sql).ToList();
+
+            return ret;
+        }
+
+        public bool Insert(ProjectSchedule projectSchedule)
+        {
+            string sql = @"INSERT INTO Project (projno) 
+                        VALUES(@projno)";
+
+            int ret = _conn.Execute(sql, projectSchedule);
+
+            return ret > 0;
+        }
+
+        public bool Update(ProjectSchedule projectSchedule)
+        {
+            string sql = @"UPDATE Project SET filepath=@filepath WHERE projno=@projno;";
+
+            int ret = _conn.Execute(sql, projectSchedule);
+
+            return ret > 0;
+        }
+
+        public bool Delete(ProjectSchedule projectSchedule)
+        {
+            string sql = @"DELETE FROM Project WHERE projno=@projno;";
+
+            int ret = _conn.Execute(sql, projectSchedule);
+
+            return ret > 0;
+        }
+
         public void Dispose()
         {
             _conn.Close();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -32,6 +33,10 @@ namespace TEEmployee.Controllers
             return PartialView();
         }
         public ActionResult Future()
+        {
+            return PartialView();
+        }
+        public ActionResult Project()
         {
             return PartialView();
         }
@@ -88,6 +93,37 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        [HttpPost]
+        public JsonResult GetAllProjectSchedules()
+        {
+            var ret = _service.GetAllProjectSchedules(Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult InsertProjectSchedule(ProjectSchedule project)
+        {
+            var ret = _service.InsertProjectSchedule(project, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteProjectSchedule(ProjectSchedule project)
+        {
+            var ret = _service.DeleteProjectSchedule(project, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        // Upload file from client side to server 
+        [HttpPost]
+        public ActionResult UploadProjectSchedule(HttpPostedFileBase file, FormCollection form)
+        {
+            string jsonString = form.GetValue("projectSchedule").AttemptedValue;
+             ProjectSchedule projectSchedule = JsonConvert.DeserializeObject<ProjectSchedule>(jsonString);
+            var ret = _service.UploadProjectSchedule(file, projectSchedule);
+
+            return Json(ret);
+        }
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

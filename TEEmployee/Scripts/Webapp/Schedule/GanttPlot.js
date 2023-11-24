@@ -45,7 +45,7 @@ const ganttPlot = () => {
         const lineX = x(moment().toDate());
         //const p = d3.line()([[lineX, height / 2 - height / 16], [lineX, height - height / 8]]);
         const p = d3.line()([[lineX, height - margin.bottom - 0.4 * height], [lineX, height - margin.bottom]]);
-        
+
         //console.log(start);
 
         // parsed data transformed to data on svg through scale 
@@ -170,10 +170,6 @@ const ganttPlot = () => {
             )
 
 
-
-
-
-
         // text
         //groups.selectAll('text')
         //    .data((d) => d.wxy)
@@ -202,85 +198,261 @@ const ganttPlot = () => {
 
         //console.log(labelRightBounds);
 
-        let labelHeights = []
-        let labelLeft = 0;
-        let prevRightBound = -labelLeft;
 
-        function getLabelHeight(i) {
+        // method 1
 
-            if (labelRightBounds.length === 0)
-                return;
+        //let labelHeights = []
+        //let labelLeft = 0;
+        //let prevRightBound = -labelLeft;
 
-            if (i === labelRightBounds.length - 1) {
-                labelHeights[i] = -2;
-                return -2;
-            } else if (labelRightBounds[i][0] + labelRightBounds[i][1] + labelLeft > labelRightBounds[i + 1][0]) {
-                labelRightBounds[i + 1][0] = labelRightBounds[i][0] + labelRightBounds[i][1] + labelLeft;
-                let nextHeight = getLabelHeight(i + 1);
-                let thisHeight = nextHeight - 1;
-                labelHeights[i] = thisHeight;
-                return thisHeight;
-            } else {
-                getLabelHeight(i + 1);
-                labelHeights[i] = -2;
-                return -2;
-            }
-        }
+        //function getLabelHeight(i) {
 
-        getLabelHeight(0);
+        //    if (labelRightBounds.length === 0)
+        //        return;
+
+        //    if (i === labelRightBounds.length - 1) {
+        //        labelHeights[i] = -2;
+        //        return -2;
+        //    } else if (labelRightBounds[i][0] + labelRightBounds[i][1] + labelLeft > labelRightBounds[i + 1][0]) {
+        //        labelRightBounds[i + 1][0] = labelRightBounds[i][0] + labelRightBounds[i][1] + labelLeft;
+        //        let nextHeight = getLabelHeight(i + 1);
+        //        let thisHeight = nextHeight - 1;
+        //        labelHeights[i] = thisHeight;
+        //        return thisHeight;
+        //    } else {
+        //        getLabelHeight(i + 1);
+        //        labelHeights[i] = -2;
+        //        return -2;
+        //    }
+        //}
+
+        //getLabelHeight(0);
 
 
-        let key = -2;
+        //let key = -2;
 
-        // right to left ascending => left to right ascending
-        for (let i = 0; i !== labelHeights.length; i++) {
+        //// right to left ascending => left to right ascending
 
-            if (labelHeights[i] !== key) {
+        //for (let i = 0; i !== labelHeights.length; i++) {
 
-                let count = key - labelHeights[i];
+        //    if (labelHeights[i] !== key) {
 
-                for (let j = 0; j !== Math.floor(((count + 1) / 2)); j++) {
-                    [labelHeights[i + j], labelHeights[i + count - j]] = [labelHeights[i + count - j], labelHeights[i + j]];                    
-                }
+        //        let count = key - labelHeights[i];
 
-                i = i + count;
+        //        for (let j = 0; j !== Math.floor(((count + 1) / 2)); j++) {
+        //            [labelHeights[i + j], labelHeights[i + count - j]] = [labelHeights[i + count - j], labelHeights[i + j]];                    
+        //        }
 
-            }
-        }
+        //        i = i + count;
+
+        //    }
+        //}
 
         // get the index of point which is the closest to today
 
-        //if (marks[0].wxy) {
-        //    console.log(marks.wxy.length);
+        //let closestIdx;
+
+        //for (let i = 0; i !== marks[0].wxy.length; i++) {
+
+        //    if (marks[0].wxy[i].wx >= lineX) {
+        //        closestIdx = i;
+        //        break;
+        //    }            
+
         //}
 
-        let closestIdx;
+        //if (closestIdx && labelHeights[closestIdx] !== -2) {
+        //    let numBefore = -2 - labelHeights[closestIdx];
+
+        //    // before idx, send it to the outer space
+        //    for (let i = 1; i <= numBefore; i++) {
+        //        labelHeights[closestIdx - i] = -5;
+        //    }
+
+        //    // first three after index, assign -2 -3 -4 if not equal to -2
+        //    for (let i = 0; i !== 3; i++) {
+        //        if (labelHeights[closestIdx + i]) {
+        //            labelHeights[closestIdx + i] = -2 - i;
+        //        }
+
+        //    }
+        //}
+
+
+        // method 2
+
+        //let labelHeights = []
+        //let labelLeft = 0;
+        //let prevRightBound = -labelLeft;
+
+        //let rightBounds = [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY];
+
+        //for (let i = 0; i !== labelRightBounds.length; i++) {
+
+        //    labelHeights[i] = 3;
+
+        //    for (let j = 0; j !== 3; j++) {
+
+        //        if (labelRightBounds[i][0] > rightBounds[j]) {
+        //            labelHeights[i] = j;
+        //            rightBounds[j] = labelRightBounds[i][0] + labelRightBounds[i][1];
+        //            break;
+        //        }                
+        //    }
+
+        //}
+
+        //labelHeights = labelHeights.map(x => x * (-1) - 2);
+
+
+        //let closestIdx;
+
+        //for (let i = 0; i !== marks[0].wxy.length; i++) {
+
+        //    if (marks[0].wxy[i].wx >= lineX) {
+        //        closestIdx = i;
+        //        break;
+        //    }            
+
+        //}
+
+        //if (closestIdx && labelHeights[closestIdx] !== -2) {
+        //    let numBefore = -2 - labelHeights[closestIdx];
+
+        //    // before idx, send it to the outer space
+        //    for (let i = 1; i <= numBefore; i++) {
+        //        labelHeights[closestIdx - i] = -5;
+        //    }
+
+        //    // first three after index, assign -2 -3 -4 if not equal to -2
+        //    for (let i = 0; i !== 3; i++) {
+        //        if (labelHeights[closestIdx + i]) {
+        //            labelHeights[closestIdx + i] = -2 - i;
+        //        }
+
+        //    }
+        //}
+
+
+        // method 3
+        // foward 3 > backward3 > others 
+
+        let labelHeights = []
+        let rightBounds = [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY];
+
+        // find closest point
+        let cIdx;
 
         for (let i = 0; i !== marks[0].wxy.length; i++) {
-            
             if (marks[0].wxy[i].wx >= lineX) {
-                closestIdx = i;
+                cIdx = i;
                 break;
-            }            
-            
+            }
         }
 
-        if (closestIdx && labelHeights[closestIdx] !== -2) {
-            let numBefore = -2 - labelHeights[closestIdx];
+        //console.log(cIdx);
 
-            // before idx, send it to the outer space
-            for (let i = 1; i <= numBefore; i++) {
-                labelHeights[closestIdx - i] = -5;
+        // foward 3
+
+        let forwardRightBounds = [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY];
+        let backwardLeftBounds = [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY];
+
+        if (cIdx) {
+
+            for (let i = cIdx; i !== cIdx + 3; i++) {
+
+                labelHeights[i] = 3;
+
+                if (!labelRightBounds[i])
+                    break;
+
+                for (let j = 0; j !== 3; j++) {
+
+                    if (labelRightBounds[i][0] > forwardRightBounds[j]) {
+                        labelHeights[i] = j;
+                        forwardRightBounds[j] = labelRightBounds[i][0] + labelRightBounds[i][1];
+
+                        if (backwardLeftBounds[j] > labelRightBounds[i][0])
+                            backwardLeftBounds[j] = labelRightBounds[i][0];
+
+                        break;
+                    }
+                }
             }
 
-            // first three after index, assign -2 -3 -4 if not equal to -2
-            for (let i = 0; i !== 3; i++) {
-                if (labelHeights[closestIdx + i]) {
-                    labelHeights[closestIdx + i] = -2 - i;
+        }
+
+        // backward 3
+
+        let backwardRightBounds = [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY];
+
+        let bIdx;
+        if (!cIdx)
+            bIdx = marks[0].wxy.length - 3;
+        else
+            bIdx = cIdx - 3
+
+        //console.log(bIdx);
+
+        for (let i = bIdx; i !== bIdx + 3; i++) {
+
+            if (i < 0 || !labelRightBounds[i])
+                continue;
+
+            labelHeights[i] = 3;
+
+            for (let j = 0; j !== 3; j++) {
+
+                if (labelRightBounds[i][0] > backwardRightBounds[j] && labelRightBounds[i][0] + labelRightBounds[i][1] < backwardLeftBounds[j]) {
+                    labelHeights[i] = j;
+                    backwardRightBounds[j] = labelRightBounds[i][0] + labelRightBounds[i][1];
+                    backwardLeftBounds[j] = labelRightBounds[i][0];
+                    break;
+                }
+            }
+        }
+
+
+
+        // other forward
+        if (cIdx) {
+
+            for (let i = cIdx + 3; i < labelRightBounds.length; i++) {
+
+                labelHeights[i] = 3;
+
+                for (let j = 0; j !== 3; j++) {
+
+                    if (labelRightBounds[i][0] > forwardRightBounds[j]) {
+                        labelHeights[i] = j;
+                        forwardRightBounds[j] = labelRightBounds[i][0] + labelRightBounds[i][1];
+                        break;
+                    }
                 }
 
             }
+
         }
+
+        // other backward
+        backwardRightBounds = [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY];
+
+        for (let i = 0; i < bIdx; i++) {
+
+            labelHeights[i] = 3;
+
+            for (let j = 0; j !== 3; j++) {
+
+                if (labelRightBounds[i][0] > backwardRightBounds[j] && labelRightBounds[i][0] + labelRightBounds[i][1] < backwardLeftBounds[j]) {
+                    labelHeights[i] = j;
+                    backwardRightBounds[j] = labelRightBounds[i][0] + labelRightBounds[i][1];
+                    break;
+                }
+            }
+
+        }
+
+        labelHeights = labelHeights.map(x => x * (-1) - 2);
 
 
         //console.log(labelHeights);
@@ -291,7 +463,7 @@ const ganttPlot = () => {
             .data((d) => d.wxy)
             .join('text')
             .attr('y', (d, i) => (labelHeights[i]) * 16 + d.wy);
-            
+
 
         // line 
         selection.selectAll('path')

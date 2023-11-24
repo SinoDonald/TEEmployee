@@ -441,7 +441,7 @@ namespace TEEmployee.Models.Profession
         {
             int ret;
 
-            string sql = @"DELETE FROM Personal WHERE skill_id=@skill_id";
+            string sql = @"DELETE FROM Personal WHERE skill_id=@skill_id AND empno=@empno";
 
             try
             {               
