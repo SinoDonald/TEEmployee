@@ -1,0 +1,92 @@
+﻿
+@{
+    ViewBag.Title = "培訓紀錄與規劃";
+}
+
+
+@section Styles {
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    @*<link rel="stylesheet" href="~/Content/css/angular-moment-picker.min.css">*@
+    <style>
+
+        #mainNav, #mainNav.navbar-shrink {
+            box-shadow: none;
+        }
+
+        #childNav {
+            margin-top: 80px;
+        }
+    </style>
+}
+
+
+<div ng-controller="TrainingCtrl" class="container-fluid">
+
+    <nav class="navbar navbar-expand-lg navbar-dark" id="childNav" style="background-color: #4CAF50">
+        <a class="navbar-brand" href="#">培訓紀錄與規劃</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="">個人培訓紀錄</a>
+                </li>
+                @*<li class="nav-item">
+                        <a class="nav-link" href="#">個人課程規劃</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">E-learning</a>
+                    </li>*@
+            </ul>
+        </div>
+    </nav>
+
+    <div>
+        <form id="formElem">
+            Files: <input type="file" id="trainingfilepicker" name="trainingFile">
+            <input type="submit">
+        </form>
+    </div>
+
+    <table class="table">
+        <tr>
+            <th>empno</th>
+            <th>roc_year</th>
+            <th>training_type</th>
+            <th>training_id</th>
+            <th>title</th>
+            <th>organization</th>
+            <th>start_date</th>
+            <th>end_date</th>
+            <th>duration</th>
+        </tr>
+
+        <tr ng-repeat="item in records">
+            <td ng-bind="item.empno"></td>
+            <td ng-bind="item.roc_year"></td>
+            <td ng-bind="item.training_type"></td>
+            <td ng-bind="item.training_id"></td>
+            <td ng-bind="item.title"></td>
+            <td ng-bind="item.organization"></td>
+            <td ng-bind="item.start_date"></td>
+            <td ng-bind="item.end_date"></td>
+            <td ng-bind="item.duration"></td>
+        </tr>
+
+    </table>
+
+
+
+
+
+    @*<div ui-view></div>*@
+
+</div>
+
+
+@section Scripts {
+    <script src="~/Scripts/WebApp/Training/TrainingCtrl.js"></script>
+}

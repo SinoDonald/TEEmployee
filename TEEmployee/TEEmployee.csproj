@@ -172,6 +172,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AssessmentController.cs" />
+    <Compile Include="Controllers\EducationController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\GKpiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -183,10 +184,16 @@
     <Compile Include="Controllers\TalentController.cs" />
     <Compile Include="Controllers\TasklogController.cs" />
     <Compile Include="Controllers\TestController.cs" />
+    <Compile Include="Controllers\TrainingController.cs" />
     <Compile Include="Filters\MyAuthorizeAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Education\Chapter.cs" />
+    <Compile Include="Models\Education\Course.cs" />
+    <Compile Include="Models\Education\EducationRepository.cs" />
+    <Compile Include="Models\Education\EducationService.cs" />
+    <Compile Include="Models\Education\IEducationRepository.cs" />
     <Compile Include="Models\GKpi\GKpiRepository.cs" />
     <Compile Include="Models\GKpi\GKpiService.cs" />
     <Compile Include="Models\GKpi\IGKpiRepository.cs" />
@@ -248,6 +255,10 @@
     <Compile Include="Models\TaskLog\ProjectTaskRepository.cs" />
     <Compile Include="Models\TaskLog\SqliteTypeHandler.cs" />
     <Compile Include="Models\TaskLog\TasklogService.cs" />
+    <Compile Include="Models\Training\ITrainingRepository.cs" />
+    <Compile Include="Models\Training\Record.cs" />
+    <Compile Include="Models\Training\TrainingRepository.cs" />
+    <Compile Include="Models\Training\TrainingService.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\NotifyRepository.cs" />
     <Compile Include="Models\UserRepository.cs" />
@@ -363,6 +374,7 @@
     <Content Include="Scripts\Webapp\Assessment\SelfCtrl.min.js">
       <DependentUpon>SelfCtrl.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Webapp\Education\EducationCtrl.js" />
     <Content Include="Scripts\Webapp\GSchedule\HistoryLineChart.js" />
     <Content Include="Scripts\Webapp\GSchedule\ScheduleCtrl.js" />
     <Content Include="Scripts\Webapp\Home\AdminCtrl.js" />
@@ -378,6 +390,7 @@
       <DependentUpon>ScheduleCtrl.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Webapp\Test\TestCtrl.js" />
+    <Content Include="Scripts\Webapp\Training\TrainingCtrl.js" />
     <Content Include="Scripts\Webapp\Vincent\Happy.js" />
     <Content Include="Scripts\Webapp\Talent\TalentCtrl.js" />
     <Content Include="Scripts\Webapp\Tasklog\TasklogCtrl.js" />
@@ -473,6 +486,8 @@
     <Content Include="Views\Home\Question.cshtml" />
     <Content Include="Views\Home\History.cshtml" />
     <Content Include="Views\GSchedule\Project.cshtml" />
+    <Content Include="Views\Education\Index.cshtml" />
+    <Content Include="Views\Training\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Promotion\" />
