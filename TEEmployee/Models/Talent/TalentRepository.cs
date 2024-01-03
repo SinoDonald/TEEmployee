@@ -11,6 +11,7 @@ using System.Data.SQLite;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using TEEmployee.Models.Profession;
@@ -344,7 +345,7 @@ namespace TEEmployee.Models.Talent
                 Match match = matches[0];
                 DateTime start = DateTime.Parse(match.Groups[2].Value, culture);
                 (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, now);
-                companyYears = calcYMD.y + "年" + calcYMD.m + "月";
+                companyYears = calcYMD.y + "年" + calcYMD.m + "月" + calcYMD.d + "日";
             }
             catch { }
             // 職位年資
@@ -358,7 +359,7 @@ namespace TEEmployee.Models.Talent
                         Match match = matches[0];
                         DateTime start = DateTime.Parse(match.Groups[2].Value, culture);
                         (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, now);
-                        positionSeniority += match.Groups[1].Value + "：" + calcYMD.y + "年" + calcYMD.m + "月\n"; ;
+                        positionSeniority += match.Groups[1].Value + "：" + calcYMD.y + "年" + calcYMD.m + "月" + calcYMD.d + "日\n";
                     }
                     else
                     {
@@ -741,9 +742,109 @@ namespace TEEmployee.Models.Talent
             }
             // 中興工程職務經歷
             List<Seniority> senioritys = ProjectRegex(returnParagraph);
-            string seniority = Seniority(senioritys);
+            //string seniority = Seniority(senioritys);
+            string seniority = string.Empty;
 
             return new Tuple<string, string>(returnParagraph, seniority);
+        }
+        // 上傳員工經歷文字檔
+        public bool UploadExperience(HttpPostedFileBase file)
+        {
+            List<CV> userCVs = new List<CV>(); // 員工公司年資
+            List<Seniority> senioritys = new List<Seniority>(); // 員工職務年資
+            // 讀取文字檔
+            byte[] byts = new byte[file.InputStream.Length];
+            file.InputStream.Read(byts, 0, byts.Length);
+            var requestContent = Encoding.Default.GetString(byts);
+            string[] array = requestContent.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            int totalCount = array.Length; // 導入的記錄總數 
+            for (int i = 0; i < array.Length; i++)
+            {
+                string item = array[i].Split('|')[0];
+                if (item.Equals("基本資料"))
+                {
+                    CV userCV = new CV();
+                    userCV.empno = array[i].Split('|')[1];
+                    userCV.companyYears = array[i].Split('|')[array[i].Split('|').Length - 1];
+                    userCVs.Add(userCV);
+                }
+                else if (item.Equals("職等歷程"))
+                {
+                    Seniority userSeniority = new Seniority();
+                    userSeniority.empno = array[i].Split('|')[1];
+                    userSeniority.start = array[i].Split('|')[2];
+                    userSeniority.position = array[i].Split('|')[array[i].Split('|').Length - 1].Split(' ')[1];
+                    senioritys.Add(userSeniority);
+                }
+                else if (item.Equals("學歷"))
+                {
+                    CV userCV = userCVs.Where(x => x.empno.Equals(array[i].Split('|')[1])).FirstOrDefault();
+                    userCV.educational += array[i].Split('|')[5] + " (" + array[i].Split('|')[6] + "年畢業)　" + array[i].Split('|')[3] + "　" + array[i].Split('|')[4] + "\n";
+                }
+            }
+
+            List<string> empnos = senioritys.Select(x => x.empno).Distinct().ToList();
+            foreach (string empno in empnos)
+            {
+                string workYear = string.Empty;
+                try
+                {
+                    string sql = @"SELECT * FROM userCV WHERE empno=@empno";
+                    string project = _conn.Query<CV>(sql, new { empno }).ToList().FirstOrDefault().project; 
+                    workYear = ProjectRegex(project).LastOrDefault().start;
+                }
+                catch (Exception ex) 
+                {
+                    string error = ex.Message + "\n" + ex.ToString();
+                }
+
+                CV userCV = userCVs.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+                string seniority = string.Empty;
+                List<Seniority> userSenioritys = senioritys.Where(x => x.empno.Equals(empno)).OrderByDescending(x => x.start).ToList();
+                for (int i = 0; i < userSenioritys.Count; i++)
+                {
+                    if (i.Equals(0))
+                    {                        
+                        // 西元轉民國
+                        DateTime companyDT = DateTime.Parse(userCV.companyYears);
+                        DateTime seniorityDT = DateTime.Parse(userSenioritys[i].start);
+                        CultureInfo culture = new CultureInfo("zh-TW");
+                        culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                        string companyDate = companyDT.ToString("yyy.MM.dd", culture);
+                        if (workYear != "")
+                        {
+                            seniority += "工作年資：" + workYear + "~迄今\n公司年資：" + companyDate + "~迄今\n";
+                        }
+                        else
+                        {
+                            seniority += "工作年資：\n公司年資：" + companyDate + "~迄今\n";
+                        }
+                        string seniorityDate = seniorityDT.ToString("yyy.MM.dd", culture);
+                        seniority += userSenioritys[i].position + "：" + seniorityDate + "~迄今\n";
+                    }
+                    else
+                    {
+                        DateTime start = DateTime.Parse(userSenioritys[i].start);
+                        DateTime end = DateTime.Parse(userSenioritys[i - 1].start);
+                        (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, end);
+                        seniority += userSenioritys[i].position + "：" + calcYMD.y + "年" + calcYMD.m + "月" + calcYMD.d + "日\n";
+                    }
+                }
+                if(seniority.Length > 2)
+                {
+                    seniority = seniority.Substring(0, seniority.Length - 1);
+                }
+                if (userCV.educational.Length > 2)
+                {
+                    userCV.educational = userCV.educational.Substring(0, userCV.educational.Length - 1);
+                }
+                userCV.seniority = seniority;
+            }
+
+
+            bool ret = SaveExperience(userCVs); // 儲存員工經歷
+
+            return ret;
         }
         // Regex解析文字後, 儲存工作、公司與職位年資
         private List<Seniority> ProjectRegex(string project)
@@ -1098,10 +1199,10 @@ namespace TEEmployee.Models.Talent
                 {
                     //string sql = @"DELETE FROM userCV";
                     //_conn.Execute(sql);
-                    string sql = @"INSERT INTO userCV (empno, name, 'group', group_one, group_two, group_three, birthday, address, educational, performance, expertise, treatise, language, academic, license, training, honor, experience, project, seniority, lastest_update, planning, test, advantage, disadvantage, developed, future)
-                            VALUES(@empno, @name, @group, @group_one, @group_two, @group_three, @birthday, @address, @educational, @performance, @expertise, @treatise, @language, @academic, @license, @training, @honor, @experience, @project, @seniority, @lastest_update, @planning, @test, @advantage, @disadvantage, @developed, @future)
+                    string sql = @"INSERT INTO userCV (empno, name, 'group', group_one, group_two, group_three, birthday, address, performance, expertise, treatise, language, academic, license, training, honor, experience, project, lastest_update, planning, test, advantage, disadvantage, developed, future)
+                            VALUES(@empno, @name, @group, @group_one, @group_two, @group_three, @birthday, @address, @performance, @expertise, @treatise, @language, @academic, @license, @training, @honor, @experience, @project, @lastest_update, @planning, @test, @advantage, @disadvantage, @developed, @future)
                             ON CONFLICT(empno)
-                            DO UPDATE SET name=@name, 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three, birthday=@birthday, address=@address, educational=@educational, performance=@performance, expertise=@expertise, treatise=@treatise, language=@language, academic=@academic, license=@license, training=@training, honor=@honor, experience=@experience, project=@project, seniority=@seniority, lastest_update=@lastest_update";
+                            DO UPDATE SET name=@name, 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three, birthday=@birthday, address=@address, performance=@performance, expertise=@expertise, treatise=@treatise, language=@language, academic=@academic, license=@license, training=@training, honor=@honor, experience=@experience, project=@project, lastest_update=@lastest_update";
                     _conn.Execute(sql, userCVs);
 
                     tran.Commit();
@@ -1273,6 +1374,27 @@ namespace TEEmployee.Models.Talent
                 using (var tran = _conn.BeginTransaction())
                 {
                     string sql = @"UPDATE userCV SET performance=@performance WHERE empno=@empno";
+                    _conn.Execute(sql, userCVs, tran);
+                    tran.Commit();
+                    ret = true;
+                }
+                _conn.Close();
+            }
+            catch (Exception) { }
+
+            return ret;
+        }
+        // 儲存員工經歷
+        public bool SaveExperience(List<CV> userCVs)
+        {
+            bool ret = false;
+
+            try
+            {
+                _conn.Open();
+                using (var tran = _conn.BeginTransaction())
+                {
+                    string sql = @"UPDATE userCV SET educational=@educational, seniority=@seniority WHERE empno=@empno";
                     _conn.Execute(sql, userCVs, tran);
                     tran.Commit();
                     ret = true;

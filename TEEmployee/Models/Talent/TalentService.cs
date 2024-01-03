@@ -55,6 +55,12 @@ namespace TEEmployee.Models.Talent
                 catch (Exception) { }
             }
         }
+        // 上傳員工經歷文字檔
+        public bool UploadExperience(HttpPostedFileBase file)
+        {
+            var ret = _talentRepository.UploadExperience(file);
+            return ret;
+        }
         // 上傳年度績效檔案
         public bool ImportFile(HttpPostedFileBase file)
         {

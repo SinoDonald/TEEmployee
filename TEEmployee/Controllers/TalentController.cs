@@ -60,6 +60,12 @@ namespace TEEmployee.Controllers
             _service.Uploaded(files);
             return RedirectToAction("Index", "Home");
         }
+        // 上傳員工經歷文字檔
+        public ActionResult UploadExperience(HttpPostedFileBase file)
+        {
+            var ret = _service.UploadExperience(file);
+            return RedirectToAction("Index", "Home");
+        }
         // 上傳年度績效檔案
         [HttpPost]
         public JsonResult ImportFile(HttpPostedFileBase importFile)

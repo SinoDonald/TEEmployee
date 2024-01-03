@@ -17,16 +17,47 @@
         <h2>Admin1019</h2>
     </header>
 
-    <div>
-        <br>
-        @using (Html.BeginForm("Uploaded", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-            @*因為要多個上傳 所以要用到multiple屬性*@
-            <input type="file" id="filepicker" name="files" multiple />
-            <input type="submit" value="上傳員工履歷" />
-        }
-        <br><br>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="text-success">員工履歷Word檔(多檔)</h4>
+                    @using (Html.BeginForm("Uploaded", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @*因為要多個上傳 所以要用到multiple屬性*@
+                        <input type="file" id="filepicker" name="files" multiple />
+                        <input type="submit" value="上傳" />
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="text-success">員工經歷文字檔</h4>
+                    @using (Html.BeginForm("UploadExperience", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <input type="file" id="filepicker" name="file" />
+                        <input type="submit" value="上傳" />
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="text-success">KPI檔</h4>                    
+                    <div>
+                        <form id="formKpiElem">
+                            <input type="file" id="kpifilepicker" name="kpifiles">
+                            <input type="submit" value="上傳" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <br />
 
     @if (Session["empno"] is "7596" || Session["empno"] is "7291")
     {
@@ -53,17 +84,6 @@
         <button type="button" class="btn btn-outline-dark" name="addRow" ng-click="InsertKpiModels()">
             KPI
         </button>
-
-        @*<button type="button" class="btn btn-outline-primary" name="addRow" ng-click="TalentUpdate()">
-                更新人才培訓資料庫
-            </button>*@
-
-        <div>
-            <form id="formKpiElem">                
-                Files: <input type="file" id="kpifilepicker" name="kpifiles">
-                <input type="submit">
-            </form>
-        </div>
     }
 
     <div>
