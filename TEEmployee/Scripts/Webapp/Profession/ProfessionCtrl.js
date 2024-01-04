@@ -582,7 +582,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
         label: '4分「精通且可指導他人」',
         value: 4
     }, {
-        label: '5分「專家，從事專業達五年以上',
+        label: '5分「專家，從事專業達五年以上」',
         value: 5
     },];
 
@@ -599,7 +599,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
         label: '4分「熟悉」',
         value: 4
     }, {
-        label: '5分「非常熟悉',
+        label: '5分「非常熟悉」',
         value: 5
     },];
 

@@ -2,7 +2,9 @@
 <div ng-controller="GroupCtrl">
 
 
-    <div class="chartmenu mb-5">
+
+
+    <div class="mb-5 newchartmenu">
 
         <div id="timespan">
             <button ng-show="editFilter" ng-click="createGroupScheduleModal()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">新增</button>
@@ -47,8 +49,7 @@
         <div class="d-flex">
             <span class="material-icons">filter_list</span>
             <div ng-dropdown-multiselect="" options="selection_filtered_projects" events="multi_selected_project_event" selected-model="multi_selected_projects"></div>
-        </div>
-        
+        </div>       
 
     </div>
 
