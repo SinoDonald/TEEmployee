@@ -24,6 +24,14 @@ namespace TEEmployee.Controllers
         {            
             return View();
         }
+        public ActionResult GroupPlan()
+        {
+            return PartialView();
+        }
+        public ActionResult PersonalPlan()
+        {
+            return PartialView();
+        }
         public ActionResult Group()
         {
             return PartialView();

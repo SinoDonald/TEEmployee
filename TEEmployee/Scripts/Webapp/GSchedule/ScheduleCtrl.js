@@ -4,6 +4,14 @@ const { csv, select, selectAll, selection } = d3;
 app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
     $stateProvider
+        .state('GroupPlan', {
+            url: '/GroupPlan',
+            templateUrl: 'GSchedule/GroupPlan'
+        })
+        .state('PersonalPlan', {
+            url: '/PersonalPlan',
+            templateUrl: 'GSchedule/PersonalPlan'
+        })
         .state('Group', {
             url: '/Group',
             templateUrl: 'GSchedule/Group'
@@ -170,6 +178,18 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
     //})
 
 
+
+}]);
+
+app.controller('GroupPlanCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$timeout', function ($scope, $location, appService, $rootScope, $q, dataservice, $timeout) {
+
+    $scope.pdfReader = "Content/GSchedule/GroupPlan/004-1080625早上_萬二DQ125標第一次工作會議(完整版).pdf";
+
+}]);
+
+app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$timeout', function ($scope, $location, appService, $rootScope, $q, dataservice, $timeout) {
+
+    $scope.test = "";
 
 }]);
 

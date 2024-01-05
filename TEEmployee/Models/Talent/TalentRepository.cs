@@ -345,7 +345,7 @@ namespace TEEmployee.Models.Talent
                 Match match = matches[0];
                 DateTime start = DateTime.Parse(match.Groups[2].Value, culture);
                 (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, now);
-                companyYears = calcYMD.y + "年" + calcYMD.m + "月" + calcYMD.d + "日";
+                companyYears = calcYMD.y + "年" + calcYMD.m + "月"/* + calcYMD.d + "日"*/;
             }
             catch { }
             // 職位年資
@@ -359,7 +359,7 @@ namespace TEEmployee.Models.Talent
                         Match match = matches[0];
                         DateTime start = DateTime.Parse(match.Groups[2].Value, culture);
                         (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, now);
-                        positionSeniority += match.Groups[1].Value + "：" + calcYMD.y + "年" + calcYMD.m + "月" + calcYMD.d + "日\n";
+                        positionSeniority += match.Groups[1].Value + "：" + calcYMD.y + "年" + calcYMD.m + "月\n"/* + calcYMD.d + "日\n"*/;
                     }
                     else
                     {
@@ -827,7 +827,7 @@ namespace TEEmployee.Models.Talent
                         DateTime start = DateTime.Parse(userSenioritys[i].start);
                         DateTime end = DateTime.Parse(userSenioritys[i - 1].start);
                         (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, end);
-                        seniority += userSenioritys[i].position + "：" + calcYMD.y + "年" + calcYMD.m + "月" + calcYMD.d + "日\n";
+                        seniority += userSenioritys[i].position + "：" + calcYMD.y + "年" + calcYMD.m + "月\n"/* + calcYMD.d + "日\n"*/;
                     }
                 }
                 if(seniority.Length > 2)
