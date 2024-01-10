@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Filters;
+using TEEmployee.Models;
 using TEEmployee.Models.GSchedule;
 
 namespace TEEmployee.Controllers
@@ -132,6 +133,48 @@ namespace TEEmployee.Controllers
 
             return Json(ret);
         }
+
+        // 取得群組
+        [HttpPost]
+        public JsonResult GetGroupList(string view)
+        {
+            var ret = _service.GetGroupList(view, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        // 取得群組同仁
+        [HttpPost]
+        public JsonResult GetGroupUsers(string selectedGroup)
+        {
+            var ret = _service.GetGroupUsers(selectedGroup, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        // 讀取使用者的資訊
+        [HttpPost]
+        public JsonResult Get()
+        {
+            var ret = _service.Get(Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        // 上傳群組規劃PDF
+        [HttpPost]
+        public ActionResult UploadPDFFile(HttpPostedFileBase file, string view)
+        {
+            if (file == null) return Json(new { Status = 0, Message = "No File Selected" });
+            var ret = _service.UploadPDFFile(file, view, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        // 取得PDF
+        [HttpPost]
+        public ActionResult GetPDF(string view, string group, string userName)
+        {
+            var ret = _service.GetPDF(view, group, userName);
+            return Json(ret);
+        }
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

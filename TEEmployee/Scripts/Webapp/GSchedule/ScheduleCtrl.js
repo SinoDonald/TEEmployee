@@ -39,6 +39,18 @@ app.run(['$http', '$window', function ($http, $window) {
 
 app.service('appService', ['$http', function ($http) {
 
+    this.GetGroupList = (o) => {
+        return $http.post('GSchedule/GetGroupList', o);
+    };
+    this.GetGroupUsers = (o) => {
+        return $http.post('GSchedule/GetGroupUsers', o);
+    };    
+    this.Get = (o) => {
+        return $http.post('GSchedule/Get', o);
+    };
+    this.GetPDF = (o) => {
+        return $http.post('GSchedule/GetPDF', o);
+    };
     this.GetAllSchedules = (o) => {
         return $http.post('GSchedule/GetAllSchedules', o);
     };
@@ -104,6 +116,27 @@ app.factory('dataservice', function () {
     }
 });
 
+app.factory('userdata', function () {
+
+    var user = {}
+
+    function set(data) {
+        user.empno = data.empno;
+        user.name = data.name;
+        user.group = data.group;
+        user.group_manager = data.group_manager;
+    }
+
+    function get() {
+        return user;
+    }
+
+    return {
+        set: set,
+        get: get,
+    }
+
+});
 
 app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', function ($scope, $location, appService, $rootScope, $q, dataservice) {
 
@@ -181,15 +214,122 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
 
 }]);
 
-app.controller('GroupPlanCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$timeout', function ($scope, $location, appService, $rootScope, $q, dataservice, $timeout) {
+app.controller('GroupPlanCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', 'userdata', '$timeout', function ($scope, $location, appService, $rootScope, $q, dataservice, userdata, $timeout) {
 
-    $scope.pdfReader = "Content/GSchedule/GroupPlan/004-1080625早上_萬二DQ125標第一次工作會議(完整版).pdf";
+    // 取得群組
+    let groups = appService.GetGroupList({ view: "GroupPlan" });
+    $q.all([groups]).then((ret) => {
+        $scope.groups = ret[0].data;
+        $scope.selectedGroup = $scope.groups[0];
+        $scope.FilterDataByGroup($scope.selectedGroup);
+    });
+
+    // 依群組顯示
+    $scope.FilterDataByGroup = function (selectedGroup) {
+        appService.GetPDF({ view: "GroupPlan", group: selectedGroup, userName: $scope.user.name }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+    }
+
+    // 讀取使用者的資訊
+    appService.Get({ empno: data })
+        .then(function (ret) {
+            $scope.user = ret.data;
+            userdata.set(ret.data);
+            appService.GetPDF({ view: "GroupPlan", group: $scope.selectedGroup, userName: $scope.user.name }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+        })
+        .catch(function (ret) {
+            //alert('Error');
+        });
+
+    // 上傳群組規劃PDF
+    $(document).on("click", "#btnPDFUpload", function () {
+        var files = $("#importPDFFile").get(0).files;
+
+        var formData = new FormData();
+        formData.append('file', files[0]);
+        formData.append('view', "GroupPlan");
+
+        $.ajax({
+            url: 'GSchedule/UploadPDFFile',
+            enctype: "multipart/form-data",
+            data: formData,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data === true) {
+                    $('#frame').attr('src', $('#frame').attr('src')); // 即時更新PDF
+                }
+                else {
+                    alert("上傳格式錯誤");
+                }
+            }
+        });
+    });
 
 }]);
 
-app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$timeout', function ($scope, $location, appService, $rootScope, $q, dataservice, $timeout) {
+app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', 'userdata', '$timeout', function ($scope, $location, appService, $rootScope, $q, dataservice, userdata, $timeout) {
 
-    $scope.test = "";
+    // 取得群組
+    let groups = appService.GetGroupList({ view: "PersonalPlan" });
+    $q.all([groups]).then((ret) => {
+        $scope.groups = ret[0].data;
+        $scope.selectedGroup = $scope.groups[0];
+        $scope.FilterDataByGroup($scope.selectedGroup);
+    });
+
+    // 依群組顯示
+    $scope.FilterDataByGroup = function (selectedGroup) {
+        // 取得群組同仁
+        let users = appService.GetGroupUsers({ selectedGroup: selectedGroup});
+        $q.all([users]).then((ret) => {
+            $scope.users = ret[0].data;
+            $scope.selectedUser = $scope.users[0];
+            $scope.FilterDataByUser($scope.selectedUser);
+        });
+
+        // 依人名選擇
+        $scope.FilterDataByUser = function (selectedUser) {
+            appService.GetPDF({ view: "PersonalPlan", group: $scope.selectedGroup, userName: selectedUser }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+        }
+    }
+
+    // 讀取使用者的資訊
+    appService.Get({ empno: data })
+        .then(function (ret) {
+            $scope.user = ret.data;
+            userdata.set(ret.data);
+            appService.GetPDF({ view: "PersonalPlan", group: $scope.selectedGroup, user: $scope.user }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+        })
+        .catch(function (ret) {
+            //alert('Error');
+        });
+
+    // 上傳群組規劃PDF
+    $(document).on("click", "#btnPDFUpload", function () {
+        var files = $("#importPDFFile").get(0).files;
+
+        var formData = new FormData();
+        formData.append('file', files[0]);
+        formData.append('view', "PersonalPlan");
+
+        $.ajax({
+            url: 'GSchedule/UploadPDFFile',
+            enctype: "multipart/form-data",
+            data: formData,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data === true) {
+                    $('#frame').attr('src', $('#frame').attr('src')); // 即時更新PDF
+                }
+                //else {
+                //    alert("上傳格式錯誤");
+                //}
+            }
+        });
+    });
 
 }]);
 

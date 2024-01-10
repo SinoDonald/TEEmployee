@@ -14,6 +14,8 @@ namespace TEEmployee.Models
         //bool Update(User user);
         //bool Delete(int UserId);
         List<User> GetManagers();
+        List<string> GetGroupList(string view, string empno); // 取得群組
+        List<string> GetGroupUsers(string selectedGroup, string empno); // 取得群組同仁
         void Dispose();
     }
 }

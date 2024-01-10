@@ -164,6 +164,123 @@ namespace TEEmployee.Models
             return groups;
         }
 
+        // 取得群組 <-- 培文
+        public List<string> GetGroupList(string view, string empno)
+        {
+            List<string> ret = new List<string>();
+            List<User> users = new UserRepository().GetAll();
+            User user = users.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+
+            if (view.Equals("GroupPlan"))
+            {
+                if (empno.Equals("4125"))
+                {
+                    ret = users.Where(x => x.group != "").Select(x => x.group).Distinct().ToList();
+                    ret.Insert(0, "行政");
+                }
+                else { ret = users.Where(x => x.empno.Equals(empno)).Select(x => x.group).ToList(); }
+            }
+            else if (view.Equals("PersonalPlan"))
+            {
+                if (empno.Equals("4125"))
+                {
+                    if (user.department_manager){ ret = new List<string> { "規劃", "設計", "專管" }; }
+                    else { ret.Add(user.group); users = users.Where(x => x.group == user.group).ToList(); }
+
+                    foreach (var item in users)
+                    {
+                        if (!String.IsNullOrEmpty(item.group))
+                        {
+                            //三大群組 小組1
+                            if (!String.IsNullOrEmpty(item.group_one) && !ret.Contains(item.group_one))
+                            {
+                                ret.Insert(ret.FindIndex(x => x == item.group) + 1, item.group_one);
+                            }
+                            //跨三大群組 小組2 小組3 (協理 only)
+                            if (user.department_manager)
+                            {
+                                if (!String.IsNullOrEmpty(item.group_two) && !ret.Contains(item.group_two))
+                                {
+                                    ret.Add(item.group_two);
+                                }
+                                if (!String.IsNullOrEmpty(item.group_three) && !ret.Contains(item.group_three))
+                                {
+                                    ret.Add(item.group_three);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //非三大群組
+                            if (!String.IsNullOrEmpty(item.group_one) && !ret.Contains(item.group_one))
+                            {
+                                ret.Add(item.group_one);
+                            }
+                        }
+                    }
+
+                    // Special Case
+                    if (ret.Remove("規劃組")) ret.Insert(ret.FindIndex(x => x == "規劃") + 1, "規劃組");
+                    if (user.group_one_manager) ret.Add(user.group_one);
+                    if (user.group_two_manager) ret.Add(user.group_two);
+                    if (user.group_three_manager) ret.Add(user.group_three);
+
+                    ret = ret.Distinct().ToList();
+                }
+                else if(user.group_manager.Equals(true) || user.group_one_manager.Equals(true) || user.group_two_manager.Equals(true) || user.group_three_manager.Equals(true))
+                {
+                    string groupName = users.Where(x => x.empno.Equals(empno)).Select(x => x.group).FirstOrDefault();
+                    users = users.Where(x => x.group != null).Where(x => x.group.Equals(groupName)).ToList();
+                    List<string> group_list = users.Where(x => x.group != "").Select(x => x.group).Distinct().ToList();
+                    List<string> group_one_list = users.Where(x => x.group_one != "").Select(x => x.group_one).Distinct().ToList();
+                    List<string> group_two_list = users.Where(x => x.group_two != "").Select(x => x.group_two).Distinct().ToList();
+                    List<string> group_three_list = users.Where(x => x.group_three != "").Select(x => x.group_three).Distinct().ToList();
+                    foreach (string group in group_list) { ret.Add(group); }
+                    foreach (string group in group_one_list) { ret.Add(group); }
+                    foreach (string group in group_two_list) { ret.Add(group); }
+                    foreach (string group in group_three_list) { ret.Add(group); }
+                    ret = ret.Where(x => x != "").Distinct().ToList();
+                }
+                else
+                {
+                    ret = users.Where(x => x.group != null).Where(x => x.group.Equals(user.group)).Select(x => x.group).Distinct().ToList();
+                }
+            }
+
+            return ret;
+        }
+
+        // 取得群組同仁 <-- 培文
+        public List<string> GetGroupUsers(string selectedGroup, string empno)
+        {
+            List<string> ret = new List<string>();
+            List <User> users = new UserRepository().GetAll();
+            User user = users.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+
+            if(user.empno.Equals("4125") || user.group_manager.Equals(true))
+            {
+                ret = users.Where(x => x.group != null).Where(x => x.group.Equals(selectedGroup)).Select(x => x.name).OrderBy(x => x).ToList(); // 群組
+                if (ret.Count.Equals(0))
+                {
+                    ret = users.Where(x => x.group_one != null).Where(x => x.group_one.Equals(selectedGroup)).Select(x => x.name).OrderBy(x => x).ToList(); // 群組一
+                    if (ret.Count.Equals(0))
+                    {
+                        ret = users.Where(x => x.group_two != null).Where(x => x.group_two.Equals(selectedGroup)).Select(x => x.name).OrderBy(x => x).ToList(); // 群組二
+                        if (ret.Count.Equals(0))
+                        {
+                            ret = users.Where(x => x.group_three != null).Where(x => x.group_three.Equals(selectedGroup)).Select(x => x.name).OrderBy(x => x).ToList(); // 群組三
+                        }
+                    }
+                }
+            }
+            else
+            {
+                ret.Add(user.name);
+            }
+
+            return ret;
+        }
+
         // 取得員工群組 <-- 培文
         public List<User> UserGroups()
         {

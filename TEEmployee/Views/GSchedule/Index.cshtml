@@ -5,8 +5,8 @@
 
 
 @section Styles {
-
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/Content/css/angular-moment-picker.min.css">
     <style>
         header {
@@ -86,7 +86,6 @@
 
         .newchartmenu {
             display: flex;
-           
             align-items: center;
         }
 
@@ -136,7 +135,10 @@
             color: #f4623a;
             transition: 0.2s;
         }
-       
+
+        .highlight-select {
+            background-color: papayawhip;
+        }
     </style>
 }
 
@@ -146,7 +148,7 @@
     <header>
         @*<h2>年度行事曆目標</h2>*@
     </header>
-        
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light schedule-fixed-top">
         <a class="navbar-brand" href="">年度行事曆目標</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">

@@ -4,21 +4,27 @@
     <div class="row">
         <div class="form-group">
             <div class="row">
-                <h4>個人規劃</h4>
-                <div class="col-sm-6">
-                    <div class="alert alert-warning" role="alert" style="width:30%">
-                        檔案限定格式為.pdf，檔案大小不得超過10MB
+                <div class="col-sm-1" ng-if="user.empno == '4125' || user.empno == '7291' || user.group_manager == 1">
+                    <label for="SelectGroup">請選擇組別</label>
+                </div>
+                <div class="col-sm-2" ng-if="user.empno == '4125' || user.empno == '7291' || user.group_manager == 1">
+                    <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
+                        <option ng-repeat="group in groups" ng-class="{'highlight-select': group == 'High Performer' || group == '全部顯示'|| group == '設計' || group == '規劃'|| group == '專管'|| group == '智慧軌道創新小組'|| group == '行政組'|| group == '計畫管理組'}" value="{{group}}">{{group}}</option>
+                    </select>
+                </div>
+                <div class="col-sm-1" ng-if="user.empno == '4125' || user.empno == '7291' || user.group_manager == 1">
+                </div>
+                <div class="col-sm-4">
+                    <div class="alert alert-warning" role="alert">
+                        檔案限定格式為.pdf，檔案大小不超過10MB
                     </div>
+                </div>
+                <div class="col-sm-3">
                     <div>
                         <form id="formElem">
                             <input type="file" id="filepicker" name="file" accept=".pdf" hidden>
                         </form>
                     </div>
-                </div>
-                <div class="col-sm-1">
-
-                </div>
-                <div class="col-sm-4">
                     <input class="form-control" type="file" name="importPDFFile" id="importPDFFile" />
                 </div>
                 <div class="col-sm-1">
@@ -28,8 +34,19 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-sm-1" ng-if="user.empno == '4125' || user.empno == '7291' || user.group_manager == 1">
+            <label for="SelectUser">請選擇人員</label>
+        </div>
+        <div class="col-sm-2" ng-if="user.empno == '4125' || user.empno == '7291' || user.group_manager == 1">
+            <select class="form-select" id="SelectUser" name="SelectUser" ng-model="selectedUser" ng-change="FilterDataByUser(selectedUser)" aria-label="Select the User">
+                <option ng-repeat="user in users" value="{{user}}">{{user}}</option>
+            </select>
+        </div>
+    </div>
+
     <div>
-        <iframe src={{pdfReader}} style="width:100%;min-height:800px;margin:0 auto;" type="application/pdf"></iframe>
+        <iframe id="frame" src={{GetPDF}} style="width:100%;min-height:800px;margin:0 auto;" type="application/pdf"></iframe>
     </div>
 
 </div>

@@ -440,6 +440,41 @@ namespace TEEmployee.Models.GSchedule
 
         }
 
+        // 取得群組
+        public List<string> GetGroupList(string view, string empno)
+        {
+            var ret = _userRepository.GetGroupList(view, empno);
+            return ret;
+        }
+
+        // 取得群組同仁
+        public List<string> GetGroupUsers(string selectedGroup, string empno)
+        {
+            var ret = _userRepository.GetGroupUsers(selectedGroup, empno);
+            return ret;
+        }
+
+        // 取得使用者資訊
+        public User Get(string empno)
+        {
+            var user = _userRepository.Get(empno);
+            return user;
+        }
+
+        // 上傳群組規劃PDF
+        public bool UploadPDFFile(HttpPostedFileBase file, string view, string empno)
+        {
+            bool ret = _scheduleRepository.UploadPDFFile(file, view, empno);
+            return ret;
+        }
+
+        // 取得PDF
+        public string GetPDF(string view, string group, string userName)
+        {
+            string ret = _scheduleRepository.GetPDF(view, group, userName);
+            return ret;
+        }
+
         public void Dispose()
         {
             _scheduleRepository.Dispose();

@@ -181,15 +181,28 @@ namespace TEEmployee.Models
             List<User> users = new List<User>();
             return users;
         }
-        public void Dispose()
+
+        // 取得群組 <-- 培文
+        public List<string> GetGroupList(string view, string empno)
         {
-            return;
+            throw new NotImplementedException();
+        }
+
+        // 取得群組同仁 <-- 培文
+        public List<string> GetGroupUsers(string selectedGroup, string empno)
+        {
+            throw new NotImplementedException();
         }
 
         // 首頁通知 <-- 培文
         public List<bool> NotifyUpdate(List<User> users, string date, string empno)
         {
             throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            return;
         }
     }
 }
