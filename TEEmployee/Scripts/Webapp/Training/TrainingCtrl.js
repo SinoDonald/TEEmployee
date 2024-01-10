@@ -93,7 +93,22 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
     $scope.selectEmployee = () => {
 
-        $scope.records = $scope.auth.Users.find(x => x.empno === $scope.selectedEmployee).trainings.filter(x => (x.roc_year + 1911) == $scope.selectedYear);
+        $scope.records = structuredClone(
+            $scope.auth.Users.find(x => x.empno === $scope.selectedEmployee).trainings.filter(x => (x.roc_year + 1911) == $scope.selectedYear)
+        );
+
+        for (let i = 0; i !== $scope.records.length; i++) {
+
+            $scope.records[i].names = [];
+
+            for (let user of $scope.auth.Users) {
+
+                if (user.trainings.find(x => x.training_id === $scope.records[i].training_id)) {
+                    $scope.records[i].names.push(user.name);
+                }
+            }
+
+        }
 
     }
     
