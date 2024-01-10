@@ -21,6 +21,10 @@ namespace TEEmployee.Controllers
             return View();
         }
 
+        public ActionResult Group()
+        {
+            return View();
+        }
 
         /* =======================================
                         Web api
@@ -29,7 +33,7 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public ContentResult GetAllRecords()
         {            
-            var ret = _service.GetAllRecords();
+            var ret = _service.GetAllRecordsJSON();
             return Content(ret, "application/json");
         }
 
@@ -41,7 +45,7 @@ namespace TEEmployee.Controllers
                 empno = Session["empno"].ToString();
             }                
 
-            var ret = _service.GetAllRecordsByUser(empno, Session["empno"].ToString());
+            var ret = _service.GetAllRecordsByUserJSON(empno, Session["empno"].ToString());
             return Content(ret, "application/json");
         }
 
@@ -51,6 +55,13 @@ namespace TEEmployee.Controllers
         {
             var ret = _service.UploadTrainingFile(trainingFile.InputStream);
             return Json(ret);
+        }
+
+        [HttpPost]
+        public ContentResult GetAuthorization()
+        {
+            var ret = _service.GetAuthorization(Session["empno"].ToString());
+            return Content(ret, "application/json");
         }
 
         protected override void Dispose(bool disposing)

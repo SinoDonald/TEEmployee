@@ -124,28 +124,93 @@ namespace TEEmployee.Models
             
         }
 
+        // 2023 version
 
+        //// GET the group one name list owned by the manager
+        //public List<string> GetSubGroups(string manno)
+        //{
+        //    List<string> groups = new List<string>();
+        //    User user = this.Get(manno);
+
+        //    // department manager or group manager
+
+        //    if ((user.group_manager && user.group == "設計") || user.department_manager)
+        //    {
+        //        groups.AddRange(new List<string> { "地工組", "界面整合管理組", "BIM暨程式開發組", "智慧軌道創新小組" });
+        //    }
+
+        //    if ((user.group_manager && user.group == "規劃") || user.department_manager)
+        //    {
+        //        groups.AddRange(new List<string> { "土木組", "規劃組" });
+        //    }
+
+        //    if ((user.group_manager && user.group == "專管") || user.department_manager)
+        //    {
+        //        groups.AddRange(new List<string> { "工程管理組", "成本/契約組", "工務組" });
+        //    }
+
+        //    if (user.department_manager)
+        //    {
+        //        groups.AddRange(new List<string> { /*"計畫管理組",*/ "行政組" });
+        //    }
+
+        //    // sub group manager
+        //    if (user.group_one_manager) groups.Add(user.group_one);
+        //    if (user.group_two_manager) groups.Add(user.group_two);
+        //    if (user.group_three_manager) groups.Add(user.group_three);
+
+        //    // remove duplicates from special case
+        //    groups = groups.Distinct().ToList();
+
+        //    return groups;
+        //}
+
+        // 取得員工群組 <-- 培文
+        public List<User> UserGroups()
+        {
+            List<User> ret;
+
+            string sql = @"SELECT * FROM userExtra";
+            ret = _conn.Query<User>(sql).ToList();
+
+            return ret;
+        }
+
+        //public bool DeleteUserExtra()
+        //{
+        //    int ret;
+
+        //    string sql = @"DELETE FROM userExtra";
+        //    ret = _conn.Execute(sql);
+
+        //    return ret > 0;
+        //}
+
+
+        // 2024 version
         // GET the group one name list owned by the manager
         public List<string> GetSubGroups(string manno)
         {
             List<string> groups = new List<string>();
             User user = this.Get(manno);
+            List<User> users = this.GetAll();
 
             // department manager or group manager
 
             if ((user.group_manager && user.group == "設計") || user.department_manager)
             {
-                groups.AddRange(new List<string> { "地工組", "界面整合管理組", "BIM暨程式開發組", "智慧軌道創新小組" });
+                groups.AddRange(users.Where(x => x.group == user.group).Select(x => x.group_one).ToList());
+                groups.Add("智慧軌道創新小組");
             }
 
             if ((user.group_manager && user.group == "規劃") || user.department_manager)
             {
-                groups.AddRange(new List<string> { "土木組", "規劃組" });
+                groups.AddRange(users.Where(x => x.group == user.group).Select(x => x.group_one).ToList());
             }
 
             if ((user.group_manager && user.group == "專管") || user.department_manager)
             {
-                groups.AddRange(new List<string> { "工程管理組", "成本/契約組", "工務組" });
+                groups.AddRange(users.Where(x => x.group == user.group).Select(x => x.group_one).ToList());
             }
 
             if (user.department_manager)
@@ -292,14 +357,6 @@ namespace TEEmployee.Models
             return ret;
         }
 
-        //public bool DeleteUserExtra()
-        //{
-        //    int ret;
 
-        //    string sql = @"DELETE FROM userExtra";
-        //    ret = _conn.Execute(sql);
-
-        //    return ret > 0;
-        //}
     }
 }

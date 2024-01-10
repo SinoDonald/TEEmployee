@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,24 +12,32 @@ namespace TEEmployee.Models.Training
     public class TrainingService : IDisposable
     {
         private ITrainingRepository _trainingRepository;
+        private IUserRepository _userRepository;
 
         public TrainingService()
         {
             _trainingRepository = new TrainingRepository();
+            _userRepository = new UserRepository();
         }
 
-        public string GetAllRecords()
+        public string GetAllRecordsJSON()
         {
             var ret = _trainingRepository.GetAllRecords();
             var settings = new JsonSerializerSettings { DateFormatString = "yyyy/MM/dd" };
             return JsonConvert.SerializeObject(ret, settings);
         }
 
-        public string GetAllRecordsByUser(string user_empno, string self_empno)
+        public string GetAllRecordsByUserJSON(string user_empno, string self_empno)
         {
             var ret = _trainingRepository.GetAllRecordsByUser(user_empno).OrderBy(x => x.start_date);
             var settings = new JsonSerializerSettings { DateFormatString = "yyyy/MM/dd" };
             return JsonConvert.SerializeObject(ret, settings);
+        }
+
+        private List<Record> GetAllRecordsByUser(string user_empno)
+        {
+            var ret = _trainingRepository.GetAllRecordsByUser(user_empno).OrderBy(x => x.start_date).ToList();
+            return ret;
         }
 
         public bool UploadTrainingFile(Stream input)
@@ -72,10 +81,38 @@ namespace TEEmployee.Models.Training
             return records;
         }
 
+        public dynamic GetAuthorization(string empno)
+        {
+            User user = _userRepository.Get(empno);
+            List<User> users = new List<User>();
+            dynamic authorization = new JObject();
+            authorization.Users = new JArray();
+
+            if (user.department_manager || user.group_manager)
+            {
+                users = _userRepository.GetAll();
+
+                if (user.group_manager)
+                    users = users.Where(x => x.group == user.group).ToList();                
+
+                foreach (var item in users)
+                {
+                    dynamic userObj = JObject.FromObject(item);
+                    userObj.trainings = JArray.FromObject(this.GetAllRecordsByUser(item.empno));
+                    authorization.Users.Add(userObj);
+                }
+
+            }
+
+            authorization.User = JObject.FromObject(user);
+            var settings = new JsonSerializerSettings { DateFormatString = "yyyy/MM/dd" };
+            return JsonConvert.SerializeObject(authorization, settings);
+        }
+
         public void Dispose()
         {
             _trainingRepository.Dispose();
-            //_userRepository.Dispose();
+            _userRepository.Dispose();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "培訓紀錄與規劃";
+    ViewBag.Title = "群組培訓紀錄";
 }
 
 
@@ -17,11 +17,21 @@
         #childNav {
             margin-top: 80px;
         }
+
+        .chartmenu {
+            display: flex;
+            margin-bottom: 40px;
+        }
+
+            .chartmenu div {
+                flex: 1;
+                margin: 0 20px;
+            }
     </style>
 }
 
 
-<div ng-controller="TrainingCtrl" class="container-fluid">
+<div ng-controller="GroupCtrl" class="container-fluid">
 
     <nav class="navbar navbar-expand-lg navbar-dark" id="childNav" style="background-color: #4CAF50">
         <a class="navbar-brand" href="#">培訓紀錄與規劃</a>
@@ -31,27 +41,44 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("Index", "Training")">個人培訓紀錄</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="@Url.Action("Group", "Training")">群組培訓紀錄</a>
                 </li>
                 @*<li class="nav-item">
-            <a class="nav-link" href="#">個人課程規劃</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">E-learning</a>
-        </li>*@
+                        <a class="nav-link" href="#">個人課程規劃</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">E-learning</a>
+                    </li>*@
             </ul>
         </div>
     </nav>
 
-    <div>
-        <form id="formElem">
-            Files: <input type="file" id="trainingfilepicker" name="trainingFile">
-            <input type="submit">
-        </form>
+
+    <div class="chartmenu">
+        <div>
+            <label for="SelectYear">年份</label>
+            <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" ng-change="selectYear()" aria-label="Select the Year">
+                <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+            </select>
+        </div>
+        <div>
+            <label for="SelectManager">群組</label>
+            <select class="form-select manager" id="SelectManager" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
+                <option value="" disabled>請選擇群組</option>
+                <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
+            </select>
+        </div>
+        <div>
+            <label for="SelectCategory">員工</label>
+            <select class="form-select" id="SelectCategory" name="SelectEmployee" ng-model="selectedEmployee" ng-change="selectEmployee()" aria-label="Select the Category">
+                <option value="" disabled>請選擇員工</option>
+                <option ng-repeat="employee in employees" value="{{employee.user.empno}}">{{employee.user.name}}({{employee.count}})</option>
+            </select>
+        </div>
     </div>
 
     <table class="table">
@@ -83,9 +110,6 @@
 
 
 
-
-
-    @*<div ui-view></div>*@
 
 </div>
 

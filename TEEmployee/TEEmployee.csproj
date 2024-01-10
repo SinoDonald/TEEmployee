@@ -490,6 +490,7 @@
     <Content Include="Views\Training\Index.cshtml" />
     <Content Include="Views\GSchedule\GroupPlan.cshtml" />
     <Content Include="Views\GSchedule\PersonalPlan.cshtml" />
+    <Content Include="Views\Training\Group.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Promotion\" />
