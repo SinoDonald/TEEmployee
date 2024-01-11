@@ -442,7 +442,7 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
         // 讀取Word人員履歷表
-        public List<CV> SaveUserCV(List<User> userGroups)
+        public List<CV> SaveUserCV(List<User> users)
         {
             List<CV> userCVs = new List<CV>();
             string folderPath = Path.Combine(_appData, "Talent\\CV"); // 人員履歷表Word檔路徑
@@ -465,7 +465,7 @@ namespace TEEmployee.Models.Talent
                                 {
                                     CV userCV = ReadWord(doc, empno, lastUpdate);
                                     // 加入使用者群組
-                                    User user = userGroups.Where(x => x.empno.ToString().Equals(empno)).FirstOrDefault();
+                                    User user = users.Where(x => x.empno.ToString().Equals(empno)).FirstOrDefault();
                                     if (user != null)
                                     {
                                         try

@@ -4,17 +4,27 @@
     <div class="row">
         <div class="form-group">
             <div class="row">
-                <div class="col-sm-1" ng-if="user.empno == '4125' || user.empno == '7291' || user.group_manager == 1">
-                    <label for="SelectGroup">請選擇組別</label>
+                <div class="col-sm-3" ng-if="user.department_manager == 1 || user.group_manager == 1 || user.empno == '7291'">
+                    <div class="row">
+                        <label for="SelectGroup">請選擇組別</label>
+                    </div>
+                    <div class="row">
+                        <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group" style="width: 80%">
+                            <option ng-repeat="group in groups" ng-class="{'highlight-select': group == 'High Performer' || group == '全部顯示'|| group == '設計' || group == '規劃'|| group == '專管'|| group == '智慧軌道創新小組'|| group == '行政組'|| group == '計畫管理組'}" value="{{group}}">{{group}}</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-sm-2" ng-if="user.empno == '4125' || user.empno == '7291' || user.group_manager == 1">
-                    <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
-                        <option ng-repeat="group in groups" ng-class="{'highlight-select': group == 'High Performer' || group == '全部顯示'|| group == '設計' || group == '規劃'|| group == '專管'|| group == '智慧軌道創新小組'|| group == '行政組'|| group == '計畫管理組'}" value="{{group}}">{{group}}</option>
-                    </select>
+                <div class="col-sm-3" ng-if="user.department_manager == 1 || user.group_manager == 1 || user.empno == '7291'">
+                    <div class="row">
+                        <label for="SelectUser">請選擇人員</label>
+                    </div>
+                    <div class="row">
+                        <select class="form-select" id="SelectUser" name="SelectUser" ng-model="selectedUser" ng-change="FilterDataByUser(selectedUser)" aria-label="Select the User" style="width: 80%">
+                            <option ng-repeat="user in users" value="{{user}}">{{user}}</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-sm-1" ng-if="user.empno == '4125' || user.empno == '7291' || user.group_manager == 1">
-                </div>
-                <div class="col-sm-4">
+                <div class="col-sm-2">
                     <div class="alert alert-warning" role="alert">
                         檔案限定格式為.pdf，檔案大小不超過10MB
                     </div>
@@ -35,13 +45,8 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-1" ng-if="user.empno == '4125' || user.empno == '7291' || user.group_manager == 1">
-            <label for="SelectUser">請選擇人員</label>
-        </div>
-        <div class="col-sm-2" ng-if="user.empno == '4125' || user.empno == '7291' || user.group_manager == 1">
-            <select class="form-select" id="SelectUser" name="SelectUser" ng-model="selectedUser" ng-change="FilterDataByUser(selectedUser)" aria-label="Select the User">
-                <option ng-repeat="user in users" value="{{user}}">{{user}}</option>
-            </select>
+        <div class="col-sm-1">
+            <h4>　</h4>
         </div>
     </div>
 

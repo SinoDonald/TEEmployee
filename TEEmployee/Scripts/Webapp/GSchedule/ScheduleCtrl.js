@@ -123,6 +123,7 @@ app.factory('userdata', function () {
     function set(data) {
         user.empno = data.empno;
         user.name = data.name;
+        user.department_manager = data.department_manager;
         user.group = data.group;
         user.group_manager = data.group_manager;
     }

@@ -49,8 +49,8 @@ namespace TEEmployee.Models.Talent
                         }
                         catch (NullReferenceException) { }
                     }
-                    List<User> userGroups = new UserRepository().UserGroups(); // 取得員工群組
-                    _talentRepository.SaveUserCV(userGroups); // 讀取Word人員履歷表
+                    List<User> users = new UserRepository().GetAll(); // 取得員工群組
+                    _talentRepository.SaveUserCV(users); // 讀取Word人員履歷表
                 }
                 catch (Exception) { }
             }
@@ -188,8 +188,8 @@ namespace TEEmployee.Models.Talent
         // 人才培訓資料庫 <-- 培文
         public void TalentUpdate()
         {
-            List<User> userGroups = new UserRepository().UserGroups(); // 取得員工群組
-            _talentRepository.SaveUserCV(userGroups); // 讀取Word人員履歷表
+            List<User> users = new UserRepository().GetAll(); // 取得員工群組
+            _talentRepository.SaveUserCV(users); // 讀取Word人員履歷表
         }
         // 儲存回覆
         public CV SaveResponse(CV userCV, string planning)

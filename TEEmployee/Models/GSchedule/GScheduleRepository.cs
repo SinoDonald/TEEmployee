@@ -334,7 +334,7 @@ namespace TEEmployee.Models.GSchedule
             {
                 if (user.group.Equals(""))
                 {
-                    if (user.empno.Equals("4125"))
+                    if (user.department_manager)
                     {
                         ret = Path.Combine("Content", "GSchedule", view, group + ".pdf");
                     }
