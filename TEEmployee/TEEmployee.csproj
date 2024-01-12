@@ -194,6 +194,7 @@
     <Compile Include="Models\Education\EducationRepository.cs" />
     <Compile Include="Models\Education\EducationService.cs" />
     <Compile Include="Models\Education\IEducationRepository.cs" />
+    <Compile Include="Models\Education\Record.cs" />
     <Compile Include="Models\GKpi\GKpiRepository.cs" />
     <Compile Include="Models\GKpi\GKpiService.cs" />
     <Compile Include="Models\GKpi\IGKpiRepository.cs" />
@@ -491,6 +492,7 @@
     <Content Include="Views\GSchedule\GroupPlan.cshtml" />
     <Content Include="Views\GSchedule\PersonalPlan.cshtml" />
     <Content Include="Views\Training\Group.cshtml" />
+    <Content Include="Views\Education\Assign.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Promotion\" />

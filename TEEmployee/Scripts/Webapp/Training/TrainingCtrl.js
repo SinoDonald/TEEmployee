@@ -68,7 +68,6 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         
         let group_array = $scope.auth.Users.map(x => x.group_one);
         $scope.groups = [...new Set(group_array)];
-        $scope.groups.splice($scope.groups.indexOf(''), 1);
         $scope.selectedGroup = "";
     });
 

@@ -1,4 +1,6 @@
-﻿using OfficeOpenXml;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,10 +12,12 @@ namespace TEEmployee.Models.Education
     public class EducationService
     {
         private IEducationRepository _educationRepository;
+        private IUserRepository _userRepository;
 
         public EducationService()
         {
             _educationRepository = new EducationRepository();
+            _userRepository = new UserRepository();
         }
 
         public List<Course> GetAllCourses()
@@ -115,10 +119,67 @@ namespace TEEmployee.Models.Education
             return courses;
         }
 
+        public List<Record> GetAllRecords()
+        {
+            var ret = _educationRepository.GetAllRecords();
+            return ret;
+        }
+
+        public List<Record> GetAllRecordsByUser(string empno)
+        {
+            var ret = _educationRepository.GetAllRecordsByUser(empno);
+            return ret;
+        }
+
+        public dynamic GetAuthorization(string empno)
+        {
+            User user = _userRepository.Get(empno);
+            List<User> users = new List<User>();
+            dynamic authorization = new JObject();
+            authorization.Users = new JArray();
+
+            users = _userRepository.GetAll();
+
+            if (user.department_manager)
+            {
+                
+            }
+            else if (user.group_manager)
+            {
+                users = users.Where(x => x.group == user.group).ToList();
+            }
+            else if (user.group_one_manager)
+            {
+                users = users.Where(x => x.group_one == user.group_one).ToList();
+            }
+            else
+            {
+                users = users.Where(x => x.empno == user.empno).ToList();
+            }
+
+            users = users.Where(x => !string.IsNullOrEmpty(x.group_one)).ToList();
+
+            foreach (var item in users)
+            {
+                dynamic userObj = JObject.FromObject(item);
+                userObj.records = JArray.FromObject(this.GetAllRecordsByUser(item.empno));
+                authorization.Users.Add(userObj);
+            }
+
+            authorization.User = JObject.FromObject(user);            
+            return JsonConvert.SerializeObject(authorization);
+        }
+
+        public bool UpsertRecords(List<Record> records, string empno)
+        {
+            var ret = _educationRepository.UpsertRecords(records);
+            return ret;
+        }
+
         public void Dispose()
         {
             _educationRepository.Dispose();
-            //_userRepository.Dispose();
+            _userRepository.Dispose();
         }
     }
 }

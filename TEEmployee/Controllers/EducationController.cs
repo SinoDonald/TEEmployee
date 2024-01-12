@@ -21,6 +21,11 @@ namespace TEEmployee.Controllers
             return View();
         }
 
+        public ActionResult Assign()
+        {
+            return View();
+        }
+
         /* =======================================
                        Web api
          ====================================== */
@@ -36,6 +41,27 @@ namespace TEEmployee.Controllers
         public JsonResult UploadCourseFile(HttpPostedFileBase courseFile)
         {
             var ret = _service.UploadCourseFile(courseFile.InputStream);
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllRecords()
+        {
+            var ret = _service.GetAllRecords();
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public ContentResult GetAuthorization()
+        {
+            var ret = _service.GetAuthorization(Session["empno"].ToString());
+            return Content(ret, "application/json");
+        }
+
+        [HttpPost]
+        public JsonResult UpsertRecords(List<Record> records)
+        {
+            var ret = _service.UpsertRecords(records, Session["empno"].ToString());
             return Json(ret);
         }
 
