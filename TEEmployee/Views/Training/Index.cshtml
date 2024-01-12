@@ -38,21 +38,25 @@
                     <a class="nav-link" href="@Url.Action("Group", "Training")">群組培訓紀錄</a>
                 </li>
                 @*<li class="nav-item">
-            <a class="nav-link" href="#">個人課程規劃</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">E-learning</a>
-        </li>*@
+                        <a class="nav-link" href="#">個人課程規劃</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">E-learning</a>
+                    </li>*@
             </ul>
         </div>
     </nav>
 
-    <div>
-        <form id="formElem">
-            Files: <input type="file" id="trainingfilepicker" name="trainingFile">
-            <input type="submit">
-        </form>
-    </div>
+    @if (Session["Admin"] is true)
+    {
+        <div>
+            <form id="formElem">
+                Files: <input type="file" id="trainingfilepicker" name="trainingFile">
+                <input type="submit">
+            </form>
+        </div>
+    }
+
 
     <table class="table">
         <tr>

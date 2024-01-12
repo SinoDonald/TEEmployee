@@ -91,6 +91,66 @@ namespace TEEmployee.Models.Education
             }
         }
 
+        public List<Record> GetAllRecords()
+        {
+            var sql = @"SELECT r.*, c.* 
+                FROM Record as r
+                INNER JOIN Course as c ON r.course_id = c.id";
+
+            var ret = _conn.Query<Record, Course, Record>(sql, (record, course) => {
+                record.course = course;
+                return record;
+            }).ToList();
+
+            return ret;
+        }
+
+        public List<Record> GetAllRecordsByUser(string empno)
+        {
+            var sql = @"SELECT r.*, c.* 
+                FROM Record as r
+                INNER JOIN Course as c ON r.course_id = c.id
+                WHERE r.empno=@empno";
+
+            var ret = _conn.Query<Record, Course, Record>(sql, (record, course) => {
+                record.course = course;
+                return record;
+            }, new { empno }).ToList();
+
+            return ret;
+        }
+
+        public bool UpsertRecords(List<Record> records)
+        {
+            if (_conn.State == 0)
+                _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                int ret = 0;
+
+                string sql = @"INSERT INTO Record (empno, course_id, assigned) 
+                        VALUES(@empno, @course_id, @assigned) 
+                        ON CONFLICT(empno, course_id) 
+                        DO UPDATE SET assigned=@assigned";
+
+                var new_records = records.Select(x => new
+                {
+                    empno = x.empno,
+                    course_id = x.course.id,
+                    assigned = x.assigned,
+                }).ToList();
+
+                ret = _conn.Execute(sql, new_records);
+
+                tran.Commit();
+
+                return ret > 0;
+
+            }
+
+        }        
+
         public void Dispose()
         {
             _conn.Close();

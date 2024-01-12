@@ -29,14 +29,14 @@ namespace TEEmployee.Models.Training
 
         public string GetAllRecordsByUserJSON(string user_empno, string self_empno)
         {
-            var ret = _trainingRepository.GetAllRecordsByUser(user_empno).OrderBy(x => x.start_date);
+            var ret = _trainingRepository.GetAllRecordsByUser(user_empno).OrderByDescending(x => x.start_date);
             var settings = new JsonSerializerSettings { DateFormatString = "yyyy/MM/dd" };
             return JsonConvert.SerializeObject(ret, settings);
         }
 
         private List<Record> GetAllRecordsByUser(string user_empno)
         {
-            var ret = _trainingRepository.GetAllRecordsByUser(user_empno).OrderBy(x => x.start_date).ToList();
+            var ret = _trainingRepository.GetAllRecordsByUser(user_empno).OrderByDescending(x => x.start_date).ToList();
             return ret;
         }
 
@@ -94,6 +94,8 @@ namespace TEEmployee.Models.Training
 
                 if (user.group_manager)
                     users = users.Where(x => x.group == user.group).ToList();                
+
+                users = users.Where(x => !string.IsNullOrEmpty(x.group_one)).ToList();
 
                 foreach (var item in users)
                 {

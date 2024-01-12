@@ -10,5 +10,8 @@ namespace TEEmployee.Models.Education
     {
         List<Course> GetAllCourses();
         bool InsertCourses(List<Course> courses);
+        List<Record> GetAllRecords();
+        List<Record> GetAllRecordsByUser(string empno);
+        bool UpsertRecords(List<Record> records);
     }
 }

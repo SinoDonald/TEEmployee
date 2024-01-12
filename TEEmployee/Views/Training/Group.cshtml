@@ -57,59 +57,51 @@
         </div>
     </nav>
 
+    <div class="container">
+        <div class="chartmenu">
+            <div>
+                <label for="SelectYear">年份</label>
+                <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" ng-change="selectYear()" aria-label="Select the Year">
+                    <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+                </select>
+            </div>
+            <div>
+                <label for="SelectManager">群組</label>
+                <select class="form-select manager" id="SelectManager" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
+                    <option value="" disabled>請選擇群組</option>
+                    <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
+                </select>
+            </div>
+            <div>
+                <label for="SelectCategory">員工</label>
+                <select class="form-select" id="SelectCategory" name="SelectEmployee" ng-model="selectedEmployee" ng-change="selectEmployee()" aria-label="Select the Category">
+                    <option value="" disabled>請選擇員工</option>
+                    <option ng-repeat="employee in employees" value="{{employee.user.empno}}">{{employee.user.name}}({{employee.count}})</option>
+                </select>
+            </div>
+        </div>
 
-    <div class="chartmenu">
-        <div>
-            <label for="SelectYear">年份</label>
-            <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" ng-change="selectYear()" aria-label="Select the Year">
-                <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
-            </select>
+
+        <div ng-repeat="item in records" class="card text-center">
+
+            <div class="card-body">
+                <h5 ng-bind="item.title" class="card-title"></h5>
+                 <h6>{{item.start_date}}  ({{item.duration}} 小時)</h6>
+                @*<p ng-bind="item.duration" class="card-text"></p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>*@
+            </div>
+            <h5>
+                @*培訓人員*@
+                <span ng-repeat="name in item.names" ng-bind="name" class="badge badge-info mx-1"></span>                
+            </h5>
+            <div class="card-footer text-muted">
+               
+            </div>
         </div>
-        <div>
-            <label for="SelectManager">群組</label>
-            <select class="form-select manager" id="SelectManager" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
-                <option value="" disabled>請選擇群組</option>
-                <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
-            </select>
-        </div>
-        <div>
-            <label for="SelectCategory">員工</label>
-            <select class="form-select" id="SelectCategory" name="SelectEmployee" ng-model="selectedEmployee" ng-change="selectEmployee()" aria-label="Select the Category">
-                <option value="" disabled>請選擇員工</option>
-                <option ng-repeat="employee in employees" value="{{employee.user.empno}}">{{employee.user.name}}({{employee.count}})</option>
-            </select>
-        </div>
+
     </div>
 
-    <table class="table">
-        <tr>
-            <th>empno</th>
-            <th>ROC Year</th>
-            <th>training_type</th>
-            <th>training_id</th>
-            <th>title</th>
-            <th>organization</th>
-            <th>start_date</th>
-            <th>end_date</th>
-            <th>duration</th>
-        </tr>
-
-        <tr ng-repeat="item in records">
-            <td ng-bind="item.empno"></td>
-            <td ng-bind="item.roc_year"></td>
-            <td ng-bind="item.training_type"></td>
-            <td ng-bind="item.training_id"></td>
-            <td ng-bind="item.title"></td>
-            <td ng-bind="item.organization"></td>
-            <td ng-bind="item.start_date"></td>
-            <td ng-bind="item.end_date"></td>
-            <td ng-bind="item.duration"></td>
-        </tr>
-
-    </table>
-
-
-
+    
 
 </div>
 

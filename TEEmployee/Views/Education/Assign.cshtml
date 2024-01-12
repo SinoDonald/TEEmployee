@@ -1,0 +1,151 @@
+﻿
+@{
+    ViewBag.Title = "課程指派";
+}
+
+
+@section Styles {
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    @*<link rel="stylesheet" href="~/Content/css/angular-moment-picker.min.css">*@
+    <style>
+
+        #mainNav, #mainNav.navbar-shrink {
+            box-shadow: none;
+        }
+
+        #childNav {
+            margin-top: 80px;
+        }
+
+        iframe {
+            width: 80%;
+            height: 80vh;
+        }
+
+        .custom-font-size {
+            font-size: 1.4em;
+        }
+
+        .highlighted-badge {
+            background-color: #f4623a; /* Change this to the desired color */
+        }
+    </style>
+}
+
+
+<div ng-controller="AssignCtrl" class="container-fluid">
+
+    <nav class="navbar navbar-expand-lg navbar-dark" id="childNav" style="background-color: #5F4C4C">
+        <a class="navbar-brand" href="@Url.Action("Index", "Education")">拓展專業培養</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Index", "Education")">課程總覽</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="@Url.Action("Assign", "Education")">課程指派</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">我的課程</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">E-learning</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+
+
+    <div class="container mt-4">
+        <div class="chartmenu">
+
+            <!-- Button trigger modal -->
+            <button type="button" ng-click="clickModal()" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                Launch demo modal
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div ng-repeat="user in modalUsers.children">
+                                <h5 ng-bind="user.name"></h5>
+                                <p class="custom-font-size">
+                                    <span ng-repeat="u in user.children" ng-bind="u.name" ng-click="changeColor(u)" class="badge badge-info m-1 p-2" ng-class="{ 'highlighted-badge': u.isButtonClicked }"></span>
+                                </p>
+                            </div>
+
+                            <div ng-repeat="course in modalCourses.children">
+                                <h5 ng-bind="course.name"></h5>
+                                <p class="custom-font-size">
+                                    <span ng-repeat="c in course.children" ng-bind="c.course_title" ng-click="changeColor(c)" class="badge badge-info m-1 p-2" ng-class="{ 'highlighted-badge': c.isButtonClicked }"></span>
+                                </p>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="upsertRecords()">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div>
+                <label for="SelectManager">群組</label>
+                <select class="form-select manager" id="SelectManager" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
+                    <option value="" disabled>請選擇群組</option>
+                    <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
+                </select>
+            </div>
+            <div>
+                <label for="SelectCategory">員工</label>
+                <select class="form-select" id="SelectCategory" name="SelectEmployee" ng-model="selectedEmployee" ng-change="selectEmployee()" aria-label="Select the Category">
+                    <option value="" disabled>請選擇員工</option>
+                    <option ng-repeat="employee in employees" value="{{employee}}">{{employee}}</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div ng-repeat="item in records" class="card text-center">
+
+            <div class="card-body">
+                <h5 ng-bind="item.course.course_title" class="card-title"></h5>
+                <h6>is assigned? {{item.assigned}}</h6>
+                @*<p ng-bind="item.duration" class="card-text"></p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>*@
+            </div>
+            <h5>
+                @*培訓人員*@
+                <!--<span ng-repeat="name in item.names" ng-bind="name" class="badge badge-info mx-1"></span>-->
+            </h5>
+            <div class="card-footer text-muted">
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+@section Scripts {
+    <script src="~/Scripts/WebApp/Education/EducationCtrl.js"></script>
+}
