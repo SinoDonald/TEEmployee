@@ -158,6 +158,14 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        // 取得年份
+        [HttpPost]
+        public JsonResult GetYears(string view)
+        {
+            var ret = _service.GetYears(view);
+            return Json(ret);
+        }
+
         // 上傳群組規劃PDF
         [HttpPost]
         public ActionResult UploadPDFFile(HttpPostedFileBase file, string view)
@@ -169,9 +177,16 @@ namespace TEEmployee.Controllers
 
         // 取得PDF
         [HttpPost]
-        public ActionResult GetPDF(string view, string group, string userName)
+        public ActionResult GetPDF(string view, string year, string group, string userName)
         {
-            var ret = _service.GetPDF(view, group, userName);
+            var ret = _service.GetPDF(view, year, group, userName);
+            return Json(ret);
+        }
+        // 儲存回覆
+        [HttpPost]
+        public JsonResult SaveResponse(string userName, string comment)
+        {
+            bool ret = _service.SaveResponse(Session["empno"].ToString(), userName, comment);
             return Json(ret);
         }
 

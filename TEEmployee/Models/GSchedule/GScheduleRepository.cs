@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -291,15 +292,40 @@ namespace TEEmployee.Models.GSchedule
             return ret;
         }
 
+        // 取得年份
+        public List<string> GetYears(string view)
+        {
+            // 當前民國年
+            CultureInfo culture = new CultureInfo("zh-TW");
+            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+            string year = DateTime.Now.ToString("yyy", culture);
+
+            List<string> ret = new List<string>();
+
+            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Content"), "GSchedule", view);
+            string thisYearFolderPath = Path.Combine(folderPath, year);            
+            if (!Directory.Exists(thisYearFolderPath)) { Directory.CreateDirectory(thisYearFolderPath); } // 檢查資料夾是否存在
+            // 查詢所有子資料夾
+            DirectoryInfo dirInfo = new DirectoryInfo(folderPath);
+            ret = dirInfo.GetDirectories().Select(x => x.Name).OrderByDescending(x => x).ToList();
+
+            return ret;
+        }
+
         // 上傳PDF
         public bool UploadPDFFile(HttpPostedFileBase file, string view, string empno)
         {
+            // 當前民國年
+            CultureInfo culture = new CultureInfo("zh-TW");
+            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+            string year = DateTime.Now.ToString("yyy", culture);
+
             User user = new UserRepository().GetAll().Where(x => x.empno.Equals(empno)).FirstOrDefault();
 
             bool ret = false;
             if (Path.GetExtension(file.FileName).Equals(".pdf"))
             {
-                string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Content"), "GSchedule", view);
+                string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Content"), "GSchedule", view, year);
                 // 檢查資料夾是否存在
                 if (!Directory.Exists(folderPath))
                 {
@@ -319,38 +345,76 @@ namespace TEEmployee.Models.GSchedule
         }
 
         // 取得PDF
-        public string GetPDF(string view, string group, string userName)
+        public string GetPDF(string view, string year, string group, string userName)
         {
+            if (String.IsNullOrEmpty(year))
+            {
+                // 當前民國年
+                CultureInfo culture = new CultureInfo("zh-TW");
+                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                year = DateTime.Now.ToString("yyy", culture);
+            }
+
             User user = new UserRepository().GetAll().Where(x => x.name.Equals(userName)).FirstOrDefault();
 
-            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Content"), "GSchedule", view);
+            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Content"), "GSchedule", view, year);
             // 檢查資料夾是否存在
             if (!Directory.Exists(folderPath))
             {
                 Directory.CreateDirectory(folderPath);
             }
-            var ret = Path.Combine("Content", "GSchedule", view, user.group + ".pdf");
+            string relativePath = Path.Combine("Content", "GSchedule", view, year);
+            var ret = Path.Combine(relativePath, user.group + ".pdf");
             if (view.Equals("GroupPlan"))
             {
                 if (user.group.Equals(""))
                 {
                     if (user.department_manager)
                     {
-                        ret = Path.Combine("Content", "GSchedule", view, group + ".pdf");
+                        ret = Path.Combine(relativePath, group + ".pdf");
                     }
                     else
                     {
-                        ret = Path.Combine("Content", "GSchedule", view, "行政.pdf");
+                        ret = Path.Combine(relativePath, "行政.pdf");
                     }
                 }
             }
             else
             {
-                ret = Path.Combine("Content", "GSchedule", view, user.empno + ".pdf");
+                ret = Path.Combine(relativePath, user.empno + ".pdf");
             }
             
             return ret;
         }
+
+        // 儲存回覆
+        public bool SaveResponse(string empno, string userName, string comment)
+        {
+            // 當前民國年
+            CultureInfo culture = new CultureInfo("zh-TW");
+            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+            string year = DateTime.Now.ToString("yyy", culture);
+
+            List<User> users = new UserRepository().GetAll();
+            User manager = users.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+            User employee = users.Where(x => x.name.Equals(userName)).FirstOrDefault();
+            var ret = false;
+            //try
+            //{
+            //    _conn.Open();
+            //    using (var tran = _conn.BeginTransaction())
+            //    {
+            //        string sql = @"UPDATE userCV SET planning=@planning, test=@test, advantage=@advantage, disadvantage=@disadvantage, developed=@developed, future=@future WHERE empno=@empno";
+            //        _conn.Execute(sql, userCV, tran);
+            //        tran.Commit();
+            //    }
+            //    _conn.Close();
+            //}
+            //catch (Exception) { }
+
+            return ret;
+        }
+
 
         public void Dispose()
         {

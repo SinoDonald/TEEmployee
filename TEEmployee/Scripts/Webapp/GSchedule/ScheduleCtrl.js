@@ -44,12 +44,18 @@ app.service('appService', ['$http', function ($http) {
     };
     this.GetGroupUsers = (o) => {
         return $http.post('GSchedule/GetGroupUsers', o);
-    };    
+    };
     this.Get = (o) => {
         return $http.post('GSchedule/Get', o);
     };
+    this.GetYears = (o) => {
+        return $http.post('GSchedule/GetYears', o);
+    };
     this.GetPDF = (o) => {
         return $http.post('GSchedule/GetPDF', o);
+    };
+    this.SaveResponse = function (o) {
+        return $http.post('GSchedule/SaveResponse', o);
     };
     this.GetAllSchedules = (o) => {
         return $http.post('GSchedule/GetAllSchedules', o);
@@ -227,7 +233,20 @@ app.controller('GroupPlanCtrl', ['$scope', '$location', 'appService', '$rootScop
 
     // 依群組顯示
     $scope.FilterDataByGroup = function (selectedGroup) {
-        appService.GetPDF({ view: "GroupPlan", group: selectedGroup, userName: $scope.user.name }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+        $scope.selectedGroup = selectedGroup;
+        // 取得年份
+        appService.GetYears({ view: "GroupPlan" })
+            .then(function (ret) {
+                $scope.years = ret.data;
+                $scope.selectedYear = $scope.years[0];
+                appService.GetPDF({ view: "GroupPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.user.name }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+            })
+    }
+
+    // 依年份顯示
+    $scope.FilterDataByYear = function (selectedYear) {
+        $scope.selectedYear = selectedYear;
+        appService.GetPDF({ view: "GroupPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.user.name }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
     }
 
     // 讀取使用者的資訊
@@ -235,15 +254,21 @@ app.controller('GroupPlanCtrl', ['$scope', '$location', 'appService', '$rootScop
         .then(function (ret) {
             $scope.user = ret.data;
             userdata.set(ret.data);
-            appService.GetPDF({ view: "GroupPlan", group: $scope.selectedGroup, userName: $scope.user.name }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+            // 取得年份
+            appService.GetYears({ view: "GroupPlan" })
+                .then(function (ret) {
+                    $scope.years = ret.data;
+                    $scope.selectedYear = $scope.years[0];
+                    appService.GetPDF({ view: "GroupPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.user.name }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+            })
         })
         .catch(function (ret) {
             //alert('Error');
         });
 
     // 上傳群組規劃PDF
-    $(document).on("click", "#btnPDFUpload", function () {
-        var files = $("#importPDFFile").get(0).files;
+    $(document).on("click", "#btnGroupPDFUpload", function () {
+        var files = $("#importGroupPDFFile").get(0).files;
 
         var formData = new FormData();
         formData.append('file', files[0]);
@@ -291,8 +316,15 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
 
         // 依人名選擇
         $scope.FilterDataByUser = function (selectedUser) {
-            appService.GetPDF({ view: "PersonalPlan", group: $scope.selectedGroup, userName: selectedUser }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+            $scope.selectedUser = selectedUser;
+            appService.GetPDF({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: selectedUser }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
         }
+    }
+
+    // 依年份顯示
+    $scope.FilterDataByYear = function (selectedYear) {
+        $scope.selectedYear = selectedYear;
+        appService.GetPDF({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.selectedUser }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
     }
 
     // 讀取使用者的資訊
@@ -300,7 +332,13 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
         .then(function (ret) {
             $scope.user = ret.data;
             userdata.set(ret.data);
-            appService.GetPDF({ view: "PersonalPlan", group: $scope.selectedGroup, user: $scope.user }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+            // 取得年份
+            appService.GetYears({ view: "PersonalPlan" })
+                .then(function (ret) {
+                    $scope.years = ret.data;
+                    $scope.selectedYear = $scope.years[0];
+                    appService.GetPDF({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.user.name }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+                })
         })
         .catch(function (ret) {
             //alert('Error');
@@ -331,6 +369,20 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
             }
         });
     });
+
+    // 儲存
+    $scope.SaveResponse = function (data) {
+
+        // 取得員工履歷
+        appService.SaveResponse({ name: $scope.selectedUser, comment: data })
+            .then(function (ret) {
+                if (ret.data === false) { alert('僅限協理儲存'); }
+                else { alert('儲存成功'); }
+            })
+            .catch(function (ret) {
+                alert('Error');
+            });
+    }
 
 }]);
 

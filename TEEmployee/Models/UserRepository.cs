@@ -229,7 +229,7 @@ namespace TEEmployee.Models
             {
                 if (user.department_manager)
                 {
-                    ret = users.Where(x => x.group != "").Select(x => x.group).Distinct().ToList();
+                    ret = users.Where(x => !String.IsNullOrEmpty(x.group)).Select(x => x.group).Distinct().ToList();
                     ret.Insert(0, "行政");
                 }
                 else { ret = users.Where(x => x.empno.Equals(empno)).Select(x => x.group).ToList(); }
@@ -240,11 +240,7 @@ namespace TEEmployee.Models
                 {
                     List<string> groups = users.Where(x => !String.IsNullOrEmpty(x.group)).Select(x => x.group).Distinct().ToList();
                     foreach (string group in groups) { ret.Add(group); }
-
-                    foreach(string group in groups)
-                    {
-                        AddSubGroup(users, group, ret); // 新增子群組
-                    }
+                    foreach(string group in groups) { AddSubGroup(users, group, ret); } // 新增子群組 
                     ret = ret.Distinct().ToList();
                 }
                 else if(user.group_manager || user.group_one_manager || user.group_two_manager || user.group_three_manager)
@@ -254,10 +250,7 @@ namespace TEEmployee.Models
                     AddSubGroup(users, group, ret); // 新增子群組
                     ret = ret.Where(x => x != "").Distinct().ToList();
                 }
-                else
-                {
-                    ret = users.Where(x => x.group != null).Where(x => x.group.Equals(user.group)).Select(x => x.group).Distinct().ToList();
-                }
+                else { ret = users.Where(x => x.group != null).Where(x => x.group.Equals(user.group)).Select(x => x.group).Distinct().ToList(); }
             }
 
             return ret;
@@ -313,10 +306,7 @@ namespace TEEmployee.Models
                     }
                 }
             }
-            else
-            {
-                ret.Add(user.name);
-            }
+            else { ret.Add(user.name); }
 
             return ret;
         }

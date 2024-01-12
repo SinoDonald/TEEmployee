@@ -461,6 +461,13 @@ namespace TEEmployee.Models.GSchedule
             return user;
         }
 
+        // 取得年份
+        public List<string> GetYears(string view)
+        {
+            List<string> ret = _scheduleRepository.GetYears(view);
+            return ret;
+        }
+
         // 上傳群組規劃PDF
         public bool UploadPDFFile(HttpPostedFileBase file, string view, string empno)
         {
@@ -469,9 +476,16 @@ namespace TEEmployee.Models.GSchedule
         }
 
         // 取得PDF
-        public string GetPDF(string view, string group, string userName)
+        public string GetPDF(string view, string year, string group, string userName)
         {
-            string ret = _scheduleRepository.GetPDF(view, group, userName);
+            string ret = _scheduleRepository.GetPDF(view, year, group, userName);
+            return ret;
+        }
+
+        // 儲存回覆
+        public bool SaveResponse(string empno, string userName, string comment)
+        {
+            bool ret = _scheduleRepository.SaveResponse(empno, userName, comment);
             return ret;
         }
 

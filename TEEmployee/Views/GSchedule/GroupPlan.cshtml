@@ -12,9 +12,15 @@
                         <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
                     </select>
                 </div>
-                <div class="col-sm-2" ng-if="user.empno == '4125' || user.empno == '7291'">
+                <div class="col-sm-1">
+                    <label for="SelectGroup">請選擇年份</label>
                 </div>
-                <div class="col-sm-4" ng-if="user.group_manager == 1">
+                <div class="col-sm-1">
+                    <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" ng-change="FilterDataByYear(selectedYear)" aria-label="Select the Year">
+                        <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+                    </select>
+                </div>
+                <div class="col-sm-2" ng-if="user.group_manager == 1">
                 </div>
                 <div class="col-sm-4">
                     <div class="alert alert-warning" role="alert">
@@ -27,12 +33,18 @@
                             <input type="file" id="filepicker" name="file" accept=".pdf" hidden>
                         </form>
                     </div>
-                    <input class="form-control" type="file" name="importPDFFile" id="importPDFFile" />
+                    <input class="form-control" type="file" name="importGroupPDFFile" id="importGroupPDFFile" />
                 </div>
                 <div class="col-sm-1">
-                    <input class="btn btn-primary" id="btnPDFUpload" type="button" value="上傳" />
+                    <input class="btn btn-primary" id="btnGroupPDFUpload" type="button" value="上傳" />
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-1">
+            <h4>　</h4>
         </div>
     </div>
 
