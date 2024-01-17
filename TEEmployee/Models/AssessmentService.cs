@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Services.Description;
+using TEEmployee.Models.Assessments;
 
 namespace TEEmployee.Models
 {
@@ -811,6 +814,100 @@ namespace TEEmployee.Models
 
             return ret;
         }
+
+        // ==========================================================
+        // Performance Cluster (By Group123)
+        // Authority: Department Manager > Group Manager > Group123 Manager
+
+        public dynamic GetPerformanceChart(string year, string empno)
+        {
+            // Get managers that can be reviewed
+            User user = _userRepository.Get(empno);
+            List<User> users = _userRepository.GetAll();
+            List<User> managers = this.GetSubordinateManagers(user);
+            
+            List<Performance> performances = (_assessmentRepository as SelfAssessmentTxtRepository).GetAllPerformances("2024H1");
+            
+            dynamic performanceChart = new JArray();
+
+            foreach (var manager in managers)
+            {
+                dynamic managerObj = new JObject();
+                managerObj.name = manager.name;
+                managerObj.empno = manager.empno;
+                managerObj.groups = new JArray();
+                
+                List<string> owned_groups = (_userRepository as UserRepository).GetSubGroups(manager.empno);
+
+                foreach (var group in owned_groups)
+                {
+                    dynamic groupObj = new JObject();
+                    groupObj.group_name = group;
+                    groupObj.performances = new JArray();
+
+                    var members = this.GetSubGroupMembers(group);
+
+                    foreach (var member in members)
+                    {
+                        Performance p = performances.Find(x => x.empno == member.empno && x.manager == manager.empno);
+
+                        if (p == null) continue;
+
+                        dynamic memberObj = new JObject();
+                        memberObj.empno = member.empno;
+                        memberObj.name = member.name;
+                        memberObj.score = p.score;
+
+                        groupObj.performances.Add(memberObj);
+                    }
+
+                    managerObj.groups.Add(groupObj);
+
+                }
+
+                performanceChart.Add(managerObj);
+
+            }
+
+
+
+            return JsonConvert.SerializeObject(performanceChart);
+        }
+
+        public List<Performance> GetAllPerformance(string year, string empno)
+        {            
+            return (_assessmentRepository as SelfAssessmentTxtRepository).GetAllPerformances("2024H1");
+        }
+
+        private List<User> GetSubGroupMembers(string group)
+        {
+            List<User> users = new List<User>();
+            users = _userRepository.GetAll().Where(x => x.group_one == group || x.group_two == group || x.group_three == group).ToList();
+            return users;
+        }
+
+        private List<User> GetSubordinateManagers(User user)
+        {
+            List<User> managers = new List<User>();
+
+            if (user.department_manager)
+            {
+                managers = _userRepository.GetAll()
+                    .Where(x => x.group_manager || x.group_one_manager || x.group_two_manager).ToList();
+            }
+            else if (user.group_manager)
+            {
+                managers = _userRepository.GetAll()
+                   .Where(x => x.group_one_manager || x.group_two_manager || x.group_three_manager)
+                   .Where(x => x.group == user.group).ToList();
+            }
+
+            // Add manager himself
+            managers.Insert(0, user);
+
+            return managers;
+        }
+
 
 
 

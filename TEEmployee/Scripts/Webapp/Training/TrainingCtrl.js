@@ -1,4 +1,5 @@
 ﻿var app = angular.module('app', []);
+var config = { responseType: 'blob' };  // important
 
 app.run(['$http', '$window', function ($http, $window) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -13,11 +14,12 @@ app.service('appService', ['$http', function ($http) {
     this.GetAuth = (o) => {
         return $http.post('Training/GetAuthorization', o);
     };
-
     this.GetAllRecordsByUser = (o) => {
         return $http.post('Training/GetAllRecordsByUser', o);
     };
-
+    this.DownloadGroupExcel = (o) => {
+        return $http.post('Training/DownloadGroupExcel', o, config);
+    };
 
 }]);
 
@@ -110,7 +112,20 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         }
 
     }
-    
+
+    $scope.downloadGroupExcel = () => {
+
+        appService.DownloadGroupExcel({ year: ($scope.selectedYear - 1911).toString() }).then((ret) => {
+
+            const contentDispositionHeader = ret.headers('Content-Disposition');
+            let fileName = contentDispositionHeader.split(';')[1].trim().split('=')[1].replace(/"/g, '');
+            fileName = decodeURIComponent(fileName).replace(`UTF-8''`, '');
+            var blob = new Blob([ret.data], { type: 'application/octet-stream' });
+            saveAs(blob, fileName);
+
+        });
+    }
+
 
 }]);
 

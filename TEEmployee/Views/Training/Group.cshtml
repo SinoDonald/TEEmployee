@@ -79,6 +79,12 @@
                     <option ng-repeat="employee in employees" value="{{employee.user.empno}}">{{employee.user.name}}({{employee.count}})</option>
                 </select>
             </div>
+            <div>
+                <button type="button" class="btn btn-outline-primary btn-sm" ng-click="downloadGroupExcel()">
+                    <span class="material-icons">download</span>
+                </button>
+                <label style="font-size: 0.9em">群組培訓資料下載</label>
+            </div>
         </div>
 
 
@@ -86,26 +92,27 @@
 
             <div class="card-body">
                 <h5 ng-bind="item.title" class="card-title"></h5>
-                 <h6>{{item.start_date}}  ({{item.duration}} 小時)</h6>
+                <h6>{{item.start_date}}  ({{item.duration}} 小時)</h6>
                 @*<p ng-bind="item.duration" class="card-text"></p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>*@
+                    <a href="#" class="btn btn-primary">Go somewhere</a>*@
             </div>
             <h5>
                 @*培訓人員*@
-                <span ng-repeat="name in item.names" ng-bind="name" class="badge badge-info mx-1"></span>                
+                <span ng-repeat="name in item.names" ng-bind="name" class="badge badge-info mx-1"></span>
             </h5>
             <div class="card-footer text-muted">
-               
+
             </div>
         </div>
 
     </div>
 
-    
+
 
 </div>
 
 
 @section Scripts {
     <script src="~/Scripts/WebApp/Training/TrainingCtrl.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.js" integrity="sha512-B+gr+zLWg81qxVwvtYwKrmjvQtZKD/GGFF7jD80OfzbqFw+NsbS5faEqpCO7Q7oRw1bYi0+WLJf54j8Vm7NADw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 }
