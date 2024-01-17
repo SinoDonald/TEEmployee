@@ -54,6 +54,9 @@ app.service('appService', ['$http', function ($http) {
     this.GetPDF = (o) => {
         return $http.post('GSchedule/GetPDF', o);
     };
+    this.GetResponse = (o) => {
+        return $http.post('GSchedule/GetResponse', o);
+    };
     this.SaveResponse = function (o) {
         return $http.post('GSchedule/SaveResponse', o);
     };
@@ -132,6 +135,12 @@ app.factory('userdata', function () {
         user.department_manager = data.department_manager;
         user.group = data.group;
         user.group_manager = data.group_manager;
+        user.group_one = data.group_one;
+        user.group_one_manager = data.group_one_manager;
+        user.group_two = data.group_two;
+        user.group_two_manager = data.group_two_manager;
+        user.group_three = data.group_three;
+        user.group_three_manager = data.group_three_manager;
     }
 
     function get() {
@@ -306,6 +315,7 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
 
     // 依群組顯示
     $scope.FilterDataByGroup = function (selectedGroup) {
+        $scope.selectedGroup = selectedGroup;
         // 取得群組同仁
         let users = appService.GetGroupUsers({ selectedGroup: selectedGroup});
         $q.all([users]).then((ret) => {
@@ -313,18 +323,20 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
             $scope.selectedUser = $scope.users[0];
             $scope.FilterDataByUser($scope.selectedUser);
         });
+    }
 
-        // 依人名選擇
-        $scope.FilterDataByUser = function (selectedUser) {
-            $scope.selectedUser = selectedUser;
-            appService.GetPDF({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: selectedUser }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
-        }
+    // 依人名選擇
+    $scope.FilterDataByUser = function (selectedUser) {
+        $scope.selectedUser = selectedUser;
+        appService.GetPDF({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.selectedUser }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+        appService.GetResponse({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, name: $scope.selectedUser }).then(function (ret) { $scope.response = ret.data; }); // 取得回覆
     }
 
     // 依年份顯示
     $scope.FilterDataByYear = function (selectedYear) {
         $scope.selectedYear = selectedYear;
         appService.GetPDF({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.selectedUser }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+        appService.GetResponse({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, name: $scope.selectedUser }).then(function (ret) { $scope.response = ret.data; }); // 取得回覆
     }
 
     // 讀取使用者的資訊
@@ -337,7 +349,8 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
                 .then(function (ret) {
                     $scope.years = ret.data;
                     $scope.selectedYear = $scope.years[0];
-                    appService.GetPDF({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.user.name }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+                    appService.GetPDF({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.selectedUser }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+                    appService.GetResponse({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, name: $scope.selectedUser }).then(function (ret) { $scope.response = ret.data; }); // 取得回覆
                 })
         })
         .catch(function (ret) {
@@ -374,13 +387,12 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
     $scope.SaveResponse = function (data) {
 
         // 取得員工履歷
-        appService.SaveResponse({ name: $scope.selectedUser, comment: data })
+        appService.SaveResponse({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, name: $scope.selectedUser, response: data })
             .then(function (ret) {
-                if (ret.data === false) { alert('僅限協理儲存'); }
-                else { alert('儲存成功'); }
+                if (ret.data === true) { alert('儲存成功'); }
             })
             .catch(function (ret) {
-                alert('Error');
+                //alert('Error');
             });
     }
 

@@ -482,10 +482,17 @@ namespace TEEmployee.Models.GSchedule
             return ret;
         }
 
-        // 儲存回覆
-        public bool SaveResponse(string empno, string userName, string comment)
+        // 取得回覆
+        public List<Planning> GetResponse(string view, string year, string group, string empno, string name)
         {
-            bool ret = _scheduleRepository.SaveResponse(empno, userName, comment);
+            List<Planning> ret = _scheduleRepository.GetResponse(view, year, group, empno, name);
+            return ret;
+        }
+
+        // 儲存回覆
+        public bool SaveResponse(string view, string year, string group, string empno, string name, List<Planning> response)
+        {
+            bool ret = _scheduleRepository.SaveResponse(view, year, group, empno, name, response);
             return ret;
         }
 

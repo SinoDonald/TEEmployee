@@ -236,21 +236,31 @@ namespace TEEmployee.Models
             }
             else if (view.Equals("PersonalPlan"))
             {
-                if (user.department_manager)
+                if (user.department_manager) // 協理
                 {
                     List<string> groups = users.Where(x => !String.IsNullOrEmpty(x.group)).Select(x => x.group).Distinct().ToList();
                     foreach (string group in groups) { ret.Add(group); }
                     foreach(string group in groups) { AddSubGroup(users, group, ret); } // 新增子群組 
                     ret = ret.Distinct().ToList();
                 }
-                else if(user.group_manager || user.group_one_manager || user.group_two_manager || user.group_three_manager)
+                else if(user.group_manager) // 技術經理
                 {
                     string group = users.Where(x => x.empno.Equals(empno)).Select(x => x.group).FirstOrDefault();
                     ret.Add(group);
                     AddSubGroup(users, group, ret); // 新增子群組
                     ret = ret.Where(x => x != "").Distinct().ToList();
+                } 
+                // 組長
+                else if (user.group_one_manager || user.group_two_manager || user.group_three_manager)
+                {
+                    string group_one = users.Where(x => x.empno.Equals(empno)).Where(x => x.group_one_manager.Equals(true)).Select(x => x.group_one).FirstOrDefault();
+                    string group_two = users.Where(x => x.empno.Equals(empno)).Where(x => x.group_two_manager.Equals(true)).Select(x => x.group_two).FirstOrDefault();
+                    string group_three = users.Where(x => x.empno.Equals(empno)).Where(x => x.group_three_manager.Equals(true)).Select(x => x.group_three).FirstOrDefault();
+                    if (group_one != null) { ret.Add(group_one); }
+                    if (group_two != null) { ret.Add(group_two); }
+                    if (group_three != null) { ret.Add(group_three); }
                 }
-                else { ret = users.Where(x => x.group != null).Where(x => x.group.Equals(user.group)).Select(x => x.group).Distinct().ToList(); }
+                else { ret = users.Where(x => x.group != null).Where(x => x.group.Equals(user.group)).Select(x => x.group).Distinct().ToList(); } // 一般使用者
             }
 
             return ret;
@@ -274,7 +284,7 @@ namespace TEEmployee.Models
             List <User> users = new UserRepository().GetAll();
             User user = users.Where(x => x.empno.Equals(empno)).FirstOrDefault();
 
-            if(user.department_manager)
+            if(user.department_manager) // 協理
             {
                 ret = users.Where(x => !String.IsNullOrEmpty(x.group)).Where(x => x.group.Equals(selectedGroup)).Select(x => x.name).OrderBy(x => x).ToList(); // 群組
                 if (ret.Count.Equals(0))
@@ -290,7 +300,7 @@ namespace TEEmployee.Models
                     }
                 }
             }
-            else if (user.group_manager)
+            else if (user.group_manager) // 技術經理
             {
                 ret = users.Where(x => !String.IsNullOrEmpty(x.group)).Where(x => x.group.Equals(selectedGroup)).Select(x => x.name).OrderBy(x => x).ToList(); // 群組
                 if (ret.Count.Equals(0))
@@ -306,7 +316,28 @@ namespace TEEmployee.Models
                     }
                 }
             }
-            else { ret.Add(user.name); }
+            else if (user.group_one_manager || user.group_two_manager || user.group_three_manager) // 組長
+            {                
+                List<string> groupManagerNames = users.Where(x => !String.IsNullOrEmpty(x.group)).Where(x => x.group.Equals(user.group)).Where(x => x.group_manager).Select(x => x.name).ToList(); // 找到技術經理
+                List<string> groupUserNames = new List<string>();
+                if (user.group_one_manager && user.group_one.Equals(selectedGroup))
+                {
+                    ret = users.Where(x => !String.IsNullOrEmpty(x.group_one)).Where(x => x.group_one.Equals(selectedGroup)).Select(x => x.name).OrderBy(x => x).ToList();
+                }
+                else if (user.group_two_manager && user.group_two.Equals(selectedGroup))
+                {
+                    ret = users.Where(x => !String.IsNullOrEmpty(x.group_two)).Where(x => x.group_two.Equals(selectedGroup)).Select(x => x.name).OrderBy(x => x).ToList();
+                }
+                else if (user.group_three_manager && user.group_three.Equals(selectedGroup))
+                {
+                    ret = users.Where(x => !String.IsNullOrEmpty(x.group_three)).Where(x => x.group_three.Equals(selectedGroup)).Select(x => x.name).OrderBy(x => x).ToList();
+                }
+                foreach(string groupManagerName in groupManagerNames)
+                {
+                    ret.Remove(groupManagerName);
+                }
+            }
+            else { ret.Add(user.name); } // 一般使用者
 
             return ret;
         }

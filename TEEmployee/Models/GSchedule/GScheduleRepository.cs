@@ -356,7 +356,6 @@ namespace TEEmployee.Models.GSchedule
             }
 
             User user = new UserRepository().GetAll().Where(x => x.name.Equals(userName)).FirstOrDefault();
-
             string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Content"), "GSchedule", view, year);
             // 檢查資料夾是否存在
             if (!Directory.Exists(folderPath))
@@ -387,30 +386,123 @@ namespace TEEmployee.Models.GSchedule
             return ret;
         }
 
-        // 儲存回覆
-        public bool SaveResponse(string empno, string userName, string comment)
+        // 取得回覆
+        public List<Planning> GetResponse(string view, string year, string group, string empno, string name)
         {
-            // 當前民國年
-            CultureInfo culture = new CultureInfo("zh-TW");
-            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-            string year = DateTime.Now.ToString("yyy", culture);
+            List<Planning> ret = new List<Planning>();
+
+            if (String.IsNullOrEmpty(year))
+            {
+                // 當前民國年
+                CultureInfo culture = new CultureInfo("zh-TW");
+                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                year = DateTime.Now.ToString("yyy", culture);
+            }
+
+            // 確認是否有Planning資料表, 沒有則CREATE
+            if (view.Equals("PersonalPlan"))
+            {
+                User user = new UserRepository().GetAll().Where(x => x.name.Equals(name)).FirstOrDefault();
+                string userEmpno = user.empno;
+                List<Planning> plannings = new List<Planning>();
+
+                _conn.Open();
+                SQLiteConnection conn = (SQLiteConnection)_conn;
+                DataTable dataTable = conn.GetSchema("Tables");
+                bool tableExist = false;
+                foreach (DataRow dataRow in dataTable.Rows)
+                {
+                    if (dataRow[2].ToString().Equals("Planning")) { tableExist = true; break; }
+                }
+                if (tableExist == false)
+                {
+                    using (var tran = _conn.BeginTransaction())
+                    {
+                        SQLiteCommand sqliteCmd = (SQLiteCommand)_conn.CreateCommand();
+                        sqliteCmd.CommandText = "CREATE TABLE IF NOT EXISTS Planning (view TEXT, year TEXT, 'group' TEXT, empno INTEGER, user_name TEXT, manager_id INTEGER, manager_name TEXT, response TEXT)";
+                        sqliteCmd.ExecuteNonQuery();
+                        tran.Commit();
+                    }
+                }
+                using (var tran = _conn.BeginTransaction())
+                {
+                    string sql = @"SELECT * FROM Planning WHERE empno=@userEmpno";
+                    plannings = _conn.Query<Planning>(sql, new { userEmpno }).Where(x => x.year.Equals(year)).ToList();
+                    if (plannings.Where(x => x.manager_id.ToString().Equals(empno)).Count().Equals(0))
+                    {
+                        Planning planning = new Planning();
+                        planning.view = view;
+                        planning.year = year;
+                        planning.group = group;
+                        planning.empno = Convert.ToInt32(userEmpno);
+                        planning.user_name = name;
+                        planning.manager_id = Convert.ToInt32(empno);
+                        planning.manager_name = new UserRepository().GetAll().Where(x => x.empno.Equals(empno)).Select(x => x.name).FirstOrDefault();
+                        planning.response = "";
+                        plannings.Add(planning);
+                    }
+                    tran.Commit();
+                }
+
+                ret = plannings;
+            }
+
+            return ret;
+        }
+
+        // 儲存回覆
+        public bool SaveResponse(string view, string year, string group, string empno, string name, List<Planning> response)
+        {
+            if(year == null)
+            {
+                // 當前民國年
+                CultureInfo culture = new CultureInfo("zh-TW");
+                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                year = DateTime.Now.ToString("yyy", culture);
+            }
 
             List<User> users = new UserRepository().GetAll();
             User manager = users.Where(x => x.empno.Equals(empno)).FirstOrDefault();
-            User employee = users.Where(x => x.name.Equals(userName)).FirstOrDefault();
+            User user = users.Where(x => x.name.Equals(name)).FirstOrDefault();
+            string userEmpno = user.empno;
+            int user_id = Convert.ToInt32(user.empno);
+            Planning planning = response.Where(x => x.empno.ToString().Equals(user.empno)).Where(x => x.manager_id.ToString().Equals(empno)).FirstOrDefault();
+            if(planning != null)
+            {
+                planning.view = view;
+                planning.group = group;
+            }
+
             var ret = false;
-            //try
-            //{
-            //    _conn.Open();
-            //    using (var tran = _conn.BeginTransaction())
-            //    {
-            //        string sql = @"UPDATE userCV SET planning=@planning, test=@test, advantage=@advantage, disadvantage=@disadvantage, developed=@developed, future=@future WHERE empno=@empno";
-            //        _conn.Execute(sql, userCV, tran);
-            //        tran.Commit();
-            //    }
-            //    _conn.Close();
-            //}
-            //catch (Exception) { }
+            try
+            {
+                // 先判斷SQL內有無此筆資料, 有的話UPDATE、沒有的話INSERT
+                _conn.Open();
+                using (var tran = _conn.BeginTransaction())
+                {
+                    string sql = @"SELECT * FROM Planning WHERE empno=@userEmpno";
+                    List<Planning> plannings = _conn.Query<Planning>(sql, new { userEmpno }).Where(x => x.year.Equals(year)).ToList();
+                    if (plannings.Where(x => x.manager_id.ToString().Equals(empno)).Count().Equals(0))
+                    {
+                        sql = @"INSERT INTO Planning (view, year, 'group', empno, user_name, manager_id, manager_name, response) 
+                        VALUES(@view, @year, @group, @empno, @user_name, @manager_id, @manager_name, @response) 
+                        RETURNING empno";
+                        _conn.Execute(sql, planning, tran);
+                        tran.Commit();
+                        ret = true;
+                    }
+                    else
+                    {
+                        //string sql = @"UPDATE Planning SET view=@view, year=@year, 'group'=@group, empno=@empno, user_name=@user_name, manager_id=@manager_id, manager_name=@manager_name, response=@response WHERE empno=empno AND manager_id=@manager_id";
+                        sql = @"UPDATE Planning SET response=@response WHERE year=@year AND empno=@empno AND manager_id=@manager_id";
+                        _conn.Execute(sql, planning, tran);
+                        tran.Commit();
+                        ret = true;
+                    }
+                }
+                _conn.Close();
+            }
+            catch (Exception ex) { string error = ex.Message + "\n" + ex.ToString(); }
 
             return ret;
         }

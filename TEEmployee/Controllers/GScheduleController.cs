@@ -182,11 +182,20 @@ namespace TEEmployee.Controllers
             var ret = _service.GetPDF(view, year, group, userName);
             return Json(ret);
         }
+
+        // 取得回覆
+        [HttpPost]
+        public ActionResult GetResponse(string view, string year, string group, string name)
+        {
+            List<Planning> ret = _service.GetResponse(view, year, group, Session["empno"].ToString(), name);
+            return Json(ret);
+        }
+
         // 儲存回覆
         [HttpPost]
-        public JsonResult SaveResponse(string userName, string comment)
+        public JsonResult SaveResponse(string view, string year, string group, string name, List<Planning> response)
         {
-            bool ret = _service.SaveResponse(Session["empno"].ToString(), userName, comment);
+            bool ret = _service.SaveResponse(view, year, group, Session["empno"].ToString(), name, response);
             return Json(ret);
         }
 
