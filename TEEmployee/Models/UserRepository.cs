@@ -185,26 +185,14 @@ namespace TEEmployee.Models
             List<User> users = this.GetAll();
 
             // department manager or group manager
-
-            if ((user.group_manager && user.group == "設計") || user.department_manager)
-            {
-                groups.AddRange(users.Where(x => x.group == user.group).Select(x => x.group_one).ToList());
-                groups.Add("智慧軌道創新小組");
-            }
-
-            if ((user.group_manager && user.group == "規劃") || user.department_manager)
-            {
-                groups.AddRange(users.Where(x => x.group == user.group).Select(x => x.group_one).ToList());
-            }
-
-            if ((user.group_manager && user.group == "專管") || user.department_manager)
-            {
-                groups.AddRange(users.Where(x => x.group == user.group).Select(x => x.group_one).ToList());
-            }
-
             if (user.department_manager)
             {
-                groups.AddRange(new List<string> { /*"計畫管理組",*/ "行政組" });
+                groups.AddRange(users.Select(x => x.group_one));
+                groups.AddRange(users.Select(x => x.group_two));
+                groups.AddRange(users.Select(x => x.group_three));
+            }
+            else if (user.group_manager) {
+                groups.AddRange(users.Where(x => x.group == user.group).Select(x => x.group_one).ToList());
             }
 
             // sub group manager
@@ -212,8 +200,9 @@ namespace TEEmployee.Models
             if (user.group_two_manager) groups.Add(user.group_two);
             if (user.group_three_manager) groups.Add(user.group_three);
 
-            // remove duplicates from special case
+            // remove duplicates null empty
             groups = groups.Distinct().ToList();
+            groups.RemoveAll(string.IsNullOrEmpty);
 
             return groups;
         }
@@ -310,5 +299,6 @@ namespace TEEmployee.Models
 
             return ret;
         }
+
     }
 }

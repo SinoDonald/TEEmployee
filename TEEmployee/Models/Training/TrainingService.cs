@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -93,7 +94,7 @@ namespace TEEmployee.Models.Training
                 users = _userRepository.GetAll();
 
                 if (user.group_manager)
-                    users = users.Where(x => x.group == user.group).ToList();                
+                    users = users.Where(x => x.group == user.group).ToList();
 
                 users = users.Where(x => !string.IsNullOrEmpty(x.group_one)).ToList();
 
@@ -109,6 +110,126 @@ namespace TEEmployee.Models.Training
             authorization.User = JObject.FromObject(user);
             var settings = new JsonSerializerSettings { DateFormatString = "yyyy/MM/dd" };
             return JsonConvert.SerializeObject(authorization, settings);
+        }
+
+        public byte[] DownloadGroupExcel(int year, string empno)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            User user = _userRepository.Get(empno);
+            List<User> users = new List<User>();
+            dynamic authorization = new JObject();
+            authorization.Users = new JArray();
+
+            List<Record> records = new List<Record>();
+
+            if (user.department_manager || user.group_manager || user.group_one_manager)
+            {
+                users = _userRepository.GetAll();
+
+                if (user.group_manager)
+                    users = users.Where(x => x.group == user.group).ToList();
+
+                if (user.group_one_manager)
+                    users = users.Where(x => x.group_one == user.group_one).ToList();
+
+                users = users.Where(x => !string.IsNullOrEmpty(x.group_one)).ToList();
+
+                foreach (var item in users)
+                {                    
+                    records.AddRange(this.GetAllRecordsByUser(item.empno));
+                }
+            }
+
+            records = records.Where(x => x.roc_year == year).ToList();
+            records = records.OrderBy(x => x.start_date).ThenBy(x => x.training_id).ToList();
+
+            List<User> sorted_users = users.OrderBy(x => x.group_one).ThenBy(x => x.empno).ToList();
+            var group_query = sorted_users.GroupBy(x => x.group_one);
+
+            List<Record> courses = records.GroupBy(x => x.training_id).Select(g => g.First()).ToList();
+
+
+            //dynamic auth = JsonConvert.DeserializeObject<dynamic>(authStr);
+
+
+            // version 2 - formal
+
+            using (var package = new ExcelPackage())
+            {
+                var sheet = package.Workbook.Worksheets.Add("群組培訓紀錄");
+                int row = 1;
+
+                //sheet.Cells["A:D"].Style.Font.Size = 12f;
+                //sheet.Cells["A:D"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
+                // column names and merge
+                sheet.Cells["A1:C1"].Merge = true;
+                sheet.Cells["A2:A3"].Merge = true;                
+                sheet.Cells["B2:B3"].Merge = true;
+                sheet.Cells["C2:C3"].Merge = true;
+
+                sheet.Cells[1, 1].Value = $"{year}年度培訓紀錄";
+                sheet.Cells[2, 1].Value = "課程名稱";
+                sheet.Cells[2, 2].Value = "日期";
+                sheet.Cells[2, 3].Value = "時數";
+
+
+                // groupname 
+                row = 2;
+                int col = 3;
+
+                foreach (var item in group_query)
+                {
+                    int new_col = col + item.Count();
+
+                    sheet.Cells[row, col + 1, row, new_col].Merge = true;
+                    sheet.Cells[row, col + 1].Value = $"{item.Key}({item.Count()}位)";
+
+                    col = new_col;
+                }
+
+
+
+                // empno names 
+                row = 3;
+
+                for (int i = 0; i < sorted_users.Count; i++)
+                {
+                    sheet.Cells[row, i + 4].Value = sorted_users[i].name;
+                }
+
+                // courses and checks
+                row = 3;
+                string current_course = "";
+
+                foreach (var item in records)
+                {
+                    if (current_course != item.training_id)
+                    {
+                        current_course = item.training_id;                                               
+                        
+                        row++;
+
+                        sheet.Cells[row, 1].Value = item.title;
+                        sheet.Cells[row, 2].Value = item.start_date.ToString("yyyy/MM/dd");
+                        sheet.Cells[row, 3].Value = item.duration;
+
+                    }
+
+                    sheet.Cells[row, sorted_users.FindIndex(x => x.empno == item.empno) + 4].Value = "⭐️";
+                   
+                }
+
+
+                sheet.Cells["A:C"].AutoFitColumns();
+
+                var excelData = package.GetAsByteArray();  // byte or stream
+
+
+                return excelData;
+            }
+
         }
 
         public void Dispose()

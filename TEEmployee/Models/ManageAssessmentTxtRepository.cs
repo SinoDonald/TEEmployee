@@ -358,7 +358,17 @@ namespace TEEmployee.Models
         {
             List<string> managers = new List<string>();
             string dn = Path.Combine(_appData, $"ManageResponse/{year}");
+
+            // Update: 240112 - Create Diretory if not exist
+            if (!Directory.Exists(dn))
+            {
+                Directory.CreateDirectory(dn);
+            }
+            // End of update
+
             var dirs = System.IO.Directory.GetDirectories(dn);
+
+            
 
             foreach (var dir in dirs)
                 managers.Add((new DirectoryInfo(dir)).Name);

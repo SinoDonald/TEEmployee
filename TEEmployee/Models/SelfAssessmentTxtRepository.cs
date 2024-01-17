@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using TEEmployee.Models.Assessments;
 
 namespace TEEmployee.Models
 {
@@ -805,5 +806,45 @@ namespace TEEmployee.Models
         }
 
 
+        // ==========================================================
+        // Performance Cluster 
+
+        public List<Performance> GetAllPerformances(string year)
+        {
+            List<(string, List<string>)> nameWithFeedbacks = new List<(string, List<string>)>();
+            List<Performance> performances = new List<Performance>();
+
+            try
+            {
+                string dn = Path.Combine(_appData, $"Feedback/{year}");
+                string[] files = Directory.GetFiles(dn);
+
+                foreach (string fn in files)
+                {
+                    string[] lines = System.IO.File.ReadAllLines(fn);
+
+                    foreach (var item in lines)
+                    {
+                        string[] subs = item.Split('\t');
+
+                        if (subs[2] == "submit")
+                        {
+                            Performance performance = new Performance();
+                            performance.empno = Path.GetFileNameWithoutExtension(fn);
+                            performance.manager = subs[1];
+                            performance.score = subs[subs.Length - 1];
+
+                            performances.Add(performance);
+                        }
+                    }
+                }                
+            }
+            catch
+            {
+
+            }
+
+            return performances;
+        }
     }
 }

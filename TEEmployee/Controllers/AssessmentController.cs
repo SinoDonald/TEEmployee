@@ -95,6 +95,10 @@ namespace TEEmployee.Controllers
         {
             return View();
         }
+        public ActionResult ChartPerformance()
+        {
+            return View();
+        }
 
         // Web api---
         //[HttpPost]
@@ -451,7 +455,25 @@ namespace TEEmployee.Controllers
             return ret;
         }
 
+        //=============================
+        // Performance Cluster
+        //=============================
 
+        [HttpPost]
+        public ContentResult GetPerformanceChart(string year)
+        {            
+            var ret = _service.GetPerformanceChart(year, Session["empno"].ToString());
+            return Content(ret, "application/json");
+        }
+
+        [HttpPost]
+        public JsonResult GetAllPerformance(string year)
+        {
+            var ret = _service.GetAllPerformance(year, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

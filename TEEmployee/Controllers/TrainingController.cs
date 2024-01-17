@@ -64,6 +64,16 @@ namespace TEEmployee.Controllers
             return Content(ret, "application/json");
         }
 
+        [HttpPost]
+        public FileContentResult DownloadGroupExcel(int year)
+        {
+            string contentType = "application/octet-stream"; // byte 
+            var fileName = $"{year}年度培訓紀錄.xlsx";
+            var excelData = _service.DownloadGroupExcel(year, Session["empno"].ToString());
+
+            return File(excelData, contentType, fileName);
+        }
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

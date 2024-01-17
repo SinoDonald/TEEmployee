@@ -1,0 +1,61 @@
+﻿@using TEEmployee.Models;
+@{    
+    ViewBag.Title = "考績分群";
+}
+
+@section Styles {
+    <style>
+
+
+        .chartmenu {
+            display: flex;
+            margin-top: 100px;
+            margin-bottom: 40px;
+        }
+
+            .chartmenu div {
+                flex: 1;
+                margin: 0 20px;
+            }
+    </style>
+}
+
+<div ng-controller="ChartPerformanceCtrl">
+
+    <div class="container">
+
+        <div class="chartmenu">
+            <div>
+                <label for="SelectYear">請選擇年份</label>
+                <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" aria-label="Select the Year">
+                    <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+                </select>
+            </div>
+            <div>
+                <label for="SelectManager">請選擇主管</label>
+                <select class="form-select manager" id="SelectManager" name="SelectManager" ng-model="selectedManager" ng-change="selectManager()" aria-label="Select the Manager">
+                    <option ng-repeat="manager in managers" value="{{manager.empno}}">{{manager.name}}</option>
+                </select>
+            </div>
+            <div>
+                <label for="SelectCategory">請選擇群組</label>
+                <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Group">
+                    <option ng-repeat="group in groups" value="{{group.group_name}}">{{group.group_name}}</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div id="painting">
+            <canvas id="myChart"></canvas>
+        </div>
+
+    </div>
+
+</div>
+
+@section scripts {
+    <script src="~/Scripts/chart.min.js"></script>
+    <script src="~/Scripts/WebApp/Assessment/PerformanceChart.js"></script>
+    <script src="~/Scripts/WebApp/Assessment/ChartPerformanceCtrl.js"></script>
+}

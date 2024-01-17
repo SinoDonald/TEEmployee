@@ -6,7 +6,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
         .state('EmployeeList', {
             url: '/EmployeeList',
             templateUrl: 'Assessment/EmployeeList'
-        })       
+        })
         .state('AssessEmployee', {
             url: '/AssessEmployee',
             templateUrl: 'Assessment/AssessEmployee'
@@ -76,7 +76,7 @@ app.service('appService', ['$http', function ($http) {
     this.GetAllOtherFeedbacks = function (o) {
         return $http.post('Assessment/GetAllOtherFeedbacks', o);
     };
-    
+
     this.UpdateFeedbackNotification = (o) => {
         return $http.post('Assessment/UpdateFeedbackNotification', o);
     };
@@ -93,7 +93,7 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Assessment/GetAllFeedbacksForManager', o);
     };
 
-    
+
 }]);
 
 app.factory('myFactory', function () {
@@ -140,7 +140,7 @@ app.controller('EmployeeListCtrl', ['$scope', '$location', 'appService', '$rootS
 
     $scope.Employees = [];
 
-    $scope.sortBy = function (propertyName) {        
+    $scope.sortBy = function (propertyName) {
         $scope.propertyName = propertyName;
     };
 
@@ -151,7 +151,7 @@ app.controller('EmployeeListCtrl', ['$scope', '$location', 'appService', '$rootS
     //    .catch(function (ret) {
     //        alert('Error');
     //    });
-    
+
     //appService.GetAllEmployeesWithState({})
     //    .then(function (ret) {
     //        $scope.Employees = ret.data;
@@ -172,17 +172,17 @@ app.controller('EmployeeListCtrl', ['$scope', '$location', 'appService', '$rootS
         $location.path('/AssessEmployee');
         myFactory.set(data, isBoss)
 
-    /*myFactory.set(data);*/
-           //appService.GetMixResponse(data)
-           //    .then(function (ret) {
-           //        myFactory.set(data, ret.data)
-           //        $location.path('/Review');
-           //    })
-           //    .catch(function (ret) {
-           //        alert('Error');
-           //    });
-           //$window.location.href = '/Assessment/Review'
-           //$window.location.path = '/Review'
+        /*myFactory.set(data);*/
+        //appService.GetMixResponse(data)
+        //    .then(function (ret) {
+        //        myFactory.set(data, ret.data)
+        //        $location.path('/Review');
+        //    })
+        //    .catch(function (ret) {
+        //        alert('Error');
+        //    });
+        //$window.location.href = '/Assessment/Review'
+        //$window.location.path = '/Review'
 
     }
 
@@ -206,11 +206,11 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
         appService.GetResponseByYear({ year: year, empno: myFactory.get().EmployeeInfo.Employee.empno })
             .then(function (ret) {
 
-                
+
                 for (let m = 0; m !== ret.data.Responses.length; m++) {
                     if (ret.data.Responses[m].Choice.includes('option'))
                         ret.data.Responses[m].Choice = optionText[Number(ret.data.Responses[m].Choice.slice(6)) - 1];
-                }                
+                }
 
                 //$scope.state = ret.data.State;
                 for (var i = 0; i < ret.data.Responses.length; i++) {
@@ -219,7 +219,7 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
                     }
                 }
 
-                $scope.Responses = ret.data.Responses; 
+                $scope.Responses = ret.data.Responses;
 
                 if ($scope.isBoss)
                     return appService.GetAllOtherFeedbacks({ empno: myFactory.get().EmployeeInfo.Employee.empno })
@@ -242,7 +242,7 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
                                 if (fed.Text[count])
                                     $scope.Responses[i].Choice += ('\n' + fed.Name + ':\n' + fed.Text[count] + '\n');
                             }
-                            
+
                             count++;
                         }
                     }
@@ -250,9 +250,9 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
                     $scope.feedback = ''
                     for (let fed of ret.data) {
                         if (fed.Text[count])
-                        $scope.feedback += ('\n' + fed.Name + ':\n' + fed.Text[count] + '\n');
+                            $scope.feedback += ('\n' + fed.Name + ':\n' + fed.Text[count] + '\n');
                     }
-                    
+
                 }
 
                 else {
@@ -268,10 +268,14 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
                     }
 
                     $scope.feedback = ret.data.Text[count];
+
+                    // Update: 2024.01.12, get performance score from response
+                    $scope.performance = ret.data.Text[ret.data.Text.length - 1];
+                    // End of update
                 }
-                    
-                
-                
+
+
+
 
                 // set textarea height in beginning
                 $timeout(function () {
@@ -288,10 +292,10 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
             .catch(function (ret) {
                 alert('Error');
             });
-            //.catch(function (ret) {
-            //    alert('Error');
-            //});
-            
+        //.catch(function (ret) {
+        //    alert('Error');
+        //});
+
 
 
         //appService.GetFeedback({ empno: myFactory.get().EmployeeInfo.Employee.empno })
@@ -330,11 +334,15 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
         var a = 0;
         feedbacks.push($scope.feedback);
 
+        // Update: 2024.01.12, add performance score to the feedback
+        feedbacks.push($scope.performance);
+        // End of update
+
         appService.UpdateFeedback({ feedbacks: feedbacks, state: state, empno: myFactory.get().EmployeeInfo.Employee.empno })
             .then(function (ret) {
                 //$window.location.href = 'Assessment/Feedback';
                 if (state === 'save') {
-                /*alert('已儲存');*/
+                    /*alert('已儲存');*/
                     $scope.succeed = true;
                     $timeout(function () {
                         $scope.succeed = false;
@@ -351,7 +359,7 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
             });
     }
 
-    
+
 
     //$scope.Response = {}
 
@@ -410,8 +418,8 @@ app.controller('ReviewEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
 
 
     $scope.GetReviewByYear = function (year) {
-                
-        let promiseA = appService.GetReviewByYear({ year: year, empno: $scope.empData.EmployeeInfo.Employee.empno }); 
+
+        let promiseA = appService.GetReviewByYear({ year: year, empno: $scope.empData.EmployeeInfo.Employee.empno });
         let promiseB = appService.GetAllFeedbacksForManager({ year: year, empno: $scope.empData.EmployeeInfo.Employee.empno });
 
         $q.all([promiseA, promiseB]).then((ret) => {
@@ -432,7 +440,7 @@ app.controller('ReviewEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
                 }
             }
 
-          
+
 
             let count = 0;
 
@@ -458,6 +466,6 @@ app.controller('ReviewEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
 
 
 
-    }    
+    }
 
 }]);
