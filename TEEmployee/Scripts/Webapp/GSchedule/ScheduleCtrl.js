@@ -385,7 +385,6 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
 
     // 儲存
     $scope.SaveResponse = function (data) {
-
         // 取得員工履歷
         appService.SaveResponse({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, name: $scope.selectedUser, response: data })
             .then(function (ret) {

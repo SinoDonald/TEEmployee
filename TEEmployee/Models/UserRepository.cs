@@ -219,16 +219,31 @@ namespace TEEmployee.Models
                 if (user.department_manager)
                 {
                     ret = users.Where(x => !String.IsNullOrEmpty(x.group)).Select(x => x.group).Distinct().ToList();
-                    ret.Insert(0, "行政");
+                    List<string> group_ones = users.Where(x => String.IsNullOrEmpty(x.group)).Where(x => !String.IsNullOrEmpty(x.group_one)).Select(x => x.group_one).Distinct().OrderByDescending(x => x).ToList();
+                    foreach(string group_one in group_ones) { ret.Insert(0, group_one); }                    
                 }
-                else { ret = users.Where(x => x.empno.Equals(empno)).Select(x => x.group).ToList(); }
+                // 一般使用者
+                else
+                {
+                    string group = users.Where(x => x.empno.Equals(empno)).Select(x => x.group).FirstOrDefault();
+                    string group_one = users.Where(x => x.empno.Equals(empno)).Select(x => x.group_one).FirstOrDefault();
+                    string group_two = users.Where(x => x.empno.Equals(empno)).Select(x => x.group_two).FirstOrDefault();
+                    string group_three = users.Where(x => x.empno.Equals(empno)).Select(x => x.group_three).FirstOrDefault();
+                    if (!String.IsNullOrEmpty(group)) { ret.Add(group); }
+                    else if (!String.IsNullOrEmpty(group_one)) { ret.Add(group_one); }
+                    else if (!String.IsNullOrEmpty(group_two)) { ret.Add(group_two); }
+                    else if (!String.IsNullOrEmpty(group_three)) { ret.Add(group_three); }
+                }
             }
             else if (view.Equals("PersonalPlan"))
             {
                 if (user.department_manager) // 協理
                 {
-                    List<string> groups = users.Where(x => !String.IsNullOrEmpty(x.group)).Select(x => x.group).Distinct().ToList();
-                    foreach (string group in groups) { ret.Add(group); }
+                    List<string> groups = users.Where(x => x.group != null).Select(x => x.group).Distinct().ToList();
+                    foreach (string group in groups) 
+                    {
+                        if (!String.IsNullOrEmpty(group)) { ret.Add(group); }
+                    }
                     foreach(string group in groups) { AddSubGroup(users, group, ret); } // 新增子群組 
                     ret = ret.Distinct().ToList();
                 }
@@ -249,7 +264,18 @@ namespace TEEmployee.Models
                     if (group_two != null) { ret.Add(group_two); }
                     if (group_three != null) { ret.Add(group_three); }
                 }
-                else { ret = users.Where(x => x.group != null).Where(x => x.group.Equals(user.group)).Select(x => x.group).Distinct().ToList(); } // 一般使用者
+                // 一般使用者
+                else
+                {
+                    string group = users.Where(x => x.empno.Equals(empno)).Select(x => x.group).FirstOrDefault();
+                    string group_one = users.Where(x => x.empno.Equals(empno)).Select(x => x.group_one).FirstOrDefault();
+                    string group_two = users.Where(x => x.empno.Equals(empno)).Select(x => x.group_two).FirstOrDefault();
+                    string group_three = users.Where(x => x.empno.Equals(empno)).Select(x => x.group_three).FirstOrDefault();
+                    if (!String.IsNullOrEmpty(group)) { ret.Add(group); }
+                    else if (!String.IsNullOrEmpty(group_one)) { ret.Add(group_one); }
+                    else if (!String.IsNullOrEmpty(group_two)) { ret.Add(group_two); }
+                    else if (!String.IsNullOrEmpty(group_three)) { ret.Add(group_three); }
+                }
             }
 
             return ret;
@@ -257,10 +283,10 @@ namespace TEEmployee.Models
         // 新增子群組
         private void AddSubGroup(List<User> users, string group, List<string> ret)
         {
-            users = users.Where(x => !String.IsNullOrEmpty(x.group)).Where(x => x.group.Equals(group)).ToList();
-            List<string> group_one = users.Where(x => !String.IsNullOrEmpty(x.group)).Where(x => x.group.Equals(group)).Where(x => !String.IsNullOrEmpty(x.group_one)).Select(x => x.group_one).Distinct().OrderBy(x => x).ToList();
-            List<string> group_two = users.Where(x => !String.IsNullOrEmpty(x.group)).Where(x => x.group.Equals(group)).Where(x => !String.IsNullOrEmpty(x.group_two)).Select(x => x.group_two).Distinct().OrderBy(x => x).ToList();
-            List<string> group_three = users.Where(x => !String.IsNullOrEmpty(x.group)).Where(x => x.group.Equals(group)).Where(x => !String.IsNullOrEmpty(x.group_three)).Select(x => x.group_three).Distinct().OrderBy(x => x).ToList();
+            users = users.Where(x => x.group != null).Where(x => x.group.Equals(group)).ToList();
+            List<string> group_one = users.Where(x => x.group != null).Where(x => x.group.Equals(group)).Where(x => !String.IsNullOrEmpty(x.group_one)).Select(x => x.group_one).Distinct().OrderBy(x => x).ToList();
+            List<string> group_two = users.Where(x => x.group != null).Where(x => x.group.Equals(group)).Where(x => !String.IsNullOrEmpty(x.group_two)).Select(x => x.group_two).Distinct().OrderBy(x => x).ToList();
+            List<string> group_three = users.Where(x => x.group != null).Where(x => x.group.Equals(group)).Where(x => !String.IsNullOrEmpty(x.group_three)).Select(x => x.group_three).Distinct().OrderBy(x => x).ToList();
             foreach (string item in group_three) { ret.Insert(ret.FindIndex(x => x.Equals(group)) + 1, item); }
             foreach (string item in group_two) { ret.Insert(ret.FindIndex(x => x.Equals(group)) + 1, item); }
             foreach (string item in group_one) { ret.Insert(ret.FindIndex(x => x.Equals(group)) + 1, item); }

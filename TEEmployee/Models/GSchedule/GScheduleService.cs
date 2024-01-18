@@ -490,9 +490,9 @@ namespace TEEmployee.Models.GSchedule
         }
 
         // 儲存回覆
-        public bool SaveResponse(string view, string year, string group, string empno, string name, List<Planning> response)
+        public bool SaveResponse(string view, string year, string group, string manager_id, string name, List<Planning> response)
         {
-            bool ret = _scheduleRepository.SaveResponse(view, year, group, empno, name, response);
+            bool ret = _scheduleRepository.SaveResponse(view, year, group, manager_id, name, response);
             return ret;
         }
 

@@ -332,7 +332,11 @@ namespace TEEmployee.Models.GSchedule
                     Directory.CreateDirectory(folderPath);
                 }
                 string group = user.group;
-                if (group.Equals("")) { group = "行政"; }
+                if (group.Equals(""))
+                {
+                    string group_one = new UserRepository().GetAll().Where(x => String.IsNullOrEmpty(x.group)).Where(x => !String.IsNullOrEmpty(x.group_one)).Select(x => x.group_one).Distinct().FirstOrDefault();
+                    group = group_one; 
+                }
                 var path = Path.Combine(folderPath, group + Path.GetExtension(file.FileName));
                 if (view.Equals("PersonalPlan"))
                 {
@@ -374,7 +378,8 @@ namespace TEEmployee.Models.GSchedule
                     }
                     else
                     {
-                        ret = Path.Combine(relativePath, "行政.pdf");
+                        string group_one = new UserRepository().GetAll().Where(x => String.IsNullOrEmpty(x.group)).Where(x => !String.IsNullOrEmpty(x.group_one)).Select(x => x.group_one).Distinct().FirstOrDefault();
+                        ret = Path.Combine(relativePath, group_one + ".pdf");
                     }
                 }
             }
@@ -428,7 +433,7 @@ namespace TEEmployee.Models.GSchedule
                 {
                     string sql = @"SELECT * FROM Planning WHERE empno=@userEmpno";
                     plannings = _conn.Query<Planning>(sql, new { userEmpno }).Where(x => x.year.Equals(year)).ToList();
-                    if (plannings.Where(x => x.manager_id.ToString().Equals(empno)).Count().Equals(0))
+                    if (plannings.Where(x => x.manager_id.ToString().Equals(empno)).Count().Equals(0) && !userEmpno.Equals(empno))
                     {
                         Planning planning = new Planning();
                         planning.view = view;
@@ -451,7 +456,7 @@ namespace TEEmployee.Models.GSchedule
         }
 
         // 儲存回覆
-        public bool SaveResponse(string view, string year, string group, string empno, string name, List<Planning> response)
+        public bool SaveResponse(string view, string year, string group, string manager_id, string name, List<Planning> response)
         {
             if(year == null)
             {
@@ -462,15 +467,17 @@ namespace TEEmployee.Models.GSchedule
             }
 
             List<User> users = new UserRepository().GetAll();
-            User manager = users.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+            User manager = users.Where(x => x.empno.Equals(manager_id)).FirstOrDefault();
             User user = users.Where(x => x.name.Equals(name)).FirstOrDefault();
-            string userEmpno = user.empno;
-            int user_id = Convert.ToInt32(user.empno);
-            Planning planning = response.Where(x => x.empno.ToString().Equals(user.empno)).Where(x => x.manager_id.ToString().Equals(empno)).FirstOrDefault();
+            string empno = user.empno;
+            Planning planning = response.Where(x => x.empno.ToString().Equals(user.empno)).Where(x => x.manager_id.ToString().Equals(manager_id)).FirstOrDefault();
             if(planning != null)
             {
                 planning.view = view;
-                planning.group = group;
+                if (!String.IsNullOrEmpty(user.group)) { planning.group = user.group; }
+                else if (!String.IsNullOrEmpty(user.group_one)) { planning.group = user.group_one; }
+                else if (!String.IsNullOrEmpty(user.group_two)) { planning.group = user.group_two; }
+                else if (!String.IsNullOrEmpty(user.group_three)) { planning.group = user.group_three; }
             }
 
             var ret = false;
@@ -480,9 +487,9 @@ namespace TEEmployee.Models.GSchedule
                 _conn.Open();
                 using (var tran = _conn.BeginTransaction())
                 {
-                    string sql = @"SELECT * FROM Planning WHERE empno=@userEmpno";
-                    List<Planning> plannings = _conn.Query<Planning>(sql, new { userEmpno }).Where(x => x.year.Equals(year)).ToList();
-                    if (plannings.Where(x => x.manager_id.ToString().Equals(empno)).Count().Equals(0))
+                    string sql = @"SELECT * FROM Planning WHERE empno=@empno";
+                    List<Planning> plannings = _conn.Query<Planning>(sql, new { empno }).Where(x => x.year.Equals(year)).ToList();
+                    if (plannings.Where(x => x.manager_id.ToString().Equals(manager_id)).Count().Equals(0))
                     {
                         sql = @"INSERT INTO Planning (view, year, 'group', empno, user_name, manager_id, manager_name, response) 
                         VALUES(@view, @year, @group, @empno, @user_name, @manager_id, @manager_name, @response) 
