@@ -32,20 +32,25 @@ app.controller('TrainingCtrl', ['$scope', '$location', 'appService', '$rootScope
     })
 
     // client to server
-    formElem.onsubmit = async (e) => {
+    if (formElem) {
 
-        e.preventDefault();
+        formElem.onsubmit = async (e) => {
 
-        // don't add '/' before MVC controller
-        let response = await fetch('Training/UploadTrainingFile', {
-            method: 'POST',
-            body: new FormData(formElem)
-        });
+            e.preventDefault();
 
-        let result = await response.json();
+            // don't add '/' before MVC controller
+            let response = await fetch('Training/UploadTrainingFile', {
+                method: 'POST',
+                body: new FormData(formElem)
+            });
 
-        alert(result);
-    };
+            let result = await response.json();
+
+            alert(result);
+        };
+    }
+
+    
 
 
 }]);
