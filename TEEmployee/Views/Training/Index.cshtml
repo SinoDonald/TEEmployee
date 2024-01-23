@@ -34,18 +34,24 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="@Url.Action("Index", "Training")">個人培訓紀錄</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("Group", "Training")">群組培訓紀錄</a>
-                </li>
-                @*<li class="nav-item">
-                        <a class="nav-link" href="#">個人課程規劃</a>
-                    </li>
+                @if (Session["group_leader"] is true)
+                {
                     <li class="nav-item">
-                        <a class="nav-link" href="#">E-learning</a>
-                    </li>*@
+                        <a class="nav-link" href="@Url.Action("Group", "Training")">群組培訓紀錄</a>
+                    </li>
+                }
+
+                @*<li class="nav-item">
+            <a class="nav-link" href="#">個人課程規劃</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">E-learning</a>
+        </li>*@
             </ul>
         </div>
     </nav>
+
+   
 
     @if (Session["Admin"] is true)
     {
@@ -60,15 +66,15 @@
 
     <table class="table">
         <tr>
-            <th>empno</th>
-            <th>ROC Year</th>
-            <th>training_type</th>
-            <th>training_id</th>
-            <th>title</th>
-            <th>organization</th>
-            <th>start_date</th>
-            <th>end_date</th>
-            <th>duration</th>
+            <th>員工編號</th>
+            <th>培訓民國年度</th>
+            <th>培訓種類</th>
+            <th>培訓編號</th>
+            <th>培訓名稱</th>
+            <th>主辦單位</th>
+            <th>開始日期</th>
+            <th>結束日期</th>
+            <th>時數</th>
         </tr>
 
         <tr ng-repeat="item in records">

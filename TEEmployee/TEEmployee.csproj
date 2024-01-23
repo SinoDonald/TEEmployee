@@ -197,6 +197,11 @@
     <Compile Include="Models\Education\EducationService.cs" />
     <Compile Include="Models\Education\IEducationRepository.cs" />
     <Compile Include="Models\Education\Record.cs" />
+    <Compile Include="Models\Forum\ForumRepository.cs" />
+    <Compile Include="Models\Forum\ForumService.cs" />
+    <Compile Include="Models\Forum\IForumRepository.cs" />
+    <Compile Include="Models\Forum\Post.cs" />
+    <Compile Include="Models\Forum\Reply.cs" />
     <Compile Include="Models\GKpi\GKpiRepository.cs" />
     <Compile Include="Models\GKpi\GKpiService.cs" />
     <Compile Include="Models\GKpi\IGKpiRepository.cs" />
@@ -380,6 +385,7 @@
       <DependentUpon>SelfCtrl.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Webapp\Education\EducationCtrl.js" />
+    <Content Include="Scripts\Webapp\Forum\ForumCtrl.js" />
     <Content Include="Scripts\Webapp\GSchedule\HistoryLineChart.js" />
     <Content Include="Scripts\Webapp\GSchedule\ScheduleCtrl.js" />
     <Content Include="Scripts\Webapp\Home\AdminCtrl.js" />
@@ -499,6 +505,7 @@
     <Content Include="Views\Education\Assign.cshtml" />
     <Content Include="Views\Assessment\ChartPerformance.cshtml" />
     <Content Include="Views\Forum\Index.cshtml" />
+    <Content Include="Views\Forum\Post.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Promotion\" />
