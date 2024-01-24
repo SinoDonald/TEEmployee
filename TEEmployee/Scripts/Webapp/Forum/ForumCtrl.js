@@ -86,11 +86,19 @@ app.controller('PostCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
         hour12: false, // If you want 24-hour format
     };
 
+    let picMap = new Map();
+
     appService.GetPost({ id: $window.postId }).then((ret) => {
 
         $scope.post = ret.data.Item1;
         $scope.replies = ret.data.Item2;        
-            
+
+        // set map
+        picMap.set($scope.post.empno, Math.floor(Math.random() * 5) + 1);
+        $scope.replies.forEach(x => picMap.set(x.empno, Math.floor(Math.random() * 5) + 1));
+        // get map
+        $scope.post.pic = picMap.get($scope.post.empno);
+        $scope.replies.forEach(x => x.pic = picMap.get(x.empno));
     })
 
     $scope.createModal = () => {
