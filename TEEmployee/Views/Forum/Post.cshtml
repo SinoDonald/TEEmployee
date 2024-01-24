@@ -19,7 +19,7 @@
         }
 
         img {
-            filter: grayscale(100%);
+            /*filter: grayscale(100%);*/
         }
 
         article time, article:hover time,
@@ -74,7 +74,8 @@
                         html body .comments article h4 {
                             display: inline-block;
                             font-weight: 400;
-                            margin-bottom: 25px;
+                            /*margin-bottom: 25px;*/
+                            margin-bottom: 15px;
                         }
 
                             html body .comments article h4 a {
@@ -106,7 +107,7 @@
                         html body .comments article .like-count,
                         html body .comments article .icon-rocknroll {
                             font-size: 0.75rem;
-                            opacity: 0;
+                            /*opacity: 0;*/
                         }
 
                         html body .comments article time,
@@ -115,7 +116,8 @@
                         }
 
                         html body .comments article p {
-                            margin-bottom: 50px;
+                            /*margin-bottom: 50px;*/
+                            margin-bottom: 20px;
                         }
 
                             html body .comments article p .reply {
@@ -127,9 +129,9 @@
                             opacity: 1;
                         }
 
-        .like-data {
+        /*.like-data {
             float: right;
-        }
+        }*/
 
         .icon-rocknroll {
             background: none;
@@ -147,6 +149,13 @@
 
         .btnSet {
             margin-top: 120px;
+        }
+
+        h2 {
+            text-decoration: solid underline #bfbfa8 2px;
+            text-underline-offset: 6px;
+            opacity: 0.8;
+            margin-bottom: 20px;
         }
 
     </style>
@@ -169,19 +178,22 @@
 
     <section id="app" class="comments mt-5">
 
+        
+        <h2 ng-bind="post.title"></h2><br />
+
         <article>
-            <img id="profile-photo" src="https://en.gravatar.com/userimage/18343163/3fd908393aedf6423ec12cacec9a1f50.jpg?size=200" />
-            <h4 ng-bind="post.empno"></h4>
-            <time>5 months ago</time>
+            <img id="profile-photo" ng-src="~/Content/assets/img/forum/f{{post.pic}}.png" />
+            <h4 ng-bind="post.name"></h4>
+            <time ng-bind="post.postDate"></time>
             <like></like>
-            <p ng-bind="post.content">                
+            <p ng-bind="post.content">
             </p>
         </article>
 
         <article ng-repeat="item in replies">
-            <img id="profile-photo" src="https://en.gravatar.com/userimage/18343163/3fd908393aedf6423ec12cacec9a1f50.jpg?size=200" />
-            <h4 ng-bind="item.empno"></h4>
-            <time>5 months ago</time>
+            <img id="profile-photo" ng-src="~/Content/assets/img/forum/f{{item.pic}}.png" />
+            <h4 ng-bind="item.name"></h4>
+            <time ng-bind="item.replyDate"></time>
             <like></like>
             <p ng-bind="item.replyContent">
             </p>

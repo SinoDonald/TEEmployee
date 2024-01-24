@@ -18,7 +18,7 @@ namespace TEEmployee.Models.Forum
 
         public List<Post> GetAllPosts()
         {
-            var ret = _forumRepository.GetAllPosts();
+            var ret = _forumRepository.GetAllPosts().OrderByDescending(x => x.postDate).ToList();
 
             var users = _userRepository.GetAll();
             ret.ForEach(x => x.name = users.Find(y => y.empno == x.empno).name);
@@ -30,6 +30,10 @@ namespace TEEmployee.Models.Forum
         {
             Post post = _forumRepository.GetPost(id);
             List<Reply> replies = _forumRepository.GetReplies(id);
+
+            var users = _userRepository.GetAll();
+            post.name = users.Find(y => y.empno == post.empno).name;
+            replies.ForEach(x => x.name = users.Find(y => y.empno == x.empno).name);
 
             return (post, replies);
         }
