@@ -40,34 +40,117 @@ namespace TEEmployee.Models.Talent
         // 取得所有員工履歷
         public List<CV> GetAll(string empno)
         {
-            UpdateUsersGroup(new UserRepository().GetAll().ToList()); // 更新SQL員工當前所屬群組
+            List<User> users = new UserRepository().GetAll().OrderBy(x => x.empno).ToList();
+            UpdateUsersGroup(users); // 更新SQL員工當前所屬群組
+            User user = users.Where(x => x.empno.Equals(empno)).FirstOrDefault();
 
+            string sql = @"SELECT * FROM userCV WHERE empno=@empno";
+            List<CV> ret = _conn.Query<CV>(sql, new { empno }).ToList();
+            if(ret.Count() != 0)
+            {
+                CV userCV = ret.FirstOrDefault();
+                userCV.pic = userCV.empno;
+            }
+
+            if (user.department_manager)
+            {
+                ret = new List<CV>();
+                sql = @"SELECT * FROM userCV ORDER BY empno";
+                List<CV> userCVs = _conn.Query<CV>(sql, new { empno }).Distinct().ToList();
+
+                // 加入到職員工的所有名單
+                foreach (User employee in users)
+                {
+                    CV userCV = userCVs.Where(x => x.empno.Equals(employee.empno)).FirstOrDefault();
+                    if (userCV != null)
+                    {
+                        userCV.pic = employee.empno;
+                        ret.Add(userCV);
+                    }
+                    // 未上傳履歷名單
+                    else
+                    {
+                        ret.Add(new CV() { empno = employee.empno, name = employee.name, pic = "0000", educational = "" });
+                    }
+                }
+            }
+
+            return ret;
+        }
+        // 取得員工履歷
+        public List<CV> Get(string empno)
+        {
             List<CV> ret;
 
             string sql = @"SELECT * FROM userCV WHERE empno=@empno";
             ret = _conn.Query<CV>(sql, new { empno }).ToList();
 
-            if (empno == "4125")
+            foreach (CV userCV in ret)
             {
-                sql = @"SELECT * FROM userCV ORDER BY empno";
-                ret = _conn.Query<CV>(sql, new { empno }).ToList();
+                if (String.IsNullOrEmpty(userCV.planning)) { userCV.planning = ""; }
+                if (String.IsNullOrEmpty(userCV.educational)) { userCV.educational = ""; }
 
-                List<string> usersEmpno = new UserRepository().GetAll().Select(x => x.empno).ToList(); // 在職員工
-                List<string> exEmployees = new List<string>(); // 不顯示的名單(協理+離職員工)
-                exEmployees.Add("4125");
-                foreach (CV user in ret)
+                // 計算年齡, 民國轉西元後計算年齡
+                CultureInfo culture = new CultureInfo("zh-TW");
+                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                DateTime birthday = DateTime.Parse(userCV.birthday, culture);
+                DateTime now = DateTime.Now;
+                int age = now.Year - birthday.Year;
+                if (now.Month < birthday.Month || (now.Month == birthday.Month && now.Day < birthday.Day))
                 {
-                    string exEmployee = usersEmpno.Where(x => x.Equals(user.empno)).FirstOrDefault();
-                    if (exEmployee == null)
-                    {
-                        exEmployees.Add(user.empno);
-                    }
+                    age--;
                 }
-                // 移除不顯示的名單
-                foreach (string exEmployee in exEmployees)
+                userCV.age = age.ToString();
+
+                // 解析SQL seniority文字, 儲存工作、公司與職位年資
+                Tuple<string, string, string> analyzeSeniority = AnalyzeSeniority(userCV.seniority);
+                userCV.workYears = analyzeSeniority.Item1; // 工作年資
+                userCV.companyYears = analyzeSeniority.Item2; // 公司年資
+                userCV.seniority = analyzeSeniority.Item3; // 職務經歷
+
+                // 取得核心專業盤點的專業與管理能力分數
+                List<Personal> getPersonal = new ProfessionRepository().GetPersonal(userCV.empno);
+                // 專業能力_領域技能
+                List<Personal> domainScores = getPersonal.Where(x => x.skill_type.Equals("domain") && x.score >= 4).OrderBy(x => x.custom_order).ToList();
+                foreach (Personal domainScore in domainScores)
                 {
-                    CV removeEmployee = ret.Where(x => x.empno.Equals(exEmployee)).FirstOrDefault();
-                    ret.Remove(removeEmployee);
+                    userCV.domainSkill += domainScore.content + "：" + domainScore.score + "\n";
+                }
+                if (userCV.domainSkill != null)
+                {
+                    userCV.domainSkill = userCV.domainSkill.Substring(0, userCV.domainSkill.Length - 1); // 移除最後的"/n"
+                }
+                else
+                {
+                    userCV.domainSkill = "\n";
+                }
+                // 專業能力_核心技能
+                List<Personal> coreScores = getPersonal.Where(x => x.skill_type.Equals("core") && x.score >= 4).OrderBy(x => x.custom_order).ToList();
+                foreach (Personal coreScore in coreScores)
+                {
+                    userCV.coreSkill += coreScore.content + "：" + coreScore.score + "\n";
+                }
+                if (userCV.coreSkill != null)
+                {
+                    userCV.coreSkill = userCV.coreSkill.Substring(0, userCV.coreSkill.Length - 1); // 移除最後的"/n"
+                }
+                else
+                {
+                    userCV.coreSkill = "\n";
+                }
+                // 管理能力
+                List<Personal> manageScores = getPersonal.Where(x => x.skill_type.Equals("manage") && x.score >= 4).OrderBy(x => x.custom_order).ToList();
+                foreach (Personal manageScore in manageScores)
+                {
+                    userCV.manageSkill += manageScore.content + "：" + manageScore.score + "\n";
+                }
+                if (userCV.manageSkill != null)
+                {
+                    userCV.manageSkill = userCV.manageSkill.Substring(0, userCV.manageSkill.Length - 1); // 移除最後的"/n"
+                }
+                else
+                {
+                    userCV.manageSkill = "\n";
                 }
             }
 
@@ -234,87 +317,6 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
-        // 取得員工履歷
-        public List<CV> Get(string empno)
-        {
-            List<CV> ret;
-
-            string sql = @"SELECT * FROM userCV WHERE empno=@empno";
-            ret = _conn.Query<CV>(sql, new { empno }).ToList();
-
-            foreach (CV userCV in ret)
-            {
-                if (userCV.planning == null)
-                {
-                    userCV.planning = "";
-                }
-
-                // 計算年齡, 民國轉西元後計算年齡
-                CultureInfo culture = new CultureInfo("zh-TW");
-                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-                DateTime birthday = DateTime.Parse(userCV.birthday, culture);
-                DateTime now = DateTime.Now;
-                int age = now.Year - birthday.Year;
-                if (now.Month < birthday.Month || (now.Month == birthday.Month && now.Day < birthday.Day))
-                {
-                    age--;
-                }
-                userCV.age = age.ToString();
-
-                // 解析SQL seniority文字, 儲存工作、公司與職位年資
-                Tuple<string, string, string> analyzeSeniority = AnalyzeSeniority(userCV.seniority);
-                userCV.workYears = analyzeSeniority.Item1; // 工作年資
-                userCV.companyYears = analyzeSeniority.Item2; // 公司年資
-                userCV.seniority = analyzeSeniority.Item3; // 職務經歷
-
-                // 取得核心專業盤點的專業與管理能力分數
-                List<Personal> getPersonal = new ProfessionRepository().GetPersonal(userCV.empno);
-                // 專業能力_領域技能
-                List<Personal> domainScores = getPersonal.Where(x => x.skill_type.Equals("domain") && x.score >= 4).OrderBy(x => x.custom_order).ToList();
-                foreach (Personal domainScore in domainScores)
-                {
-                    userCV.domainSkill += domainScore.content + "：" + domainScore.score + "\n";
-                }
-                if (userCV.domainSkill != null)
-                {
-                    userCV.domainSkill = userCV.domainSkill.Substring(0, userCV.domainSkill.Length - 1); // 移除最後的"/n"
-                }
-                else
-                {
-                    userCV.domainSkill = "\n";
-                }
-                // 專業能力_核心技能
-                List<Personal> coreScores = getPersonal.Where(x => x.skill_type.Equals("core") && x.score >= 4).OrderBy(x => x.custom_order).ToList();
-                foreach (Personal coreScore in coreScores)
-                {
-                    userCV.coreSkill += coreScore.content + "：" + coreScore.score + "\n";
-                }
-                if (userCV.coreSkill != null)
-                {
-                    userCV.coreSkill = userCV.coreSkill.Substring(0, userCV.coreSkill.Length - 1); // 移除最後的"/n"
-                }
-                else
-                {
-                    userCV.coreSkill = "\n";
-                }
-                // 管理能力
-                List<Personal> manageScores = getPersonal.Where(x => x.skill_type.Equals("manage") && x.score >= 4).OrderBy(x => x.custom_order).ToList();
-                foreach (Personal manageScore in manageScores)
-                {
-                    userCV.manageSkill += manageScore.content + "：" + manageScore.score + "\n";
-                }
-                if (userCV.manageSkill != null)
-                {
-                    userCV.manageSkill = userCV.manageSkill.Substring(0, userCV.manageSkill.Length - 1); // 移除最後的"/n"
-                }
-                else
-                {
-                    userCV.manageSkill = "\n";
-                }
-            }
-
-            return ret;
-        }
         // 解析SQL seniority文字, 儲存工作、公司與職位年資
         public Tuple<string, string, string> AnalyzeSeniority(string analyzeSeniority)
         {
@@ -322,56 +324,59 @@ namespace TEEmployee.Models.Talent
             string companyYears = string.Empty;
             string positionSeniority = string.Empty;
 
-            // 計算年齡, 民國轉西元後計算年齡
-            CultureInfo culture = new CultureInfo("zh-TW");
-            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-            DateTime now = DateTime.Now;
-            Regex regex = new Regex(@"(.*)\：(.*\..*)\~(.*)", RegexOptions.IgnoreCase);
-            string[] senioritys = analyzeSeniority.Split('\n');
-            // 工作年資
-            try
+            if (!String.IsNullOrEmpty(analyzeSeniority))
             {
-                MatchCollection matches = regex.Matches(senioritys[0]);
-                Match match = matches[0];
-                DateTime start = DateTime.Parse(match.Groups[2].Value, culture);
-                (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, now);
-                workYears = calcYMD.y + "年" + calcYMD.m + "月";
-            }
-            catch { }
-            // 公司年資
-            try
-            {
-                MatchCollection matches = regex.Matches(senioritys[1]);
-                Match match = matches[0];
-                DateTime start = DateTime.Parse(match.Groups[2].Value, culture);
-                (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, now);
-                companyYears = calcYMD.y + "年" + calcYMD.m + "月"/* + calcYMD.d + "日"*/;
-            }
-            catch { }
-            // 職位年資
-            try
-            {
-                for (int i = 2; i < senioritys.Length; i++)
+                // 計算年齡, 民國轉西元後計算年齡
+                CultureInfo culture = new CultureInfo("zh-TW");
+                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                DateTime now = DateTime.Now;
+                Regex regex = new Regex(@"(.*)\：(.*\..*)\~(.*)", RegexOptions.IgnoreCase);
+                string[] senioritys = analyzeSeniority.Split('\n');
+                // 工作年資
+                try
                 {
-                    if (senioritys[i].Contains("迄今"))
+                    MatchCollection matches = regex.Matches(senioritys[0]);
+                    Match match = matches[0];
+                    DateTime start = DateTime.Parse(match.Groups[2].Value, culture);
+                    (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, now);
+                    workYears = calcYMD.y + "年" + calcYMD.m + "月";
+                }
+                catch { }
+                // 公司年資
+                try
+                {
+                    MatchCollection matches = regex.Matches(senioritys[1]);
+                    Match match = matches[0];
+                    DateTime start = DateTime.Parse(match.Groups[2].Value, culture);
+                    (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, now);
+                    companyYears = calcYMD.y + "年" + calcYMD.m + "月"/* + calcYMD.d + "日"*/;
+                }
+                catch { }
+                // 職位年資
+                try
+                {
+                    for (int i = 2; i < senioritys.Length; i++)
                     {
-                        MatchCollection matches = regex.Matches(senioritys[i]);
-                        Match match = matches[0];
-                        DateTime start = DateTime.Parse(match.Groups[2].Value, culture);
-                        (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, now);
-                        positionSeniority += match.Groups[1].Value + "：" + calcYMD.y + "年" + calcYMD.m + "月\n"/* + calcYMD.d + "日\n"*/;
+                        if (senioritys[i].Contains("迄今"))
+                        {
+                            MatchCollection matches = regex.Matches(senioritys[i]);
+                            Match match = matches[0];
+                            DateTime start = DateTime.Parse(match.Groups[2].Value, culture);
+                            (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, now);
+                            positionSeniority += match.Groups[1].Value + "：" + calcYMD.y + "年" + calcYMD.m + "月\n"/* + calcYMD.d + "日\n"*/;
+                        }
+                        else
+                        {
+                            positionSeniority += senioritys[i] + "\n";
+                        }
                     }
-                    else
+                    if (positionSeniority.Length > 1)
                     {
-                        positionSeniority += senioritys[i] + "\n";
+                        positionSeniority = positionSeniority.Substring(0, positionSeniority.Length - 1);
                     }
                 }
-                if (positionSeniority.Length > 1)
-                {
-                    positionSeniority = positionSeniority.Substring(0, positionSeniority.Length - 1);
-                }
+                catch { }
             }
-            catch { }
 
             return new Tuple<string, string, string>(workYears, companyYears, positionSeniority);
         }
@@ -482,7 +487,7 @@ namespace TEEmployee.Models.Talent
                                     }
                                     // 加入三年績效考核與High Performance資訊
                                     CV cv = GetAll(empno).FirstOrDefault();
-                                    if(cv != null)
+                                    if (cv != null)
                                     {
                                         userCV.advantage = cv.advantage; // 優勢
                                         userCV.disadvantage = cv.disadvantage; // 劣勢
@@ -497,11 +502,8 @@ namespace TEEmployee.Models.Talent
                                         userCV.choice4 = cv.choice4; // 建立系統性、計畫性的學習能力 - 學習力具體
                                         userCV.choice5 = cv.choice5; // 適應變化的韌性 - 懂得取捨、不放棄
                                     }
-                                    else
-                                    {
-                                        userCV.performance = "";
-                                    }
-                                    if (userCV.empno != null && userCV.name != null)
+                                    else { userCV.performance = ""; }
+                                    if (!String.IsNullOrEmpty(userCV.empno) && !String.IsNullOrEmpty(userCV.name))
                                     { 
                                         userCVs.Add(userCV);
                                     }
@@ -1220,73 +1222,81 @@ namespace TEEmployee.Models.Talent
             List<User> allUser = new UserRepository().GetAll().ToList();
             foreach (User user in allUser)
             {
-                List<Personal> getPersonal = new ProfessionRepository().GetPersonal(user.empno); // 取得核心專業盤點的專業與管理能力分數
-                Ability userAbility = new Ability();
-                // 專業能力_領域技能
-                List<Personal> domainScores = getPersonal.Where(x => x.skill_type.Equals("domain")).OrderBy(x => x.custom_order).ToList();
-                int domainSkills = new ProfessionRepository().GetAll().Where(x => x.skill_type.Equals("domain") && x.role.Equals(user.group_one)).Count();
-                double domainScore = 0.0;
-                foreach (Personal userDomainScore in domainScores)
+                try
                 {
-                    domainScore += userDomainScore.score;
-                    if(userDomainScore.score >= 4)
+                    List<Personal> getPersonal = new ProfessionRepository().GetPersonal(user.empno); // 取得核心專業盤點的專業與管理能力分數
+                    Ability userAbility = new Ability();
+                    // 專業能力_領域技能
+                    List<Personal> domainScores = getPersonal.Where(x => x.skill_type.Equals("domain")).OrderBy(x => x.custom_order).ToList();
+                    int domainSkills = new ProfessionRepository().GetAll().Where(x => x.skill_type.Equals("domain") && x.role.Equals(user.group_one)).Count();
+                    double domainScore = 0.0;
+                    foreach (Personal userDomainScore in domainScores)
                     {
-                        userAbility.domainSkill += userDomainScore.content + "：" + userDomainScore.score + "\n";
+                        domainScore += userDomainScore.score;
+                        if (userDomainScore.score >= 4)
+                        {
+                            userAbility.domainSkill += userDomainScore.content + "：" + userDomainScore.score + "\n";
+                        }
                     }
-                }
-                // 專業能力_核心技能
-                List<Personal> coreScores = getPersonal.Where(x => x.skill_type.Equals("core")).OrderBy(x => x.custom_order).ToList();
-                int coreSkills = new ProfessionRepository().GetAll().Where(x => x.skill_type.Equals("core") && x.role.Equals("shared")).Count();
-                double coreScore = 0.0;
-                foreach (Personal userCoreScore in coreScores)
-                {
-                    coreScore += userCoreScore.score;
-                    if (userCoreScore.score >= 4)
+                    // 專業能力_核心技能
+                    List<Personal> coreScores = getPersonal.Where(x => x.skill_type.Equals("core")).OrderBy(x => x.custom_order).ToList();
+                    int coreSkills = new ProfessionRepository().GetAll().Where(x => x.skill_type.Equals("core") && x.role.Equals("shared")).Count();
+                    double coreScore = 0.0;
+                    foreach (Personal userCoreScore in coreScores)
                     {
-                        userAbility.coreSkill += userCoreScore.content + "：" + userCoreScore.score + "\n";
+                        coreScore += userCoreScore.score;
+                        if (userCoreScore.score >= 4)
+                        {
+                            userAbility.coreSkill += userCoreScore.content + "：" + userCoreScore.score + "\n";
+                        }
                     }
-                }
-                double professionScore = (domainScore + coreScore) / (domainSkills + coreSkills);
-                // 管理能力
-                List<Personal> manageScores = getPersonal.Where(x => x.skill_type.Equals("manage")).OrderBy(x => x.custom_order).ToList();
-                int managekills = new ProfessionRepository().GetAll().Where(x => x.skill_type.Equals("manage") && x.role.Equals("shared")).Count();
-                double manageScore = 0.0;
-                foreach (Personal userManageScore in manageScores)
-                {
-                    manageScore += userManageScore.score;
-                    if (userManageScore.score >= 4)
+                    double professionScore = (domainScore + coreScore) / (domainSkills + coreSkills);
+                    // 管理能力
+                    List<Personal> manageScores = getPersonal.Where(x => x.skill_type.Equals("manage")).OrderBy(x => x.custom_order).ToList();
+                    int managekills = new ProfessionRepository().GetAll().Where(x => x.skill_type.Equals("manage") && x.role.Equals("shared")).Count();
+                    double manageScore = 0.0;
+                    foreach (Personal userManageScore in manageScores)
                     {
-                        userAbility.manageSkill += userManageScore.content + "：" + userManageScore.score + "\n";
+                        manageScore += userManageScore.score;
+                        if (userManageScore.score >= 4)
+                        {
+                            userAbility.manageSkill += userManageScore.content + "：" + userManageScore.score + "\n";
+                        }
                     }
-                }
-                manageScore = manageScore / managekills;
-                if(professionScore > 3 && manageScore > 3)
-                {
-                    userAbility.empno = user.empno;
-                    userAbility.name = user.name;
-                    string sql = @"SELECT * FROM userCV ORDER BY empno";
-                    CV userCV = _conn.Query<CV>(sql).ToList().Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
-                    if (userCV != null)
+                    manageScore = manageScore / managekills;
+                    if (professionScore > 3 && manageScore > 3)
                     {
-                        userAbility.position = userCV.position;
-                        userAbility.choice1 = userCV.choice1;
-                        userAbility.choice2 = userCV.choice2;
-                        userAbility.choice3 = userCV.choice3;
-                        userAbility.choice4 = userCV.choice4;
-                        userAbility.choice5 = userCV.choice5;
+                        userAbility.empno = user.empno;
+                        userAbility.name = user.name;
+                        string sql = @"SELECT * FROM userCV ORDER BY empno";
+                        try
+                        {
+                            CV userCV = _conn.Query<CV>(sql).ToList().Where(x => !String.IsNullOrEmpty(x.empno)).Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
+                            if (userCV != null)
+                            {
+                                userAbility.position = userCV.position;
+                                userAbility.choice1 = userCV.choice1;
+                                userAbility.choice2 = userCV.choice2;
+                                userAbility.choice3 = userCV.choice3;
+                                userAbility.choice4 = userCV.choice4;
+                                userAbility.choice5 = userCV.choice5;
 
-                        // 身份是否可進行選擇
-                        int count = 0;
-                        if (userAbility.choice1 == true) { count++; }
-                        if (userAbility.choice2 == true) { count++; }
-                        if (userAbility.choice3 == true) { count++; }
-                        if (userAbility.choice4 == true) { count++; }
-                        if (userAbility.choice5 == true) { count++; }
-                        if (count >= 3) { userAbility.selectPosition = false; }
-                        else { userAbility.selectPosition = true; }
+                                // 身份是否可進行選擇
+                                int count = 0;
+                                if (userAbility.choice1 == true) { count++; }
+                                if (userAbility.choice2 == true) { count++; }
+                                if (userAbility.choice3 == true) { count++; }
+                                if (userAbility.choice4 == true) { count++; }
+                                if (userAbility.choice5 == true) { count++; }
+                                if (count >= 3) { userAbility.selectPosition = false; }
+                                else { userAbility.selectPosition = true; }
+                            }
+                            users.Add(userAbility);
+                        }
+                        catch (Exception ex) { string error = ex.Message + "\n" + ex.ToString(); }
                     }
-                    users.Add(userAbility);
                 }
+                catch (Exception) { }
             }
 
             return users;

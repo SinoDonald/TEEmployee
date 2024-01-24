@@ -139,14 +139,9 @@ namespace TEEmployee.Controllers
             var ret = _service.Get(empno);
 
             // 對Admin隱藏年度績效
-            bool isAdmin = false;
             if (Session["empno"].ToString() != Session["original_empno"].ToString())
             {
-                isAdmin = true;
-            }
-            if (isAdmin)
-            {
-                foreach(CV item in ret)
+                foreach (CV item in ret)
                 {
                     item.performance = "";
                 }

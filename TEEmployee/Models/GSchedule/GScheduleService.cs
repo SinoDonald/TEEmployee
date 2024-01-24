@@ -469,9 +469,9 @@ namespace TEEmployee.Models.GSchedule
         }
 
         // 上傳群組規劃PDF
-        public bool UploadPDFFile(HttpPostedFileBase file, string view, string empno)
+        public string UploadPDFFile(HttpPostedFileBase file, string view, string empno)
         {
-            bool ret = _scheduleRepository.UploadPDFFile(file, view, empno);
+            string ret = _scheduleRepository.UploadPDFFile(file, view, empno);
             return ret;
         }
 

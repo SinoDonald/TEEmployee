@@ -20,7 +20,7 @@ namespace TEEmployee.Models.GSchedule
         bool Update(ProjectSchedule projectSchedule);
         bool Delete(ProjectSchedule projectSchedule);
         List<string> GetYears(string view); // 取得年份
-        bool UploadPDFFile(HttpPostedFileBase file, string view, string empno); // 上傳PDF
+        string UploadPDFFile(HttpPostedFileBase file, string view, string empno); // 上傳PDF
         string GetPDF(string view, string year, string group, string userName); // 取得PDF
         List<Planning> GetResponse(string view, string year, string group, string empno, string name); // 取得回覆
         bool SaveResponse(string view, string year, string group, string manager_id, string name, List<Planning> response); // 儲存回覆

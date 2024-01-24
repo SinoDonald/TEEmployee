@@ -291,12 +291,15 @@ app.controller('GroupPlanCtrl', ['$scope', '$location', 'appService', '$rootScop
             contentType: false,
             processData: false,
             success: function (data) {
-                if (data === true) {
+                if (data != "") {
                     $('#frame').attr('src', $('#frame').attr('src')); // 即時更新PDF
                 }
                 else {
-                    alert("上傳格式錯誤");
+                    alert("上傳失敗");
                 }
+            },
+            error: function (data) {
+                alert(data.responseText);
             }
         });
     });
@@ -373,12 +376,15 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
             contentType: false,
             processData: false,
             success: function (data) {
-                if (data === true) {
+                if (data != "") {
                     $('#frame').attr('src', $('#frame').attr('src')); // 即時更新PDF
                 }
-                //else {
-                //    alert("上傳格式錯誤");
-                //}
+                else {
+                    alert("上傳失敗");
+                }
+            },
+            error: function (data) {
+                alert(data.responseText);
             }
         });
     });

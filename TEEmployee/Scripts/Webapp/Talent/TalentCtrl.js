@@ -82,6 +82,7 @@ app.factory('dataservice', function () {
         user.group_three = data.group_three;
         user.birthday = data.birthday;
         user.age = data.age;
+        user.pic = data.pic;
         user.workYears = data.workYears;
         user.companyYears = data.companyYears;
         user.seniority = data.seniority.split('\n');
@@ -272,7 +273,7 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
                 $location.path('/TalentRecord');
             })
             .catch(function (ret) {
-                alert('Error');
+                alert('未上傳履歷');
             });
     }
 

@@ -71,6 +71,7 @@ namespace TEEmployee.Models
         public string group_three { get; set; }
         public string birthday { get; set; }
         public string age { get; set; }
+        public string pic { get; set; } // 圖片位置
         public string workYears { get; set; } // 工作年資
         public string companyYears { get; set; } // 公司年資
         public string seniority { get; set; } // 職位年資

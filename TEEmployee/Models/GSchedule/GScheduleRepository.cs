@@ -313,7 +313,7 @@ namespace TEEmployee.Models.GSchedule
         }
 
         // 上傳PDF
-        public bool UploadPDFFile(HttpPostedFileBase file, string view, string empno)
+        public string UploadPDFFile(HttpPostedFileBase file, string view, string empno)
         {
             // 當前民國年
             CultureInfo culture = new CultureInfo("zh-TW");
@@ -322,7 +322,7 @@ namespace TEEmployee.Models.GSchedule
 
             User user = new UserRepository().GetAll().Where(x => x.empno.Equals(empno)).FirstOrDefault();
 
-            bool ret = false;
+            string path = "";
             if (Path.GetExtension(file.FileName).Equals(".pdf"))
             {
                 string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Content"), "GSchedule", view, year);
@@ -337,15 +337,27 @@ namespace TEEmployee.Models.GSchedule
                     string group_one = new UserRepository().GetAll().Where(x => String.IsNullOrEmpty(x.group)).Where(x => !String.IsNullOrEmpty(x.group_one)).Select(x => x.group_one).Distinct().FirstOrDefault();
                     group = group_one; 
                 }
-                var path = Path.Combine(folderPath, group + Path.GetExtension(file.FileName));
+                path = Path.Combine(folderPath, group + Path.GetExtension(file.FileName));
                 if (view.Equals("PersonalPlan"))
                 {
                     path = Path.Combine(folderPath, user.empno + Path.GetExtension(file.FileName));
                 }
-                file.SaveAs(path); // 將檔案存到Server
-                ret = true;
+                try
+                {
+                    file.SaveAs(path); // 將檔案存到Server
+                }
+                catch(Exception)
+                {
+                    folderPath = Path.Combine("Content", "GSchedule", view, year);
+                    path = Path.Combine(folderPath, group + Path.GetExtension(file.FileName));
+                    if (view.Equals("PersonalPlan"))
+                    {
+                        path = Path.Combine(folderPath, user.empno + Path.GetExtension(file.FileName));
+                    }
+                    file.SaveAs(path); // 將檔案存到Server
+                }
             }
-            return ret;
+            return path;
         }
 
         // 取得PDF
