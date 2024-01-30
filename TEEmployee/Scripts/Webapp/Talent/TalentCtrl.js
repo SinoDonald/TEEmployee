@@ -30,10 +30,6 @@ app.run(['$http', '$window', function ($http, $window) {
 
 app.service('appService', ['$http', function ($http) {
 
-    // 取得核心專業盤點的專業與管理能力分數
-    this.GetAllScores = (o) => {
-        return $http.post('Profession/GetAll', o);
-    };
     // High Performer
     this.HighPerformer = (o) => {
         return $http.post('Talent/HighPerformer', o);
@@ -172,16 +168,10 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
             $scope.GetAll = ret.data;
 
             // High Performer
-            appService.GetAllScores({})
+            appService.HighPerformer({})
                 .then(function (ret) {
-                    appService.HighPerformer({ getAllScores: ret.data })
-                        .then(function (ret) {
-                            $scope.HighPerformer = ret.data;
-                        })
+                    $scope.HighPerformer = ret.data.Item1;
                 })
-                .catch(function (ret) {
-                    alert('Error');
-                });
 
             // 取得群組
             let groups = appService.GetGroupList({});
@@ -244,17 +234,19 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
     // TalentHighPerformers
     $scope.TalentHighPerformers = function (data) {
         // High Performer
-        appService.GetAllScores({})
+        appService.HighPerformer({})
             .then(function (ret) {
-                appService.HighPerformer({ getAllScores: ret.data })
-                    .then(function (ret) {
-                        $scope.HighPerformer = ret.data;
-                        highperformers.set(ret.data);
-                        $location.path('/TalentHighPerformers');
-                    })
+                if (ret.data.Item2 === "") {
+                    $scope.HighPerformer = ret.data.Item1;
+                    highperformers.set(ret.data.Item1);
+                    $location.path('/TalentHighPerformers');
+                }
+                else {
+                    alert(ret.data.Item2);
+                }
             })
             .catch(function (ret) {
-                alert('Error');
+                alert(ret.data);
             });
     }
 

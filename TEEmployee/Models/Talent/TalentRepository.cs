@@ -1216,90 +1216,108 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
         // High Performer
-        public List<Ability> HighPerformer(List<Skill> getAllScores)
+        public Tuple<List<Ability>, string> HighPerformer()
         {
             List<Ability> users = new List<Ability>();
-            List<User> allUser = new UserRepository().GetAll().ToList();
-            foreach (User user in allUser)
+            string error = string.Empty;
+            try
             {
-                try
+                List<User> allUser = new UserRepository().GetAll().ToList();
+                List<Skill> getAllScores = new ProfessionRepository().GetAll(); // 取得核心專業盤點的專業與管理能力分數
+                foreach (User user in allUser)
                 {
-                    List<Personal> getPersonal = new ProfessionRepository().GetPersonal(user.empno); // 取得核心專業盤點的專業與管理能力分數
-                    Ability userAbility = new Ability();
-                    // 專業能力_領域技能
-                    List<Personal> domainScores = getPersonal.Where(x => x.skill_type.Equals("domain")).OrderBy(x => x.custom_order).ToList();
-                    int domainSkills = new ProfessionRepository().GetAll().Where(x => x.skill_type.Equals("domain") && x.role.Equals(user.group_one)).Count();
-                    double domainScore = 0.0;
-                    foreach (Personal userDomainScore in domainScores)
+                    try
                     {
-                        domainScore += userDomainScore.score;
-                        if (userDomainScore.score >= 4)
+                        Ability userAbility = new Ability();
+                        // 專業能力_領域技能
+                        List<Skill> domainSkills = getAllScores.Where(x => x.skill_type.Equals("domain")).Where(x => x.role.Equals(user.group_one)).OrderBy(x => x.id).ToList();
+                        int domainSkillCount = domainSkills.Count();
+                        double domainScore = 0.0;
+                        foreach(Skill skill in domainSkills)
                         {
-                            userAbility.domainSkill += userDomainScore.content + "：" + userDomainScore.score + "\n";
-                        }
-                    }
-                    // 專業能力_核心技能
-                    List<Personal> coreScores = getPersonal.Where(x => x.skill_type.Equals("core")).OrderBy(x => x.custom_order).ToList();
-                    int coreSkills = new ProfessionRepository().GetAll().Where(x => x.skill_type.Equals("core") && x.role.Equals("shared")).Count();
-                    double coreScore = 0.0;
-                    foreach (Personal userCoreScore in coreScores)
-                    {
-                        coreScore += userCoreScore.score;
-                        if (userCoreScore.score >= 4)
-                        {
-                            userAbility.coreSkill += userCoreScore.content + "：" + userCoreScore.score + "\n";
-                        }
-                    }
-                    double professionScore = (domainScore + coreScore) / (domainSkills + coreSkills);
-                    // 管理能力
-                    List<Personal> manageScores = getPersonal.Where(x => x.skill_type.Equals("manage")).OrderBy(x => x.custom_order).ToList();
-                    int managekills = new ProfessionRepository().GetAll().Where(x => x.skill_type.Equals("manage") && x.role.Equals("shared")).Count();
-                    double manageScore = 0.0;
-                    foreach (Personal userManageScore in manageScores)
-                    {
-                        manageScore += userManageScore.score;
-                        if (userManageScore.score >= 4)
-                        {
-                            userAbility.manageSkill += userManageScore.content + "：" + userManageScore.score + "\n";
-                        }
-                    }
-                    manageScore = manageScore / managekills;
-                    if (professionScore > 3 && manageScore > 3)
-                    {
-                        userAbility.empno = user.empno;
-                        userAbility.name = user.name;
-                        string sql = @"SELECT * FROM userCV ORDER BY empno";
-                        try
-                        {
-                            CV userCV = _conn.Query<CV>(sql).ToList().Where(x => !String.IsNullOrEmpty(x.empno)).Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
-                            if (userCV != null)
+                            Score userScore = skill.scores.Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
+                            if(userScore != null)
                             {
-                                userAbility.position = userCV.position;
-                                userAbility.choice1 = userCV.choice1;
-                                userAbility.choice2 = userCV.choice2;
-                                userAbility.choice3 = userCV.choice3;
-                                userAbility.choice4 = userCV.choice4;
-                                userAbility.choice5 = userCV.choice5;
-
-                                // 身份是否可進行選擇
-                                int count = 0;
-                                if (userAbility.choice1 == true) { count++; }
-                                if (userAbility.choice2 == true) { count++; }
-                                if (userAbility.choice3 == true) { count++; }
-                                if (userAbility.choice4 == true) { count++; }
-                                if (userAbility.choice5 == true) { count++; }
-                                if (count >= 3) { userAbility.selectPosition = false; }
-                                else { userAbility.selectPosition = true; }
+                                domainScore += userScore.score;
+                                if (userScore.score >= 4)
+                                {
+                                    userAbility.domainSkill += skill.content + "：" + userScore.score + "\n";
+                                }
                             }
-                            users.Add(userAbility);
                         }
-                        catch (Exception ex) { string error = ex.Message + "\n" + ex.ToString(); }
-                    }
-                }
-                catch (Exception) { }
-            }
+                        // 專業能力_核心技能
+                        List<Skill> coreSkills = getAllScores.Where(x => x.skill_type.Equals("core")).OrderBy(x => x.id).ToList();
+                        int coreSkillCount = coreSkills.Count();
+                        double coreScore = 0.0;
+                        foreach (Skill skill in coreSkills)
+                        {
+                            Score userScore = skill.scores.Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
+                            if (userScore != null)
+                            {
+                                coreScore += userScore.score;
+                                if (userScore.score >= 4)
+                                {
+                                    userAbility.coreSkill += skill.content + "：" + userScore.score + "\n";
+                                }
+                            }
+                        }
+                        double professionScore = (domainScore + coreScore) / (domainSkillCount + coreSkillCount);
 
-            return users;
+                        // 管理能力
+                        List<Skill> manageSkills = getAllScores.Where(x => x.skill_type.Equals("manage")).OrderBy(x => x.id).ToList();
+                        int manageSkillCount = manageSkills.Count();
+                        double manageScore = 0.0;
+                        foreach (Skill skill in manageSkills)
+                        {
+                            Score userScore = skill.scores.Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
+                            if (userScore != null)
+                            {
+                                manageScore += userScore.score;
+                                if (userScore.score >= 4)
+                                {
+                                    userAbility.manageSkill += skill.content + "：" + userScore.score + "\n";
+                                }
+                            }
+                        }
+                        manageScore = manageScore / manageSkillCount;
+                        if (professionScore > 3 && manageScore > 3)
+                        {
+                            userAbility.empno = user.empno;
+                            userAbility.name = user.name;
+                            string sql = @"SELECT * FROM userCV ORDER BY empno";
+                            try
+                            {
+                                CV userCV = _conn.Query<CV>(sql).ToList().Where(x => !String.IsNullOrEmpty(x.empno)).Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
+                                if (userCV != null)
+                                {
+                                    userAbility.position = userCV.position;
+                                    userAbility.choice1 = userCV.choice1;
+                                    userAbility.choice2 = userCV.choice2;
+                                    userAbility.choice3 = userCV.choice3;
+                                    userAbility.choice4 = userCV.choice4;
+                                    userAbility.choice5 = userCV.choice5;
+
+                                    // 身份是否可進行選擇
+                                    int count = 0;
+                                    if (userAbility.choice1 == true) { count++; }
+                                    if (userAbility.choice2 == true) { count++; }
+                                    if (userAbility.choice3 == true) { count++; }
+                                    if (userAbility.choice4 == true) { count++; }
+                                    if (userAbility.choice5 == true) { count++; }
+                                    if (count >= 3) { userAbility.selectPosition = false; }
+                                    else { userAbility.selectPosition = true; }
+                                }
+                                users.Add(userAbility);
+                            }
+                            catch (Exception ex) { error = ex.Message + "\n" + ex.ToString(); }
+                        }
+                    }
+                    catch (Exception ex) { error = "foreach User Error\n" + ex.Message + "\n" + ex.ToString(); }
+                }
+            }
+            catch(Exception ex) { error = "GetAll User or Skill Error\n" + ex.Message + "\n" + ex.ToString(); }
+
+            return new Tuple<List<Ability>, string>(users, error);
         }
         // 上傳年度績效檔案
         public bool ImportFile(HttpPostedFileBase file)

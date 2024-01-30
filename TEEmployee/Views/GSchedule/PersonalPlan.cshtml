@@ -26,7 +26,7 @@
                 </div>
                 <div class="col-sm-2">
                     <div class="alert alert-warning" role="alert">
-                        檔案限定格式為.pdf，檔案大小不超過10MB
+                        檔案限定格式為.pdf，檔案大小不超過20MB
                     </div>
                 </div>
                 <div class="col-sm-3">
@@ -39,6 +39,10 @@
                 </div>
                 <div class="col-sm-1">
                     <input class="btn btn-primary" id="btnPDFUpload" type="button" value="上傳" />
+                    @if (Session["empno"] is "7291" || Session["empno"] is "7596" || Session["empno"] is "8103")
+                    {
+                        <input class="btn btn-primary" id="btnContentUpload" type="button" value="Content上傳" />
+                    }
                 </div>
             </div>
         </div>
@@ -64,7 +68,8 @@
     </div>
 
     <div>
-        <iframe id="frame" src={{GetPDF}} style="width:100%;min-height:800px;margin:0 auto;" type="application/pdf"></iframe>
+        @*<iframe id="framePDF" src={{GetPDF}} style="width:100%;min-height:800px;margin:0 auto;" type="application/pdf"></iframe>*@
+        <iframe id="framePDF" src="" style="width:100%;min-height:800px;margin:0 auto;" type="application/pdf"></iframe>
     </div>
     <br />
     <br />

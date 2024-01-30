@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace TEEmployee.Models.GSchedule
 {
@@ -313,56 +314,84 @@ namespace TEEmployee.Models.GSchedule
         }
 
         // 上傳PDF
-        public string UploadPDFFile(HttpPostedFileBase file, string view, string empno)
+        public string UploadPDFFile(HttpPostedFileBase file, string view, string empno, string folder)
         {
-            // 當前民國年
-            CultureInfo culture = new CultureInfo("zh-TW");
-            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-            string year = DateTime.Now.ToString("yyy", culture);
-
-            User user = new UserRepository().GetAll().Where(x => x.empno.Equals(empno)).FirstOrDefault();
-
             string path = "";
-            if (Path.GetExtension(file.FileName).Equals(".pdf"))
+
+            try
             {
-                string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Content"), "GSchedule", view, year);
-                // 檢查資料夾是否存在
-                if (!Directory.Exists(folderPath))
+                // 當前民國年
+                CultureInfo culture = new CultureInfo("zh-TW");
+                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                string year = DateTime.Now.ToString("yyy", culture);
+
+                User user = new UserRepository().GetAll().Where(x => x.empno.Equals(empno)).FirstOrDefault();
+
+                if (Path.GetExtension(file.FileName).Equals(".pdf"))
                 {
-                    Directory.CreateDirectory(folderPath);
-                }
-                string group = user.group;
-                if (group.Equals(""))
-                {
-                    string group_one = new UserRepository().GetAll().Where(x => String.IsNullOrEmpty(x.group)).Where(x => !String.IsNullOrEmpty(x.group_one)).Select(x => x.group_one).Distinct().FirstOrDefault();
-                    group = group_one; 
-                }
-                path = Path.Combine(folderPath, group + Path.GetExtension(file.FileName));
-                if (view.Equals("PersonalPlan"))
-                {
-                    path = Path.Combine(folderPath, user.empno + Path.GetExtension(file.FileName));
-                }
-                try
-                {
-                    file.SaveAs(path); // 將檔案存到Server
-                }
-                catch(Exception)
-                {
-                    folderPath = Path.Combine("Content", "GSchedule", view, year);
-                    path = Path.Combine(folderPath, group + Path.GetExtension(file.FileName));
-                    if (view.Equals("PersonalPlan"))
+                    try
                     {
-                        path = Path.Combine(folderPath, user.empno + Path.GetExtension(file.FileName));
+                        //string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Content"), "GSchedule", view, year);
+                        string folderPath = Path.Combine(HttpContext.Current.Server.MapPath(folder), "GSchedule", view, year);
+                        // 檢查資料夾是否存在
+                        if (!Directory.Exists(folderPath))
+                        {
+                            Directory.CreateDirectory(folderPath);
+                        }
+
+                        try
+                        {
+                            string group = user.group;
+                            if (group.Equals(""))
+                            {
+                                string group_one = new UserRepository().GetAll().Where(x => String.IsNullOrEmpty(x.group)).Where(x => !String.IsNullOrEmpty(x.group_one)).Select(x => x.group_one).Distinct().FirstOrDefault();
+                                group = group_one;
+                            }
+                            path = Path.Combine(folderPath, group + Path.GetExtension(file.FileName));
+                            if (view.Equals("PersonalPlan"))
+                            {
+                                path = Path.Combine(folderPath, user.empno + Path.GetExtension(file.FileName));
+                            }
+                            try
+                            {
+                                file.SaveAs(path); // 將檔案存到Server
+                            }
+                            catch (Exception)
+                            {
+                                folderPath = Path.Combine("Content", "GSchedule", view, year);
+                                path = Path.Combine(folderPath, group + Path.GetExtension(file.FileName));
+                                if (view.Equals("PersonalPlan"))
+                                {
+                                    path = Path.Combine(folderPath, user.empno + Path.GetExtension(file.FileName));
+                                }
+                                file.SaveAs(path); // 將檔案存到Server
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            path = "Error";
+                        }
                     }
-                    file.SaveAs(path); // 將檔案存到Server
+                    catch (Exception ex)
+                    {
+                        path = "Error：Exist無法檢查 or 資料夾無法建立\n" + ex.Message + "\n" + ex.ToString();
+                    }
                 }
             }
+            catch(Exception ex)
+            {
+                path = "Error：年份 or User.db有誤\n" + ex.Message + "\n" + ex.ToString();
+            }
+
             return path;
         }
 
         // 取得PDF
         public string GetPDF(string view, string year, string group, string userName)
         {
+            string folder = "App_Data";
+            //string folder = "Content";
+
             if (String.IsNullOrEmpty(year))
             {
                 // 當前民國年
@@ -372,13 +401,14 @@ namespace TEEmployee.Models.GSchedule
             }
 
             User user = new UserRepository().GetAll().Where(x => x.name.Equals(userName)).FirstOrDefault();
-            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Content"), "GSchedule", view, year);
+            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/" + folder), "GSchedule", view, year);
             // 檢查資料夾是否存在
             if (!Directory.Exists(folderPath))
             {
                 Directory.CreateDirectory(folderPath);
             }
-            string relativePath = Path.Combine("Content", "GSchedule", view, year);
+            string relativePath = Path.Combine(folder, "GSchedule", view, year);
+            relativePath = folderPath;
             var ret = Path.Combine(relativePath, user.group + ".pdf");
             if (view.Equals("GroupPlan"))
             {

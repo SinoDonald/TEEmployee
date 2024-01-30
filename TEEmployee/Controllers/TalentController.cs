@@ -84,9 +84,9 @@ namespace TEEmployee.Controllers
         }
         // High Performer
         [HttpPost]
-        public JsonResult HighPerformer(List<Skill> getAllScores)
+        public JsonResult HighPerformer()
         {
-            var ret = _service.HighPerformer(getAllScores);
+            var ret = _service.HighPerformer();
             return Json(ret);
         }
         // 取得群組

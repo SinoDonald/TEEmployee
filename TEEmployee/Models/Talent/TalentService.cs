@@ -74,9 +74,9 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
         // High Performer
-        public List<Ability> HighPerformer(List<Skill> getAllScores)
+        public Tuple<List<Ability>, string> HighPerformer()
         {
-            List<Ability> users = _talentRepository.HighPerformer(getAllScores);
+            Tuple<List<Ability>, string> users = _talentRepository.HighPerformer();
             return users;
         }
         // 取得群組

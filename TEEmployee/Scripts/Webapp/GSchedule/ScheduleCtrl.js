@@ -1,4 +1,5 @@
 ﻿var app = angular.module('app', ['ui.router', 'moment-picker', 'angularjs-dropdown-multiselect']);
+var pdfConfig = { responseType: 'blob' };  // important
 const { csv, select, selectAll, selection } = d3;
 
 app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
@@ -52,7 +53,7 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('GSchedule/GetYears', o);
     };
     this.GetPDF = (o) => {
-        return $http.post('GSchedule/GetPDF', o);
+        return $http.post('GSchedule/GetPDF', o, pdfConfig);
     };
     this.GetResponse = (o) => {
         return $http.post('GSchedule/GetResponse', o);
@@ -248,14 +249,14 @@ app.controller('GroupPlanCtrl', ['$scope', '$location', 'appService', '$rootScop
             .then(function (ret) {
                 $scope.years = ret.data;
                 $scope.selectedYear = $scope.years[0];
-                appService.GetPDF({ view: "GroupPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.user.name }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+                GetPDF(false); // 取得PDF
             })
     }
 
     // 依年份顯示
     $scope.FilterDataByYear = function (selectedYear) {
         $scope.selectedYear = selectedYear;
-        appService.GetPDF({ view: "GroupPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.user.name }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+        GetPDF(false); // 取得PDF
     }
 
     // 讀取使用者的資訊
@@ -268,12 +269,35 @@ app.controller('GroupPlanCtrl', ['$scope', '$location', 'appService', '$rootScop
                 .then(function (ret) {
                     $scope.years = ret.data;
                     $scope.selectedYear = $scope.years[0];
-                    appService.GetPDF({ view: "GroupPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.user.name }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+                    GetPDF(true); // 取得PDF
             })
         })
         .catch(function (ret) {
             //alert('Error');
         });
+
+    function GetPDF(show) {
+        // 取得PDF
+        appService.GetPDF({ view: "GroupPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.user.name })
+            .then(function (ret) {
+                if (ret.data.size != 0) {
+                    const contentDispositionHeader = ret.headers('Content-Disposition');
+                    let fileName = contentDispositionHeader.split(';')[1].trim().split('=')[1].replace(/"/g, '');
+                    fileName = decodeURIComponent(fileName).replace(`UTF-8''`, '');
+                    var pdfData = new Blob([ret.data], { type: 'application/pdf' });
+                    framePDF.src = URL.createObjectURL(pdfData);
+                    //$scope.GetPDF = ret.data;
+                }
+                else {
+                    if (show === true) {
+                        alert("簡報尚未上傳");
+                    }
+                    else {
+                        framePDF.src = "";
+                    }
+                }
+            });
+    }
 
     // 上傳群組規劃PDF
     $(document).on("click", "#btnGroupPDFUpload", function () {
@@ -282,6 +306,7 @@ app.controller('GroupPlanCtrl', ['$scope', '$location', 'appService', '$rootScop
         var formData = new FormData();
         formData.append('file', files[0]);
         formData.append('view', "GroupPlan");
+        formData.append('folder', "~/App_Data");
 
         $.ajax({
             url: 'GSchedule/UploadPDFFile',
@@ -291,11 +316,45 @@ app.controller('GroupPlanCtrl', ['$scope', '$location', 'appService', '$rootScop
             contentType: false,
             processData: false,
             success: function (data) {
-                if (data != "") {
-                    $('#frame').attr('src', $('#frame').attr('src')); // 即時更新PDF
+                if (!data.includes("Error")) {
+                    GetPDF(false); // 取得PDF
+                    $('#framePDF').attr('src', $('#framePDF').attr('src')); // 即時更新PDF
+                    //alert("上傳成功");
                 }
                 else {
-                    alert("上傳失敗");
+                    alert(data);
+                }
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    });
+
+    // 上傳群組規劃PDF：測試Content資料夾
+    $(document).on("click", "#btnGroupContentUpload", function () {
+        var files = $("#importGroupPDFFile").get(0).files;
+
+        var formData = new FormData();
+        formData.append('file', files[0]);
+        formData.append('view', "GroupPlan");
+        formData.append('folder', "~/Content");
+
+        $.ajax({
+            url: 'GSchedule/UploadPDFFile',
+            enctype: "multipart/form-data",
+            data: formData,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (!data.includes("Error")) {
+                    GetPDF(false); // 取得PDF
+                    $('#framePDF').attr('src', $('#framePDF').attr('src')); // 即時更新PDF
+                    alert("上傳成功");
+                }
+                else {
+                    alert(data);
                 }
             },
             error: function (data) {
@@ -331,14 +390,14 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
     // 依人名選擇
     $scope.FilterDataByUser = function (selectedUser) {
         $scope.selectedUser = selectedUser;
-        appService.GetPDF({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.selectedUser }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+        GetPDF(false); // 取得PDF
         appService.GetResponse({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, name: $scope.selectedUser }).then(function (ret) { $scope.response = ret.data; }); // 取得回覆
     }
 
     // 依年份顯示
     $scope.FilterDataByYear = function (selectedYear) {
         $scope.selectedYear = selectedYear;
-        appService.GetPDF({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.selectedUser }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+        GetPDF(false); // 取得PDF
         appService.GetResponse({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, name: $scope.selectedUser }).then(function (ret) { $scope.response = ret.data; }); // 取得回覆
     }
 
@@ -352,7 +411,7 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
                 .then(function (ret) {
                     $scope.years = ret.data;
                     $scope.selectedYear = $scope.years[0];
-                    appService.GetPDF({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.selectedUser }).then(function (ret) { $scope.GetPDF = ret.data; }); // 取得PDF
+                    GetPDF(true); // 取得PDF
                     appService.GetResponse({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, name: $scope.selectedUser }).then(function (ret) { $scope.response = ret.data; }); // 取得回覆
                 })
         })
@@ -360,13 +419,37 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
             //alert('Error');
         });
 
-    // 上傳群組規劃PDF
+    // 取得PDF
+    function GetPDF(show) {
+        appService.GetPDF({ view: "PersonalPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.selectedUser })
+            .then(function (ret) {
+                if (ret.data.size != 0) {
+                    const contentDispositionHeader = ret.headers('Content-Disposition');
+                    let fileName = contentDispositionHeader.split(';')[1].trim().split('=')[1].replace(/"/g, '');
+                    fileName = decodeURIComponent(fileName).replace(`UTF-8''`, '');
+                    var pdfData = new Blob([ret.data], { type: 'application/pdf' });
+                    framePDF.src = URL.createObjectURL(pdfData);
+                    //$scope.GetPDF = ret.data;
+                }
+                else {
+                    if (show === true) {
+                        alert("簡報尚未上傳");
+                    }
+                    else {
+                        framePDF.src = "";
+                    }
+                }
+            });
+    }
+
+    // 上傳個人規劃PDF
     $(document).on("click", "#btnPDFUpload", function () {
         var files = $("#importPDFFile").get(0).files;
 
         var formData = new FormData();
         formData.append('file', files[0]);
         formData.append('view', "PersonalPlan");
+        formData.append('folder', "~/App_Data");
 
         $.ajax({
             url: 'GSchedule/UploadPDFFile',
@@ -376,11 +459,45 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
             contentType: false,
             processData: false,
             success: function (data) {
-                if (data != "") {
-                    $('#frame').attr('src', $('#frame').attr('src')); // 即時更新PDF
+                if (!data.includes("Error")) {
+                    GetPDF(false); // 取得PDF
+                    $('#framePDF').attr('src', $('#framePDF').attr('src')); // 即時更新PDF
+                    //alert("上傳成功");
                 }
                 else {
-                    alert("上傳失敗");
+                    alert(data);
+                }
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    });
+
+    // 上傳個人規劃PDF：測試Content資料夾
+    $(document).on("click", "#btnContentUpload", function () {
+        var files = $("#importPDFFile").get(0).files;
+
+        var formData = new FormData();
+        formData.append('file', files[0]);
+        formData.append('view', "PersonalPlan");
+        formData.append('folder', "~/Content");
+
+        $.ajax({
+            url: 'GSchedule/UploadPDFFile',
+            enctype: "multipart/form-data",
+            data: formData,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (!data.includes("Error")) {
+                    GetPDF(false); // 取得PDF
+                    $('#framePDF').attr('src', $('#framePDF').attr('src')); // 即時更新PDF
+                    alert("上傳成功");
+                }
+                else {
+                    alert(data);
                 }
             },
             error: function (data) {

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -166,12 +167,12 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
-        // 上傳群組規劃PDF
+        // 上傳群組、個人規劃PDF
         [HttpPost]
-        public ActionResult UploadPDFFile(HttpPostedFileBase file, string view)
+        public ActionResult UploadPDFFile(HttpPostedFileBase file, string view, string folder)
         {
             if (file == null) return Json(new { Status = 0, Message = "No File Selected" });
-            string ret = _service.UploadPDFFile(file, view, Session["empno"].ToString());
+            string ret = _service.UploadPDFFile(file, view, Session["empno"].ToString(), folder);
             return Json(ret);
         }
 
@@ -179,8 +180,20 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public ActionResult GetPDF(string view, string year, string group, string userName)
         {
-            var ret = _service.GetPDF(view, year, group, userName);
-            return Json(ret);
+            string pdfPath = _service.GetPDF(view, year, group, userName);
+            var fileBytes = _service.DownloadFile(pdfPath);
+            string contentType = "application/octet-stream"; // byte
+            FileContentResult result = null;
+            try
+            {
+                result = File(fileBytes, contentType, group + ".pdf");
+            }
+            catch (Exception)
+            {
+                result = null;
+            }
+
+            return result;
         }
 
         // 取得回覆

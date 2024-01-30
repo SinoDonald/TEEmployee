@@ -469,9 +469,9 @@ namespace TEEmployee.Models.GSchedule
         }
 
         // 上傳群組規劃PDF
-        public string UploadPDFFile(HttpPostedFileBase file, string view, string empno)
+        public string UploadPDFFile(HttpPostedFileBase file, string view, string empno, string folder)
         {
-            string ret = _scheduleRepository.UploadPDFFile(file, view, empno);
+            string ret = _scheduleRepository.UploadPDFFile(file, view, empno, folder);
             return ret;
         }
 
@@ -480,6 +480,18 @@ namespace TEEmployee.Models.GSchedule
         {
             string ret = _scheduleRepository.GetPDF(view, year, group, userName);
             return ret;
+        }
+        public byte[] DownloadFile(string pdfPath)
+        {
+            try
+            {
+                var fileBytes = File.ReadAllBytes(pdfPath);
+                return fileBytes;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         // 取得回覆
