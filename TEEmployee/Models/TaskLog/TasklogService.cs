@@ -338,6 +338,18 @@ namespace TEEmployee.Models.TaskLog
             var userTxtRepository = new UserTxtRepository();            
             var users = userTxtRepository.GetAll();
 
+            // special guest
+            User guest = new User
+            {
+                empno = "9991",
+                name = "郭薩爾",
+                gid = "D24",
+                profTitle = "工程師三",
+            };
+
+            if (!users.Exists(x => x.empno == guest.empno))
+                users.Add(guest);
+
             bool ret = false;
 
             if (users.Count > 0)
@@ -345,7 +357,6 @@ namespace TEEmployee.Models.TaskLog
 
             return ret;
         }
-
 
 
         //=============================
