@@ -167,7 +167,7 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
-        // 上傳群組、個人規劃PDF
+        // 上傳群組規劃PDF
         [HttpPost]
         public ActionResult UploadPDFFile(HttpPostedFileBase file, string view, string folder)
         {
@@ -175,7 +175,14 @@ namespace TEEmployee.Controllers
             string ret = _service.UploadPDFFile(file, view, Session["empno"].ToString(), folder);
             return Json(ret);
         }
-
+        // 上傳個人規劃PDF
+        [HttpPost]
+        public ActionResult ImportPDFFile(HttpPostedFileBase file)
+        {
+            if (file == null) return Json(new { Status = 0, Message = "No File Selected" });
+            var ret = _service.ImportPDFFile(file, Session["empno"].ToString());
+            return Json(ret);
+        }
         // 取得PDF
         [HttpPost]
         public ActionResult GetPDF(string view, string year, string group, string userName)

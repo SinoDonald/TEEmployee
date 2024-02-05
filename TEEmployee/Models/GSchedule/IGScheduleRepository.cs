@@ -21,6 +21,7 @@ namespace TEEmployee.Models.GSchedule
         bool Delete(ProjectSchedule projectSchedule);
         List<string> GetYears(string view); // 取得年份
         string UploadPDFFile(HttpPostedFileBase file, string view, string empno, string folder); // 上傳PDF
+        string ImportPDFFile(HttpPostedFileBase file, string empno); // 上傳個人規劃PDF
         string GetPDF(string view, string year, string group, string userName); // 取得PDF
         List<Planning> GetResponse(string view, string year, string group, string empno, string name); // 取得回覆
         bool SaveResponse(string view, string year, string group, string manager_id, string name, List<Planning> response); // 儲存回覆

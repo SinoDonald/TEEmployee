@@ -126,6 +126,14 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        // 下載profession.db <-- 培文
+        [HttpPost]
+        public JsonResult DownloadProfessionDB()
+        {
+            var ret = _service.DownloadProfessionDB();
+            return Json(ret);
+        }
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

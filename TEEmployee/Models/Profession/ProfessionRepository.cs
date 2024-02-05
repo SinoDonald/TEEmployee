@@ -1,9 +1,11 @@
 ﻿using Dapper;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -456,6 +458,57 @@ namespace TEEmployee.Models.Profession
 
         }
 
+        // 下載profession.db <-- 培文
+        public bool DownloadProfessionDB()
+        {
+            bool ret = false;
+            List<Skill> skills = new ProfessionRepository().GetAll().OrderBy(x => x.id).ToList();
+
+            try
+            {
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                var file = new FileInfo(@"D:\professionDB.xlsx"); // 檔案路徑
+                using (var excel = new ExcelPackage())
+                {
+                    var ws = excel.Workbook.Worksheets.Add("professionDB"); // 建立分頁                
+                    int row = 1;
+                    int col = 1;
+
+                    // 標題
+                    ws.Cells[row, col++].Value = "id";
+                    ws.Cells[row, col++].Value = "內容";
+                    ws.Cells[row, col++].Value = "群組";
+                    ws.Cells[row, col++].Value = "技能類型";
+                    ws.Cells[row, col++].Value = "排序";
+                    ws.Cells[row, col++].Value = "員編";
+                    ws.Cells[row, col++].Value = "分數";
+
+                    foreach (Skill skill in skills)
+                    {
+                        foreach(Score score in skill.scores)
+                        {
+                            row++;
+                            col = 1;
+                            ws.Cells[row, col++].Value = skill.id;
+                            ws.Cells[row, col++].Value = skill.content;
+                            ws.Cells[row, col++].Value = skill.role;
+                            ws.Cells[row, col++].Value = skill.skill_type;
+                            ws.Cells[row, col++].Value = skill.custom_order;
+                            ws.Cells[row, col++].Value = score.empno;
+                            ws.Cells[row, col++].Value = score.score;
+                        }
+                    }
+                    excel.SaveAs(file); // 儲存Excel
+                    ret = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message + "\n" + ex.ToString();
+            }
+
+            return ret;
+        }
 
         public void Dispose()
         {

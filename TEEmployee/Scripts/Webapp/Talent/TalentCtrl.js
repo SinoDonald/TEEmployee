@@ -232,7 +232,7 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
     }
 
     // TalentHighPerformers
-    $scope.TalentHighPerformers = function (data) {
+    $scope.TalentHighPerformers = function () {
         // High Performer
         appService.HighPerformer({})
             .then(function (ret) {

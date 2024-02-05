@@ -8,6 +8,7 @@ using System.Linq;
 using System.Web;
 using System.Xml.Linq;
 using Dapper;
+using OfficeOpenXml;
 
 namespace TEEmployee.Models
 {
@@ -357,5 +358,79 @@ namespace TEEmployee.Models
             return ret;
         }
 
+        // 下載User.db <-- 培文
+        public bool DownloadUserDB()
+        {
+            bool ret = false;
+            List<User> users = new UserRepository().GetAll().OrderBy(x => x.empno).ToList();
+
+            try
+            {
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                var file = new FileInfo(@"D:\userDB.xlsx"); // 檔案路徑
+                using (var excel = new ExcelPackage())
+                {
+                    var ws = excel.Workbook.Worksheets.Add("userDB"); // 建立分頁                
+                    int row = 1;
+                    int col = 1;
+
+                    // 標題
+                    ws.Cells[row, col++].Value = "員編";
+                    ws.Cells[row, col++].Value = "姓名";
+                    ws.Cells[row, col++].Value = "gid";
+                    ws.Cells[row, col++].Value = "職等";
+                    ws.Cells[row, col++].Value = "職責";
+                    ws.Cells[row, col++].Value = "職責名稱";
+                    ws.Cells[row, col++].Value = "電話";
+                    ws.Cells[row, col++].Value = "Email";
+                    ws.Cells[row, col++].Value = "部門主管";
+                    ws.Cells[row, col++].Value = "群組";
+                    ws.Cells[row, col++].Value = "群組主管";
+                    ws.Cells[row, col++].Value = "群組一";
+                    ws.Cells[row, col++].Value = "群組一主管";
+                    ws.Cells[row, col++].Value = "群組二";
+                    ws.Cells[row, col++].Value = "群組二主管";
+                    ws.Cells[row, col++].Value = "群組三";
+                    ws.Cells[row, col++].Value = "群組三主管";
+                    ws.Cells[row, col++].Value = "專案經理";
+                    ws.Cells[row, col++].Value = "專案";
+                    ws.Cells[row, col++].Value = "助理專案經理";
+
+                    foreach (User user in users)
+                    {
+                        row++;
+                        col = 1;
+                        ws.Cells[row, col++].Value = user.empno;
+                        ws.Cells[row, col++].Value = user.name;
+                        ws.Cells[row, col++].Value = user.gid;
+                        ws.Cells[row, col++].Value = user.profTitle;
+                        ws.Cells[row, col++].Value = user.duty;
+                        ws.Cells[row, col++].Value = user.dutyName;
+                        ws.Cells[row, col++].Value = user.tel;
+                        ws.Cells[row, col++].Value = user.email;
+                        ws.Cells[row, col++].Value = user.department_manager;
+                        ws.Cells[row, col++].Value = user.group;
+                        ws.Cells[row, col++].Value = user.group_manager;
+                        ws.Cells[row, col++].Value = user.group_one;
+                        ws.Cells[row, col++].Value = user.group_one_manager;
+                        ws.Cells[row, col++].Value = user.group_two;
+                        ws.Cells[row, col++].Value = user.group_two_manager;
+                        ws.Cells[row, col++].Value = user.group_three;
+                        ws.Cells[row, col++].Value = user.group_three_manager;
+                        ws.Cells[row, col++].Value = user.project_manager;
+                        ws.Cells[row, col++].Value = user.projects;
+                        ws.Cells[row, col++].Value = user.assistant_project_manager;
+                    }
+                    excel.SaveAs(file); // 儲存Excel
+                    ret = true;
+                }
+            }
+            catch(Exception ex)
+            {
+                string error = ex.Message + "\n" + ex.ToString();
+            }
+
+            return ret;
+        }
     }
 }

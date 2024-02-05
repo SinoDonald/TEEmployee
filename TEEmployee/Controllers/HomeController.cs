@@ -135,6 +135,13 @@ namespace TEEmployee.Controllers
 
             return Json(ret);
         }
+        // 下載user.db
+        [HttpPost]
+        public JsonResult DownloadUserDB()
+        {
+            var ret = new UserRepository().DownloadUserDB();
+            return Json(ret);
+        }
 
         [HttpPost]
         public bool InsertProjectItem()

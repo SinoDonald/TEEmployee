@@ -474,6 +474,12 @@ namespace TEEmployee.Models.GSchedule
             string ret = _scheduleRepository.UploadPDFFile(file, view, empno, folder);
             return ret;
         }
+        // 上傳個人規劃PDF
+        public string ImportPDFFile(HttpPostedFileBase file, string empno)
+        {
+            string ret = _scheduleRepository.ImportPDFFile(file, empno);
+            return ret;
+        }
 
         // 取得PDF
         public string GetPDF(string view, string year, string group, string userName)

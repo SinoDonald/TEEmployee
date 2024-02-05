@@ -108,6 +108,12 @@ namespace TEEmployee.Models.Profession
             return ret;
         }
 
+        public bool DownloadProfessionDB()
+        {
+            bool ret = _professionRepository.DownloadProfessionDB();
+            return ret;
+        }
+
         //public List<Skill> GetAllScoresByRole(string role, string empno)
         //{
         //    var ret = new List<Skill>();

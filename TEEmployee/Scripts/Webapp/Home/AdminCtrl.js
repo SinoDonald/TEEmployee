@@ -47,6 +47,14 @@ app.service('appService', ['$http', function ($http) {
     this.CompareLastestUpdate = (o) => {
         return $http.post('Talent/CompareLastestUpdate', o);
     };
+    // 下載user.db
+    this.DownloadUserDB = (o) => {
+        return $http.post('Home/DownloadUserDB', o);
+    };
+    // 下載profession.db
+    this.DownloadProfessionDB = (o) => {
+        return $http.post('Profession/DownloadProfessionDB', o);
+    };
 
 }]);
 
@@ -249,7 +257,32 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
         });
     }
 
+    // 下載user.db
+    $scope.DownloadUserDB = () => {
+        appService.DownloadUserDB({})
+            .then((ret) => {
+                if (ret.data === true) { alert('下載成功'); }
+                else { alert('下載失敗'); }
+                $window.location.href = 'Home';
+            })
+            .catch((ret) => {
+                alert(ret.dada);
+            });
+    }
 
+    // 下載profession.db
+    $scope.DownloadProfessionDB = () => {
+        appService.DownloadProfessionDB({})
+            .then((ret) => {
+                if (ret.data === true) { alert('下載成功'); }
+                else { alert('下載失敗'); }
+                $window.location.href = 'Home';
+            })
+            .catch((ret) => {
+                alert(ret.dada);
+            });
+    }
+    
     // client to server
     formKpiElem.onsubmit = async (e) => {
         e.preventDefault();

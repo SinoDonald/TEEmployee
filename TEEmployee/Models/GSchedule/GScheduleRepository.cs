@@ -385,7 +385,33 @@ namespace TEEmployee.Models.GSchedule
 
             return path;
         }
+        // 上傳PDF
+        public string ImportPDFFile(HttpPostedFileBase file, string empno)
+        {
+            string ret = "";
+            try
+            {
+                if (Path.GetExtension(file.FileName) != ".pdf") throw new ApplicationException("請使用PDF(.pdf)格式");
 
+                //string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"));
+                string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data"), "GSchedule", "PersonalPlan", "113");
+                // 檢查資料夾是否存在
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                string extension = Path.GetExtension(file.FileName);
+                var path = Path.Combine(folderPath, empno + Path.GetExtension(file.FileName));
+                file.SaveAs(path); // 將檔案存到Server
+            }
+            catch (Exception ex)
+            {
+                ret = "Error：" + ex.Message + "\n" + ex.ToString();
+            }
+
+            return ret;
+        }
         // 取得PDF
         public string GetPDF(string view, string year, string group, string userName)
         {

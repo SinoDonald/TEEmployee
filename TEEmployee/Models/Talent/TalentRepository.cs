@@ -109,12 +109,19 @@ namespace TEEmployee.Models.Talent
                 userCV.seniority = analyzeSeniority.Item3; // 職務經歷
 
                 // 取得核心專業盤點的專業與管理能力分數
-                List<Personal> getPersonal = new ProfessionRepository().GetPersonal(userCV.empno);
+                List<Skill> getAllScores = new ProfessionRepository().GetAll();
                 // 專業能力_領域技能
-                List<Personal> domainScores = getPersonal.Where(x => x.skill_type.Equals("domain") && x.score >= 4).OrderBy(x => x.custom_order).ToList();
-                foreach (Personal domainScore in domainScores)
+                List<Skill> domainSkills = getAllScores.Where(x => x.skill_type.Equals("domain")).Where(x => x.role.Equals(userCV.group_one)).OrderBy(x => x.id).ToList();
+                foreach (Skill skill in domainSkills)
                 {
-                    userCV.domainSkill += domainScore.content + "：" + domainScore.score + "\n";
+                    Score userScore = skill.scores.Where(x => x.empno.Equals(userCV.empno)).FirstOrDefault();
+                    if (userScore != null)
+                    {
+                        if (userScore.score >= 4)
+                        {
+                            userCV.domainSkill += skill.content + "：" + userScore.score + "\n";
+                        }
+                    }
                 }
                 if (userCV.domainSkill != null)
                 {
@@ -125,10 +132,17 @@ namespace TEEmployee.Models.Talent
                     userCV.domainSkill = "\n";
                 }
                 // 專業能力_核心技能
-                List<Personal> coreScores = getPersonal.Where(x => x.skill_type.Equals("core") && x.score >= 4).OrderBy(x => x.custom_order).ToList();
-                foreach (Personal coreScore in coreScores)
+                List<Skill> coreSkills = getAllScores.Where(x => x.skill_type.Equals("core")).OrderBy(x => x.id).ToList();
+                foreach (Skill skill in coreSkills)
                 {
-                    userCV.coreSkill += coreScore.content + "：" + coreScore.score + "\n";
+                    Score userScore = skill.scores.Where(x => x.empno.Equals(userCV.empno)).FirstOrDefault();
+                    if (userScore != null)
+                    {
+                        if (userScore.score >= 4)
+                        {
+                            userCV.coreSkill += skill.content + "：" + userScore.score + "\n";
+                        }
+                    }
                 }
                 if (userCV.coreSkill != null)
                 {
@@ -139,10 +153,17 @@ namespace TEEmployee.Models.Talent
                     userCV.coreSkill = "\n";
                 }
                 // 管理能力
-                List<Personal> manageScores = getPersonal.Where(x => x.skill_type.Equals("manage") && x.score >= 4).OrderBy(x => x.custom_order).ToList();
-                foreach (Personal manageScore in manageScores)
+                List<Skill> manageSkills = getAllScores.Where(x => x.skill_type.Equals("manage")).OrderBy(x => x.id).ToList();
+                foreach (Skill skill in manageSkills)
                 {
-                    userCV.manageSkill += manageScore.content + "：" + manageScore.score + "\n";
+                    Score userScore = skill.scores.Where(x => x.empno.Equals(userCV.empno)).FirstOrDefault();
+                    if (userScore != null)
+                    {
+                        if (userScore.score >= 4)
+                        {
+                            userCV.manageSkill += skill.content + "：" + userScore.score + "\n";
+                        }
+                    }
                 }
                 if (userCV.manageSkill != null)
                 {
@@ -1357,7 +1378,11 @@ namespace TEEmployee.Models.Talent
                                 }
                                 j++;
                             }
-                            if (userCV.performance.Length > 2 || userCV.performance.Equals("\n"))
+                            if (String.IsNullOrEmpty(userCV.performance))
+                            {
+                                userCV.performance = "";
+                            }
+                            else if (userCV.performance.Length > 2 || userCV.performance.Equals("\n"))
                             {
                                 userCV.performance = userCV.performance.Substring(0, userCV.performance.Length - 1);
                             }
