@@ -47,13 +47,13 @@ app.service('appService', ['$http', function ($http) {
     this.CompareLastestUpdate = (o) => {
         return $http.post('Talent/CompareLastestUpdate', o);
     };
-    // 下載user.db
-    this.DownloadUserDB = (o) => {
-        return $http.post('Home/DownloadUserDB', o);
+    // 檢視user.db
+    this.ReviewUserDB = (o) => {
+        return $http.post('Home/ReviewUserDB', o);
     };
-    // 下載profession.db
-    this.DownloadProfessionDB = (o) => {
-        return $http.post('Profession/DownloadProfessionDB', o);
+    // 檢視profession.db
+    this.ReviewProfessionDB = (o) => {
+        return $http.post('Home/ReviewProfessionDB', o);
     };
 
 }]);
@@ -257,26 +257,22 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
         });
     }
 
-    // 下載user.db
-    $scope.DownloadUserDB = () => {
-        appService.DownloadUserDB({})
+    // 檢視user.db
+    $scope.ReviewUserDB = () => {
+        appService.ReviewUserDB({})
             .then((ret) => {
-                if (ret.data === true) { alert('下載成功'); }
-                else { alert('下載失敗'); }
-                $window.location.href = 'Home';
+                $scope.userDB = ret.data;
             })
             .catch((ret) => {
                 alert(ret.dada);
             });
     }
 
-    // 下載profession.db
-    $scope.DownloadProfessionDB = () => {
-        appService.DownloadProfessionDB({})
+    // 檢視profession.db
+    $scope.ReviewProfessionDB = () => {
+        appService.ReviewProfessionDB({})
             .then((ret) => {
-                if (ret.data === true) { alert('下載成功'); }
-                else { alert('下載失敗'); }
-                $window.location.href = 'Home';
+                $scope.professionDB = ret.data;
             })
             .catch((ret) => {
                 alert(ret.dada);

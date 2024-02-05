@@ -459,15 +459,22 @@ namespace TEEmployee.Models.Profession
         }
 
         // 下載profession.db <-- 培文
-        public bool DownloadProfessionDB()
+        public string DownloadProfessionDB()
         {
-            bool ret = false;
+            string ret = string.Empty;
             List<Skill> skills = new ProfessionRepository().GetAll().OrderBy(x => x.id).ToList();
 
             try
             {
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                var file = new FileInfo(@"D:\professionDB.xlsx"); // 檔案路徑
+                string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"));
+                // 檢查資料夾是否存在
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+                string filePath = Path.Combine(folderPath, "professionDB.xlsx");
+                var file = new FileInfo(filePath); // 檔案路徑
                 using (var excel = new ExcelPackage())
                 {
                     var ws = excel.Workbook.Worksheets.Add("professionDB"); // 建立分頁                
@@ -499,7 +506,7 @@ namespace TEEmployee.Models.Profession
                         }
                     }
                     excel.SaveAs(file); // 儲存Excel
-                    ret = true;
+                    ret = filePath;
                 }
             }
             catch (Exception ex)

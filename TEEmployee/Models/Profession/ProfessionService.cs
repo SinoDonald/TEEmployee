@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -108,9 +109,9 @@ namespace TEEmployee.Models.Profession
             return ret;
         }
 
-        public bool DownloadProfessionDB()
+        public string DownloadProfessionDB()
         {
-            bool ret = _professionRepository.DownloadProfessionDB();
+            string ret = _professionRepository.DownloadProfessionDB();
             return ret;
         }
 
@@ -245,7 +246,19 @@ namespace TEEmployee.Models.Profession
             List<User> users = _userRepository.GetAll();
             return users.Where(x => x.group_one == group || x.group_two == group || x.group_three == group).ToList();
         }
-
+        // 下載profession.db <-- 培文
+        public byte[] DownloadFile(string filePath)
+        {
+            try
+            {
+                var fileBytes = File.ReadAllBytes(filePath);
+                return fileBytes;
+            }
+            catch
+            {
+                return null;
+            }
+        }
         public void Dispose()
         {
             _professionRepository.Dispose();

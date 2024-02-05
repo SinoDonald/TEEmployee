@@ -10,6 +10,8 @@ using TEEmployee.Models.GSchedule;
 using System.Web.Services.Description;
 using TEEmployee.Models.Talent;
 using Newtonsoft.Json;
+using TEEmployee.Models.Profession;
+using System.IO;
 
 namespace TEEmployee.Controllers
 {
@@ -135,12 +137,55 @@ namespace TEEmployee.Controllers
 
             return Json(ret);
         }
-        // 下載user.db
+        // 檢視user.db <-- 培文
         [HttpPost]
-        public JsonResult DownloadUserDB()
+        public JsonResult ReviewUserDB()
         {
-            var ret = new UserRepository().DownloadUserDB();
+            var ret = new UserRepository().GetAll().OrderBy(x => x.empno).ToList();
             return Json(ret);
+        }
+        // 下載user.db <-- 培文
+        public ActionResult DownloadUserDB()
+        {
+            string filePath = new UserRepository().DownloadUserDB();
+            ProfessionService _service = new ProfessionService();
+            var fileBytes = _service.DownloadFile(filePath);
+            string contentType = "application/octet-stream"; // byte
+            FileContentResult result = null;
+            try
+            {
+                result = File(fileBytes, contentType, "userDB.xlsx");
+            }
+            catch (Exception)
+            {
+                result = null;
+            }
+            return result;
+        }
+        // 檢視profession.db <-- 培文
+        [HttpPost]
+        public JsonResult ReviewProfessionDB()
+        {
+            var ret = new ProfessionRepository().GetAll().OrderBy(x => x.id).ToList();
+            return Json(ret);
+        }
+        // 下載profession.db <-- 培文
+        public ActionResult DownloadProfessionDB()
+        {
+            string filePath = new ProfessionRepository().DownloadProfessionDB();
+            ProfessionService _service = new ProfessionService();
+            var fileBytes = _service.DownloadFile(filePath);
+            string contentType = "application/octet-stream"; // byte
+            FileContentResult result = null;
+            try
+            {
+                result = File(fileBytes, contentType, "professionDB.xlsx");
+            }
+            catch (Exception)
+            {
+                result = null;
+            }
+            return result;
         }
 
         [HttpPost]

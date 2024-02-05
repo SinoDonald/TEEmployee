@@ -87,12 +87,21 @@
     }
     @if (Session["empno"] is "7291")
     {
-        <button type="button" class="btn btn-outline-secondary" name="addRow" ng-click="DownloadUserDB()">
-            下載UserDB
+        <button type="button" class="btn btn-outline-secondary" name="addRow" ng-click="ReviewUserDB()">
+            檢視UserDB
         </button>
-        <button type="button" class="btn btn-outline-primary" name="addRow" ng-click="DownloadProfessionDB()">
-            下載ProfessionDB
+        <button type="button" class="btn btn-outline-primary" name="addRow" ng-click="ReviewProfessionDB()">
+            檢視ProfessionDB
         </button>
+        <br />
+        <div class="row">
+            <div class="col-sm-1">
+                <a href='@Url.Action("DownloadUserDB", "Home")'>下載UserDB</a>
+            </div>
+            <div class="col-sm-1">
+                <a href='@Url.Action("DownloadProfessionDB", "Home")'>下載ProfessionDB</a>
+            </div>
+        </div>
     }
 
     <div>

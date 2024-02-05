@@ -359,15 +359,22 @@ namespace TEEmployee.Models
         }
 
         // 下載User.db <-- 培文
-        public bool DownloadUserDB()
+        public string DownloadUserDB()
         {
-            bool ret = false;
+            string ret = string.Empty;
             List<User> users = new UserRepository().GetAll().OrderBy(x => x.empno).ToList();
 
             try
             {
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                var file = new FileInfo(@"D:\userDB.xlsx"); // 檔案路徑
+                string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"));
+                // 檢查資料夾是否存在
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+                string filePath = Path.Combine(folderPath, "userDB.xlsx");
+                var file = new FileInfo(filePath); // 檔案路徑
                 using (var excel = new ExcelPackage())
                 {
                     var ws = excel.Workbook.Worksheets.Add("userDB"); // 建立分頁                
@@ -422,7 +429,7 @@ namespace TEEmployee.Models
                         ws.Cells[row, col++].Value = user.assistant_project_manager;
                     }
                     excel.SaveAs(file); // 儲存Excel
-                    ret = true;
+                    ret = filePath;
                 }
             }
             catch(Exception ex)
