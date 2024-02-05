@@ -31,6 +31,8 @@ app.controller('TrainingCtrl', ['$scope', '$location', 'appService', '$rootScope
         
     })
 
+    const formElem = document.querySelector('#formElem');
+
     // client to server
     if (formElem) {
 

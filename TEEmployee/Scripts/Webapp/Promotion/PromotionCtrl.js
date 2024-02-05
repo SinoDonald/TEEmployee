@@ -164,11 +164,19 @@ app.controller('PromotionCtrl', ['$scope', '$location', 'appService', '$rootScop
             fileName = decodeURIComponent(fileName).replace(`UTF-8''`, '');
 
             // Create blob object with type(optional, used for createObjectURL)
-            var blob = new Blob([ret.data], { type: 'application/octet-stream' });
+
+            var blob = new Blob([ret.data], { type: 'application/octet-stream' });            
 
             // Call Filesaver.js to save it with filename(type inclueded)
             // Benefit: filename
+
             saveAs(blob, fileName);
+
+            // Show the pdf (blob Object) to iframe
+
+            //var pdfData = new Blob([ret.data], { type: 'application/pdf' });
+            //promotion.pdfUrl = URL.createObjectURL(pdfData);
+            //frame1.src = promotion.pdfUrl;
 
         });
     }
