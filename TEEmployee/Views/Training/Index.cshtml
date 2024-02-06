@@ -34,7 +34,7 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="@Url.Action("Index", "Training")">個人培訓紀錄</a>
                 </li>
-                @if (Session["group_leader"] is true)
+                @if (Session["group_leader"] is true || Session["leader"] is true)
                 {
                     <li class="nav-item">
                         <a class="nav-link" href="@Url.Action("Group", "Training")">群組培訓紀錄</a>

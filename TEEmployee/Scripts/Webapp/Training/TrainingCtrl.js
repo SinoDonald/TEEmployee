@@ -88,10 +88,18 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
     $scope.selectGroup = () => {
 
+        //// roc version
+        //let employee_array = $scope.auth.Users.filter(x => x.group_one === $scope.selectedGroup).map(x => ({
+        //    user: x,
+        //    count: x.trainings.filter(y => (y.roc_year + 1911) == $scope.selectedYear).length,
+        //}));               
+
+        // start date version
         let employee_array = $scope.auth.Users.filter(x => x.group_one === $scope.selectedGroup).map(x => ({
             user: x,
-            count: x.trainings.filter(y => (y.roc_year + 1911) == $scope.selectedYear).length,
-        }));               
+            count: x.trainings.filter(y => (y.start_date.substring(0, 4)) == $scope.selectedYear).length,
+        }));  
+
 
         $scope.employees = employee_array;
         $scope.selectedEmployee = $scope.employees[0].user.empno;
@@ -101,8 +109,14 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
     $scope.selectEmployee = () => {
 
+        //// roc version
+        //$scope.records = structuredClone(
+        //    $scope.auth.Users.find(x => x.empno === $scope.selectedEmployee).trainings.filter(x => (x.roc_year + 1911) == $scope.selectedYear)
+        //);
+
+        // start date version
         $scope.records = structuredClone(
-            $scope.auth.Users.find(x => x.empno === $scope.selectedEmployee).trainings.filter(x => (x.roc_year + 1911) == $scope.selectedYear)
+            $scope.auth.Users.find(x => x.empno === $scope.selectedEmployee).trainings.filter(y => (y.start_date.substring(0, 4)) == $scope.selectedYear)
         );
 
         for (let i = 0; i !== $scope.records.length; i++) {

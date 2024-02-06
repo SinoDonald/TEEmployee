@@ -343,8 +343,8 @@ namespace TEEmployee.Models.TaskLog
             {
                 empno = "9991",
                 name = "郭薩爾",
-                gid = "D24",
-                profTitle = "工程師三",
+                gid = "24",
+                profTitle = "351",
             };
 
             if (!users.Exists(x => x.empno == guest.empno))
