@@ -85,7 +85,7 @@
             KPI
         </button>
     }
-    @if (Session["empno"] is "7291")
+    @if (Session["empno"] is "7291" || Session["empno"] is "7596")
     {
         <button type="button" class="btn btn-outline-secondary" name="addRow" ng-click="ReviewUserDB()">
             檢視UserDB

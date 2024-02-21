@@ -74,17 +74,27 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="exp">
-                            <h4>近三年考績</h4>
-                            <div class="inner">
-                                <div class="col text-center">
-                                    <h5>{{user.performance[0]}}</h5>
-                                </div>
-                                <div class="col text-center">
-                                    <h5>{{user.performance[1]}}</h5>
-                                </div>
-                                <div class="col text-center">
-                                    <h5>{{user.performance[2]}}</h5>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                        近三年考績
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in">
+                                <div class="panel-body">
+                                    <div class="inner">
+                                        <div class="col text-center">
+                                            <h5>{{user.performance[0]}}</h5>
+                                        </div>
+                                        <div class="col text-center">
+                                            <h5>{{user.performance[1]}}</h5>
+                                        </div>
+                                        <div class="col text-center">
+                                            <h5>{{user.performance[2]}}</h5>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
