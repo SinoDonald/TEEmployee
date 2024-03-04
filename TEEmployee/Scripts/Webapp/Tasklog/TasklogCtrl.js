@@ -295,16 +295,9 @@ app.controller('UserDetailsCtrl', ['$scope', '$location', '$window', 'appService
                 }
 
                 for (let i = 0; i < $scope.projects.length; i++) {
-
                     if ($scope.projects[i].workHour || $scope.projects[i].overtime) {
                         $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();
-
-                        // 20240304 Update
-                        if (!$scope.projects[i].realHour) {
-                            $scope.projects[i].realHour = $scope.projects[i].workHour + $scope.projects[i].overtime;
-                        }
                     }
-
                     if ($scope.projects[i].itemno)
                         $scope.projects[i].itemno = $scope.projects[i].itemno.slice(0, $scope.projects[i].itemno.length - 2);
                 }
@@ -460,12 +453,7 @@ app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 
         for (let i = 0; i < $scope.projects.length; i++) {
 
             if ($scope.projects[i].workHour || $scope.projects[i].overtime) {
-                $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();  
-
-                // 20240304 Update
-                if (!$scope.projects[i].realHour) {
-                    $scope.projects[i].realHour = $scope.projects[i].workHour + $scope.projects[i].overtime;
-                }
+                $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();                               
             }
 
             if ($scope.projects[i].itemno)
@@ -567,10 +555,6 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 //    });
                 //}
 
-                // 20240304 update: If realHour is equal to workhour plus overtime, save it as 0 in DB
-                // This can avoid people saving tasklog too early causing wrong realHour
-                if (project.realHour === project.workHour + project.overtime)
-                    project.realHour = 0;
               
                 projectTasks.push({
                     id: log.id, yymm: yymm, projno: project.projno, realHour: project.realHour,
