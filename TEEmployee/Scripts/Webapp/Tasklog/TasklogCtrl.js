@@ -27,7 +27,7 @@ app.service('appService', ['$http', function ($http) {
 
     this.GetAllMonthlyRecordData = (o) => {
         return $http.post('Tasklog/GetAllMonthlyRecordData', o);
-    };  
+    };
     //this.GetProjectItem = (o) => {
     //    return $http.post('Tasklog/GetProjectItem', o);
     //};
@@ -152,7 +152,7 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
 
     $scope.selectedYear = $scope.years[0];
     $scope.selectedMonth = $scope.months[month];
-    
+
     $scope.data = [];
 
     $scope.ctrl = {};
@@ -160,7 +160,7 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
 
     $scope.propertyName = 'User.group_one';
     $scope.reverse = false;
-    
+
     $scope.sortBy = function (propertyName) {
         $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
         $scope.propertyName = propertyName;
@@ -181,7 +181,7 @@ app.controller('UserListCtrl', ['$scope', '$location', '$window', 'appService', 
                 $scope.group = $scope.groups[0].name;
             })
         })
-    }    
+    }
     //$scope.GetAllMonthlyRecordData();
 
     // 全選
@@ -298,6 +298,12 @@ app.controller('UserDetailsCtrl', ['$scope', '$location', '$window', 'appService
                     if ($scope.projects[i].workHour || $scope.projects[i].overtime) {
                         $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();
                     }
+
+                    // 20240304 Update
+                    if (!$scope.projects[i].realHour) {
+                        $scope.projects[i].realHour = $scope.projects[i].workHour + $scope.projects[i].overtime;
+                    }
+
                     if ($scope.projects[i].itemno)
                         $scope.projects[i].itemno = $scope.projects[i].itemno.slice(0, $scope.projects[i].itemno.length - 2);
                 }
@@ -453,7 +459,12 @@ app.controller('DetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 
         for (let i = 0; i < $scope.projects.length; i++) {
 
             if ($scope.projects[i].workHour || $scope.projects[i].overtime) {
-                $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();                               
+                $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();
+
+                // 20240304 Update
+                if (!$scope.projects[i].realHour) {
+                    $scope.projects[i].realHour = $scope.projects[i].workHour + $scope.projects[i].overtime;
+                }
             }
 
             if ($scope.projects[i].itemno)
@@ -498,7 +509,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
     //})
 
-    $scope.projects = [{ logs: [{}]}];
+    $scope.projects = [{ logs: [{}] }];
     //$scope.addProjRow = (idx, projno) => {
     //    $scope.rowList.splice(idx + 1, 0, { projno: projno });
     //};
@@ -529,10 +540,10 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
             $scope.projects[projectidx].logs.splice(idx, 1);
 
         }
-        
+
     };
     $scope.addProjRow = () => {
-        $scope.projects.push({ logs: [{}]});
+        $scope.projects.push({ logs: [{}] });
     };
 
     $scope.UpdateTasklogData = () => {
@@ -541,7 +552,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
         let projectTasks = [];
         //let yymm = `${Number($scope.selectedYear) - 1911}${$scope.selectedMonth}`
-        let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`; 
+        let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`;
 
         for (var project of $scope.projects) {
 
@@ -555,7 +566,13 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 //    });
                 //}
 
-              
+
+                // 20240304 update: If realHour is equal to workhour plus overtime, save it as 0 in DB
+                // This can avoid people saving tasklog too early causing wrong realHour
+                if (project.realHour === project.workHour + project.overtime)
+                    project.realHour = 0;
+
+
                 projectTasks.push({
                     id: log.id, yymm: yymm, projno: project.projno, realHour: project.realHour,
                     content: log.content, endDate: log.endDate, note: log.note
@@ -567,7 +584,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
         //if ($scope.deletedIds.length !== 0) {
         //    appService.DeleteProjectTask($scope.deletedIds)
         //        .then((ret) => {
-                   
+
         //        })
         //        .catch((ret) => { alert('Error'); }
         //        );
@@ -654,7 +671,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
             // add task first
             for (let task of projectTasks) {
-                                
+
                 let projidx = $scope.projects.findIndex(x => x.projno === task.projno);
 
                 if (projidx < 0) {
@@ -709,21 +726,21 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
                 if ($scope.projects[i].itemno)
                     $scope.projects[i].itemno = $scope.projects[i].itemno.slice(0, $scope.projects[i].itemno.length - 2);
-                
+
             }
 
-             //if ($scope.projects[projidx].workHour > 0 || $scope.projects[projidx].overtime > 0)
-                //    $scope.projects[projidx].hourStr = $scope.projects[projidx].workHour.toString() + ' + ' + $scope.projects[projidx].overtime.toString();
+            //if ($scope.projects[projidx].workHour > 0 || $scope.projects[projidx].overtime > 0)
+            //    $scope.projects[projidx].hourStr = $scope.projects[projidx].workHour.toString() + ' + ' + $scope.projects[projidx].overtime.toString();
 
-                //if (!$scope.projects[projidx].realHour) {
-                //    $scope.projects[projidx].realHour = $scope.projects[projidx].workHour + $scope.projects[projidx].overtime;
-                //}
+            //if (!$scope.projects[projidx].realHour) {
+            //    $scope.projects[projidx].realHour = $scope.projects[projidx].workHour + $scope.projects[projidx].overtime;
+            //}
 
             if ($scope.projects.length === 0)
                 $scope.projects.push({ logs: [{}] });
 
             // modify textarea height in the beginning
-           
+
             $timeout(function () {
 
                 var pp = document.querySelectorAll(".autoExpand");

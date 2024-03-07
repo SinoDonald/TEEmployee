@@ -175,6 +175,7 @@
     <Compile Include="Controllers\EducationController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\ForumController.cs" />
+    <Compile Include="Controllers\GEducationController.cs" />
     <Compile Include="Controllers\GKpiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\GScheduleController.cs" />
@@ -202,6 +203,12 @@
     <Compile Include="Models\Forum\IForumRepository.cs" />
     <Compile Include="Models\Forum\Post.cs" />
     <Compile Include="Models\Forum\Reply.cs" />
+    <Compile Include="Models\GEducation\Chapter.cs" />
+    <Compile Include="Models\GEducation\Course.cs" />
+    <Compile Include="Models\GEducation\GEducationRepository.cs" />
+    <Compile Include="Models\GEducation\GEducationService.cs" />
+    <Compile Include="Models\GEducation\IGEducationRepository.cs" />
+    <Compile Include="Models\GEducation\Record.cs" />
     <Compile Include="Models\GKpi\GKpiRepository.cs" />
     <Compile Include="Models\GKpi\GKpiService.cs" />
     <Compile Include="Models\GKpi\IGKpiRepository.cs" />
@@ -506,6 +513,7 @@
     <Content Include="Views\Assessment\ChartPerformance.cshtml" />
     <Content Include="Views\Forum\Index.cshtml" />
     <Content Include="Views\Forum\Post.cshtml" />
+    <Content Include="Views\GEducation\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Promotion\" />
