@@ -34,6 +34,13 @@ namespace TEEmployee.Controllers
         //    return Json(ret);
         //}
 
+        [HttpPost]
+        public JsonResult UploadCourseFile(HttpPostedFileBase courseFile)
+        {
+            var ret = _service.UploadCourseFile(courseFile.InputStream);
+            return Json(ret);
+        }
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

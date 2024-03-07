@@ -393,6 +393,7 @@
     </Content>
     <Content Include="Scripts\Webapp\Education\EducationCtrl.js" />
     <Content Include="Scripts\Webapp\Forum\ForumCtrl.js" />
+    <Content Include="Scripts\Webapp\GEducation\GEducationCtrl.js" />
     <Content Include="Scripts\Webapp\GSchedule\HistoryLineChart.js" />
     <Content Include="Scripts\Webapp\GSchedule\ScheduleCtrl.js" />
     <Content Include="Scripts\Webapp\Home\AdminCtrl.js" />
