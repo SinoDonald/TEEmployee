@@ -8,7 +8,10 @@ namespace TEEmployee.Models.GEducation
     public class Chapter
     {
         public int id { get; set; }
-        public int course_id { get; set; }
+        //public int course_id { get; set; }
+        public string course_title { get; set; }
+        public string course_group { get; set; }
+        public string course_group_one { get; set; }
         public string chapter_type { get; set; }
         public string chapter_title { get; set; }
         public string chapter_code { get; set; }

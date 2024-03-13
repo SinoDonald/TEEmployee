@@ -515,6 +515,9 @@
     <Content Include="Views\Forum\Index.cshtml" />
     <Content Include="Views\Forum\Post.cshtml" />
     <Content Include="Views\GEducation\Index.cshtml" />
+    <Content Include="Views\GEducation\Assign.cshtml" />
+    <Content Include="Views\GEducation\Curriculum.cshtml" />
+    <Content Include="Views\GEducation\Digital.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Promotion\" />

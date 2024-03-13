@@ -1,0 +1,157 @@
+﻿
+@{
+    ViewBag.Title = "課表查詢";
+}
+
+
+@section Styles {
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    @*<link rel="stylesheet" href="~/Content/css/angular-moment-picker.min.css">*@
+    <style>
+
+        #mainNav, #mainNav.navbar-shrink {
+            box-shadow: none;
+        }
+
+        #childNav {
+            margin-top: 80px;
+        }
+
+        iframe {
+            width: 80%;
+            height: 80vh;
+        }
+
+        .custom-font-size {
+            font-size: 1.4em;
+        }
+
+        .highlighted-badge {
+            background-color: #f4623a; /* Change this to the desired color */
+        }
+
+        .card-title {
+            background-color: dimgrey;
+            color: white;
+            padding: 0.5em;
+        }
+    </style>
+}
+
+
+<div ng-controller="CurriculumCtrl" class="container-fluid">
+
+    <nav class="navbar navbar-expand-lg navbar-dark" id="childNav" style="background-color: #5F4C4C">
+        <a class="navbar-brand" href="@Url.Action("Index", "Education")">拓展專業培養</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Index", "GEducation")">課程總覽</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Assign", "GEducation")">課程指派</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="@Url.Action("Curriculum", "GEducation")">課表查詢</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Digital", "GEducation")">數位課程</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+
+
+    <div class="container mt-4">
+        <div class="d-flex mb-4">
+            <h3>員工</h3>
+            <div class="ml-3">
+                <label for="SelectManager">群組</label>
+                <select class="form-select manager" id="SelectManager" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
+                    <option value="" disabled>請選擇群組</option>
+                    <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
+                </select>
+            </div>
+            <div class="ml-3">
+                <label for="SelectCategory">姓名</label>
+                <select class="form-select" id="SelectCategory" name="SelectEmployee" ng-model="selectedEmployee" ng-change="selectEmployee()" aria-label="Select the Category">
+                    <option value="" disabled>請選擇員工</option>
+                    <option ng-repeat="employee in employees" value="{{employee}}">{{employee}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="d-flex mb-4">
+            <h3>課程</h3>
+            <div class="ml-3">
+                <label for="SelectChapterGroup">群組</label>
+                <select class="form-select" id="SelectChapterGroup" name="SelectChapterGroup" ng-model="search.chapter.course_group" ng-change="selectChapterGroup()" aria-label="Select the Category">
+                    <option value="none" disabled>請選擇群組</option>
+                    <option ng-repeat="group in groupList" value="{{group.value}}">{{group.name}}</option>
+                </select>
+            </div>
+            <div class="ml-3" ng-show="search.chapter.course_group">
+                <label for="SelectChapterGroupOne">小組</label>
+                <select class="form-select" id="SelectChapterGroupOne" name="SelectChapterGroupOne" ng-model="search.chapter.course_group_one" ng-change="selectChapterGroupOne()" aria-label="Select the Category">
+                    <option value="none" disabled>請選擇小組</option>
+                    <option value="">全部</option>
+                    <option ng-repeat="group_one in chapterGroupOnes" value="{{group_one}}">{{group_one}}</option>
+                </select>
+            </div>
+            <div class="ml-3" ng-show="search.chapter.course_group_one">
+                <label for="SelectChapterScope">專業</label>
+                <select class="form-select" id="SelectChapterScope" name="SelectChapterScope" ng-model="search.chapter.chapter_scope" ng-change="" aria-label="Select the Category">
+                    <option value="none" disabled>請選擇專業</option>
+                    <option value="">全部</option>
+                    <option ng-repeat="scope in chapterScopes" value="{{scope}}">{{scope}}</option>
+                </select>
+            </div>
+            <div class="ml-3 d-flex align-items-end">
+                <div class="border border-light p-1 rounded">
+                    <div class="form-check form-check-inline" ng-repeat="levelCheckbox in levelCheckboxList">
+                        <input class="form-check-input" type="checkbox" id="inlineLevelCheckbox{{levelCheckbox.id}}" ng-model="levelCheckbox.checked" ng-change="updatelevelSelected()">
+                        <label class="form-check-label" for="inlineLevelCheckbox{{levelCheckbox.id}}">{{levelCheckbox.value}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="ml-3 d-flex align-items-end">
+                <div class="border border-light p-1 rounded">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox" ng-model="showUncompletedCheckbox">
+                        <label class="form-check-label" for="inlineCheckbox">只顯示未完成課程</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="d-flex flex-wrap">
+            <div class="card w-25 text-center" ng-repeat="item in records | filter:search | filter:showUncompleted | filter:filterLevel">
+                <div class="card-body">
+                    <h6 class="card-title" ng-bind="item.chapter.course_title"></h6>
+                    <p class="card-text" ng-bind="item.chapter.chapter_title"></p>
+                    <button type="button" class="btn btn-light" ng-click="updateRecordCompleted(item, true)" ng-show="!item.completed">未完成</button>
+                    <button type="button" class="btn btn-primary" ng-click="updateRecordCompleted(item, false)" ng-show="item.completed">完成</button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js" integrity="sha256-qXBd/EfAdjOA2FGrGAG+b3YBn2tn5A6bhz+LSgYD96k=" crossorigin="anonymous"></script>
+    <script src="~/Scripts/WebApp/GEducation/GEducationCtrl.js"></script>
+}

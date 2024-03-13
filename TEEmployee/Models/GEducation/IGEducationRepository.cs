@@ -8,10 +8,14 @@ namespace TEEmployee.Models.GEducation
 {
     interface IGEducationRepository : IDisposable
     {
+        List<Chapter> GetAllChapters();
         //List<Course> GetAllCourses();
-        //bool InsertCourses(List<Course> courses);
+        bool InsertChapters(List<Chapter> chapters);
         //List<Record> GetAllRecords();
-        //List<Record> GetAllRecordsByUser(string empno);
-        //bool UpsertRecords(List<Record> records);
+        List<Record> GetAllRecordsByUser(string empno);
+        bool UpsertRecords(List<Record> records);
+        Record UpdateRecordCompleted(Record record);
+        Chapter UpdateChapterDigitalized(Chapter chapter);
+
     }
 }

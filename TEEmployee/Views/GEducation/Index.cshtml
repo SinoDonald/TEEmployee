@@ -43,10 +43,10 @@
                     <a class="nav-link" href="@Url.Action("Assign", "GEducation")">課程指派</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">我的課程</a>
+                    <a class="nav-link" href="@Url.Action("Curriculum", "GEducation")">課表查詢</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">E-learning</a>
+                    <a class="nav-link" href="@Url.Action("Digital", "GEducation")">數位課程</a>
                 </li>
             </ul>
         </div>
@@ -75,46 +75,31 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Title</th>
+                    <th scope="col">CoursseTitle</th>
                     <th scope="col">Group</th>
                     <th scope="col">Group One</th>
-                    <th scope="col">Subject</th>
+                    <th scope="col">Id</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Scope</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Duration</th>
+                    <th sscop="col">Created Time</th>
+                    <th sscop="col">Code</th>
                 </tr>
             </thead>
-            <tbody ng-repeat="course in courses">
+            <tbody ng-repeat="chapter in chapters">
                 <tr>
-                    <th scope="row" ng-bind="course.id"></th>
-                    <td ng-bind="course.course_title"></td>
-                    <td ng-bind="course.course_group"></td>
-                    <td ng-bind="course.course_group_one"></td>
-                    <td ng-bind="course.course_subject"></td>
-                </tr>
-
-                <tr>
-                    <td colspan="4">
-                        <table class="table table-dark">
-                            <thead>
-                                <tr>
-                                    <th style="width: 10%" scope="col">Id</th>
-                                    <th style="width: 60%" scope="col">Title</th>
-                                    <th style="width: 10%" scope="col">Type</th>
-                                    <th style="width: 10%" scope="col">Duration</th>
-                                    <th style="width: 10%" scope="col">Created Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="chapter in course.chapters">
-                                    <th scope="row" ng-bind="chapter.id"></th>
-                                    <td ng-bind="chapter.chapter_title"></td>
-                                    <td ng-bind="chapter.chapter_type"></td>
-                                    <td ng-bind="chapter.duration"></td>
-                                    <td ng-bind="chapter.createdTime"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
+                    <th scope="row" ng-bind="chapter.course_title"></th>
+                    <td ng-bind="chapter.course_group"></td>
+                    <td ng-bind="chapter.course_group_one"></td>
+                    <th ng-bind="chapter.id"></th>
+                    <td ng-bind="chapter.chapter_title"></td>
+                    <td ng-bind="chapter.chapter_scope"></td>
+                    <td ng-bind="chapter.chapter_type"></td>
+                    <td ng-bind="chapter.duration"></td>
+                    <td ng-bind="chapter.createdTime"></td>
+                    <td ng-bind="chapter.chapter_code"></td>
+                </tr>               
             </tbody>
         </table>
     </div>

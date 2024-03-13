@@ -1,0 +1,205 @@
+﻿
+@{
+    ViewBag.Title = "課程指派";
+}
+
+
+@section Styles {
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    @*<link rel="stylesheet" href="~/Content/css/angular-moment-picker.min.css">*@
+    <style>
+
+        #mainNav, #mainNav.navbar-shrink {
+            box-shadow: none;
+        }
+
+        #childNav {
+            margin-top: 80px;
+        }
+
+        iframe {
+            width: 80%;
+            height: 80vh;
+        }
+
+        .custom-font-size {
+            font-size: 1.4em;
+        }
+
+        .highlighted-badge {
+            background-color: #f4623a; /* Change this to the desired color */
+        }
+
+        .checkbox-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-check {
+            margin-bottom: 10px; /* Adjust spacing between checkboxes */
+        }
+
+        .accordion {
+            flex: 1;
+        }
+    </style>
+}
+
+
+<div ng-controller="AssignCtrl" class="container-fluid">
+
+    <nav class="navbar navbar-expand-lg navbar-dark" id="childNav" style="background-color: #5F4C4C">
+        <a class="navbar-brand" href="@Url.Action("Index", "GEducation")">拓展專業培養</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Index", "GEducation")">課程總覽</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="@Url.Action("Assign", "GEducation")">課程指派</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Curriculum", "GEducation")">課表查詢</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Digital", "GEducation")">數位課程</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <div class="container mt-4">
+        <form>
+
+            <button type="button" class="btn btn-primary" ng-click="updateRecords()">送出</button>
+
+            <div class="d-flex justify-content-around">
+                <!-- Collapse (Accordion) Section -->
+                <div class="accordion">
+                    <div class="accordion-item" ng-repeat="item in users.children">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{$index}}" aria-expanded="true" aria-controls="collapseOne">
+                            {{item.name}}
+                        </button>
+                        <div id="collapse{{$index}}" class="accordion-content collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                            @*<p>Content for Section 1 goes here.</p>*@
+                            <!-- Checkbox Group for Section 1 -->
+                            <div class="checkbox-group" id="checkboxGroup1">
+                                <div class="form-check" ng-repeat="user in item.children">
+                                    @*<input type="checkbox" id="checkbox1" name="checkbox1">
+                                <label for="checkbox1">Checkbox 1</label>*@
+                                    <input class="form-check-input" type="checkbox" ng-model="user.selected" id="gridCheck{{$parent.$index}}_{{$index}}">
+                                    <label class="form-check-label" ng-bind="user.name" for="gridCheck{{$parent.$index}}_{{$index}}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+
+                    <div>
+                        <div class="form-check form-check-inline" ng-repeat="groupCheckbox in groupCheckboxList">
+                            <input class="form-check-input" type="checkbox" id="inlineGroupCheckbox{{groupCheckbox.id}}" ng-model="groupCheckbox.checked" ng-change="updateGroupSelected()">
+                            <label class="form-check-label" for="inlineGroupCheckbox{{groupCheckbox.id}}">{{groupCheckbox.value}}</label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="form-check form-check-inline" ng-repeat="levelCheckbox in levelCheckboxList">
+                            <input class="form-check-input" type="checkbox" id="inlineLevelCheckbox{{levelCheckbox.id}}" ng-model="levelCheckbox.checked" ng-change="updatelevelSelected()">
+                            <label class="form-check-label" for="inlineLevelCheckbox{{levelCheckbox.id}}">{{levelCheckbox.value}}</label>
+                        </div>
+                    </div>
+
+
+
+                    <div class="accordion-item" ng-repeat="(group_one_key, group_one) in group_ones" ng-show="filterGroup(group_one_key)">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#gcollapse{{$index}}" aria-expanded="true" aria-controls="collapseOne">
+                            {{group_one_key}}
+                        </button>
+                        <div id="gcollapse{{$index}}" class="accordion-content collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+
+                            <!-- Nested collapse -->
+
+                            <div class="accordion-item pl-3" ng-repeat="(scope_key, scope) in group_one">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#gcollapse{{$parent.$index}}_{{$index}}" aria-expanded="true" aria-controls="collapseOne">
+                                    {{scope_key}}
+                                </button>
+                                <div id="gcollapse{{$parent.$index}}_{{$index}}" class="accordion-content collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+
+
+                                    <!-- Nested collapse -->
+
+                                    <div class="accordion-item pl-3" ng-repeat="(title_key, title) in scope" ng-show="(title | filter:filterChapter).length > 0">
+                                        @*<button class="btn btn-link" data-toggle="collapse" data-target="#gcollapse{{$parent.$parent.$index}}_{{$parent.$index}}_{{$index}}" aria-expanded="true" aria-controls="collapseOne">
+                                        {{title_key}}
+                                    </button>*@
+
+                                        <p> {{title_key}}</p>
+
+
+                                        <div>
+
+                                            <!-- Checkbox  -->
+                                            <div class="checkbox-group" id="checkboxGroup2">
+                                                <div class="form-check" ng-repeat="chapter in title | filter:filterChapter">
+
+                                                    <input class="form-check-input" type="checkbox" ng-model="chapter.selected" id="chapterCheck{{$parent.$parent.$parent.$index}}_{{$parent.$parent.$index}}_{{$parent.$index}}_{{$index}}">
+                                                    <label class="form-check-label" for="chapterCheck{{$parent.$parent.$parent.$index}}_{{$parent.$parent.$index}}_{{$parent.$index}}_{{$index}}">{{chapter.chapter_title}}<span class="badge badge-pill badge-secondary ml-1">{{chapter.chapter_type.charAt(0)}}</span></label>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
+
+
+
+                                        <!--<div id="gcollapse{{$parent.$parent.$index}}_{{$parent.$index}}_{{$index}}" class="accordion-content collapse show" aria-labelledby="headingOne" data-parent="#accordion">-->
+                                        <!-- Checkbox  -->
+                                        <!--<div class="checkbox-group" id="checkboxGroup2">
+                                <div class="form-check" ng-repeat="chapter in title">
+
+                                    <input class="form-check-input" type="checkbox" ng-model="chapter.selected" id="chapterCheck{{$parent.$parent.$parent.$index}}_{{$parent.$parent.$index}}_{{$parent.$index}}_{{$index}}">
+                                    <label class="form-check-label" ng-bind="chapter.chapter_title" for="chapterCheck{{$parent.$parent.$parent.$index}}_{{$parent.$parent.$index}}_{{$parent.$index}}_{{$index}}"></label>
+                                </div>
+                            </div>
+
+                        </div>-->
+                                    </div>
+
+
+
+
+
+                                    <!-- Nested collapse End-->
+
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js" integrity="sha256-qXBd/EfAdjOA2FGrGAG+b3YBn2tn5A6bhz+LSgYD96k=" crossorigin="anonymous"></script>
+    <script src="~/Scripts/WebApp/GEducation/GEducationCtrl.js"></script>
+}

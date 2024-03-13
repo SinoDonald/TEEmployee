@@ -1,4 +1,6 @@
-﻿using OfficeOpenXml;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,19 +20,26 @@ namespace TEEmployee.Models.GEducation
             _userRepository = new UserRepository();
         }
 
+        public List<Chapter> GetAllChapters()
+        {
+            var ret = _educationRepository.GetAllChapters();
+            return ret;
+        }
+
         public bool UploadCourseFile(Stream input)
         {
-            List<Course> courses = processCourseXlsx(input);
-            //bool ret = _educationRepository.InsertCourses(courses);
+            List<Chapter> chapters = processCourseXlsx(input);
 
-            bool ret = true;
+            bool ret = _educationRepository.InsertChapters(chapters);
 
             return ret;
         }
 
-        private List<Course> processCourseXlsx(Stream stream)
+        private List<Chapter> processCourseXlsx(Stream stream)
         {
-            List<Course> courses = new List<Course>();
+            List<Chapter> chapters = new List<Chapter>();
+            List<Chapter> chapter_collection = GetAllChapters();
+
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             using (var package = new ExcelPackage(stream))
@@ -38,7 +47,7 @@ namespace TEEmployee.Models.GEducation
                 var worksheet = package.Workbook.Worksheets["軌二部"];
 
                 int rowCount = worksheet.Dimension.End.Row;
-                Course course = new Course() { chapters = new List<Chapter>() };
+                string current_course_title = "";
 
                 for (int row = 4; row <= rowCount; row++)
                 {
@@ -51,27 +60,20 @@ namespace TEEmployee.Models.GEducation
                     string columnHValue = worksheet.Cells[row, 8].Text;
                     string columnIValue = worksheet.Cells[row, 9].Text;
 
+                   
                     // True end of row
                     if (columnCValue == "")
                     {
-                        if (course.chapters.Count > 0)
-                        {
-                            courses.Add(course.ShallowCopy());
-                        }
                         break;
                     }
 
                     // Start of a new course
                     if (columnBValue != "")
                     {
-                        if (course.chapters.Count > 0)
-                        {
-                            courses.Add(course.ShallowCopy());
-                        }
-
-                        course = new Course() { chapters = new List<Chapter>() };
-                        course.course_title = columnBValue.Substring(4);
+                        current_course_title = columnBValue.Substring(4);
                     }
+
+
 
                     Chapter chapter = new Chapter();
                     string group_one = "";
@@ -94,33 +96,37 @@ namespace TEEmployee.Models.GEducation
                         }
                     }
 
-                    course.course_group = columnHValue;
-                    course.course_group_one = group_one;
-
                     chapter.id = int.Parse(columnAValue);
+
+                    if (chapter_collection.Any(x => x.id == chapter.id))
+                        continue;
+
+                    chapter.course_group = columnHValue;
+                    chapter.course_group_one = group_one;
+                    chapter.course_title = current_course_title;
+
                     chapter.chapter_type = type;
                     chapter.chapter_scope = scope;
                     chapter.chapter_title = columnCValue;
                     chapter.duration = columnDValue;
                     chapter.createdTime = columnEValue;
 
-                    chapter.chapter_code = buildChapterCode(chapter, course.course_group, course.course_group_one);
+                    chapter.chapter_code = buildChapterCode(chapter);
 
-                    course.chapters.Add(chapter);
+                    chapters.Add(chapter);
 
                 }
 
             }
 
-            return courses;
+            return chapters;
         }
 
-        private string buildChapterCode(Chapter chapter, string group, string group_one)
+        private string buildChapterCode(Chapter chapter)
         {
-            string input = "Case2";
             string chapterCode = "";
 
-            switch (group)
+            switch (chapter.course_group)
             {
                 case "通識":
                     chapterCode += "GN";
@@ -139,7 +145,7 @@ namespace TEEmployee.Models.GEducation
                     break;
             }
 
-            switch (group_one)
+            switch (chapter.course_group_one)
             {
                 case "全體":
                     chapterCode += "AL";
@@ -224,7 +230,7 @@ namespace TEEmployee.Models.GEducation
                     chapterCode += "PIP";
                     break;
 
-                case "都計/用地":
+                case "都計變更/用地取得":
                     chapterCode += "URB";
                     break;
 
@@ -326,6 +332,69 @@ namespace TEEmployee.Models.GEducation
             }
 
             return chapterCode;
+        }
+
+        public dynamic GetAuthorization(string empno)
+        {
+            User user = _userRepository.Get(empno);
+            List<User> users = new List<User>();
+            dynamic authorization = new JObject();
+            authorization.Users = new JArray();
+
+            users = _userRepository.GetAll();
+
+            if (user.department_manager)
+            {
+
+            }
+            else if (user.group_manager)
+            {
+                users = users.Where(x => x.group == user.group).ToList();
+            }
+            else if (user.group_one_manager)
+            {
+                users = users.Where(x => x.group_one == user.group_one).ToList();
+            }
+            else
+            {
+                users = users.Where(x => x.empno == user.empno).ToList();
+            }
+
+            users = users.Where(x => !string.IsNullOrEmpty(x.group_one)).ToList();
+
+            foreach (var item in users)
+            {
+                dynamic userObj = JObject.FromObject(item);
+                //userObj.records = JArray.FromObject(this.GetAllRecordsByUser(item.empno));
+                authorization.Users.Add(userObj);
+            }
+
+            authorization.User = JObject.FromObject(user);
+            return JsonConvert.SerializeObject(authorization);
+        }
+
+        public bool UpsertRecords(List<Record> records, string empno)
+        {
+            var ret = _educationRepository.UpsertRecords(records);
+            return ret;
+        }
+
+        public Record UpdateRecordCompleted(Record record, string empno)
+        {
+            var ret = _educationRepository.UpdateRecordCompleted(record);
+            return ret;
+        }
+
+        public Chapter UpdateChapterDigitalized(Chapter chapter, string empno)
+        {
+            var ret = _educationRepository.UpdateChapterDigitalized(chapter);
+            return ret;
+        }
+
+        public List<Record> GetAllRecordsByUser(string empno)
+        {
+            var ret = _educationRepository.GetAllRecordsByUser(empno);
+            return ret;
         }
 
         public void Dispose()
