@@ -45,9 +45,13 @@
                 <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("Curriculum", "GEducation")">課表查詢</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("Digital", "GEducation")">數位課程</a>
-                </li>
+                @if (Session["group_leader"] is true)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Digital", "GEducation")">數位課程</a>
+                    </li>
+                }
+
             </ul>
         </div>
     </nav>
