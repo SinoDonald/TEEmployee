@@ -12,6 +12,8 @@ namespace TEEmployee.Filters
     public class MyAuthorizeAttribute : AuthorizeAttribute
     {
         private IUserRepository _userRepository;
+        private HashSet<string> SinoGuests = new HashSet<string> { "9991" };
+
         public MyAuthorizeAttribute()
         {
             //_userRepository = new UserTxtRepository();
@@ -27,22 +29,43 @@ namespace TEEmployee.Filters
 
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
-            base.OnAuthorization(filterContext); 
-
-            if (filterContext.Result is HttpUnauthorizedResult)
-            {
-                filterContext.HttpContext.Response.Redirect("~/Error/Unauthorized/" +
-                filterContext.HttpContext.User.Identity.Name);
-                filterContext.Result = new EmptyResult();
-                return;
-            }
-
             string loginUser = filterContext.HttpContext.User.Identity.Name;
             Match m = Regex.Match(loginUser, @"\\{0,1}(\d{4})@{0,1}");
             if (m.Success)
                 loginUser = m.Groups[1].ToString();
-            //loginUser = "7291";
-            //-------------------------------------------------------
+
+
+            base.OnAuthorization(filterContext);
+
+            if (filterContext.Result is HttpUnauthorizedResult)
+            {
+                if (!IsEmployeeSinoGuest(loginUser))
+                {
+                    filterContext.HttpContext.Response.Redirect("~/Error/Unauthorized/" +
+                    filterContext.HttpContext.User.Identity.Name);
+                    filterContext.Result = new EmptyResult();
+                    return;
+                }
+                
+            }
+
+
+            //base.OnAuthorization(filterContext); 
+
+            //if (filterContext.Result is HttpUnauthorizedResult)
+            //{
+            //    filterContext.HttpContext.Response.Redirect("~/Error/Unauthorized/" +
+            //    filterContext.HttpContext.User.Identity.Name);
+            //    filterContext.Result = new EmptyResult();
+            //    return;
+            //}
+
+            //string loginUser = filterContext.HttpContext.User.Identity.Name;
+            //Match m = Regex.Match(loginUser, @"\\{0,1}(\d{4})@{0,1}");
+            //if (m.Success)
+            //    loginUser = m.Groups[1].ToString();
+            
+            
 
             if (filterContext.HttpContext.Session["empno"] == null)
             {                
@@ -109,6 +132,8 @@ namespace TEEmployee.Filters
                 }                
             }
 
+            
+
             // fake user v1
 
             //if (true)
@@ -162,5 +187,13 @@ namespace TEEmployee.Filters
             //    }
             //}
         }
+
+        private bool IsEmployeeSinoGuest(string empno)
+        {
+            HashSet<string> sinoGuests = new HashSet<string> { "9991" };
+
+            return sinoGuests.Contains(empno);
+        }
+
     }
 }
