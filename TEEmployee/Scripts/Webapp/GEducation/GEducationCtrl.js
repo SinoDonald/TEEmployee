@@ -42,21 +42,25 @@ app.controller('GEducationCtrl', ['$scope', '$location', 'appService', '$rootSco
 
     })
 
+    const formElem = document.querySelector('#formElem');
+
     // client to server
-    formElem.onsubmit = async (e) => {
+    if (formElem) {
+        formElem.onsubmit = async (e) => {
 
-        e.preventDefault();
+            e.preventDefault();
 
-        // don't add '/' before MVC controller
-        let response = await fetch('GEducation/UploadCourseFile', {
-            method: 'POST',
-            body: new FormData(formElem)
-        });
+            // don't add '/' before MVC controller
+            let response = await fetch('GEducation/UploadCourseFile', {
+                method: 'POST',
+                body: new FormData(formElem)
+            });
 
-        let result = await response.json();
+            let result = await response.json();
 
-        alert(result);
-    };
+            alert(result);
+        };
+    }    
 
 }]);
 
