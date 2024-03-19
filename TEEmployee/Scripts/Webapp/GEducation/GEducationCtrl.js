@@ -325,6 +325,11 @@ app.controller('CurriculumCtrl', ['$scope', '$location', 'appService', '$rootSco
 
         $scope.users = groupData(users);
 
+        if ($scope.groups.length === 1) {
+            $scope.selectedGroup = $scope.groups[0];
+            $scope.selectGroup();
+        }        
+
     })
 
     $scope.selectGroup = () => {
@@ -332,8 +337,14 @@ app.controller('CurriculumCtrl', ['$scope', '$location', 'appService', '$rootSco
         let employee_array = $scope.auth.Users.filter(x => x.group_one === $scope.selectedGroup).map(x => x.name);
 
         $scope.employees = employee_array;
-        $scope.selectedEmployee = $scope.employees[0];
-        $scope.selectEmployee();
+
+        if ($scope.groups.length === 1) {
+            $scope.selectedEmployee = $scope.employees.find(x => x === $scope.auth.User.name);
+        }
+        else {
+            $scope.selectedEmployee = $scope.employees[0];            
+        }
+        $scope.selectEmployee();        
 
     }
 
