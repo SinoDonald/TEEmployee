@@ -26,10 +26,18 @@ namespace TEEmployee.Controllers
         {            
             return View();
         }
+        /// <summary>
+        /// 群組規劃
+        /// </summary>
+        /// <returns></returns>
         public ActionResult GroupPlan()
         {
             return PartialView();
         }
+        /// <summary>
+        /// 個人規劃
+        /// </summary>
+        /// <returns></returns>
         public ActionResult PersonalPlan()
         {
             return PartialView();
@@ -134,40 +142,55 @@ namespace TEEmployee.Controllers
 
             return Json(ret);
         }
-
-        // 取得群組
+        /// <summary>
+        /// 取得群組
+        /// </summary>
+        /// <param name="view"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult GetGroupList(string view)
         {
             var ret = _service.GetGroupList(view, Session["empno"].ToString());
             return Json(ret);
         }
-
-        // 取得群組同仁
+        /// <summary>
+        /// 取得群組同仁
+        /// </summary>
+        /// <param name="selectedGroup"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult GetGroupUsers(string selectedGroup)
         {
             var ret = _service.GetGroupUsers(selectedGroup, Session["empno"].ToString());
             return Json(ret);
         }
-
-        // 讀取使用者的資訊
+        /// <summary>
+        /// 讀取使用者的資訊
+        /// </summary>
+        /// <param name="selectedGroup"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult Get()
         {
             var ret = _service.Get(Session["empno"].ToString());
             return Json(ret);
         }
-
-        // 取得年份
+        /// <summary>
+        /// 取得年份
+        /// </summary>
+        /// <param name="selectedGroup"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult GetYears(string view)
         {
             var ret = _service.GetYears(view);
             return Json(ret);
         }
-
-        // 上傳群組規劃PDF
+        /// <summary>
+        /// 上傳群組規劃PDF
+        /// </summary>
+        /// <param name="selectedGroup"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult UploadPDFFile(HttpPostedFileBase file, string view, string folder)
         {
@@ -175,7 +198,11 @@ namespace TEEmployee.Controllers
             string ret = _service.UploadPDFFile(file, view, Session["empno"].ToString(), folder);
             return Json(ret);
         }
-        // 上傳個人規劃PDF
+        /// <summary>
+        /// 上傳個人規劃PDF
+        /// </summary>
+        /// <param name="selectedGroup"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult ImportPDFFile(HttpPostedFileBase file)
         {
@@ -183,7 +210,11 @@ namespace TEEmployee.Controllers
             var ret = _service.ImportPDFFile(file, Session["empno"].ToString());
             return Json(ret);
         }
-        // 取得PDF
+        /// <summary>
+        /// 取得PDF
+        /// </summary>
+        /// <param name="selectedGroup"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult GetPDF(string view, string year, string group, string userName)
         {
@@ -202,16 +233,22 @@ namespace TEEmployee.Controllers
 
             return result;
         }
-
-        // 取得回覆
+        /// <summary>
+        /// 取得主管回饋
+        /// </summary>
+        /// <param name="selectedGroup"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult GetResponse(string view, string year, string group, string name)
         {
             List<Planning> ret = _service.GetResponse(view, year, group, Session["empno"].ToString(), name);
             return Json(ret);
         }
-
-        // 儲存回覆
+        /// <summary>
+        /// 儲存回覆
+        /// </summary>
+        /// <param name="selectedGroup"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult SaveResponse(string view, string year, string group, string name, List<Planning> response)
         {

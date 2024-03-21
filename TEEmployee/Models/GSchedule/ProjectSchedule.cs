@@ -10,6 +10,11 @@ namespace TEEmployee.Models.GSchedule
         public string projno  { get; set; }
         public string filepath { get; set; }
     }
+    /// <summary>
+    /// 主管回饋
+    /// </summary>
+    /// <param name="selectedGroup"></param>
+    /// <returns></returns>
     public class Planning
     {
         public string view { get; set; }

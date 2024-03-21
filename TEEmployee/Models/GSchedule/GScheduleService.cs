@@ -439,54 +439,89 @@ namespace TEEmployee.Models.GSchedule
             }
 
         }
-
-        // 取得群組
+        /// <summary>
+        /// 取得群組
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public List<string> GetGroupList(string view, string empno)
         {
             var ret = _userRepository.GetGroupList(view, empno);
             return ret;
         }
-
-        // 取得群組同仁
+        /// <summary>
+        /// 取得群組同仁
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public List<string> GetGroupUsers(string selectedGroup, string empno)
         {
             var ret = _userRepository.GetGroupUsers(selectedGroup, empno);
             return ret;
         }
-
-        // 取得使用者資訊
+        /// <summary>
+        /// 取得使用者資訊
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public User Get(string empno)
         {
             var user = _userRepository.Get(empno);
             return user;
         }
-
-        // 取得年份
+        /// <summary>
+        /// 取得年份
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public List<string> GetYears(string view)
         {
             List<string> ret = _scheduleRepository.GetYears(view);
             return ret;
         }
-
-        // 上傳群組規劃PDF
+        /// <summary>
+        /// 上傳群組規劃PDF
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public string UploadPDFFile(HttpPostedFileBase file, string view, string empno, string folder)
         {
             string ret = _scheduleRepository.UploadPDFFile(file, view, empno, folder);
             return ret;
         }
-        // 上傳個人規劃PDF
+        /// <summary>
+        /// 上傳個人規劃PDF
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public string ImportPDFFile(HttpPostedFileBase file, string empno)
         {
             string ret = _scheduleRepository.ImportPDFFile(file, empno);
             return ret;
         }
-
-        // 取得PDF
+        /// <summary>
+        /// 取得PDF
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public string GetPDF(string view, string year, string group, string userName)
         {
             string ret = _scheduleRepository.GetPDF(view, year, group, userName);
             return ret;
         }
+        /// <summary>
+        /// 下載PDF
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public byte[] DownloadFile(string pdfPath)
         {
             try
@@ -499,15 +534,23 @@ namespace TEEmployee.Models.GSchedule
                 return null;
             }
         }
-
-        // 取得回覆
+        /// <summary>
+        /// 取得主管回饋
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public List<Planning> GetResponse(string view, string year, string group, string empno, string name)
         {
             List<Planning> ret = _scheduleRepository.GetResponse(view, year, group, empno, name);
             return ret;
         }
-
-        // 儲存回覆
+        /// <summary>
+        /// 儲存回覆
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public bool SaveResponse(string view, string year, string group, string manager_id, string name, List<Planning> response)
         {
             bool ret = _scheduleRepository.SaveResponse(view, year, group, manager_id, name, response);

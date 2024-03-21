@@ -281,8 +281,11 @@ namespace TEEmployee.Models.GSchedule
 
             return ret > 0;
         }
-
-        // 取得使用者資訊
+        /// <summary>
+        /// 取得使用者資訊
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public User Get(string id)
         {
             User ret;
@@ -292,8 +295,11 @@ namespace TEEmployee.Models.GSchedule
 
             return ret;
         }
-
-        // 取得年份
+        /// <summary>
+        /// 取得年份
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public List<string> GetYears(string view)
         {
             // 當前民國年
@@ -312,8 +318,11 @@ namespace TEEmployee.Models.GSchedule
 
             return ret;
         }
-
-        // 上傳PDF
+        /// <summary>
+        /// 上傳PDF
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string UploadPDFFile(HttpPostedFileBase file, string view, string empno, string folder)
         {
             string path = "";
@@ -385,7 +394,11 @@ namespace TEEmployee.Models.GSchedule
 
             return path;
         }
-        // 上傳PDF
+        /// <summary>
+        /// 上傳PDF
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string ImportPDFFile(HttpPostedFileBase file, string empno)
         {
             string ret = "";
@@ -412,7 +425,11 @@ namespace TEEmployee.Models.GSchedule
 
             return ret;
         }
-        // 取得PDF
+        /// <summary>
+        /// 取得PDF
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string GetPDF(string view, string year, string group, string userName)
         {
             string folder = "App_Data";
@@ -458,8 +475,11 @@ namespace TEEmployee.Models.GSchedule
             
             return ret;
         }
-
-        // 取得回覆
+        /// <summary>
+        /// 取得主管回饋
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public List<Planning> GetResponse(string view, string year, string group, string empno, string name)
         {
             List<Planning> ret = new List<Planning>();
@@ -522,8 +542,11 @@ namespace TEEmployee.Models.GSchedule
 
             return ret;
         }
-
-        // 儲存回覆
+        /// <summary>
+        /// 儲存回覆
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public bool SaveResponse(string view, string year, string group, string manager_id, string name, List<Planning> response)
         {
             if(year == null)

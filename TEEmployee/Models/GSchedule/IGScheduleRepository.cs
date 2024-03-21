@@ -19,12 +19,42 @@ namespace TEEmployee.Models.GSchedule
         bool Insert(ProjectSchedule projectSchedule);
         bool Update(ProjectSchedule projectSchedule);
         bool Delete(ProjectSchedule projectSchedule);
-        List<string> GetYears(string view); // 取得年份
-        string UploadPDFFile(HttpPostedFileBase file, string view, string empno, string folder); // 上傳PDF
-        string ImportPDFFile(HttpPostedFileBase file, string empno); // 上傳個人規劃PDF
-        string GetPDF(string view, string year, string group, string userName); // 取得PDF
-        List<Planning> GetResponse(string view, string year, string group, string empno, string name); // 取得回覆
-        bool SaveResponse(string view, string year, string group, string manager_id, string name, List<Planning> response); // 儲存回覆
+        /// <summary>
+        /// 取得年份
+        /// </summary>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        List<string> GetYears(string view);
+        /// <summary>
+        /// 上傳PDF
+        /// </summary>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        string UploadPDFFile(HttpPostedFileBase file, string view, string empno, string folder);
+        /// <summary>
+        /// 上傳個人規劃PDF
+        /// </summary>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        string ImportPDFFile(HttpPostedFileBase file, string empno);
+        /// <summary>
+        /// 取得PDF
+        /// </summary>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        string GetPDF(string view, string year, string group, string userName);
+        /// <summary>
+        /// 取得主管回饋
+        /// </summary>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        List<Planning> GetResponse(string view, string year, string group, string empno, string name);
+        /// <summary>
+        /// 儲存回覆
+        /// </summary>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        bool SaveResponse(string view, string year, string group, string manager_id, string name, List<Planning> response);
         void Dispose();
     }
 }
