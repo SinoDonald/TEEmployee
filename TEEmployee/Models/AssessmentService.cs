@@ -33,6 +33,13 @@ namespace TEEmployee.Models
             var selfAssessments = _assessmentRepository.GetAll();
             return selfAssessments;
         }
+        /// <summary>
+        /// 取得員工評核主管各年季度的回覆
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="manager"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public SelfAssessResponse GetAllManageAssessments(string year, User manager, string user)
         {
             string state = (_assessmentRepository as ManageAssessmentTxtRepository).GetStateOfResponse(year, manager.empno, user);
@@ -51,13 +58,29 @@ namespace TEEmployee.Models
         //    return _selfAssessmentRepository.Get(id);
         //}        
 
+        /// <summary>
+        /// 建立回覆
+        /// </summary>
+        /// <param name="assessments"></param>
+        /// <param name="user"></param>
+        /// <param name="state"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
         public bool UpdateResponse(List<Assessment> assessments, string user, string state, string year)
         {
             //return _assessmentRepository.Update(assessments, user);
             //return (_assessmentRepository as SelfAssessmentTxtRepository).Update(assessments, user, state, year);
             return (_assessmentRepository as SelfAssessmentTxtRepository).Update(assessments, user, state, year, DateTime.Now);
         }
-
+        /// <summary>
+        /// 建立主管回覆
+        /// </summary>
+        /// <param name="assessments"></param>
+        /// <param name="state"></param>
+        /// <param name="year"></param>
+        /// <param name="manager"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public bool UpdateManageResponse(List<Assessment> assessments, string state, string year, User manager, string user)
         {
             return _assessmentRepository.Update(assessments, state, year, manager.empno, user);

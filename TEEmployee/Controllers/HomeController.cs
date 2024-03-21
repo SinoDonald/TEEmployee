@@ -116,7 +116,10 @@ namespace TEEmployee.Controllers
             return RedirectToAction("Index");
         }
 
-        // 首頁通知 <-- 培文
+        /// <summary>
+        /// 首頁通知
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult Notify()
         {
@@ -127,7 +130,10 @@ namespace TEEmployee.Controllers
 
             return Json(ret);
         }
-        // 人才培訓資料庫 <-- 培文
+        /// <summary>
+        /// 人才培訓資料庫
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult TalentUpdate()
         {
@@ -137,14 +143,20 @@ namespace TEEmployee.Controllers
 
             return Json(ret);
         }
-        // 檢視user.db <-- 培文
+        /// <summary>
+        /// 檢視user.db
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult ReviewUserDB()
         {
             var ret = new UserRepository().GetAll().OrderBy(x => x.empno).ToList();
             return Json(ret);
         }
-        // 下載user.db <-- 培文
+        /// <summary>
+        /// 下載user.db
+        /// </summary>
+        /// <returns></returns>
         public ActionResult DownloadUserDB()
         {
             string filePath = new UserRepository().DownloadUserDB();
@@ -162,14 +174,20 @@ namespace TEEmployee.Controllers
             }
             return result;
         }
-        // 檢視profession.db <-- 培文
+        /// <summary>
+        /// 檢視profession.db
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult ReviewProfessionDB()
         {
             var ret = new ProfessionRepository().GetAll().OrderBy(x => x.id).ToList();
             return Json(ret);
         }
-        // 下載profession.db <-- 培文
+        /// <summary>
+        /// 下載profession.db
+        /// </summary>
+        /// <returns></returns>
         public ActionResult DownloadProfessionDB()
         {
             string filePath = new ProfessionRepository().DownloadProfessionDB();

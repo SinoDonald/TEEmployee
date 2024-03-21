@@ -442,9 +442,16 @@ namespace TEEmployee.Models
 
             return years.OrderByDescending(x => x).ToList();
         }
-
-        // update the state in the first line
-        // 1206: remedy solution to "/" split problem
+        /// <summary>
+        /// update the state in the first line
+        /// 1206: remedy solution to "/" split problem
+        /// </summary>
+        /// <param name="assessments"></param>
+        /// <param name="user"></param>
+        /// <param name="state"></param>
+        /// <param name="year"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
         public bool Update(List<Assessment> assessments, string user, string state, string year, DateTime time)
         {
             string fn = Path.Combine(_appData, $"Response/{year}/{user}.txt");

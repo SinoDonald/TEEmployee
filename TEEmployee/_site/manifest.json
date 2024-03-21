@@ -1,0 +1,1808 @@
+{
+  "homepages": [],
+  "source_base_path": "C:/Prj/ASP.Net/TEEmployee/TEEmployee",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "MrKMsIptVgz14gtDrrDL+POdfG/nC+grHwAzf8tsFbQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/intro.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/intro.html",
+          "hash": "qMxNPMtvN6x4gT2dWVpIM5kuai6tlKmzFCJl9JzLSmY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/toc.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/toc.html",
+          "hash": "BlPxk5mtl2kgfcZUgkEguqiSAR/EUyUTT4EdebwkQvs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "HOOCsNwdixWIOEed8jAy+EPQemXAZghDTWXUW0rmBis="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.BundleConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.BundleConfig.html",
+          "hash": "eC1jZYcsD1WpsumE+qkZ9sSVUyWJ/6y9mWiw2YTr9/Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.AssessmentController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.AssessmentController.html",
+          "hash": "UgBU0qoRvGU9jFfca52YngqrpYOYAWEeTvYtTc6xWRY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.EducationController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.EducationController.html",
+          "hash": "hOeiGkZlGP1qqUyKcTYKdiDFk8DuqflK78bfC2/RY1s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.ErrorController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.ErrorController.html",
+          "hash": "8aqEYjkLqfsbeBlO0E7PuuxgV05i/VNsK9GgLJK8d9Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.ForumController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.ForumController.html",
+          "hash": "hfKs7BfkT//gcDxn1sXSdUK/I9RUm1Y0jKc/p5lmn0c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.GEducationController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.GEducationController.html",
+          "hash": "rYkD5JzxwSjYtCJ6xLwyi2HgmxxkgxOuCAthuApEHIA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.GKpiController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.GKpiController.html",
+          "hash": "x8Gq8MwO32ywKXTgd33NGNg3hMMPECG74c9zUDfCx8k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.GScheduleController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.GScheduleController.html",
+          "hash": "eXHfhQ9BZg+/6nPA3Sqk5NnTvifB4sCC+/HrqvfAMQo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.HomeController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.HomeController.html",
+          "hash": "XsyWgByOrNkmfBpGjfTP55vHIMsotoIJRazAe8YUL7I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.KpiController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.KpiController.html",
+          "hash": "/s97zbxtxBcdylgvsjZDbRiQNKQ1zWIZ5YMpp0leng0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.ProfessionController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.ProfessionController.html",
+          "hash": "1x74pOXhd7y7JZs6RxHyhg7/mrjm9UdKn0/2D2EnDEY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.PromotionController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.PromotionController.html",
+          "hash": "62D4W78mm/ExvM+mJwfbLIHohlfBMpMC3hcUdhrjbSg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.ScheduleController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.ScheduleController.html",
+          "hash": "eXAej2KLhyfSeqrEw4lLtnEO2eqgYt2QrOoSIgSs5q4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.TalentController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.TalentController.html",
+          "hash": "GuEHLGauvuqiqtIukyt0JNXsUHbFogCyLYv9O+l9brE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.TasklogController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.TasklogController.html",
+          "hash": "oB9oO/upgXuecsXTVJ99lTUPEiDWAO7aGJkNWuZMsGc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.TestController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.TestController.html",
+          "hash": "O24ad7kK5BP5Rl9m+qneWnLL70HUEI3sBJ1nZlHvFcw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.TrainingController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.TrainingController.html",
+          "hash": "utFpz3vWYJ920QGzW/0/RcF+NrkPkKHtcxdJmUZUeRc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Controllers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Controllers.html",
+          "hash": "PhkVsIHI8ZA9eZLPL6ItZ09ufdiyq+O72Bd3L3nZwHc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.FilterConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.FilterConfig.html",
+          "hash": "bdglMwl+6R4VRpg8MraEujAHzNOcHLZu15JALermips="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Filters.MyAuthorizeAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Filters.MyAuthorizeAttribute.html",
+          "hash": "Aj983swK7cun/yQq87qOv7074DhuBn216mfKRgDEs7U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Filters.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Filters.html",
+          "hash": "ZRkVWOLdybxB82N1Yn6189y6rsTQIlQu1xaVgJxKxtw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Ability.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Ability.html",
+          "hash": "jJHndwtlCtjIMBBKm4lx/KOersIwJw6ERMUHQseJxqI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Assessment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Assessment.html",
+          "hash": "+9cKzpxaOJXrP5nqvta/mh+n+z+FOYAJulF/A0qVB+I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.AssessmentService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.AssessmentService.html",
+          "hash": "Xtgj6oxbUzCOrZl1WRRDxlcesd9xS1lCgUmblQbpaEQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Assessments.Performance.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Assessments.Performance.html",
+          "hash": "eGOjXdX+C0jIjblUUL4kVrJeopwtJOICZbdCjTWm2NQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Assessments.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Assessments.html",
+          "hash": "OnepwCTGRa8Lk22ejtR5daEPv3tkooW7s1nSFHPzo9w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.CV.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.CV.html",
+          "hash": "ImYfSKUXyl81gsBW+XtDOZ5Is4wHcKZAzVoEGvv19EM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.CategorySelfAssessmentChart.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.CategorySelfAssessmentChart.html",
+          "hash": "UYKMZ+vwgJ9QrPNhZQN8MLXKhfoktJ1lLbggK1eFkgM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.ChartEmployeeData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.ChartEmployeeData.html",
+          "hash": "5v+RSKNwql/xwJmf4aX1XPnTmamyWf0a5fU6fkd5GZ4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.ChartManagerData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.ChartManagerData.html",
+          "hash": "RxpNJk46a3D+U0UDWy6KClAUsJV5JL3LAMJSI/Il2Pg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.ChartManagerResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.ChartManagerResponse.html",
+          "hash": "mjMqZAucp9kLA6psoBeADQkn+OwZgYo+Wn6nFyESosM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.ConditionFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.ConditionFilter.html",
+          "hash": "BKy7CSpNUAv6denPXN5urz/uci+RHRm/1w1TjRj26Dk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Education.Chapter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Education.Chapter.html",
+          "hash": "G3XtY/VTndeLhLB8SWJBNye9lUJsDKf/121eXPLzAfA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Education.Course.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Education.Course.html",
+          "hash": "toazACha2u/HGBBPHSxg4jaM7mxduhOM3AHMvKaNCc8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Education.EducationRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Education.EducationRepository.html",
+          "hash": "WZ2otDLIJUGjY6H3An8jy/JAP9T9/Z2c39JnAWR1inM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Education.EducationService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Education.EducationService.html",
+          "hash": "voM8n3PhqkD0vCoj6v7dfUCZryMNrcU1jYx5eDkxrYI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Education.Record.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Education.Record.html",
+          "hash": "sprabslbhC8cif5KqcX25hSfNUzwCSe6qO+KqPhvBZY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Education.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Education.html",
+          "hash": "6Vvc/699KmTVSnklW5DZNHstWJd1Lu69bJ2nqbm5juo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.EmployeesWithState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.EmployeesWithState.html",
+          "hash": "JO/pelcs1MLonKX0suD+Sn+8LnkUhuT1qLCZ8Vlb7+4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Feedback.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Feedback.html",
+          "hash": "Pv11NUuJSd+4sATOZRTYPVRdZDqDZAfbZ3nqoSGZ4cM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.FeedbackNotification.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.FeedbackNotification.html",
+          "hash": "gEqwGB17eP9BmbmZBsh6bChkCQqLdjBihFoG+MSFLOo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Forum.ForumRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Forum.ForumRepository.html",
+          "hash": "EcYWuqM68+/j7xKwt5BDq/V00jxZuhLdhJusL3C1OL4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Forum.ForumService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Forum.ForumService.html",
+          "hash": "ZU3BKbl6mSwn7B7+tzkHEDZ/1nesJ3bcOfOYqDKGxSY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Forum.Post.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Forum.Post.html",
+          "hash": "6kpihr2R9bno2FeF6bwxMLkzB41v++QaFRDKZuIrEwY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Forum.Reply.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Forum.Reply.html",
+          "hash": "sIjF6OFUMrzvxQcGnra2sA8DjAudfv5qosvY9TeQ2Mc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Forum.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Forum.html",
+          "hash": "0MjUgZ48eZ8U6uYvUCXQ27Mm9Prya8C2ccgYFgUgNKw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GEducation.Chapter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GEducation.Chapter.html",
+          "hash": "+Jxh2IlmMbYFJ1Tblwe/NPP5RynyRXDABjt+tHf868I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GEducation.Course.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GEducation.Course.html",
+          "hash": "IhG3DgshRa9kYvXJOl2gWsTZnl3JZT+Eq193p49/vsM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GEducation.GEducationRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GEducation.GEducationRepository.html",
+          "hash": "I18BFNQqawMJ6E8kR30TYrTLYvpOCiggokAeJAVTNbc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GEducation.GEducationService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GEducation.GEducationService.html",
+          "hash": "R9NC78eqsh9mHA9ssyDlE6b9SMiDDWHupAaC2oFrO7s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GEducation.Record.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GEducation.Record.html",
+          "hash": "pXP0jWZm9ufaj94xwHPNEeFL/jOf4cspD43NeT005pY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GEducation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GEducation.html",
+          "hash": "Aiu9P2pQQjEoM29WDmRSCv5/OAZho/n28MTKYXt4WjY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GKpi.GKpiRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GKpi.GKpiRepository.html",
+          "hash": "eAlHaR4L8mbPUbwKGVOQqY4xcr8vJZ8BlJkp9y2KDYM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GKpi.GKpiService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GKpi.GKpiService.html",
+          "hash": "1s1tyTV3iWd8XHXOEk2eTLBRqXTP7Y2F/T09kjZx9SU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GKpi.KpiItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GKpi.KpiItem.html",
+          "hash": "tDT/toRgde/W0IAw9liLbAxTfSdzQg8JSK4sAu+7gac="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GKpi.KpiModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GKpi.KpiModel.html",
+          "hash": "k7m4J4yuZADtx+xw2lvRjaUuJqYfOKqAli1vCzCMtOg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GKpi.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GKpi.html",
+          "hash": "Q3SkR/5QSUsrsN/STKOYvxkqc0WKrY5h6xuTg1V2Pt8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GSchedule.GScheduleRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GSchedule.GScheduleRepository.html",
+          "hash": "jZhvsT/jniiodCHvkvA+IkGBvImyRdM0zFUXClU9T9E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GSchedule.GScheduleService.Authorization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GSchedule.GScheduleService.Authorization.html",
+          "hash": "pSEg3tr3SOQo7jUKpF8xhUI+nfUi9HMIGGIiX2IPs9w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GSchedule.GScheduleService.DetailSchedule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GSchedule.GScheduleService.DetailSchedule.html",
+          "hash": "AmTUqqYnEK/llGEm4jeY261RVjwsj99HWJd9E91dVc8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GSchedule.GScheduleService.GroupAuthority.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GSchedule.GScheduleService.GroupAuthority.html",
+          "hash": "iXcFHEj9mZQxSZ0OUJgPhxru0LpPQvZpgntVHvdlzf8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GSchedule.GScheduleService.GroupSchedule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GSchedule.GScheduleService.GroupSchedule.html",
+          "hash": "AyNtkmtzKczBiDAu9ZrDKLwvw1mhoNAAXOX8tX3UJ5g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GSchedule.GScheduleService.ManHour.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GSchedule.GScheduleService.ManHour.html",
+          "hash": "H+Qk5ABIDaXm6vR/B6gPRJRZwT13Ka7tw2JPJBrEziw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GSchedule.GScheduleService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GSchedule.GScheduleService.html",
+          "hash": "U57I+oAbYNS9S816Y6gUithhlygxNermZc3KiX1tKic="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GSchedule.Milestone.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GSchedule.Milestone.html",
+          "hash": "crQbVjfCAlq0K5fO24uQbXx2BcJT6/4yh8zRFgk/BKw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GSchedule.Planning.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GSchedule.Planning.html",
+          "hash": "AlIJID6I0yjkizvU1zBlcDXWshM/0gPqzVyOSEyuj58="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GSchedule.ProjectSchedule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GSchedule.ProjectSchedule.html",
+          "hash": "CHIOx84966Fkh4sArGIu7wG6ho7+ZKmItabhfV26mO4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GSchedule.Schedule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GSchedule.Schedule.html",
+          "hash": "q7IOiFY0Lwuo9Q8v1vwmSc38Xfwi6/EN/XrsJA1hTBo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.GSchedule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.GSchedule.html",
+          "hash": "lGWjlaTmyVsCMnlC4aBlFi6MR4rqEI4GAKS9dd9H6js="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.HtmlHelperExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.HtmlHelperExtensions.html",
+          "hash": "lZ+kW9DSspcOHrfW/qw9X0Ni1tJ2MKm65d/U93gF9us="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.IAssessmentRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.IAssessmentRepository.html",
+          "hash": "BQ9Qt3rg3U95vIz/iapD4xzGsGrLptMn224g1dtwstA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.INotifyRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.INotifyRepository.html",
+          "hash": "qLSbqw7X/WgTLGCbGJA0gFqKpws85aHKGiHJy2YAvzQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.IUserRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.IUserRepository.html",
+          "hash": "KZPRMe6HK8DIDfdjfLYqqJdZPm+jKIg4TEou6ITP74Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.JobTitle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.JobTitle.html",
+          "hash": "iHZys6w3xRSO0qnpujcQTQZsbo8arjNWok42zurGozU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Kpi.KpiItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Kpi.KpiItem.html",
+          "hash": "0Wx9ijeuq65Lk5xFqXPFqIx6kjEbRyDSZdLU0GGZAGc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Kpi.KpiModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Kpi.KpiModel.html",
+          "hash": "nTSU0KVjghKXRvQStUtSAzSNmYBGbk40OlCFozsYQzY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Kpi.KpiRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Kpi.KpiRepository.html",
+          "hash": "bgqhTqkYPOqdyYKrGvS7qhPz5I+ecyn5jPvgUgVok3E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Kpi.KpiService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Kpi.KpiService.html",
+          "hash": "VC4gHGcu+BMxwyHGzFUgCE8KrA3H6lbgqQw/29YEHv8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Kpi.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Kpi.html",
+          "hash": "fq+z8/Y7Fk/+9a1awG1vEbHcsj9WmuDi2DWxIjc6BhA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.ManageAssessmentTxtRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.ManageAssessmentTxtRepository.html",
+          "hash": "sC+pWBaHsXw8YAALjDiW4/I4qo+GXcYGQEHWeeMOTkk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.MixResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.MixResponse.html",
+          "hash": "AyUYBsFGu9TXtP3RbuhuyAp+BA2T2vWKP5qT2SckeBM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.NotifyRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.NotifyRepository.html",
+          "hash": "Z+9Uj2qhHhypL5mji6gZbgFDCaskjJH47FEkBCzz5NI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.NotifyService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.NotifyService.html",
+          "hash": "YVb70hsC28uSGR9hxnhPAS6ehZIhyqy1lAcH9iy8nZc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Profession.Personal.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Profession.Personal.html",
+          "hash": "6NT3pYBVrB6+LnRrv/78oa6LaTnBj8VPc5dtJd76nm0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Profession.ProfessionRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Profession.ProfessionRepository.html",
+          "hash": "0OrIiOu+DvCjIKeQyyh4DpleSvoj8dDmE2MFwo1CKPY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Profession.ProfessionService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Profession.ProfessionService.html",
+          "hash": "NTAEfDAgEWsKRrigR12XsFK9eDgyvUX+piNthpEzmaE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Profession.Score.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Profession.Score.html",
+          "hash": "xS7xoZud9Z/zjlSiZbQ3ielC668VjiSPsGKWnyZvF08="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Profession.Skill.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Profession.Skill.html",
+          "hash": "JWb1pdtCjwgsAj/lpQHKeqTgTbEl4Pj5ew3YuQlAN7A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Profession.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Profession.html",
+          "hash": "PV+H0FwA/hvetPCN52hcFY844OepTuOvEDMCM88mIdg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Promotion.Promotion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Promotion.Promotion.html",
+          "hash": "xkyLKVk23e3lKhLamT88FdWTGxSjcnVu1rN85rsyZBs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Promotion.PromotionRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Promotion.PromotionRepository.html",
+          "hash": "X/anog+tjCCZs47F0rD5mkJztctAEH354lzzlATkMEA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Promotion.PromotionService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Promotion.PromotionService.html",
+          "hash": "b5HRDHEcKdBGu4aJ4jPfrC+MvkwQIr56KDBgB/zAYPo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Promotion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Promotion.html",
+          "hash": "hfIN99NSJOhkbRiKE1oxB8hZo+Y3RsRifWXZ2AbF7cM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Response.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Response.html",
+          "hash": "OTvL9yctpLkX6tX8jADEB956y8wcJgzOx1v7DaFiEk4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.ResponseTxtRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.ResponseTxtRepository.html",
+          "hash": "N44bXs6woAYeJxF9z6b9DddCk2yd6oESdTaoAZL4CTA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Schedule.ManHour.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Schedule.ManHour.html",
+          "hash": "VPaJxRQoOaSqvz1GcI9NlkHCG5ssxt1bx5HtwS9cOB0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Schedule.Milestone.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Schedule.Milestone.html",
+          "hash": "LXKwOF3ZgBJTtNDNfqi2I/KCQHrcAH4m15tB+jh+cs0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Schedule.ProjectManHours.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Schedule.ProjectManHours.html",
+          "hash": "oHbTb/K81bBihOb7Y/ZOR0POGfLTfynx9hvzwspirEA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Schedule.Schedule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Schedule.Schedule.html",
+          "hash": "YlZHPPnZbDb1iHyv6Ryk6BJxhi0Ksol2hPzMm4ZwEso="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Schedule.ScheduleRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Schedule.ScheduleRepository.html",
+          "hash": "Uv7mmpUonTN+suoudvSt39TpTHjHofn+oWQADhF6YC8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Schedule.ScheduleResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Schedule.ScheduleResult.html",
+          "hash": "l9PxOofYSMK4RXKaeM04gCWpkw1Ph0g9GV3E5HsN/pE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Schedule.ScheduleService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Schedule.ScheduleService.html",
+          "hash": "iLDCGXTtMQrN1kqsflxd5GPfQq/cJy21uZZYFYcM/gk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Schedule.ScheduleShow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Schedule.ScheduleShow.html",
+          "hash": "lPe3BpsU23TXcsTqF9/rHoba0nuZrhAx1s+dKDQFCyA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Schedule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Schedule.html",
+          "hash": "Nl5NxPEzwr/h+mDuPKgac28+8a5jKHwmxK7q2+xeY7k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.SelfAssessResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.SelfAssessResponse.html",
+          "hash": "HlioNwNLgJKT/eIinhrMIfvOn7fdBeMi4JXrEMBXXGA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.SelfAssessmentChart.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.SelfAssessmentChart.html",
+          "hash": "IZ/0lv4QSu4LAwnCUlyt8uC6X6mYyBjNexAhK14pyyk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.SelfAssessmentTxtRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.SelfAssessmentTxtRepository.html",
+          "hash": "ofs9tpoZo3zAeDdjWnlMywgpZUfKOiPZ0X/Lvm6+0WA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Seniority.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Seniority.html",
+          "hash": "GE3dnomCp/UHtfkH6m/bTVPSnF+7sDqyAbXwmChzQ/g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.StartEndDate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.StartEndDate.html",
+          "hash": "MPOZ16xsZ2fC7DWbDDxvCiNgcqq5TR2xRzVXLRylpOo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Talent.ITalentRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Talent.ITalentRepository.html",
+          "hash": "O+rrfk7TzaFkjhp6Q6hbP29xJs8NTQeT1/Y5090jCOk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Talent.TalentRepository.FileInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Talent.TalentRepository.FileInfo.html",
+          "hash": "dUt1uieX80MoUnzo6c7Mm9mBdjfAQVGv41dTBv9SjIw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Talent.TalentRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Talent.TalentRepository.html",
+          "hash": "LxQayAZvMrLE0VzlHH6AxJyqTlJMVi2wD2Dirb0+pLg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Talent.TalentService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Talent.TalentService.html",
+          "hash": "jVCkwel/okIcD2IvMwmsjciFlboOdDWE0Ulvti1LPEs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Talent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Talent.html",
+          "hash": "8MbucyHoYpZx/2xeebpaiLjqH1gH6nyCslWY0a2/ZQA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.TaskLog.MonthlyRecord.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.TaskLog.MonthlyRecord.html",
+          "hash": "9KIKkscD98rrZh1yotWcqpycy1wrjBYCDToRbFdPk9s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.TaskLog.MonthlyRecordRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.TaskLog.MonthlyRecordRepository.html",
+          "hash": "9wHMjKBrXLdPKxrkah4LYbnVOrZcW41N+63ABIMy318="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.TaskLog.ProjectItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.TaskLog.ProjectItem.html",
+          "hash": "CWHb8Ef91ejJigMS1HyLUE3c0SvAROWNEiZ0sr2QOQg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.TaskLog.ProjectItemEqualityComparer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.TaskLog.ProjectItemEqualityComparer.html",
+          "hash": "h+Q12HlGovFkw7GeV+MZx5Z5KUFe9iIVmqFl+0D8gOs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.TaskLog.ProjectItemRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.TaskLog.ProjectItemRepository.html",
+          "hash": "51rff2OKCm6Pw+cqSuLYEX+MYNjRgh001muNFVKWokY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.TaskLog.ProjectItemTxtRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.TaskLog.ProjectItemTxtRepository.html",
+          "hash": "lelntbl5jIdZH1rF5e5LThSmshfeU1LGf3b0Ih2eHrQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.TaskLog.ProjectTask.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.TaskLog.ProjectTask.html",
+          "hash": "skNmyAUfkAv9G/4Sl1i3CRUFDdnkVRoG8icavb/A78E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.TaskLog.ProjectTaskRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.TaskLog.ProjectTaskRepository.html",
+          "hash": "gKHj0Icx54yZr0Fu+uGEVRwPgAYPZX11pIXNQluvLz4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.TaskLog.TasklogService.MonthlyRecordData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.TaskLog.TasklogService.MonthlyRecordData.html",
+          "hash": "gbZLIBYJGyfHuB7Qn+YQ7+rpjZhGWnKMUxBPz1EjXLk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.TaskLog.TasklogService.MultiTasklogData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.TaskLog.TasklogService.MultiTasklogData.html",
+          "hash": "CSuSEQ5g32N6yqGklTve6UmDY21ooc4feLRfkiWDsKw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.TaskLog.TasklogService.TasklogData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.TaskLog.TasklogService.TasklogData.html",
+          "hash": "SNtkv2gwl+x/7opEcnlft0phnHPnPOYKUCw9lqYx6HA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.TaskLog.TasklogService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.TaskLog.TasklogService.html",
+          "hash": "/9FNYgRWoszz6VVnawdALunxBdAsy8lFap9nzUMqP0s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.TaskLog.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.TaskLog.html",
+          "hash": "FbiOHAklv67Unnf9pmKozZbgnKsP3z/WswseZ9opxJU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Training.Record.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Training.Record.html",
+          "hash": "ZnrcxMhI4j++bVhgg9pDi0ErARUAuhGYQ9kcGoDwVvk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Training.TrainingRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Training.TrainingRepository.html",
+          "hash": "koniWc3M7FrsUOeh6At4rf/RuDFXra3tzeZeqwevu5g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Training.TrainingService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Training.TrainingService.html",
+          "hash": "2YLaTqm0VCcyRJuFuUEBb/bXbsZExIz8IKARPW8T7Z8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Training.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Training.html",
+          "hash": "998CMCt/wBUtjD1oCg+enJLC3Fw7ri2ui1VXmERA628="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.User.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.User.html",
+          "hash": "pDa0iUDAwgexRKefd13rEuWc1ozK3h6cg93uRLyIqhc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.UserNotify.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.UserNotify.html",
+          "hash": "6D42hJPxe9pi3NLeofgo6WRxiomsiP0ilTCfhWvC/Yw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.UserRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.UserRepository.html",
+          "hash": "n0vSfny1YsVHd9Bn8VEks5V/ysBSndGItP8ygk0mHoU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.UserTxtRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.UserTxtRepository.html",
+          "hash": "3Jj1a14FJIv2RhjVwhV8Khryes1LQpzKaa73LVqpJzQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.Utilities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.Utilities.html",
+          "hash": "E0S7uGG/6OvU43BEE378z2gliMKaUnTY3rY8iLJhFJ4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.Models.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.Models.html",
+          "hash": "lNXI63aD4Y8oEBqtUMvMEgeWzQNLF/T4Mynn7ylX5Vg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.MvcApplication.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.MvcApplication.html",
+          "hash": "KtN9LdoE0Ah31YhGwR57Ks/FJ3lmbKSZIM+dfaPonUA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.RouteConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.RouteConfig.html",
+          "hash": "I/ZPDdSIWKwqzVwdodiaTe7Y6kZpkykrSo1gZXkfGqk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TEEmployee.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TEEmployee.html",
+          "hash": "nw9OLbD6oEv3xcGm28gnEa1LXMCh30iqNOqbDwnyDQY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "obj/api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "PLC/Nd9gHnnWs0jlwyGhY9Ej1JIUOKPDTBwBx1nt72c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "Oa9PuD4E1hvZnCkVjUgzNBX6S00Zo5YilamTERTZo54="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Disable incremental build by force rebuild option.",
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0,
+        "full_build_reason_code": "ForceRebuild"
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 3,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 140,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: it's disabled.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

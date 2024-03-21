@@ -26,18 +26,34 @@ namespace TEEmployee.Controllers
         {
             return View();
         }
+        /// <summary>
+        /// 給予主管建議評估表
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Manage()
         {
             return View();
         }
+        /// <summary>
+        /// 請選擇要給予建議的主管(可複選)
+        /// </summary>
+        /// <returns></returns>
         public ActionResult ManagerOption()
         {
             return PartialView();
         }
+        /// <summary>
+        /// 給予主管建議評估表表單填寫
+        /// </summary>
+        /// <returns></returns>
         public ActionResult ManagerSuggest()
         {
             return PartialView();
         }
+        /// <summary>
+        /// 設置可以評核的主管名單
+        /// </summary>
+        /// <returns></returns>
         public ActionResult SetManager()
         {
             return PartialView();
@@ -123,6 +139,13 @@ namespace TEEmployee.Controllers
         //    return ret;
         //}
 
+        /// <summary>
+        /// 建立回覆
+        /// </summary>
+        /// <param name="assessments"></param>
+        /// <param name="state"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
         [HttpPost]
         public bool CreateResponse(List<Assessment> assessments, string state, string year)
         {
@@ -142,6 +165,14 @@ namespace TEEmployee.Controllers
             return ret;            
         }
 
+        /// <summary>
+        /// 建立主管回覆
+        /// </summary>
+        /// <param name="assessments"></param>
+        /// <param name="state"></param>
+        /// <param name="year"></param>
+        /// <param name="manager"></param>
+        /// <returns></returns>
         [HttpPost]
         public bool CreateManageResponse(List<Assessment> assessments, string state, string year, User manager)
         {
@@ -189,6 +220,12 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        /// <summary>
+        /// 取得主管回覆
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="manager"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult GetManageResponse(string year, User manager)
         {

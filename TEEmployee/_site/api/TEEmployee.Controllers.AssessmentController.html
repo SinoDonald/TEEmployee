@@ -1,0 +1,2857 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class AssessmentController
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class AssessmentController
+   ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="TEEmployee.Controllers.AssessmentController">
+  
+  
+  <h1 id="TEEmployee_Controllers_AssessmentController" data-uid="TEEmployee.Controllers.AssessmentController" class="text-break">Class AssessmentController
+  </h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">System.Web.Mvc.ControllerBase</span></div>
+    <div class="level2"><span class="xref">System.Web.Mvc.Controller</span></div>
+    <div class="level3"><span class="xref">AssessmentController</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><span class="xref">System.Web.Mvc.IActionFilter</span></div>
+    <div><span class="xref">System.Web.Mvc.Filters.IAuthenticationFilter</span></div>
+    <div><span class="xref">System.Web.Mvc.IAuthorizationFilter</span></div>
+    <div><span class="xref">System.IDisposable</span></div>
+    <div><span class="xref">System.Web.Mvc.IExceptionFilter</span></div>
+    <div><span class="xref">System.Web.Mvc.IResultFilter</span></div>
+    <div><span class="xref">System.Web.Mvc.Async.IAsyncController</span></div>
+    <div><span class="xref">System.Web.Mvc.IController</span></div>
+    <div><span class="xref">System.Web.Mvc.Async.IAsyncManagerContainer</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Content(System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Content(System.String, System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Content(System.String, System.String, System.Text.Encoding)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.CreateActionInvoker()</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.CreateTempDataProvider()</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Dispose()</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.ExecuteCore()</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.File(System.Byte[], System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.File(System.Byte[], System.String, System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.File(System.IO.Stream, System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.File(System.IO.Stream, System.String, System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.File(System.String, System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.File(System.String, System.String, System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.HandleUnknownAction(System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.HttpNotFound()</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.HttpNotFound(System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.JavaScript(System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Json(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Json(System.Object, System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Json(System.Object, System.String, System.Text.Encoding)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Json(System.Object, System.Web.Mvc.JsonRequestBehavior)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Json(System.Object, System.String, System.Web.Mvc.JsonRequestBehavior)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Json(System.Object, System.String, System.Text.Encoding, System.Web.Mvc.JsonRequestBehavior)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Initialize(System.Web.Routing.RequestContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.OnActionExecuting(System.Web.Mvc.ActionExecutingContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.OnActionExecuted(System.Web.Mvc.ActionExecutedContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.OnAuthentication(System.Web.Mvc.Filters.AuthenticationContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.OnAuthenticationChallenge(System.Web.Mvc.Filters.AuthenticationChallengeContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.OnAuthorization(System.Web.Mvc.AuthorizationContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.OnException(System.Web.Mvc.ExceptionContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.OnResultExecuted(System.Web.Mvc.ResultExecutedContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.OnResultExecuting(System.Web.Mvc.ResultExecutingContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.PartialView()</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.PartialView(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.PartialView(System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.PartialView(System.String, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Redirect(System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectPermanent(System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToAction(System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToAction(System.String, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToAction(System.String, System.Web.Routing.RouteValueDictionary)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToAction(System.String, System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToAction(System.String, System.String, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToAction(System.String, System.String, System.Web.Routing.RouteValueDictionary)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToActionPermanent(System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToActionPermanent(System.String, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToActionPermanent(System.String, System.Web.Routing.RouteValueDictionary)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToActionPermanent(System.String, System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToActionPermanent(System.String, System.String, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToActionPermanent(System.String, System.String, System.Web.Routing.RouteValueDictionary)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToRoute(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToRoute(System.Web.Routing.RouteValueDictionary)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToRoute(System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToRoute(System.String, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToRoute(System.String, System.Web.Routing.RouteValueDictionary)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToRoutePermanent(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToRoutePermanent(System.Web.Routing.RouteValueDictionary)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToRoutePermanent(System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToRoutePermanent(System.String, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RedirectToRoutePermanent(System.String, System.Web.Routing.RouteValueDictionary)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.TryUpdateModel&lt;TModel&gt;(TModel)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.TryUpdateModel&lt;TModel&gt;(TModel, System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.TryUpdateModel&lt;TModel&gt;(TModel, System.String[])</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.TryUpdateModel&lt;TModel&gt;(TModel, System.String, System.String[])</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.TryUpdateModel&lt;TModel&gt;(TModel, System.String, System.String[], System.String[])</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.TryUpdateModel&lt;TModel&gt;(TModel, System.Web.Mvc.IValueProvider)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.TryUpdateModel&lt;TModel&gt;(TModel, System.String, System.Web.Mvc.IValueProvider)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.TryUpdateModel&lt;TModel&gt;(TModel, System.String[], System.Web.Mvc.IValueProvider)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.TryUpdateModel&lt;TModel&gt;(TModel, System.String, System.String[], System.Web.Mvc.IValueProvider)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.TryUpdateModel&lt;TModel&gt;(TModel, System.String, System.String[], System.String[], System.Web.Mvc.IValueProvider)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.TryValidateModel(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.TryValidateModel(System.Object, System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.UpdateModel&lt;TModel&gt;(TModel)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.UpdateModel&lt;TModel&gt;(TModel, System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.UpdateModel&lt;TModel&gt;(TModel, System.String[])</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.UpdateModel&lt;TModel&gt;(TModel, System.String, System.String[])</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.UpdateModel&lt;TModel&gt;(TModel, System.String, System.String[], System.String[])</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.UpdateModel&lt;TModel&gt;(TModel, System.Web.Mvc.IValueProvider)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.UpdateModel&lt;TModel&gt;(TModel, System.String, System.Web.Mvc.IValueProvider)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.UpdateModel&lt;TModel&gt;(TModel, System.String[], System.Web.Mvc.IValueProvider)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.UpdateModel&lt;TModel&gt;(TModel, System.String, System.String[], System.Web.Mvc.IValueProvider)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.UpdateModel&lt;TModel&gt;(TModel, System.String, System.String[], System.String[], System.Web.Mvc.IValueProvider)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.ValidateModel(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.ValidateModel(System.Object, System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.View()</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.View(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.View(System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.View(System.String, System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.View(System.String, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.View(System.String, System.String, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.View(System.Web.Mvc.IView)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.View(System.Web.Mvc.IView, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.BeginExecute(System.Web.Routing.RequestContext, System.AsyncCallback, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.EndExecute(System.IAsyncResult)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.BeginExecute(System.Web.Routing.RequestContext, System.AsyncCallback, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.BeginExecuteCore(System.AsyncCallback, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.EndExecute(System.IAsyncResult)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.EndExecuteCore(System.IAsyncResult)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.System.Web.Mvc.IActionFilter.OnActionExecuting(System.Web.Mvc.ActionExecutingContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.System.Web.Mvc.IActionFilter.OnActionExecuted(System.Web.Mvc.ActionExecutedContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.System.Web.Mvc.Filters.IAuthenticationFilter.OnAuthentication(System.Web.Mvc.Filters.AuthenticationContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.System.Web.Mvc.Filters.IAuthenticationFilter.OnAuthenticationChallenge(System.Web.Mvc.Filters.AuthenticationChallengeContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.System.Web.Mvc.IAuthorizationFilter.OnAuthorization(System.Web.Mvc.AuthorizationContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.System.Web.Mvc.IExceptionFilter.OnException(System.Web.Mvc.ExceptionContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.System.Web.Mvc.IResultFilter.OnResultExecuting(System.Web.Mvc.ResultExecutingContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.System.Web.Mvc.IResultFilter.OnResultExecuted(System.Web.Mvc.ResultExecutedContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Resolver</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.AsyncManager</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.DisableAsyncSupport</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.ActionInvoker</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Binders</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.HttpContext</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.ModelState</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Profile</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Request</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Response</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.RouteData</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Server</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Session</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.TempDataProvider</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.Url</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.User</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.Controller.ViewEngineCollection</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.ControllerBase.Execute(System.Web.Routing.RequestContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.ControllerBase.System.Web.Mvc.IController.Execute(System.Web.Routing.RequestContext)</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.ControllerBase.ControllerContext</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.ControllerBase.TempData</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.ControllerBase.ValidateRequest</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.ControllerBase.ValueProvider</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.ControllerBase.ViewBag</span>
+    </div>
+    <div>
+      <span class="xref">System.Web.Mvc.ControllerBase.ViewData</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="TEEmployee.Controllers.html">TEEmployee.Controllers</a></h6>
+  <h6><strong>Assembly</strong>: TEEmployee.dll</h6>
+  <h5 id="TEEmployee_Controllers_AssessmentController_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[MyAuthorize]
+public class AssessmentController : Controller, IActionFilter, IAuthenticationFilter, IAuthorizationFilter, IDisposable, IExceptionFilter, IResultFilter, IAsyncController, IController, IAsyncManagerContainer</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController__ctor.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L16">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController__ctor_" data-uid="TEEmployee.Controllers.AssessmentController.#ctor*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController__ctor" data-uid="TEEmployee.Controllers.AssessmentController.#ctor">AssessmentController()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AssessmentController()</code></pre>
+  </div>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_AssessEmp.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.AssessEmp%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L74">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_AssessEmp_" data-uid="TEEmployee.Controllers.AssessmentController.AssessEmp*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_AssessEmp" data-uid="TEEmployee.Controllers.AssessmentController.AssessEmp">AssessEmp()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult AssessEmp()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_AssessEmployee.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.AssessEmployee%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L94">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_AssessEmployee_" data-uid="TEEmployee.Controllers.AssessmentController.AssessEmployee*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_AssessEmployee" data-uid="TEEmployee.Controllers.AssessmentController.AssessEmployee">AssessEmployee()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult AssessEmployee()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_ChartEmployee.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.ChartEmployee%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L106">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_ChartEmployee_" data-uid="TEEmployee.Controllers.AssessmentController.ChartEmployee*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_ChartEmployee" data-uid="TEEmployee.Controllers.AssessmentController.ChartEmployee">ChartEmployee()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult ChartEmployee()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_ChartManager.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.ChartManager%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L110">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_ChartManager_" data-uid="TEEmployee.Controllers.AssessmentController.ChartManager*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_ChartManager" data-uid="TEEmployee.Controllers.AssessmentController.ChartManager">ChartManager()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult ChartManager()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_ChartMenu.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.ChartMenu%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L102">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_ChartMenu_" data-uid="TEEmployee.Controllers.AssessmentController.ChartMenu*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_ChartMenu" data-uid="TEEmployee.Controllers.AssessmentController.ChartMenu">ChartMenu()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult ChartMenu()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_ChartPerformance.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.ChartPerformance%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L114">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_ChartPerformance_" data-uid="TEEmployee.Controllers.AssessmentController.ChartPerformance*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_ChartPerformance" data-uid="TEEmployee.Controllers.AssessmentController.ChartPerformance">ChartPerformance()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult ChartPerformance()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_Compare.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.Compare%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L78">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_Compare_" data-uid="TEEmployee.Controllers.AssessmentController.Compare*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_Compare" data-uid="TEEmployee.Controllers.AssessmentController.Compare">Compare()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult Compare()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_CreateManageResponse_System_Collections_Generic_List_TEEmployee_Models_Assessment__System_String_System_String_TEEmployee_Models_User_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.CreateManageResponse(System.Collections.Generic.List%7BTEEmployee.Models.Assessment%7D%2CSystem.String%2CSystem.String%2CTEEmployee.Models.User)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L176">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_CreateManageResponse_" data-uid="TEEmployee.Controllers.AssessmentController.CreateManageResponse*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_CreateManageResponse_System_Collections_Generic_List_TEEmployee_Models_Assessment__System_String_System_String_TEEmployee_Models_User_" data-uid="TEEmployee.Controllers.AssessmentController.CreateManageResponse(System.Collections.Generic.List{TEEmployee.Models.Assessment},System.String,System.String,TEEmployee.Models.User)">CreateManageResponse(List&lt;Assessment&gt;, String, String, User)</h4>
+  <div class="markdown level1 summary"><p>建立主管回覆</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public bool CreateManageResponse(List&lt;Assessment&gt; assessments, string state, string year, User manager)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="TEEmployee.Models.Assessment.html">Assessment</a>&gt;</td>
+        <td><span class="parametername">assessments</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">state</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">year</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TEEmployee.Models.User.html">User</a></td>
+        <td><span class="parametername">manager</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_CreateMixResponse_System_Collections_Generic_List_TEEmployee_Models_MixResponse__TEEmployee_Models_User_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.CreateMixResponse(System.Collections.Generic.List%7BTEEmployee.Models.MixResponse%7D%2CTEEmployee.Models.User)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L324">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_CreateMixResponse_" data-uid="TEEmployee.Controllers.AssessmentController.CreateMixResponse*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_CreateMixResponse_System_Collections_Generic_List_TEEmployee_Models_MixResponse__TEEmployee_Models_User_" data-uid="TEEmployee.Controllers.AssessmentController.CreateMixResponse(System.Collections.Generic.List{TEEmployee.Models.MixResponse},TEEmployee.Models.User)">CreateMixResponse(List&lt;MixResponse&gt;, User)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult CreateMixResponse(List&lt;MixResponse&gt; mixResponses, User employee)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="TEEmployee.Models.MixResponse.html">MixResponse</a>&gt;</td>
+        <td><span class="parametername">mixResponses</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TEEmployee.Models.User.html">User</a></td>
+        <td><span class="parametername">employee</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_CreateMResponse_System_Collections_Generic_List_TEEmployee_Models_Assessment__TEEmployee_Models_User_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.CreateMResponse(System.Collections.Generic.List%7BTEEmployee.Models.Assessment%7D%2CTEEmployee.Models.User)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L303">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_CreateMResponse_" data-uid="TEEmployee.Controllers.AssessmentController.CreateMResponse*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_CreateMResponse_System_Collections_Generic_List_TEEmployee_Models_Assessment__TEEmployee_Models_User_" data-uid="TEEmployee.Controllers.AssessmentController.CreateMResponse(System.Collections.Generic.List{TEEmployee.Models.Assessment},TEEmployee.Models.User)">CreateMResponse(List&lt;Assessment&gt;, User)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public bool CreateMResponse(List&lt;Assessment&gt; assessments, User employee)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="TEEmployee.Models.Assessment.html">Assessment</a>&gt;</td>
+        <td><span class="parametername">assessments</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TEEmployee.Models.User.html">User</a></td>
+        <td><span class="parametername">employee</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_CreateResponse_System_Collections_Generic_List_TEEmployee_Models_Assessment__System_String_System_String_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.CreateResponse(System.Collections.Generic.List%7BTEEmployee.Models.Assessment%7D%2CSystem.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L149">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_CreateResponse_" data-uid="TEEmployee.Controllers.AssessmentController.CreateResponse*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_CreateResponse_System_Collections_Generic_List_TEEmployee_Models_Assessment__System_String_System_String_" data-uid="TEEmployee.Controllers.AssessmentController.CreateResponse(System.Collections.Generic.List{TEEmployee.Models.Assessment},System.String,System.String)">CreateResponse(List&lt;Assessment&gt;, String, String)</h4>
+  <div class="markdown level1 summary"><p>建立回覆</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public bool CreateResponse(List&lt;Assessment&gt; assessments, string state, string year)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="TEEmployee.Models.Assessment.html">Assessment</a>&gt;</td>
+        <td><span class="parametername">assessments</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">state</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">year</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_Dispose_System_Boolean_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.Dispose(System.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L514">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_Dispose_" data-uid="TEEmployee.Controllers.AssessmentController.Dispose*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_Dispose_System_Boolean_" data-uid="TEEmployee.Controllers.AssessmentController.Dispose(System.Boolean)">Dispose(Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void Dispose(bool disposing)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">disposing</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Web.Mvc.Controller.Dispose(System.Boolean)</span></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_EmpList.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.EmpList%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L70">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_EmpList_" data-uid="TEEmployee.Controllers.AssessmentController.EmpList*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_EmpList" data-uid="TEEmployee.Controllers.AssessmentController.EmpList">EmpList()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult EmpList()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_Employee.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.Employee%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L66">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_Employee_" data-uid="TEEmployee.Controllers.AssessmentController.Employee*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_Employee" data-uid="TEEmployee.Controllers.AssessmentController.Employee">Employee()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult Employee()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_EmployeeList.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.EmployeeList%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L90">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_EmployeeList_" data-uid="TEEmployee.Controllers.AssessmentController.EmployeeList*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_EmployeeList" data-uid="TEEmployee.Controllers.AssessmentController.EmployeeList">EmployeeList()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult EmployeeList()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_Feedback.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.Feedback%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L86">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_Feedback_" data-uid="TEEmployee.Controllers.AssessmentController.Feedback*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_Feedback" data-uid="TEEmployee.Controllers.AssessmentController.Feedback">Feedback()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult Feedback()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetAllCategorySelfAssessmentCharts.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetAllCategorySelfAssessmentCharts%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L253">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetAllCategorySelfAssessmentCharts_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllCategorySelfAssessmentCharts*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetAllCategorySelfAssessmentCharts" data-uid="TEEmployee.Controllers.AssessmentController.GetAllCategorySelfAssessmentCharts">GetAllCategorySelfAssessmentCharts()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetAllCategorySelfAssessmentCharts()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetAllEmployees.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetAllEmployees%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L260">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetAllEmployees_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllEmployees*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetAllEmployees" data-uid="TEEmployee.Controllers.AssessmentController.GetAllEmployees">GetAllEmployees()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetAllEmployees()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetAllEmployeesWithStateByRole.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetAllEmployeesWithStateByRole%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L295">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetAllEmployeesWithStateByRole_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllEmployeesWithStateByRole*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetAllEmployeesWithStateByRole" data-uid="TEEmployee.Controllers.AssessmentController.GetAllEmployeesWithStateByRole">GetAllEmployeesWithStateByRole()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetAllEmployeesWithStateByRole()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetAllFeedbacks_System_String_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetAllFeedbacks(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L367">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetAllFeedbacks_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllFeedbacks*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetAllFeedbacks_System_String_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllFeedbacks(System.String)">GetAllFeedbacks(String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetAllFeedbacks(string year)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">year</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetAllFeedbacksForManager_System_String_System_String_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetAllFeedbacksForManager(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L360">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetAllFeedbacksForManager_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllFeedbacksForManager*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetAllFeedbacksForManager_System_String_System_String_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllFeedbacksForManager(System.String,System.String)">GetAllFeedbacksForManager(String, String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetAllFeedbacksForManager(string year, string empno)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">year</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">empno</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetAllManageAssessments_System_String_TEEmployee_Models_User_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetAllManageAssessments(System.String%2CTEEmployee.Models.User)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L127">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetAllManageAssessments_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllManageAssessments*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetAllManageAssessments_System_String_TEEmployee_Models_User_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllManageAssessments(System.String,TEEmployee.Models.User)">GetAllManageAssessments(String, User)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetAllManageAssessments(string year, User manager)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">year</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TEEmployee.Models.User.html">User</a></td>
+        <td><span class="parametername">manager</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetAllOtherFeedbacks_System_String_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetAllOtherFeedbacks(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L353">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetAllOtherFeedbacks_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllOtherFeedbacks*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetAllOtherFeedbacks_System_String_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllOtherFeedbacks(System.String)">GetAllOtherFeedbacks(String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetAllOtherFeedbacks(string empno)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">empno</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetAllPerformance_System_String_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetAllPerformance(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L506">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetAllPerformance_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllPerformance*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetAllPerformance_System_String_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllPerformance(System.String)">GetAllPerformance(String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetAllPerformance(string year)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">year</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetAllResponses.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetAllResponses%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L246">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetAllResponses_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllResponses*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetAllResponses" data-uid="TEEmployee.Controllers.AssessmentController.GetAllResponses">GetAllResponses()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetAllResponses()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetAllScoreManagers.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetAllScoreManagers%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L462">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetAllScoreManagers_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllScoreManagers*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetAllScoreManagers" data-uid="TEEmployee.Controllers.AssessmentController.GetAllScoreManagers">GetAllScoreManagers()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetAllScoreManagers()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetAllSelfAssessments.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetAllSelfAssessments%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L121">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetAllSelfAssessments_" data-uid="TEEmployee.Controllers.AssessmentController.GetAllSelfAssessments*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetAllSelfAssessments" data-uid="TEEmployee.Controllers.AssessmentController.GetAllSelfAssessments">GetAllSelfAssessments()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public JsonResult GetAllSelfAssessments()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetChartEmployeeData_System_String_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetChartEmployeeData(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L427">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetChartEmployeeData_" data-uid="TEEmployee.Controllers.AssessmentController.GetChartEmployeeData*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetChartEmployeeData_System_String_" data-uid="TEEmployee.Controllers.AssessmentController.GetChartEmployeeData(System.String)">GetChartEmployeeData(String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetChartEmployeeData(string year)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">year</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetChartGroupList.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetChartGroupList%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L420">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetChartGroupList_" data-uid="TEEmployee.Controllers.AssessmentController.GetChartGroupList*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetChartGroupList" data-uid="TEEmployee.Controllers.AssessmentController.GetChartGroupList">GetChartGroupList()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetChartGroupList()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetChartManagerData_System_String_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetChartManagerData(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L443">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetChartManagerData_" data-uid="TEEmployee.Controllers.AssessmentController.GetChartManagerData*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetChartManagerData_System_String_" data-uid="TEEmployee.Controllers.AssessmentController.GetChartManagerData(System.String)">GetChartManagerData(String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public JsonResult GetChartManagerData(string year)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">year</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetChartYearList_System_Boolean_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetChartYearList(System.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L411">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetChartYearList_" data-uid="TEEmployee.Controllers.AssessmentController.GetChartYearList*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetChartYearList_System_Boolean_" data-uid="TEEmployee.Controllers.AssessmentController.GetChartYearList(System.Boolean)">GetChartYearList(Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetChartYearList(bool isManagerResponse)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isManagerResponse</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetFeedback_System_String_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetFeedback(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L346">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetFeedback_" data-uid="TEEmployee.Controllers.AssessmentController.GetFeedback*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetFeedback_System_String_" data-uid="TEEmployee.Controllers.AssessmentController.GetFeedback(System.String)">GetFeedback(String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetFeedback(string empno)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">empno</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetFeedbackNotification.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetFeedbackNotification%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L481">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetFeedbackNotification_" data-uid="TEEmployee.Controllers.AssessmentController.GetFeedbackNotification*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetFeedbackNotification" data-uid="TEEmployee.Controllers.AssessmentController.GetFeedbackNotification">GetFeedbackNotification()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetFeedbackNotification()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetManageResponse_System_String_TEEmployee_Models_User_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetManageResponse(System.String%2CTEEmployee.Models.User)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L229">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetManageResponse_" data-uid="TEEmployee.Controllers.AssessmentController.GetManageResponse*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetManageResponse_System_String_TEEmployee_Models_User_" data-uid="TEEmployee.Controllers.AssessmentController.GetManageResponse(System.String,TEEmployee.Models.User)">GetManageResponse(String, User)</h4>
+  <div class="markdown level1 summary"><p>取得主管回覆</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetManageResponse(string year, User manager)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">year</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TEEmployee.Models.User.html">User</a></td>
+        <td><span class="parametername">manager</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetManagers.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetManagers%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L267">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetManagers_" data-uid="TEEmployee.Controllers.AssessmentController.GetManagers*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetManagers" data-uid="TEEmployee.Controllers.AssessmentController.GetManagers">GetManagers()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetManagers()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetManageYearList.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetManageYearList%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L338">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetManageYearList_" data-uid="TEEmployee.Controllers.AssessmentController.GetManageYearList*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetManageYearList" data-uid="TEEmployee.Controllers.AssessmentController.GetManageYearList">GetManageYearList()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetManageYearList()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetMixResponse_TEEmployee_Models_User_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetMixResponse(TEEmployee.Models.User)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L317">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetMixResponse_" data-uid="TEEmployee.Controllers.AssessmentController.GetMixResponse*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetMixResponse_TEEmployee_Models_User_" data-uid="TEEmployee.Controllers.AssessmentController.GetMixResponse(TEEmployee.Models.User)">GetMixResponse(User)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetMixResponse(User employee)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TEEmployee.Models.User.html">User</a></td>
+        <td><span class="parametername">employee</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetMResponse_TEEmployee_Models_User_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetMResponse(TEEmployee.Models.User)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L310">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetMResponse_" data-uid="TEEmployee.Controllers.AssessmentController.GetMResponse*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetMResponse_TEEmployee_Models_User_" data-uid="TEEmployee.Controllers.AssessmentController.GetMResponse(TEEmployee.Models.User)">GetMResponse(User)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetMResponse(User employee)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TEEmployee.Models.User.html">User</a></td>
+        <td><span class="parametername">employee</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetPerformanceChart_System_String_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetPerformanceChart(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L499">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetPerformanceChart_" data-uid="TEEmployee.Controllers.AssessmentController.GetPerformanceChart*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetPerformanceChart_System_String_" data-uid="TEEmployee.Controllers.AssessmentController.GetPerformanceChart(System.String)">GetPerformanceChart(String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public ContentResult GetPerformanceChart(string year)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">year</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ContentResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetResponse_TEEmployee_Models_User_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetResponse(TEEmployee.Models.User)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L214">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetResponse_" data-uid="TEEmployee.Controllers.AssessmentController.GetResponse*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetResponse_TEEmployee_Models_User_" data-uid="TEEmployee.Controllers.AssessmentController.GetResponse(TEEmployee.Models.User)">GetResponse(User)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetResponse(User employee)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TEEmployee.Models.User.html">User</a></td>
+        <td><span class="parametername">employee</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetResponseByYear_TEEmployee_Models_User_System_String_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetResponseByYear(TEEmployee.Models.User%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L237">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetResponseByYear_" data-uid="TEEmployee.Controllers.AssessmentController.GetResponseByYear*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetResponseByYear_TEEmployee_Models_User_System_String_" data-uid="TEEmployee.Controllers.AssessmentController.GetResponseByYear(TEEmployee.Models.User,System.String)">GetResponseByYear(User, String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetResponseByYear(User employee, string year)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TEEmployee.Models.User.html">User</a></td>
+        <td><span class="parametername">employee</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">year</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetReviewByYear_System_String_System_String_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetReviewByYear(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L398">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetReviewByYear_" data-uid="TEEmployee.Controllers.AssessmentController.GetReviewByYear*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetReviewByYear_System_String_System_String_" data-uid="TEEmployee.Controllers.AssessmentController.GetReviewByYear(System.String,System.String)">GetReviewByYear(String, String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetReviewByYear(string year, string empno)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">year</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">empno</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetScorePeople.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetScorePeople%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L274">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetScorePeople_" data-uid="TEEmployee.Controllers.AssessmentController.GetScorePeople*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetScorePeople" data-uid="TEEmployee.Controllers.AssessmentController.GetScorePeople">GetScorePeople()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetScorePeople()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_GetYearList.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.GetYearList%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L331">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_GetYearList_" data-uid="TEEmployee.Controllers.AssessmentController.GetYearList*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_GetYearList" data-uid="TEEmployee.Controllers.AssessmentController.GetYearList">GetYearList()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult GetYearList()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_Index.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.Index%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L21">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_Index_" data-uid="TEEmployee.Controllers.AssessmentController.Index*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_Index" data-uid="TEEmployee.Controllers.AssessmentController.Index">Index()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult Index()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_Manage.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.Manage%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L33">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_Manage_" data-uid="TEEmployee.Controllers.AssessmentController.Manage*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_Manage" data-uid="TEEmployee.Controllers.AssessmentController.Manage">Manage()</h4>
+  <div class="markdown level1 summary"><p>給予主管建議評估表</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult Manage()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_ManageResponseStateCheck.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.ManageResponseStateCheck%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L454">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_ManageResponseStateCheck_" data-uid="TEEmployee.Controllers.AssessmentController.ManageResponseStateCheck*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_ManageResponseStateCheck" data-uid="TEEmployee.Controllers.AssessmentController.ManageResponseStateCheck">ManageResponseStateCheck()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult ManageResponseStateCheck()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_ManagerOption.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.ManagerOption%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L41">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_ManagerOption_" data-uid="TEEmployee.Controllers.AssessmentController.ManagerOption*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_ManagerOption" data-uid="TEEmployee.Controllers.AssessmentController.ManagerOption">ManagerOption()</h4>
+  <div class="markdown level1 summary"><p>請選擇要給予建議的主管(可複選)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult ManagerOption()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_ManagerSuggest.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.ManagerSuggest%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L49">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_ManagerSuggest_" data-uid="TEEmployee.Controllers.AssessmentController.ManagerSuggest*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_ManagerSuggest" data-uid="TEEmployee.Controllers.AssessmentController.ManagerSuggest">ManagerSuggest()</h4>
+  <div class="markdown level1 summary"><p>給予主管建議評估表表單填寫</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult ManagerSuggest()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_Review.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.Review%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L82">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_Review_" data-uid="TEEmployee.Controllers.AssessmentController.Review*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_Review" data-uid="TEEmployee.Controllers.AssessmentController.Review">Review()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult Review()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_ReviewEmployee.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.ReviewEmployee%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L98">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_ReviewEmployee_" data-uid="TEEmployee.Controllers.AssessmentController.ReviewEmployee*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_ReviewEmployee" data-uid="TEEmployee.Controllers.AssessmentController.ReviewEmployee">ReviewEmployee()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult ReviewEmployee()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_Self.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.Self%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L25">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_Self_" data-uid="TEEmployee.Controllers.AssessmentController.Self*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_Self" data-uid="TEEmployee.Controllers.AssessmentController.Self">Self()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult Self()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_SelfChart.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.SelfChart%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L62">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_SelfChart_" data-uid="TEEmployee.Controllers.AssessmentController.SelfChart*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_SelfChart" data-uid="TEEmployee.Controllers.AssessmentController.SelfChart">SelfChart()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult SelfChart()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_SetManager.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.SetManager%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L57">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_SetManager_" data-uid="TEEmployee.Controllers.AssessmentController.SetManager*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_SetManager" data-uid="TEEmployee.Controllers.AssessmentController.SetManager">SetManager()</h4>
+  <div class="markdown level1 summary"><p>設置可以評核的主管名單</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult SetManager()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.ActionResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_SetScorePeople.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.SetScorePeople%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L281">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_SetScorePeople_" data-uid="TEEmployee.Controllers.AssessmentController.SetScorePeople*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_SetScorePeople" data-uid="TEEmployee.Controllers.AssessmentController.SetScorePeople">SetScorePeople()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public JsonResult SetScorePeople()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Web.Mvc.JsonResult</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_UpdateFeedback_System_Collections_Generic_List_System_String__System_String_System_String_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.UpdateFeedback(System.Collections.Generic.List%7BSystem.String%7D%2CSystem.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L374">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_UpdateFeedback_" data-uid="TEEmployee.Controllers.AssessmentController.UpdateFeedback*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_UpdateFeedback_System_Collections_Generic_List_System_String__System_String_System_String_" data-uid="TEEmployee.Controllers.AssessmentController.UpdateFeedback(System.Collections.Generic.List{System.String},System.String,System.String)">UpdateFeedback(List&lt;String&gt;, String, String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public bool UpdateFeedback(List&lt;string&gt; feedbacks, string state, string empno)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">feedbacks</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">state</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">empno</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_UpdateFeedbackNotification_System_String_.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.UpdateFeedbackNotification(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L488">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_UpdateFeedbackNotification_" data-uid="TEEmployee.Controllers.AssessmentController.UpdateFeedbackNotification*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_UpdateFeedbackNotification_System_String_" data-uid="TEEmployee.Controllers.AssessmentController.UpdateFeedbackNotification(System.String)">UpdateFeedbackNotification(String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public bool UpdateFeedbackNotification(string empno)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">empno</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController_UpdateScoreManagers_System_Collections_Generic_List_TEEmployee_Models_User__.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController.UpdateScoreManagers(System.Collections.Generic.List%7BTEEmployee.Models.User%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L469">View Source</a>
+  </span>
+  <a id="TEEmployee_Controllers_AssessmentController_UpdateScoreManagers_" data-uid="TEEmployee.Controllers.AssessmentController.UpdateScoreManagers*"></a>
+  <h4 id="TEEmployee_Controllers_AssessmentController_UpdateScoreManagers_System_Collections_Generic_List_TEEmployee_Models_User__" data-uid="TEEmployee.Controllers.AssessmentController.UpdateScoreManagers(System.Collections.Generic.List{TEEmployee.Models.User})">UpdateScoreManagers(List&lt;User&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[HttpPost]
+public bool UpdateScoreManagers(List&lt;User&gt; selectedManagers)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="TEEmployee.Models.User.html">User</a>&gt;</td>
+        <td><span class="parametername">selectedManagers</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <span class="xref">System.Web.Mvc.IActionFilter</span>
+  </div>
+  <div>
+      <span class="xref">System.Web.Mvc.Filters.IAuthenticationFilter</span>
+  </div>
+  <div>
+      <span class="xref">System.Web.Mvc.IAuthorizationFilter</span>
+  </div>
+  <div>
+      <span class="xref">System.IDisposable</span>
+  </div>
+  <div>
+      <span class="xref">System.Web.Mvc.IExceptionFilter</span>
+  </div>
+  <div>
+      <span class="xref">System.Web.Mvc.IResultFilter</span>
+  </div>
+  <div>
+      <span class="xref">System.Web.Mvc.Async.IAsyncController</span>
+  </div>
+  <div>
+      <span class="xref">System.Web.Mvc.IController</span>
+  </div>
+  <div>
+      <span class="xref">System.Web.Mvc.Async.IAsyncManagerContainer</span>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/SinoDonald/TEEmployee/new/master/apiSpec/new?filename=TEEmployee_Controllers_AssessmentController.md&amp;value=---%0Auid%3A%20TEEmployee.Controllers.AssessmentController%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/SinoDonald/TEEmployee/blob/master/TEEmployee/Controllers/AssessmentController.cs/#L11" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

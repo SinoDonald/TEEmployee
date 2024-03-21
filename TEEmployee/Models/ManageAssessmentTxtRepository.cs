@@ -133,6 +133,13 @@ namespace TEEmployee.Models
 
             return years.OrderByDescending(a => a).ToList();
         }
+        /// <summary>
+        /// 取得員工評核主管各年季度的回覆
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="manager"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public string GetStateOfResponse(string year, string manager, string user)
         {
             if (String.IsNullOrEmpty(year))
@@ -246,7 +253,16 @@ namespace TEEmployee.Models
             }
             return allResponses;
         }
-        // 0912: escaped break line \n
+        /// <summary>
+        /// 建立主管回覆
+        /// 0912: escaped break line \n
+        /// </summary>
+        /// <param name="assessments"></param>
+        /// <param name="state"></param>
+        /// <param name="year"></param>
+        /// <param name="manager"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public bool Update(List<Assessment> assessments, string state, string year, string manager, string user)
         {
             string fn = Path.Combine(_appData, $"ManageResponse/{year}/{manager}/{user}.txt");

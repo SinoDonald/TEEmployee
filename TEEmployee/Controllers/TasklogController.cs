@@ -30,7 +30,10 @@ namespace TEEmployee.Controllers
         {
             return View();
         }
-
+        /// <summary>
+        /// 查閱工作紀錄管控表
+        /// </summary>
+        /// <returns></returns>
         public ActionResult List()
         {
             return View();
@@ -46,16 +49,26 @@ namespace TEEmployee.Controllers
             ViewBag.id = id;
             return View();
         }
+        /// <summary>
+        /// 查閱工作紀錄管控表：員工名單
+        /// </summary>
+        /// <returns></returns>
         public ActionResult UserList()
         {
             return PartialView();
         }
-
+        /// <summary>
+        /// 查閱工作紀錄管控表：個人詳細內容
+        /// </summary>
+        /// <returns></returns>
         public ActionResult UserDetails()
         {
             return PartialView();
         }
-
+        /// <summary>
+        /// 查閱工作紀錄管控表：多人詳細內容
+        /// </summary>
+        /// <returns></returns>
         public ActionResult UsersDetails()
         {
             return PartialView();
@@ -115,8 +128,11 @@ namespace TEEmployee.Controllers
             var ret = _service.GetUserByGuid(guid);
             return Json(ret);
         }
-
-        // 匯入上月資料 <-- 培文
+        /// <summary>
+        /// 匯入上月資料
+        /// </summary>
+        /// <param name="yymm"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult GetLastMonthData(string yymm)
         {
@@ -177,7 +193,11 @@ namespace TEEmployee.Controllers
 
             return Json(ret);
         }
-        // 取得使用者群組 <-- 培文
+        /// <summary>
+        /// 取得使用者群組
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
         public JsonResult GetGroups(string json)
         {
             List<MonthlyRecordData> monthlyRecordData = JsonConvert.DeserializeObject<List<MonthlyRecordData>>(json); //反序列化
@@ -212,7 +232,12 @@ namespace TEEmployee.Controllers
 
             return Json(ret);
         }
-        // 群組篩選 <-- 培文
+        /// <summary>
+        /// 群組篩選
+        /// </summary>
+        /// <param name="json"></param>
+        /// <param name="groupName"></param>
+        /// <returns></returns>
         public JsonResult GetGroupByName(string json, string groupName)
         {
             List<MonthlyRecordData> monthlyRecordData = JsonConvert.DeserializeObject<List<MonthlyRecordData>>(json); //反序列化
@@ -233,7 +258,13 @@ namespace TEEmployee.Controllers
 
             return Json(ret);
         }
-        // 個人詳細內容 <-- 培文
+        /// <summary>
+        /// 個人詳細內容
+        /// </summary>
+        /// <param name="startMonth"></param>
+        /// <param name="endMonth"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public JsonResult GetUserContent(string startMonth, string endMonth, User user)
         {
             // 月份差距
@@ -269,7 +300,12 @@ namespace TEEmployee.Controllers
 
             return Json(ret);
         }
-        // 多人詳細內容 <-- 培文
+        /// <summary>
+        /// 多人詳細內容
+        /// </summary>
+        /// <param name="yymm"></param>
+        /// <param name="users"></param>
+        /// <returns></returns>
         public JsonResult GetMemberContent(string yymm, List<User> users)
         {
             List<MultiTasklogData> ret = new List<MultiTasklogData>();
