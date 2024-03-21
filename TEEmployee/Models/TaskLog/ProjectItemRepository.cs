@@ -35,7 +35,10 @@ namespace TEEmployee.Models.TaskLog
         {
             throw new NotImplementedException();
         }
-
+        /// <summary>
+        /// 取得專案編號與項目
+        /// </summary>
+        /// <returns></returns>
         public List<ProjectItem> GetAll()
         {
             List<ProjectItem> ret;

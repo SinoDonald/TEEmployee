@@ -22,22 +22,42 @@ namespace TEEmployee.Controllers
         {
             return View();
         }
+        /// <summary>
+        /// 人才資料庫
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Talent()
         {
             return View();
         }
+        /// <summary>
+        /// 選擇人員
+        /// </summary>
+        /// <returns></returns>
         public ActionResult TalentOption()
         {
             return PartialView();
         }
+        /// <summary>
+        /// HighPerformers
+        /// </summary>
+        /// <returns></returns>
         public ActionResult TalentHighPerformers()
         {
             return PartialView();
         }
+        /// <summary>
+        /// 成功典範
+        /// </summary>
+        /// <returns></returns>
         public ActionResult TalentSuccessExample()
         {
             return PartialView();
-        }        
+        }
+        /// <summary>
+        /// 個人資料
+        /// </summary>
+        /// <returns></returns>
         public ActionResult TalentRecord()
         {
             return PartialView();
@@ -47,26 +67,42 @@ namespace TEEmployee.Controllers
         // Web API
         // -----------------------------------------
 
-        // 比對上傳的檔案更新時間
+
+        /// <summary>
+        /// 比對上傳的檔案更新時間
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult CompareLastestUpdate(List<string> filesInfo)
         {
             var ret = _service.CompareLastestUpdate(filesInfo);
             return Json(ret);
         }
-        // 上傳員工履歷表多檔, 並解析Word後存到SQL
+        /// <summary>
+        /// 上傳員工履歷表多檔, 並解析Word後存到SQL
+        /// </summary>
+        /// <param name="files"></param>
+        /// <returns></returns>
         public ActionResult Uploaded(HttpPostedFileBase[] files)
         {
             _service.Uploaded(files);
             return RedirectToAction("Index", "Home");
         }
-        // 上傳員工經歷文字檔
+        /// <summary>
+        /// 上傳員工經歷文字檔
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public ActionResult UploadExperience(HttpPostedFileBase file)
         {
             var ret = _service.UploadExperience(file);
             return RedirectToAction("Index", "Home");
         }
-        // 上傳年度績效檔案
+        /// <summary>
+        /// 上傳年度績效檔案
+        /// </summary>
+        /// <param name="importFile"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult ImportFile(HttpPostedFileBase importFile)
         {
@@ -74,7 +110,11 @@ namespace TEEmployee.Controllers
             var ret = _service.ImportFile(importFile);
             return Json(ret);
         }
-        // 上傳測評資料檔案
+        /// <summary>
+        /// 上傳測評資料檔案
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult ImportPDFFile(HttpPostedFileBase file)
         {
@@ -82,21 +122,31 @@ namespace TEEmployee.Controllers
             var ret = _service.ImportPDFFile(file, Session["empno"].ToString());
             return Json(ret);
         }
-        // High Performer
+        /// <summary>
+        /// High Performer
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult HighPerformer()
         {
             var ret = _service.HighPerformer();
             return Json(ret);
         }
-        // 取得群組
+        /// <summary>
+        /// 取得群組
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult GetGroupList()
         {
             var ret = _service.GetGroupList(Session["empno"].ToString());
             return Json(ret);
         }
-        // 儲存選項
+        /// <summary>
+        /// 儲存個人紀錄選項
+        /// </summary>
+        /// <param name="users"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult SaveChoice(List<Ability> users)
         {
@@ -106,21 +156,32 @@ namespace TEEmployee.Controllers
 
             return Json(ret);
         }
-        // 取得所有員工履歷
+        /// <summary>
+        /// 取得所有員工履歷
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult GetAll()
         {
             var ret = _service.GetAll(Session["empno"].ToString());
             return Json(ret);
         }
-        // 取得所有員工職等職級
+        /// <summary>
+        /// 取得所有員工職等職級
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult GetSenioritys()
         {
             var ret = _service.GetSenioritys();
             return Json(ret);
         }
-        // 條件篩選
+        /// <summary>
+        /// 條件篩選
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="json"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult ConditionFilter(ConditionFilter filter, string json)
         {
@@ -128,7 +189,11 @@ namespace TEEmployee.Controllers
             var ret = _service.ConditionFilter(filter, userCVs);
             return Json(ret);
         }
-        // 取得員工履歷
+        /// <summary>
+        /// 取得員工履歷
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult Get(string empno)
         {
@@ -149,7 +214,12 @@ namespace TEEmployee.Controllers
 
             return Json(ret);
         }
-        // 儲存回覆
+        /// <summary>
+        /// 儲存回覆
+        /// </summary>
+        /// <param name="userCV"></param>
+        /// <param name="planning"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult SaveResponse(CV userCV, string planning)
         {

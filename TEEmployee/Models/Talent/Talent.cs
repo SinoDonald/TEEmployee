@@ -4,6 +4,12 @@ using System.Web.Script.Serialization;
 
 namespace TEEmployee.Models
 {
+    /// <summary>
+    /// 條件篩選
+    /// </summary>
+    /// <param name="filter"></param>
+    /// <param name="json"></param>
+    /// <returns></returns>
     public class ConditionFilter
     {
         public int age1 { get; set; }
@@ -14,6 +20,11 @@ namespace TEEmployee.Models
         public string nowPosition { get; set; }
         public string educational { get; set; }
     }
+    /// <summary>
+    /// 個人紀錄選項
+    /// </summary>
+    /// <param name="users"></param>
+    /// <returns></returns>
     public class Ability
     {
         public string empno { get; set; }
@@ -29,6 +40,11 @@ namespace TEEmployee.Models
         public bool choice5 { get; set; } // 適應變化的韌性 - 懂得取捨、不放棄
         public bool selectPosition { get; set; } // 開放身份選擇
     }
+    /// <summary>
+    /// 專案紀錄
+    /// </summary>
+    /// <param name="users"></param>
+    /// <returns></returns>
     public class Seniority
     {
         public string empno { get; set; }
@@ -41,6 +57,11 @@ namespace TEEmployee.Models
         public string position { get; set; }
         public string manager { get; set; }
     }
+    /// <summary>
+    /// 在職日期
+    /// </summary>
+    /// <param name="users"></param>
+    /// <returns></returns>
     public class StartEndDate
     {
         public string position { get; set; }
@@ -49,6 +70,11 @@ namespace TEEmployee.Models
         public DateTime endDate { get; set; }
         public string interval { get; set; }
     }
+    /// <summary>
+    /// 職等職級
+    /// </summary>
+    /// <param name="users"></param>
+    /// <returns></returns>
     public class JobTitle
     {
         public string level { get; set; }

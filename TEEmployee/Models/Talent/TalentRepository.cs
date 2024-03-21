@@ -31,13 +31,19 @@ namespace TEEmployee.Models.Talent
             _conn = new SQLiteConnection(talentConnection);
             _appData = HttpContext.Current.Server.MapPath("~/App_Data");
         }
-        // 檔案版本比對
+        /// <summary>
+        /// 檔案版本比對
+        /// </summary>
         public class FileInfo
         {
             public string empno { get; set; }
             public string lastModifiedDate { get; set; }
         }
-        // 取得所有員工履歷
+        /// <summary>
+        /// 取得所有員工履歷
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public List<CV> GetAll(string empno)
         {
             List<User> users = new UserRepository().GetAll().OrderBy(x => x.empno).ToList();
@@ -77,7 +83,11 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
-        // 取得員工履歷
+        /// <summary>
+        /// 取得員工履歷
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public List<CV> Get(string empno)
         {
             List<CV> ret;
@@ -177,7 +187,11 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
-        // 取得所有員工職等職級
+        /// <summary>
+        /// 取得所有員工職等職級
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public List<string> GetSenioritys()
         { 
             // 公司所有職等
@@ -216,7 +230,11 @@ namespace TEEmployee.Models.Talent
 
             return seniorityList;
         }
-        // 條件篩選
+        /// <summary>
+        /// 條件篩選
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public List<CV> ConditionFilter(ConditionFilter filter, List<CV> userCVs)
         {
             List<CV> filterUserCVs = new List<CV>();
@@ -233,7 +251,11 @@ namespace TEEmployee.Models.Talent
 
             return filterUserCVs;
         }
-        // 年齡
+        /// <summary>
+        /// 年齡
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         private int Age(string userBirthday)
         {
             // 計算年齡, 民國轉西元後計算年齡
@@ -245,7 +267,11 @@ namespace TEEmployee.Models.Talent
 
             return age;
         }
-        // 公司年資
+        /// <summary>
+        /// 公司年資
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         private int CompanyYears(string seniority)
         {
             int companyYears = 0;
@@ -263,7 +289,11 @@ namespace TEEmployee.Models.Talent
 
             return companyYears;
         }
-        // 教育程度
+        /// <summary>
+        /// 教育程度
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         private string EducationalName(string educational)
         {
             List<string> removeStr = new List<string>() { "博士", "碩士", "學士" };
@@ -275,14 +305,22 @@ namespace TEEmployee.Models.Talent
 
             return educational;
         }
-        // 當前職等
+        /// <summary>
+        /// 當前職等
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         private string NowPosition(string seniority)
         {
             string nowPosition = seniority.Split('\n')[2].Split('：')[0];
 
             return nowPosition;
         }
-        // 更新SQL員工當前所屬群組
+        /// <summary>
+        /// 更新SQL員工當前所屬群組
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public bool UpdateUsersGroup(List<User> users)
         {
             bool ret = false;
@@ -303,7 +341,11 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
-        // 儲存選項
+        /// <summary>
+        /// 儲存選項
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public bool SaveChoice(List<Ability> users)
         {
             bool ret = false;
@@ -338,7 +380,11 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
-        // 解析SQL seniority文字, 儲存工作、公司與職位年資
+        /// <summary>
+        /// 解析SQL seniority文字, 儲存工作、公司與職位年資
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public Tuple<string, string, string> AnalyzeSeniority(string analyzeSeniority)
         {
             string workYears = string.Empty;
@@ -401,7 +447,11 @@ namespace TEEmployee.Models.Talent
 
             return new Tuple<string, string, string>(workYears, companyYears, positionSeniority);
         }
-        // 比對上傳的檔案更新時間
+        /// <summary>
+        /// 比對上傳的檔案更新時間
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public List<string> CompareLastestUpdate(List<string> filesInfo)
         {
             List<string> updateUsers = new List<string>();
@@ -425,7 +475,11 @@ namespace TEEmployee.Models.Talent
             }
             return updateUsers;
         }
-        // 解析更新上傳時間
+        /// <summary>
+        /// 解析更新上傳時間
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public List<FileInfo> FileLastestUpdate(List<string> filesInfo)
         {
             List<FileInfo> fileInfos = new List<FileInfo>();
@@ -447,7 +501,11 @@ namespace TEEmployee.Models.Talent
             }
             return fileInfos;
         }
-        // 取得現在SQL存檔的更新時間
+        /// <summary>
+        /// 取得現在SQL存檔的更新時間
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public List<CV> GetLastestUpdate()
         {
             List<CV> ret = new List<CV>();
@@ -467,7 +525,11 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
-        // 讀取Word人員履歷表
+        /// <summary>
+        /// 讀取Word人員履歷表
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public List<CV> SaveUserCV(List<User> users)
         {
             List<CV> userCVs = new List<CV>();
@@ -559,7 +621,11 @@ namespace TEEmployee.Models.Talent
 
             return userCVs;
         }
-        // 儲存圖片
+        /// <summary>
+        /// 儲存圖片
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public void SavePicture(WordprocessingDocument doc, string empno)
         {
             string savePath = HttpContext.Current.Server.MapPath("~/Content/CV");
@@ -575,7 +641,11 @@ namespace TEEmployee.Models.Talent
                 }
             }
         }
-        // 解析文字
+        /// <summary>
+        /// 解析文字
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         private CV ReadWord(WordprocessingDocument doc, string empno, string lastUpdate)
         {
             CV userCV = new CV();
@@ -645,7 +715,11 @@ namespace TEEmployee.Models.Talent
 
             return userCV;
         }
-        // 回傳Word解析後的文字並分段
+        /// <summary>
+        /// 回傳Word解析後的文字並分段
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         private string ReturnParagraph(TableCell[] cells)
         {
             string returnParagraph = string.Empty;
@@ -659,7 +733,11 @@ namespace TEEmployee.Models.Talent
             }
             return returnParagraph;
         }
-        // 大學學歷以上才加入
+        /// <summary>
+        /// 大學學歷以上才加入
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         private string ReturnEducationalParagraph(TableCell[] cells)
         {
             string returnParagraph = string.Empty;
@@ -681,7 +759,11 @@ namespace TEEmployee.Models.Talent
             }
             return returnParagraph;
         }
-        // 經歷文字解析
+        /// <summary>
+        /// 經歷文字解析
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         private Tuple<string, string> ReturnProjectParagraph(TableCell[] cells)
         {
             // 讀取jobTitle資料庫內公司所有職等
@@ -770,7 +852,11 @@ namespace TEEmployee.Models.Talent
 
             return new Tuple<string, string>(returnParagraph, seniority);
         }
-        // 上傳員工經歷文字檔
+        /// <summary>
+        /// 上傳員工經歷文字檔
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public bool UploadExperience(HttpPostedFileBase file)
         {
             List<CV> userCVs = new List<CV>(); // 員工公司年資
@@ -869,7 +955,11 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
-        // Regex解析文字後, 儲存工作、公司與職位年資
+        /// <summary>
+        /// Regex解析文字後, 儲存工作、公司與職位年資
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         private List<Seniority> ProjectRegex(string project)
         {
             List<Seniority> senioritys = new List<Seniority>();
@@ -985,7 +1075,11 @@ namespace TEEmployee.Models.Talent
 
             return senioritys;
         }
-        // 中興工程資料
+        /// <summary>
+        /// 中興工程資料
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         private string Seniority(List<Seniority> senioritys)
         {
             // 公司年資&職位年資
@@ -1084,7 +1178,11 @@ namespace TEEmployee.Models.Talent
 
             return positionSeniority;
         }
-        // 驗證與當天相差幾年幾月
+        /// <summary>
+        /// 驗證與當天相差幾年幾月
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         (DateTime st, DateTime ed, int y, int m, int d) CalcYMD(DateTime start, DateTime end)
         {
             if (end.CompareTo(start) < 0) (start, end) = (end, start);
@@ -1104,7 +1202,11 @@ namespace TEEmployee.Models.Talent
             }
             return (start, end, years, months, days);
         }
-        // 比對職位日期, 如果有重疊則合併
+        /// <summary>
+        /// 比對職位日期, 如果有重疊則合併
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         private StartEndDate MergyDate(CultureInfo culture, List<Seniority> SECbyPosition, List<StartEndDate> startEndDates, bool isManager, bool isNowPosition)
         {
             List<Seniority> senioritys = new List<Seniority>(); // 儲存未重疊區間的日期
@@ -1183,12 +1285,20 @@ namespace TEEmployee.Models.Talent
 
             return startEndDate;
         }
-        // 判斷某日期是否在日期區間內
+        /// <summary>
+        /// 判斷某日期是否在日期區間內
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         private bool IsInDate(DateTime isInDay, DateTime startDate, DateTime endDate)
         {
             return isInDay.CompareTo(startDate) >= 0 && isInDay.CompareTo(endDate) <= 0;
         }
-        // 職稱文字判斷
+        /// <summary>
+        /// 職稱文字判斷
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         private string ChangeName(string changeName)
         {
             List<string> removeStr = new List<string>() { "一", "二", "三", "四" }; // 職稱內要判斷有無()
@@ -1209,7 +1319,11 @@ namespace TEEmployee.Models.Talent
 
             return changeName;
         }
-        // 更新資料庫
+        /// <summary>
+        /// 更新資料庫
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public bool UpdateUserCV(List<CV> userCVs)
         {
             bool ret = false;
@@ -1236,7 +1350,11 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
-        // High Performer
+        /// <summary>
+        /// High Performer
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public Tuple<List<Ability>, string> HighPerformer()
         {
             List<Ability> users = new List<Ability>();
@@ -1340,7 +1458,11 @@ namespace TEEmployee.Models.Talent
 
             return new Tuple<List<Ability>, string>(users, error);
         }
-        // 上傳年度績效檔案
+        /// <summary>
+        /// 上傳年度績效檔案
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public bool ImportFile(HttpPostedFileBase file)
         {
             bool ret = false;
@@ -1401,7 +1523,11 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
-        // 解析年度績效文字
+        /// <summary>
+        /// 解析年度績效文字
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         private string GetCellText(Cell cell, SharedStringTable strTable)
         {
             if (cell.ChildElements.Count == 0)
@@ -1416,7 +1542,11 @@ namespace TEEmployee.Models.Talent
             }
             return val;
         }
-        // 儲存年度績效
+        /// <summary>
+        /// 儲存年度績效
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public bool SavePerformance(List<CV> userCVs)
         {
             bool ret = false;
@@ -1437,7 +1567,11 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
-        // 儲存員工經歷
+        /// <summary>
+        /// 儲存員工經歷
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public bool SaveExperience(List<CV> userCVs)
         {
             bool ret = false;
@@ -1458,7 +1592,11 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
-        // 上傳測評資料檔案
+        /// <summary>
+        /// 上傳測評資料檔案
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public List<CV> ImportPDFFile(HttpPostedFileBase file, string empno)
         {
             string ret = "";
@@ -1533,7 +1671,11 @@ namespace TEEmployee.Models.Talent
 
             return userCVs;
         }
-        // 儲存測評資料
+        /// <summary>
+        /// 儲存測評資料
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public bool SaveTest(List<CV> userCVs)
         {
             bool ret = false;
@@ -1554,7 +1696,11 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
-        // 儲存回覆
+        /// <summary>
+        /// 儲存回覆
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public CV SaveResponse(CV userCV, string planning)
         {
             planning = planning.Substring(0, planning.Length - 1);

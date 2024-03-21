@@ -38,7 +38,10 @@ namespace TEEmployee.Controllers
 
             return View();
         }
-
+        /// <summary>
+        /// Admin：人才資料庫, 上傳Word履歷、員工經歷(行政部資料)、KPI檔案
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Admin()
         {
             ViewBag.Message = "Hello there!!";

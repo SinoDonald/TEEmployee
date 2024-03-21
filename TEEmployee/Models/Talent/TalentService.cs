@@ -10,18 +10,25 @@ namespace TEEmployee.Models.Talent
     public class TalentService : IDisposable
     {
         private ITalentRepository _talentRepository;
-
         public TalentService()
         {
             _talentRepository = new TalentRepository();
         }
-        // 比對上傳的檔案更新時間
+        /// <summary>
+        /// 比對上傳的檔案更新時間
+        /// </summary>
+        /// <param name="filesInfo"></param>
+        /// <returns></returns>
         public List<string> CompareLastestUpdate(List<string> filesInfo)
         {
             List<string> updateUsers = _talentRepository.CompareLastestUpdate(filesInfo);
             return updateUsers;
         }
-        // 上傳員工履歷表多檔, 並解析Word後存到SQL
+        /// <summary>
+        /// 上傳員工履歷表多檔, 並解析Word後存到SQL
+        /// </summary>
+        /// <param name="filesInfo"></param>
+        /// <returns></returns>
         public void Uploaded(HttpPostedFileBase[] files)
         {
             if (files.Count() > 0)
@@ -55,31 +62,51 @@ namespace TEEmployee.Models.Talent
                 catch (Exception) { }
             }
         }
-        // 上傳員工經歷文字檔
+        /// <summary>
+        /// 上傳員工經歷文字檔
+        /// </summary>
+        /// <param name="filesInfo"></param>
+        /// <returns></returns>
         public bool UploadExperience(HttpPostedFileBase file)
         {
             var ret = _talentRepository.UploadExperience(file);
             return ret;
         }
-        // 上傳年度績效檔案
+        /// <summary>
+        /// 上傳年度績效檔案
+        /// </summary>
+        /// <param name="filesInfo"></param>
+        /// <returns></returns>
         public bool ImportFile(HttpPostedFileBase file)
         {
             var ret = _talentRepository.ImportFile(file);
             return ret;
         }
-        // 上傳測評資料檔案
+        /// <summary>
+        /// 上傳測評資料檔案
+        /// </summary>
+        /// <param name="filesInfo"></param>
+        /// <returns></returns>
         public List<CV> ImportPDFFile(HttpPostedFileBase file, string empno)
         {
             List<CV> ret = _talentRepository.ImportPDFFile(file, empno);
             return ret;
         }
-        // High Performer
+        /// <summary>
+        /// High Performer
+        /// </summary>
+        /// <param name="filesInfo"></param>
+        /// <returns></returns>
         public Tuple<List<Ability>, string> HighPerformer()
         {
             Tuple<List<Ability>, string> users = _talentRepository.HighPerformer();
             return users;
         }
-        // 取得群組
+        /// <summary>
+        /// 取得群組
+        /// </summary>
+        /// <param name="filesInfo"></param>
+        /// <returns></returns>
         public List<string> GetGroupList(string empno)
         {
             List<string> groups = new List<string>();
@@ -151,25 +178,41 @@ namespace TEEmployee.Models.Talent
 
             return groups;
         }
-        // 條件篩選
+        /// <summary>
+        /// 條件篩選
+        /// </summary>
+        /// <param name="filesInfo"></param>
+        /// <returns></returns>
         internal List<CV> ConditionFilter(ConditionFilter filter, List<CV> userCVs)
         {
             List<CV> filterUserCVs = _talentRepository.ConditionFilter(filter, userCVs);
             return filterUserCVs;
         }
-        // 取得所有員工職等職級
+        /// <summary>
+        /// 取得所有員工職等職級
+        /// </summary>
+        /// <param name="filesInfo"></param>
+        /// <returns></returns>
         internal List<string> GetSenioritys()
         {
             List<string> senioritys = _talentRepository.GetSenioritys();
             return senioritys;
         }
-        // 儲存選項
+        /// <summary>
+        /// 儲存個人紀錄選項
+        /// </summary>
+        /// <param name="filesInfo"></param>
+        /// <returns></returns>
         public bool SaveChoice(List<Ability> users)
         {
             bool ret = _talentRepository.SaveChoice(users);
             return ret;
         }
-        // 取得所有員工履歷
+        /// <summary>
+        /// 取得所有員工履歷
+        /// </summary>
+        /// <param name="filesInfo"></param>
+        /// <returns></returns>
         public List<CV> GetAll(string empno)
         {
             _talentRepository = new TalentRepository();
@@ -177,7 +220,11 @@ namespace TEEmployee.Models.Talent
 
             return cv;
         }
-        // 取得員工履歷
+        /// <summary>
+        /// 取得員工履歷
+        /// </summary>
+        /// <param name="filesInfo"></param>
+        /// <returns></returns>
         public List<CV> Get(string empno)
         {
             _talentRepository = new TalentRepository();
@@ -185,13 +232,21 @@ namespace TEEmployee.Models.Talent
 
             return cv;
         }
-        // 人才培訓資料庫 <-- 培文
+        /// <summary>
+        /// 更新人才培訓資料庫
+        /// </summary>
+        /// <param name="filesInfo"></param>
+        /// <returns></returns>
         public void TalentUpdate()
         {
             List<User> users = new UserRepository().GetAll(); // 取得員工群組
             _talentRepository.SaveUserCV(users); // 讀取Word人員履歷表
         }
-        // 儲存回覆
+        /// <summary>
+        /// 儲存回覆
+        /// </summary>
+        /// <param name="filesInfo"></param>
+        /// <returns></returns>
         public CV SaveResponse(CV userCV, string planning)
         {
             CV ret = _talentRepository.SaveResponse(userCV, planning);
