@@ -43,7 +43,7 @@
 <div ng-controller="CurriculumCtrl" class="container-fluid">
 
     <nav class="navbar navbar-expand-lg navbar-dark" id="childNav" style="background-color: #5F4C4C">
-        <a class="navbar-brand" href="@Url.Action("Index", "Education")">拓展專業培養</a>
+        <a class="navbar-brand" href="@Url.Action("Index", "GEducation")">拓展專業培養</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -59,9 +59,12 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="@Url.Action("Curriculum", "GEducation")">課表查詢</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("Digital", "GEducation")">數位課程</a>
-                </li>
+                @if (Session["group_leader"] is true)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Digital", "GEducation")">數位課程</a>
+                    </li>
+                }
             </ul>
         </div>
     </nav>

@@ -31,6 +31,7 @@ app.service('appService', ['$http', function ($http) {
     };
 }]);
 
+
 app.controller('GEducationCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', function ($scope, $location, appService, $rootScope, $q) {
 
 
@@ -110,6 +111,9 @@ app.controller('AssignCtrl', ['$scope', '$location', 'appService', '$rootScope',
 
         $scope.users = groupData(users);
 
+        if ($scope.users.children.length === 1 && $scope.users.children[0].children.length === 1)
+            $scope.users.children[0].children[0].selected = true;
+
     })
 
     appService.GetAllChapters({}).then((ret) => {
@@ -176,14 +180,18 @@ app.controller('AssignCtrl', ['$scope', '$location', 'appService', '$rootScope',
             }
         }
 
-        appService.UpsertRecords({ records: records }).then((ret) => {
+        if (selectedUsers.length > 0 && result.length > 0) {
+            appService.UpsertRecords({ records: records }).then((ret) => {
 
-            if (ret.data)
-                alert('成功');
-            else
-                alert('失敗');
+                if (ret.data)
+                    alert('成功');
+                else
+                    alert('失敗');
 
-        })
+            });
+        }
+
+        
 
     }
 
@@ -317,6 +325,11 @@ app.controller('CurriculumCtrl', ['$scope', '$location', 'appService', '$rootSco
 
         $scope.users = groupData(users);
 
+        if ($scope.groups.length === 1) {
+            $scope.selectedGroup = $scope.groups[0];
+            $scope.selectGroup();
+        }        
+
     })
 
     $scope.selectGroup = () => {
@@ -324,8 +337,14 @@ app.controller('CurriculumCtrl', ['$scope', '$location', 'appService', '$rootSco
         let employee_array = $scope.auth.Users.filter(x => x.group_one === $scope.selectedGroup).map(x => x.name);
 
         $scope.employees = employee_array;
-        $scope.selectedEmployee = $scope.employees[0];
-        $scope.selectEmployee();
+
+        if ($scope.groups.length === 1) {
+            $scope.selectedEmployee = $scope.employees.find(x => x === $scope.auth.User.name);
+        }
+        else {
+            $scope.selectedEmployee = $scope.employees[0];            
+        }
+        $scope.selectEmployee();        
 
     }
 
@@ -402,7 +421,7 @@ app.controller('CurriculumCtrl', ['$scope', '$location', 'appService', '$rootSco
         if ($scope.search.chapter.course_group && $scope.search.chapter.course_group in $scope.groupStructure)
             chapterGroupOne_array = Object.keys($scope.groupStructure[$scope.search.chapter.course_group]);
 
-        
+
         $scope.search.chapter.course_group_one = '';
         $scope.search.chapter.chapter_scope = '';
 
@@ -483,7 +502,7 @@ app.controller('DigitalCtrl', ['$scope', '$location', 'appService', '$rootScope'
 
     appService.GetAllChapters({}).then((ret) => {
 
-       
+
         let group_one_array = ret.data.map(x => ({ group: x.course_group, group_one: x.course_group_one, }));
 
         // remove duplicate object
