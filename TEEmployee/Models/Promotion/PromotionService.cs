@@ -24,11 +24,22 @@ namespace TEEmployee.Models.Promotion
             _talentRepository = new TalentRepository();
         }
 
+        /// <summary>
+        /// 取得所有員工升等項目。
+        /// </summary>
+        /// <returns>包含所有員工升等項目的列舉。</returns>        
         public List<Promotion> GetAll(string empno)
         {
             return _promotionRepository.GetAll();
         }
 
+        /// <summary>
+        /// 取得特定員工升等項目。
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <param name="isAdmin">是否為管理員</param>
+        /// <returns>包含特定員工升等項目的列舉</returns>
+        /// <remarks>若使用者為管理員而非主管，隱藏機敏資料</remarks>
         public List<Promotion> GetByUser(string empno, bool isAdmin)
         {
             var promotions = _promotionRepository.GetByUser(empno);
@@ -49,6 +60,11 @@ namespace TEEmployee.Models.Promotion
             return promotions;
         }
 
+        /// <summary>
+        /// 建立特定員工升等項目。
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <returns>包含特定員工升等項目的列舉</returns>
         private List<Promotion> CreatePromotion(string empno)
         {
             List<Promotion> promotions = new List<Promotion>();
@@ -66,6 +82,11 @@ namespace TEEmployee.Models.Promotion
                 return null;
         }
 
+        /// <summary>
+        /// 更新特定員工單筆升等項目。
+        /// </summary>
+        /// <param name="promotion">升等項目</param>
+        /// <returns>是否更新成功</returns>
         public bool Update(Promotion promotion)
         {
             var ret = _promotionRepository.Update(promotion);
@@ -73,6 +94,12 @@ namespace TEEmployee.Models.Promotion
             return ret;
         }
 
+        /// <summary>
+        /// 上傳檔案至特定員工單筆升等項目。
+        /// </summary>
+        /// <param name="file">附加檔案</param>
+        /// <param name="promotion">升等項目</param>
+        /// <returns>是否更新成功</returns>
         public bool UploadFile(HttpPostedFileBase file, Promotion promotion)
         {
             try
@@ -93,6 +120,11 @@ namespace TEEmployee.Models.Promotion
 
         }
 
+        /// <summary>
+        /// 下載特定員工單筆升等項目之附加檔案。
+        /// </summary>
+        /// <param name="promotion">升等項目</param>
+        /// <returns>檔案位元資料</returns>
         public byte[] DownloadFile(Promotion promotion)
         {
             string _appData = HttpContext.Current.Server.MapPath("~/App_Data/Promotion");
@@ -111,6 +143,11 @@ namespace TEEmployee.Models.Promotion
 
         }
 
+        /// <summary>
+        /// 根據員工職位轉換升等項目內容
+        /// </summary>
+        /// <param name="promotions">升等項目列舉</param>
+        /// <param name="empno">員工編號</param>
         private void TransformContent(List<Promotion> promotions, string empno)
         {
             User user = _userRepository.Get(empno);
@@ -225,6 +262,11 @@ namespace TEEmployee.Models.Promotion
             return;
         }
 
+        /// <summary>
+        /// 根據員工權限取得所有升等項目之動態物件。
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <returns>員工升等項目動態物件</returns>
         public dynamic GetAuthorization(string empno)
         {
             User user = _userRepository.Get(empno);
@@ -281,6 +323,11 @@ namespace TEEmployee.Models.Promotion
         }
 
         // private method
+        /// <summary>
+        /// 取得升等職位名稱。
+        /// </summary>
+        /// <param name="profTitle">目前職位</param>
+        /// <returns>升等職位</returns>
         private string NextProfTitle(string profTitle)
         {
             string next = "";
@@ -380,6 +427,11 @@ namespace TEEmployee.Models.Promotion
         }
 
         // private method
+        /// <summary>
+        /// 取得升等條件。
+        /// </summary>
+        /// <param name="profTitle">目前職位</param>
+        /// <returns>升等條件相關資料陣列</returns>
         private string[] NextConditions(string profTitle)
         {
             // nextPro nextYear scoreYear score 
@@ -483,6 +535,13 @@ namespace TEEmployee.Models.Promotion
             return strs;
         }
 
+        /// <summary>
+        /// 計算是否可升等，一般或特別
+        /// </summary>
+        /// <param name="user">員工</param>
+        /// <param name="promotions">升等項目</param>
+        /// <param name="department_manager">協理</param>
+        /// <returns>是否可升等，一般或特別</returns>
         private string CanUpgrade(User user, List<Promotion> promotions, bool department_manager)
         {
             // CAN'T UPGRADE TITLE
@@ -588,6 +647,11 @@ namespace TEEmployee.Models.Promotion
 
         }
 
+        /// <summary>
+        /// 刪除所有升等項目
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <returns>是否刪除成功</returns>
         public bool DeleteAll(string empno)
         {
             var ret = _promotionRepository.DeleteAll();
@@ -607,6 +671,11 @@ namespace TEEmployee.Models.Promotion
             return true;
         }
 
+        /// <summary>
+        /// 下載升等名單
+        /// </summary>
+        /// <param name="authStr">升等名單JSON字串</param>
+        /// <returns>升等名單位元</returns>
         public byte[] DownloadAuthExcel(string authStr)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;

@@ -18,6 +18,12 @@ namespace TEEmployee.Models.GKpi
             _userRepository = new UserRepository();
         }
 
+        /// <summary>
+        /// 根據員工權限取得所有員工KPI及細項
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <param name="year">年度</param>
+        /// <returns>包含所有員工KPI的列舉</returns>
         public List<KpiModel> GetAllKpiModelsByRole(string empno, int year)
         {
             var ret = new List<KpiModel>();
@@ -45,7 +51,13 @@ namespace TEEmployee.Models.GKpi
             return ret.Distinct().OrderBy(x => x.empno).ToList();
         }
 
-        // 
+        /// <summary>
+        /// 更新多筆KPI細項
+        /// </summary>
+        /// <param name="items">KPI細項列舉</param>
+        /// <param name="removedItems">欲刪除的KPI細項列舉</param>
+        /// <returns>更新之KPI細項列舉</returns>
+        /// <remarks>包含更新及刪除項目</remarks>
         public List<KpiItem> UpdateKpiItems(List<KpiItem> items, List<KpiItem> removedItems, string empno)
         {
             // TODO: Check authorization
@@ -131,7 +143,11 @@ namespace TEEmployee.Models.GKpi
             return ret;
         }
 
-
+        /// <summary>
+        /// 取得權限包含之群組
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <returns>群組名稱字串列舉</returns>
         private List<string> GetManagerGroups(string empno)
         {
             User user = _userRepository.Get(empno);
@@ -145,29 +161,35 @@ namespace TEEmployee.Models.GKpi
             return groups;
         }
 
-        private List<string> GetEmployeeGroups(string empno)
-        {
-            User user = _userRepository.Get(empno);
-            List<string> groups = new List<string>();
+        //private List<string> GetEmployeeGroups(string empno)
+        //{
+        //    User user = _userRepository.Get(empno);
+        //    List<string> groups = new List<string>();
 
-            // add sub group if as a member
-            if (!String.IsNullOrEmpty(user.group_one))
-                groups.Add(user.group_one);
+        //    // add sub group if as a member
+        //    if (!String.IsNullOrEmpty(user.group_one))
+        //        groups.Add(user.group_one);
 
-            if (!String.IsNullOrEmpty(user.group_two))
-                groups.Add(user.group_two);
+        //    if (!String.IsNullOrEmpty(user.group_two))
+        //        groups.Add(user.group_two);
 
-            if (!String.IsNullOrEmpty(user.group_three))
-                groups.Add(user.group_three);
+        //    if (!String.IsNullOrEmpty(user.group_three))
+        //        groups.Add(user.group_three);
 
-            // remove duplicates
-            groups = groups.Distinct().ToList();
+        //    // remove duplicates
+        //    groups = groups.Distinct().ToList();
 
-            return groups;
-        }
+        //    return groups;
+        //}
 
         // DLC
 
+        /// <summary>
+        /// 取得個人年度KPI項目
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <param name="int">年度</param>
+        /// <returns>個人年度KPI項目列舉</returns>
         public List<KpiModel> GetEmployeeKpiModelsByRole(string empno, int year)
         {
             var ret = new List<KpiModel>();
@@ -185,11 +207,15 @@ namespace TEEmployee.Models.GKpi
                 kpi.items = kpi.items.OrderBy(x => x.id).ToList();
             }
 
-
-
             return ret.Distinct().OrderBy(x => x.empno).ToList();
         }
 
+        /// <summary>
+        /// 取得主管權限下包含的員工年度KPI項目
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <param name="int">年度</param>
+        /// <returns>個人年度KPI項目列舉</returns>
         public List<KpiModel> GetManagerKpiModelsByRole(string empno, int year)
         {
             var ret = new List<KpiModel>();
@@ -217,6 +243,12 @@ namespace TEEmployee.Models.GKpi
             return ret.Distinct().OrderBy(x => x.empno).ToList();
         }
 
+        /// <summary>
+        /// 上傳個人年度KPI項目
+        /// </summary>
+        /// <param name="input">年度KPI項目Stream</param>
+        /// <returns>個人年度KPI項目列舉</returns>
+        /// <remarks>上傳EXCEL檔，匯入資料庫</remarks>
         public List<KpiModel> UploadKpiFile(Stream input)
         {
             // Insert KpiModels then Insert Kpiitems
@@ -336,6 +368,11 @@ namespace TEEmployee.Models.GKpi
             return null;
         }
 
+        /// <summary>
+        /// 年度KPI項目Excel資料轉換
+        /// </summary>
+        /// <param name="input">年度KPI項目Stream</param>
+        /// <returns>個人年度KPI項目列舉</returns>
         private List<KpiModel> ProcessKpiXlsx(Stream input)
         {
             var ret = new List<KpiModel>();
@@ -395,7 +432,10 @@ namespace TEEmployee.Models.GKpi
             return ret;
         }
 
-
+        /// <summary>
+        /// 根據年度KPI項目建立個人KPI項目
+        /// </summary>
+        /// <returns>個人年度KPI項目列舉</returns>
         // Insert, Update and Delete KpiModels based on current Users in database and kpi relationships this year
         public List<KpiModel> InsertKpiModelsNew()
         {
