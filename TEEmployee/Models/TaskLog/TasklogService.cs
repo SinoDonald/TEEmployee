@@ -44,11 +44,21 @@ namespace TEEmployee.Models.TaskLog
         {
             return _projectItemRepository.Upsert(projectItem);
         }
+
+        /// <summary>
+        /// 新增或更新多筆旬卡紀錄
+        /// </summary>
+        /// <param name="projectItem">旬卡紀錄列舉</param>
+        /// <returns>更新成功</returns>
         public bool UpsertProjectItem(List<ProjectItem> projectItem)
         {
             return _projectItemRepository.Upsert(projectItem);
         }
 
+        /// <summary>
+        /// 取得所有旬卡紀錄。
+        /// </summary>
+        /// <returns>包含所有旬卡紀錄的列舉。</returns>
         public List<ProjectItem> GetAllProjectItem()
         {
             var ret = _projectItemRepository.GetAll();
@@ -62,6 +72,11 @@ namespace TEEmployee.Models.TaskLog
         }
 
         // 1109: Create monthlyRecord by All users
+        /// <summary>
+        /// 新增每月工作紀錄
+        /// </summary>
+        /// <param name="yymm">年月份</param>
+        /// <returns>新增成功</returns>
         public bool CreateMonthlyRecord(string yymm)
         {
             var users = _userRepository.GetAll();
@@ -104,8 +119,9 @@ namespace TEEmployee.Models.TaskLog
             var ret = _monthlyRecordRepository.GetAll();
             return ret;
         }
+
+
         
-      
         public List<MonthlyRecord> GetAllMonthlyRecord(string empno, string yymm)
         {            
             List<MonthlyRecord> monthlyRecords;
@@ -117,6 +133,12 @@ namespace TEEmployee.Models.TaskLog
         }
 
         // Get record base on the role
+        /// <summary>
+        /// 取得所有該月所有工作紀錄
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <param name="yymm">年月份</param>
+        /// <returns>包含所有工作紀錄的列舉</returns>
         public List<MonthlyRecordData> GetAllMonthlyRecordData(string empno, string yymm)
         {
             List<MonthlyRecordData> monthlyRecordData = new List<MonthlyRecordData>();
@@ -178,7 +200,12 @@ namespace TEEmployee.Models.TaskLog
         //}
 
 
-
+        /// <summary>
+        /// 更新工作內容
+        /// </summary>
+        /// <param name="projectTasks">工作內容列舉</param>
+        /// <param name="empno">員工編號</param>
+        /// <returns>更新成功</returns>
         public bool UpdateProjectTask(List<ProjectTask> projectTasks, string empno)
         {
             projectTasks.ForEach(x => x.empno = empno);
@@ -204,6 +231,12 @@ namespace TEEmployee.Models.TaskLog
 
         }
 
+        /// <summary>
+        /// 刪除工作內容
+        /// </summary>
+        /// <param name="projectTasks">工作內容Id列舉</param>
+        /// <param name="empno">員工編號</param>
+        /// <returns>刪除成功</returns>
         public bool DeleteProjectTask(List<int> ids, string empno)
         {         
             bool ret = true;
@@ -227,6 +260,11 @@ namespace TEEmployee.Models.TaskLog
 
         }
 
+        /// <summary>
+        /// 刪除旬卡紀錄
+        /// </summary>
+        /// <param name="projectItems">旬卡紀錄列舉</param>
+        /// <returns>刪除成功</returns>
         public bool DeleteProjectItem(List<ProjectItem> projectItems)
         {
             bool ret = true;
@@ -249,6 +287,12 @@ namespace TEEmployee.Models.TaskLog
 
         //----------------------------------------------------------------------------
 
+        /// <summary>
+        /// 取得工作內容
+        /// </summary>
+        /// <param name="yymm">年月份</param>
+        /// <param name="empno">員工編號</param>
+        /// <returns>工作內容實體</returns>
         public TasklogData GetTasklogData(string empno, string yymm)
         {
             List<ProjectItem> projectItems = new List<ProjectItem>();
@@ -267,6 +311,11 @@ namespace TEEmployee.Models.TaskLog
 
         }
 
+        /// <summary>
+        /// 根據GUID取得工作內容
+        /// </summary>
+        /// <param name="guid">工作紀錄GUID</param>
+        /// <returns>工作內容實體</returns>
         public TasklogData GetTasklogDataByGuid(string guid)
         {
             var record = _monthlyRecordRepository.Get(new Guid(guid));
@@ -275,6 +324,11 @@ namespace TEEmployee.Models.TaskLog
             return ret;
         }
 
+        /// <summary>
+        /// 根據GUID取得員工
+        /// </summary>
+        /// <param name="guid">工作紀錄GUID</param>
+        /// <returns>員工實體</returns>
         public User GetUserByGuid(string guid)
         {
             var record = _monthlyRecordRepository.Get(new Guid(guid));
@@ -337,6 +391,10 @@ namespace TEEmployee.Models.TaskLog
         // Insert User From txt file
         //=============================
 
+        /// <summary>
+        /// 新增員工
+        /// </summary>
+        /// <returns>新增成功</returns>
         public bool InsertUser()
         {
             var userTxtRepository = new UserTxtRepository();            
@@ -348,7 +406,7 @@ namespace TEEmployee.Models.TaskLog
                 empno = "9991",
                 name = "郭薩爾",
                 gid = "24",
-                profTitle = "351",
+                profTitle = "工程",
             };
 
             if (!users.Exists(x => x.empno == guest.empno))
@@ -366,6 +424,11 @@ namespace TEEmployee.Models.TaskLog
         //=============================
         // Insert UserExtra 
         //=============================
+        /// <summary>
+        /// 新增員工部門資料
+        /// </summary>
+        /// <param name="users">員工列舉</param>
+        /// <returns>新增成功</returns>
         public bool InsertUserExtra(List<User> users)
         {           
             var ret = (_userRepository as UserRepository).Insert(users);
