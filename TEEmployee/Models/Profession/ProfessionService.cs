@@ -17,10 +17,15 @@ namespace TEEmployee.Models.Profession
         {
             _professionRepository = new ProfessionRepository();
             _userRepository = new UserRepository();
-        }       
+        }
 
         // skill page service
-
+        /// <summary>
+        /// 根據權限，取得所有專業項目
+        /// </summary>
+        /// <param name="role">員工部門職位</param>
+        /// <param name="role">員工編號</param>
+        /// <returns>專業項目列舉</returns>
         public List<Skill> GetAllSkillsByRole(string role, string empno)
         {
             var ret = new List<Skill>();
@@ -61,7 +66,12 @@ namespace TEEmployee.Models.Profession
         //    return ret;
         //}
 
-
+        /// <summary>
+        /// 新增或更新專業項目
+        /// </summary>
+        /// <param name="skills">專業項目列舉</param>
+        /// <param name="empno">員工編號</param>
+        /// <returns>專業項目列舉</returns>
         public List<Skill> UpsertSkills(List<Skill> skills, string empno)
         {
             var ret = _professionRepository.UpsertSkills(skills);
@@ -70,6 +80,12 @@ namespace TEEmployee.Models.Profession
             return ret;
         }
 
+        /// <summary>
+        /// 刪除專業項目
+        /// </summary>
+        /// <param name="skills">專業項目列舉</param>
+        /// <param name="empno">員工編號</param>
+        /// <returns>是否刪除成功</returns>
         public bool DeleteSkills(List<Skill> skills, string empno)
         {
             var ret = _professionRepository.DeleteSkills(skills);
@@ -80,6 +96,12 @@ namespace TEEmployee.Models.Profession
 
         // score page service
 
+        /// <summary>
+        /// 根據權限，取得所有專業項目及相關分數
+        /// </summary>
+        /// <param name="role">員工部門職位</param>
+        /// <param name="empno">員工編號</param>
+        /// <returns>專業項目列舉</returns>
         public List<Skill> GetAllScoresByRole(string role, string empno)
         {
             var ret = new List<Skill>();
@@ -133,6 +155,12 @@ namespace TEEmployee.Models.Profession
         //}
 
 
+        /// <summary>
+        /// 新增或更新員工專業項目分數
+        /// </summary>
+        /// <param name="scores">分數列舉</param>
+        /// <param name="empno">員工編號</param>
+        /// <returns>是否更新成功</returns>
         public bool UpsertScores(List<Score> scores, string empno)
         {
             var ret = _professionRepository.UpsertScores(scores);
@@ -143,7 +171,11 @@ namespace TEEmployee.Models.Profession
 
 
         // shared service
-
+        /// <summary>
+        /// 根據員工權限，取得權限包含之員工列表
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <returns>員工列表動態物件</returns>
         public dynamic GetAuthorization(string empno)
         {
             User user = _userRepository.Get(empno);
@@ -188,12 +220,22 @@ namespace TEEmployee.Models.Profession
             return _professionRepository.GetAll();
         }
 
-
+        /// <summary>
+        /// 取得員工個人專業項目自評分數
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <returns>自評分數列舉</returns>
         public List<Personal> GetPersonal(string empno)
         {
             return _professionRepository.GetPersonal(empno);
         }
 
+        /// <summary>
+        /// 新增或更新員工個人專業項目自評分數
+        /// </summary>
+        /// <param name="personals">自評分數列舉</param>
+        /// <param name="empno">員工編號</param>
+        /// <returns>是否更新成功</returns>
         public bool UpsertPersonal(List<Personal> personals, string empno)
         {
             var ret = _professionRepository.UpsertPersonal(personals);
@@ -202,6 +244,12 @@ namespace TEEmployee.Models.Profession
             return ret;
         }
 
+        /// <summary>
+        /// 刪除員工個人專業項目自評分數
+        /// </summary>
+        /// <param name="personals">自評分數列舉</param>
+        /// <param name="empno">員工編號</param>
+        /// <returns>是否刪除成功</returns>
         public bool DeletePersonal(List<Personal> personals, string empno)
         {
             var ret = _professionRepository.DeletePersonal(personals);
