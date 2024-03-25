@@ -13,19 +13,28 @@ namespace TEEmployee.Models.GEducation
     {
         private IGEducationRepository _educationRepository;
         private IUserRepository _userRepository;
-
+                
         public GEducationService()
         {
             _educationRepository = new GEducationRepository();
             _userRepository = new UserRepository();
         }
 
+        /// <summary>
+        /// 取得所有課程。
+        /// </summary>
+        /// <returns>包含所有課程的列舉。</returns>
         public List<Chapter> GetAllChapters()
         {
             var ret = _educationRepository.GetAllChapters();
             return ret;
         }
 
+        /// <summary>
+        /// 上傳課程資料。
+        /// </summary>
+        /// <param name="input">課程資料的stream</param>
+        /// <returns>使否更新成功</returns>
         public bool UploadCourseFile(Stream input)
         {
             List<Chapter> chapters = processCourseXlsx(input);
@@ -35,6 +44,11 @@ namespace TEEmployee.Models.GEducation
             return ret;
         }
 
+        /// <summary>
+        /// 處理課程資料stream，轉換成課程類別。
+        /// </summary>
+        /// <param name="stream">課程資料的stream</param>
+        /// <returns>課程的列舉</returns>
         private List<Chapter> processCourseXlsx(Stream stream)
         {
             List<Chapter> chapters = new List<Chapter>();
@@ -122,6 +136,11 @@ namespace TEEmployee.Models.GEducation
             return chapters;
         }
 
+        /// <summary>
+        /// 轉換課程部門編碼
+        /// </summary>
+        /// <param name="chapter">課程</param>
+        /// <returns>課程部門編碼</returns>
         private string buildChapterCode(Chapter chapter)
         {
             string chapterCode = "";
@@ -334,6 +353,11 @@ namespace TEEmployee.Models.GEducation
             return chapterCode;
         }
 
+        /// <summary>
+        /// 根據員工權限取得員工資料
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <returns>員工資料動態類型</returns>
         public dynamic GetAuthorization(string empno)
         {
             User user = _userRepository.Get(empno);
@@ -373,24 +397,44 @@ namespace TEEmployee.Models.GEducation
             return JsonConvert.SerializeObject(authorization);
         }
 
+        /// <summary>
+        /// 更新插入修課紀錄
+        /// </summary>
+        /// <param name="records">修課紀錄列舉</param>
+        /// <returns>是否更新插入成功</returns>
         public bool UpsertRecords(List<Record> records, string empno)
         {
             var ret = _educationRepository.UpsertRecords(records);
             return ret;
         }
 
+        /// <summary>
+        /// 更新修課完成
+        /// </summary>
+        /// <param name="record">修課紀錄</param>
+        /// <returns>是否更新成功</returns>
         public Record UpdateRecordCompleted(Record record, string empno)
         {
             var ret = _educationRepository.UpdateRecordCompleted(record);
             return ret;
         }
 
+        /// <summary>
+        /// 更新修課為數位課程
+        /// </summary>
+        /// <param name="chapter">課程</param>
+        /// <returns>課程</returns>
         public Chapter UpdateChapterDigitalized(Chapter chapter, string empno)
         {
             var ret = _educationRepository.UpdateChapterDigitalized(chapter);
             return ret;
         }
 
+        /// <summary>
+        /// 取得員工所有修課紀錄
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <returns>修課紀錄列舉</returns>
         public List<Record> GetAllRecordsByUser(string empno)
         {
             var ret = _educationRepository.GetAllRecordsByUser(empno);

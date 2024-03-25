@@ -152,6 +152,8 @@ namespace TEEmployee.Models.Promotion
             string[] seniorities = cv.seniority.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
             foreach (var s in seniorities)
             {
+
+                             
                 if (s.Contains(strs[0]))
                 {
                     seniorityStr += "已任職";
@@ -519,7 +521,7 @@ namespace TEEmployee.Models.Promotion
                 string[] seniorities = cv.seniority.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
                 foreach (var s in seniorities)
-                {
+                {                                
                     if (s.Contains(strs[0]))
                     {
                         Regex rx = new Regex(@"\d*年", RegexOptions.Compiled | RegexOptions.IgnoreCase);

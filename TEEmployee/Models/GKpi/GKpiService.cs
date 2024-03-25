@@ -207,7 +207,7 @@ namespace TEEmployee.Models.GKpi
             var users = _userRepository.GetAll();
             foreach (var kpi in ret)
             {
-                kpi.name = users.Find(x => x.empno == kpi.empno).name;
+                kpi.name = users.Find(x => x.empno == kpi.empno)?.name;
                 kpi.items = kpi.items.OrderBy(x => x.id).ToList();
             }
 
