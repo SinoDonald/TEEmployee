@@ -20,6 +20,10 @@ namespace TEEmployee.Models.GSchedule
             _projectItemRepository = new ProjectItemRepository();
         }
 
+        /// <summary>
+        /// 取得所有行事曆項目。
+        /// </summary>
+        /// <returns>包含所有行事曆項目的列舉。</returns>
         public List<GroupSchedule> GetAllSchedules()
         {
             var groupSchedules = new List<GroupSchedule>();
@@ -52,6 +56,11 @@ namespace TEEmployee.Models.GSchedule
             return groupSchedules;
         }
 
+        /// <summary>
+        /// 取得所有權限下群組之行事曆項目。
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <returns>包含所有行事曆項目的列舉。</returns>
         public List<GroupSchedule> GetAllGroupSchedules(string empno)
         {
             // get user information
@@ -159,6 +168,12 @@ namespace TEEmployee.Models.GSchedule
             return allGroupSchedules;
         }
 
+        /// <summary>
+        /// 更新行事曆項目。
+        /// </summary>
+        /// <param name="schedule">行事曆項目</param>
+        /// <param name="empno">員工編號</param>
+        /// <returns>更新的行事曆項目</returns>
         public Schedule UpdateSchedule(Schedule schedule, string empno)
         {
             if (!CheckIsAuthorized(schedule, empno))
@@ -168,6 +183,12 @@ namespace TEEmployee.Models.GSchedule
             return ret;
         }
 
+        /// <summary>
+        /// 新增行事曆項目。
+        /// </summary>
+        /// <param name="schedule">行事曆項目</param>
+        /// <param name="empno">員工編號</param>
+        /// <returns>新增的行事曆項目</returns>
         public Schedule InsertSchedule(Schedule schedule, string empno)
         {
             if (!CheckIsAuthorized(schedule, empno))
@@ -177,6 +198,12 @@ namespace TEEmployee.Models.GSchedule
             return ret;
         }
 
+        /// <summary>
+        /// 刪除行事曆項目。
+        /// </summary>
+        /// <param name="schedule">行事曆項目</param>
+        /// <param name="empno">員工編號</param>
+        /// <returns>是否刪除成功</returns>
         public bool DeleteSchedule(Schedule schedule, string empno)
         {
             if (!CheckIsAuthorized(schedule, empno))
@@ -206,6 +233,11 @@ namespace TEEmployee.Models.GSchedule
             return ret;
         }
 
+        /// <summary>
+        /// 更新所有行事曆項目每月進度。
+        /// </summary>
+        /// <returns>是否更新成功</returns>
+        /// <remarks>將本月進度移至上月進度，並記錄在歷史進度紀錄</remarks>
         public bool UpdateAllPercentComplete()
         {
             var schedules = _scheduleRepository.GetAll()
@@ -220,6 +252,11 @@ namespace TEEmployee.Models.GSchedule
             return _scheduleRepository.Update(schedules);
         }
 
+        /// <summary>
+        /// 根據權限，取得權限下員工資料
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <returns>員工資料動態物件</returns>
         public Authorization GetAuthorization(string empno)
         {
             Authorization authorization = new Authorization() { User = _userRepository.Get(empno), GroupAuthorities = new List<GroupAuthority>() };
@@ -246,6 +283,11 @@ namespace TEEmployee.Models.GSchedule
             return authorization;
         }
 
+        /// <summary>
+        /// 取得群組之未來數位轉型行事曆
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <returns>未來數位轉型行事曆項目列舉</returns>
         public List<GroupSchedule> GetAllFutures(string empno)
         {
             // get user information
@@ -370,18 +412,35 @@ namespace TEEmployee.Models.GSchedule
             public string yymm { get; set; }
         }
 
+        /// <summary>
+        /// 取得所有計畫行事曆項目
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <returns>包含所有計畫行事曆項目的列舉</returns>
         public List<ProjectSchedule> GetAllProjectSchedules(string empno)
         {
             var projectSchedules = _scheduleRepository.GetAllProjectSchedules();
             return projectSchedules;
         }
 
+        /// <summary>
+        /// 新增計畫行事曆項目
+        /// </summary>
+        /// <param name="projectSchedule">計畫行事曆</param>
+        /// <param name="empno">員工編號</param>
+        /// <returns>是否新增成功</returns>
         public bool InsertProjectSchedule(ProjectSchedule projectSchedule, string empno)
         {
             var ret = _scheduleRepository.Insert(projectSchedule);
             return ret;
         }
 
+        /// <summary>
+        /// 刪除計畫行事曆項目
+        /// </summary>
+        /// <param name="projectSchedule">計畫行事曆</param>
+        /// <param name="empno">員工編號</param>
+        /// <returns>是否刪除成功</returns>
         public bool DeleteProjectSchedule(ProjectSchedule projectSchedule, string empno)
         {
             var ret = _scheduleRepository.Delete(projectSchedule);
@@ -400,6 +459,12 @@ namespace TEEmployee.Models.GSchedule
             return ret;
         }
 
+        /// <summary>
+        /// 上傳計畫行事曆項目附件
+        /// </summary>
+        /// <param name="file">附件</param>
+        /// <param name="projectSchedule">計畫行事曆</param>
+        /// <returns>是否上傳成功</returns>
         public bool UploadProjectSchedule(HttpPostedFileBase file, ProjectSchedule projectSchedule)
         {
             string _appData = HttpContext.Current.Server.MapPath("~/Content/assets/img/project");

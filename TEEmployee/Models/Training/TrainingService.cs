@@ -21,6 +21,11 @@ namespace TEEmployee.Models.Training
             _userRepository = new UserRepository();
         }
 
+        /// <summary>
+        /// 取得所有培訓紀錄
+        /// </summary>
+        /// <returns>培訓紀錄JSON</returns>
+        /// <remarks>於後端轉換Date格式為string，並回傳JSON</remarks>
         public string GetAllRecordsJSON()
         {
             var ret = _trainingRepository.GetAllRecords();
@@ -28,6 +33,12 @@ namespace TEEmployee.Models.Training
             return JsonConvert.SerializeObject(ret, settings);
         }
 
+        /// <summary>
+        /// 根據權限，取得特定員工培訓紀錄
+        /// </summary>
+        /// <param name="user_empno">使用者員工編號</param>
+        /// <param name="self_empno">欲查詢員工編號</param>
+        /// <returns>培訓紀錄JSON</returns>
         public string GetAllRecordsByUserJSON(string user_empno, string self_empno)
         {
             var ret = _trainingRepository.GetAllRecordsByUser(user_empno).OrderByDescending(x => x.start_date);
@@ -35,12 +46,22 @@ namespace TEEmployee.Models.Training
             return JsonConvert.SerializeObject(ret, settings);
         }
 
+        /// <summary>
+        /// 取得個人培訓紀錄
+        /// </summary>
+        /// <param name="user_empno">員工編號</param>
+        /// <returns>培訓紀錄列舉</returns>
         private List<Record> GetAllRecordsByUser(string user_empno)
         {
             var ret = _trainingRepository.GetAllRecordsByUser(user_empno).OrderByDescending(x => x.start_date).ToList();
             return ret;
         }
 
+        /// <summary>
+        /// 上傳培訓紀錄
+        /// </summary>
+        /// <param name="input">培訓紀錄檔案stream</param>
+        /// <returns>是否上傳成功</returns>
         public bool UploadTrainingFile(Stream input)
         {
             // Insert KpiModels then Insert Kpiitems
@@ -49,6 +70,11 @@ namespace TEEmployee.Models.Training
             return ret;
         }
 
+        /// <summary>
+        /// 轉換培訓紀錄stream為培訓紀錄列舉
+        /// </summary>
+        /// <param name="stream">培訓紀錄檔案stream</param>
+        /// <returns>培訓紀錄列舉</returns>
         private List<Record> ProcessTrainingStream(Stream stream)
         {
             List<Record> records = new List<Record>();
@@ -82,6 +108,11 @@ namespace TEEmployee.Models.Training
             return records;
         }
 
+        /// <summary>
+        /// 根據權限，取得權限下所有員工資訊與培訓紀錄
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <returns>員工資訊與培訓紀錄動態物件</returns>
         public dynamic GetAuthorization(string empno)
         {
             User user = _userRepository.Get(empno);
@@ -112,6 +143,12 @@ namespace TEEmployee.Models.Training
             return JsonConvert.SerializeObject(authorization, settings);
         }
 
+        /// <summary>
+        /// 下載群組培訓紀錄資料
+        /// </summary>
+        /// <param name="year">培訓紀錄年度</param>
+        /// <param name="empno">員工編號</param>
+        /// <returns>培訓紀錄位元資料</returns>
         public byte[] DownloadGroupExcel(int year, string empno)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;

@@ -5,9 +5,18 @@ using System.Web;
 
 namespace TEEmployee.Models.GSchedule
 {
+    /// <summary>
+    /// 代表一項計畫行事曆項目實體。
+    /// </summary>
     public class ProjectSchedule
     {
+        /// <summary>
+        /// 計畫編號
+        /// </summary>
         public string projno  { get; set; }
+        /// <summary>
+        /// 附加檔案位置
+        /// </summary>
         public string filepath { get; set; }
     }
     /// <summary>
