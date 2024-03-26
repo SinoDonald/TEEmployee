@@ -28,6 +28,10 @@ namespace TEEmployee.Models
             _userRepository = new UserRepository();
         }
 
+        /// <summary>
+        /// 取得所有自評題目。
+        /// </summary>
+        /// <returns>包含所有自評題目的列舉。</returns>
         public List<Assessment> GetAllSelfAssessments()
         {
             var selfAssessments = _assessmentRepository.GetAll();
@@ -91,8 +95,13 @@ namespace TEEmployee.Models
         }
 
         // 0729: Feedback of all categories for employer himself
-        
 
+        /// <summary>
+        /// 取得主管評員工回饋內容
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <param name="manno">主管員工編號</param>
+        /// <returns>包含所有回饋的列舉。</returns>
         public Feedback GetFeedback(string empno, string manno)
         {
             var name = _userRepository.Get(manno).name;
@@ -102,7 +111,13 @@ namespace TEEmployee.Models
         }
 
         // 1208: Get all other manager feedbacks based on duty
-        
+
+        /// <summary>
+        /// 取得其他主管評員工回饋內容
+        /// </summary>
+        /// <param name="empno">員工編號</param>
+        /// <param name="manno">主管員工編號</param>
+        /// <returns>包含所有回饋的列舉。</returns>
         public List<Feedback> GetAllOtherFeedbacks(string empno, string manno)
         {
             var feedbacks = GetAllFeedbacks(empno, Utilities.DayStr());
@@ -118,6 +133,13 @@ namespace TEEmployee.Models
         }
 
         // 0428: Get all manager feedbacks based on duty for manager
+        /// <summary>
+        /// 取得其他主管評員工回饋內容
+        /// </summary>
+        /// <param name="year">年度</param>
+        /// <param name="empno">員工編號</param>
+        /// <param name="manno">主管員工編號</param>
+        /// <returns>包含所有回饋的列舉。</returns>
         public List<Feedback> GetAllFeedbacksForManager(string year, string empno, string manno)
         {
             var feedbacks = GetAllFeedbacks(empno, year);
@@ -140,6 +162,12 @@ namespace TEEmployee.Models
 
 
         // 0729: Feedback of all categories for employee
+        /// <summary>
+        /// 員工取得所有回饋內容
+        /// </summary>
+        /// <param name="user">員工編號</param>
+        /// <param name="year">年份</param>
+        /// <returns>包含所有回饋的列舉。</returns>
         public List<Feedback> GetAllFeedbacks(string user, string year)
         {
 
@@ -157,6 +185,14 @@ namespace TEEmployee.Models
         }
 
         // 0729:  Feedback for all category
+        /// <summary>
+        /// 主管更新員工回饋內容
+        /// </summary>
+        /// <param name="feedbacks">回饋內容列舉</param>
+        /// <param name="state">儲存狀態</param>
+        /// <param name="empno">員工編號</param>
+        /// <param name="manno">主管員工編號</param>
+        /// <returns>更新成功</returns>
         public bool UpdateFeedback(List<string> feedbacks, string state, string empno, string manno)
         {
             var name = _userRepository.Get(manno).name;
@@ -201,6 +237,12 @@ namespace TEEmployee.Models
         //    return new SelfAssessResponse() { Responses = selfAssessmentResponse, State = state };
         //}
 
+        /// <summary>
+        /// 員工取得自評內容
+        /// </summary>
+        /// <param name="user">員工編號</param>
+        /// <param name="year">年份</param>
+        /// <returns>自評內容實體</returns>
         public SelfAssessResponse GetSelfAssessmentResponse(string user, string year = "")
         {
             if (String.IsNullOrEmpty(year))
@@ -237,6 +279,10 @@ namespace TEEmployee.Models
             return allSelfAssessmentResponse;
         }
 
+        /// <summary>
+        /// 主管取得員工自評圖表內容
+        /// </summary>
+        /// <returns>員工自評圖表列舉</returns>
         public List<CategorySelfAssessmentChart> GetAllCategorySelfAssessmentCharts()
         {
             var selfAssessments = _assessmentRepository.GetAll();
@@ -280,6 +326,11 @@ namespace TEEmployee.Models
             var allEmployees = _userRepository.GetAll();
             return allEmployees;
         }
+
+        /// <summary>
+        /// 更新評主管名單
+        /// </summary>
+        /// <returns>主管名單</returns>
         public List<User> SetScorePeople()
         {
             List<User> users = new List<User>();
@@ -320,6 +371,10 @@ namespace TEEmployee.Models
         //}
 
         //0923 return score people with state
+        /// <summary>
+        /// 取得評主管名單
+        /// </summary>
+        /// <returns>主管名單</returns>
         public List<EmployeesWithState> GetScorePeople(string empno)
         {
             List<EmployeesWithState> employeesWithStates = new List<EmployeesWithState>();
@@ -370,6 +425,11 @@ namespace TEEmployee.Models
         //}
 
         // 0721
+        /// <summary>
+        /// 取得所有員工自評狀態
+        /// </summary>
+        /// <param name="manno">主管員工編號</param>
+        /// <returns>員工自評狀態列舉</returns>
         public List<EmployeesWithState> GetAllEmployeesWithStateByRole(string manno)
         {
             //var allEmployees = _userRepository.GetAll().Where(employee => employee.Role == "3").ToList();
@@ -515,6 +575,11 @@ namespace TEEmployee.Models
             return assessYearList;
         }
 
+        /// <summary>
+        /// 取得自評圖表小組名單
+        /// </summary>
+        /// <param name="manno">主管員工編號</param>
+        /// <returns>評圖表小組名單</returns>
         public List<string> GetChartGroupList(string manno)
         {
             List<string> groups = new List<string>();
@@ -596,7 +661,12 @@ namespace TEEmployee.Models
         }
 
 
-
+        /// <summary>
+        /// 取得權限下所有自評圖表內容
+        /// </summary>
+        /// <param name="manno">主管員工編號</param>
+        /// <param name="year">年份</param>
+        /// <returns>自評圖表內容列舉</returns>
         public List<ChartEmployeeData> GetChartEmployeeData(string manno, string year)
         {
             User user = _userRepository.Get(manno);
@@ -640,6 +710,12 @@ namespace TEEmployee.Models
         //}
 
         // 20230511 - Add num of options variable 
+        /// <summary>
+        /// 取得評主管圖表內容
+        /// </summary>
+        /// <param name="manno">主管員工編號</param>
+        /// <param name="year">年份</param>
+        /// <returns>評主管圖表內容</returns>
         public ChartManagerData GetChartManagerData(string manno, string year)
         {
             User user = _userRepository.Get(manno);
@@ -842,6 +918,12 @@ namespace TEEmployee.Models
         // Performance Cluster (By Group123)
         // Authority: Department Manager > Group Manager > Group123 Manager
 
+        /// <summary>
+        /// 取得主管評員工分群圖表
+        /// </summary>
+        /// <param name="empno">主管員工編號</param>
+        /// <param name="year">年份</param>
+        /// <returns>主管評員工分群圖表動態物件</returns>
         public dynamic GetPerformanceChart(string year, string empno)
         {
             // Get managers that can be reviewed
