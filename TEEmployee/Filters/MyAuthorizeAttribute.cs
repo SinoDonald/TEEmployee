@@ -30,10 +30,16 @@ namespace TEEmployee.Filters
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
             string loginUser = filterContext.HttpContext.User.Identity.Name;
-            Match m = Regex.Match(loginUser, @"\\{0,1}(\d{4})@{0,1}");
-            if (m.Success)
-                loginUser = m.Groups[1].ToString();
+            //Match m = Regex.Match(loginUser, @"\\{0,1}(\d{4})@{0,1}");
+            //if (m.Success)
+            //    loginUser = m.Groups[1].ToString();
 
+            Match m = Regex.Match(loginUser, @"\\{0,1}(\d{4,5})@{0,1}");
+            if (m.Success)
+            {
+                string empno = m.Groups[1].ToString();
+                loginUser = empno.Substring(Math.Max(0, empno.Length - 4));
+            }
 
             base.OnAuthorization(filterContext);
 
