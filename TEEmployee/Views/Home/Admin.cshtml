@@ -8,6 +8,23 @@
         header {
             margin-top: 100px;
         }
+
+        h4.lime {
+            /* Font color set to white */
+            color: white;
+            /* Background color set to lemon green */
+            background-color: #b3d334; /* Lemon green, you might need to adjust this to get the exact shade you want */
+            /* Rounded corners */
+            border-radius: 15px; /* This creates rounded corners; adjust as needed */
+            /* Since no border is requested, we don't include the border property */
+            /* Padding to ensure the background extends around the text nicely */
+            padding: 15px;
+            /* Margins for some spacing around the element */
+            /* Ensures the background spans the content width */
+            max-width: fit-content;
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
     </style>
 }
 
@@ -17,32 +34,21 @@
         <h2>Admin1019</h2>
     </header>
 
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="text-success">員工履歷Word檔(多檔)</h4>
-                    @using (Html.BeginForm("Uploaded", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                    {
-                        @*因為要多個上傳 所以要用到multiple屬性*@
-                        <input type="file" id="filepicker" name="files" multiple />
-                        <input type="submit" value="上傳" />
-                    }
-                </div>
-            </div>
+    <div>
+        <h4 class="lime">帳號管理</h4>
+        <div class="d-inline-block">
+            <button type="button" class="btn btn-outline-info" name="addRow" ng-click="UpdateUser()">
+                更新員工名單
+            </button>
         </div>
-        <div class="col-sm-4">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="text-success">員工經歷文字檔</h4>
-                    @using (Html.BeginForm("UploadExperience", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                    {
-                        <input type="file" id="filepicker" name="file" />
-                        <input type="submit" value="上傳" />
-                    }
-                </div>
-            </div>
+
+        <div class="d-inline-block">
+            <label for="input" class="btn btn-outline-danger m-0">匯入組織表</label>
+            <input id="input" style="visibility:hidden;" type="file">
         </div>
+    </div>
+    <div>
+        <h4 class="lime">自評表與考核</h4>
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-body">
@@ -56,11 +62,10 @@
                 </div>
             </div>
         </div>
-    </div>
-    <br />
 
-    @if (Session["empno"] is "7596" || Session["empno"] is "7291")
-    {
+    </div>
+    <div>
+        <h4 class="lime">工作紀錄管控表</h4>
         <button type="button" class="btn btn-outline-success" name="addRow" ng-click="InsertProjectItem()">
             更新旬卡資料
         </button>
@@ -68,32 +73,49 @@
         <button type="button" class="btn btn-outline-warning" name="addRow" ng-click="CreateMonthlyRecord()">
             建立本月工作紀錄表
         </button>
+    </div>
 
-        <button type="button" class="btn btn-outline-info" name="addRow" ng-click="UpdateUser()">
-            更新員工名單
-        </button>
-
+    <div>
+        <h4 class="lime">年度行事曆目標</h4>
         <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="UpdateAllPercentComplete()">
             更新累積進度
         </button>
+    </div>
 
-        <button type="button" class="btn btn-outline-dark" name="addRow" ng-click="NotifyUpdate()">
-            通知測試
-        </button>
+    <div>
+        <h4 class="lime">人才培育資料庫</h4>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="text-success">員工履歷Word檔(多檔)</h4>
+                        @using (Html.BeginForm("Uploaded", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @*因為要多個上傳 所以要用到multiple屬性*@
+                            <input type="file" id="filepicker" name="files" multiple />
+                            <input type="submit" value="上傳" />
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="text-success">員工經歷文字檔</h4>
+                        @using (Html.BeginForm("UploadExperience", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            <input type="file" id="filepicker" name="file" />
+                            <input type="submit" value="上傳" />
+                        }
+                    </div>
+                </div>
+            </div>
 
-        <button type="button" class="btn btn-outline-dark" name="addRow" ng-click="InsertKpiModels()">
-            KPI
-        </button>
-    }
-    @if (Session["empno"] is "7291" || Session["empno"] is "7596")
-    {
-        <button type="button" class="btn btn-outline-secondary" name="addRow" ng-click="ReviewUserDB()">
-            檢視UserDB
-        </button>
-        <button type="button" class="btn btn-outline-primary" name="addRow" ng-click="ReviewProfessionDB()">
-            檢視ProfessionDB
-        </button>
-        <br />
+        </div>
+    </div>
+
+    <div>
+        <h4 class="lime">其他</h4>
         <div class="row">
             <div class="col-sm-1">
                 <a href='@Url.Action("DownloadUserDB", "Home")'>下載UserDB</a>
@@ -102,28 +124,18 @@
                 <a href='@Url.Action("DownloadProfessionDB", "Home")'>下載ProfessionDB</a>
             </div>
         </div>
-    }
-
-    <div>
-        <label for="input" class="btn btn-danger">匯入組織表</label>
-        <input id="input" style="visibility:hidden;" type="file">
+        <button type="button" class="btn btn-outline-secondary" name="addRow" ng-click="ReviewUserDB()">
+            檢視UserDB
+        </button>
+        <button type="button" class="btn btn-outline-primary" name="addRow" ng-click="ReviewProfessionDB()">
+            檢視ProfessionDB
+        </button>
+        <button type="button" class="btn btn-outline-dark" name="addRow" ng-click="NotifyUpdate()">
+            通知測試
+        </button>
     </div>
 
-    @*<div class="row">
-            <div class="col-sm-12" style="padding-bottom:20px">
-                <div class="col-sm-2">
-                    <span>請選擇檔案：</span>
-                </div>
-                <div class="col-sm-3">
-                    <input class="form-control" type="file" name="importFile" id="importFile" />
-                </div>
-                <div class="col-sm-3">
-                    <input class="btn btn-primary" id="btnUpload" type="button" value="上傳員工名單" />
-                </div>
-            </div>
-        </div>*@
-
-    @*<input class="btn btn-danger" type="file" id="input" />*@
+   
 
 </div>
 
