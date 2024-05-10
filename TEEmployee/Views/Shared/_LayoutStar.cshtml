@@ -60,25 +60,50 @@
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
         <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" href="#page-top">職涯規劃 溝通與紀錄平台</a>
+            <a class="navbar-brand homepage" href="#page-top">職涯規劃 溝通與紀錄平台</a>
             <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ms-auto my-2 my-lg-0">
+                <ul class="navbar-nav ms-auto my-2 my-lg-0 homepage">
 
-                    <li class="nav-item"><a class="nav-link" href="@Url.Action("History", "Home")">更新歷程</a></li>
+                    @*<li class="nav-item"><a class="nav-link" href="@Url.Action("History", "Home")">更新歷程</a></li>
                     <li class="nav-item"><a class="nav-link" href="@Url.Action("Question", "Home")">Q&A</a></li>
-                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Document", "Home")">說明文件</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Document", "Home")">說明文件</a></li>*@
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            部門推廣
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="https://pmis07.sinotech.com.tw/Dept24/BaseApp/E-Books/%E8%BB%8C%E4%BA%8C%E9%83%A8/%E9%83%A8%E9%96%80%E6%91%BA%E9%A0%81(%E4%B8%AD%E6%96%87)/%E4%B8%AD%E8%88%88%E5%85%AC%E5%8F%B8%E8%BB%8C%E9%81%93%E4%BA%8C%E9%83%A8%E9%83%A8%E9%96%80%E6%91%BA%E9%A0%81(%E4%B8%AD).html">部門摺頁(中文)</a>
+                            <a class="dropdown-item" href="https://pmis07.sinotech.com.tw/Dept24/BaseApp/E-Books/%E8%BB%8C%E4%BA%8C%E9%83%A8/%E9%83%A8%E9%96%80%E6%91%BA%E9%A0%81(%E8%8B%B1%E6%96%87)/%E4%B8%AD%E8%88%88%E5%85%AC%E5%8F%B8%E8%BB%8C%E9%81%93%E4%BA%8C%E9%83%A8%E9%83%A8%E9%96%80%E6%91%BA%E9%A0%81(%E8%8B%B1)-202405.html">部門摺頁(英文)</a>
+                            <a class="dropdown-item disabled" href="">永續報告書</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            平台說明
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="@Url.Action("Document", "Home")">操作說明</a>
+                            <a class="dropdown-item" href="@Url.Action("Question", "Home")">Q&A</a>
+                            <a class="dropdown-item" href="@Url.Action("History", "Home")">平台更新歷程</a>
+                        </div>
+                    </li>
+                    
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             功能模組
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="Assessment">自評表與考核</a>
-                            <a class="dropdown-item" href="Tasklog">工作紀錄管控表</a>
                             <a class="dropdown-item" href="Profession">核心專業盤點</a>
+                            <a class="dropdown-item" href="GEducation">拓展專業培養</a>
+                            <a class="dropdown-item" href="Training">培訓紀錄與規劃</a>
                             <a class="dropdown-item" href="GSchedule">年度行事曆目標</a>
                             <a class="dropdown-item" href="Promotion">升等規劃與條件</a>
+                            <a class="dropdown-item" href="Assessment">自評表與考核</a>
+                            <a class="dropdown-item" href="Tasklog">工作紀錄管控表</a>
                             <a class="dropdown-item" href="Talent">人才培育資料庫</a>
+                            <a class="dropdown-item" href="Forum">我要抱抱</a>
                         </div>
                     </li>
 

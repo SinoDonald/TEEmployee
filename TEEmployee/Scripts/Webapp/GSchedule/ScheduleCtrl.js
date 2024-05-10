@@ -1084,7 +1084,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
                 // fix: sum up all hours from different itemno, use filter instead of find
                 const manHours = projectHours.filter(x => x.name === name && x.yymm === yymm);
-                let hour = manHours.reduce((a, c) => a + c, 0);
+                let hour = manHours.reduce((a, c) => a + c.hours, 0);
                 memberHours += `${name}(${hour})\n`;
 
                 //const manHour = projectHours.find(x => x.name === name && x.yymm === yymm);

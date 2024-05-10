@@ -4058,6 +4058,9 @@ textarea.form-control-lg {
   text-decoration: none;
   white-space: nowrap;
 }
+.navbar-brand.homepage {    
+    font-size: 1.4rem;
+}
 .navbar-nav {
   display: flex;
   flex-direction: column;
@@ -11344,6 +11347,13 @@ hr.divider-light {
     font-weight: 700;
     font-size: 0.9rem;
     padding: 0.75rem 0;
+}
+#mainNav .navbar-nav.homepage .nav-item .nav-link {
+    color: #6c757d;
+    font-family: "Merriweather Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.75rem 0.7rem;
 }
 #mainNav .navbar-nav .nav-item .nav-link:hover, #mainNav .navbar-nav .nav-item .nav-link:active {
   color: #f4623a;
