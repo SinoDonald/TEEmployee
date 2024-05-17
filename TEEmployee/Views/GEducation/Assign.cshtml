@@ -107,6 +107,19 @@
                 <div class="accordion p-2">
 
                     <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" ng-model="assignOption.value" id="inlineRadio1" value="assign">
+                            <label class="form-check-label" for="inlineRadio1">指派課程</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" ng-model="assignOption.value" id="inlineRadio2" value="cancel">
+                            <label class="form-check-label" for="inlineRadio2">取消課程</label>
+                        </div>                        
+                    </div>
+                    
+
+
+                    <div>
                         <div class="form-check form-check-inline" ng-repeat="groupCheckbox in groupCheckboxList">
                             <input class="form-check-input" type="checkbox" id="inlineGroupCheckbox{{groupCheckbox.id}}" ng-model="groupCheckbox.checked" ng-change="updateGroupSelected()">
                             <label class="form-check-label" for="inlineGroupCheckbox{{groupCheckbox.id}}">{{groupCheckbox.value}}</label>
@@ -141,8 +154,8 @@
 
                                     <div class="accordion-item pl-3" ng-repeat="(title_key, title) in scope" ng-show="(title | filter:filterChapter).length > 0">
                                         @*<button class="btn btn-link" data-toggle="collapse" data-target="#gcollapse{{$parent.$parent.$index}}_{{$parent.$index}}_{{$index}}" aria-expanded="true" aria-controls="collapseOne">
-                                        {{title_key}}
-                                    </button>*@
+                                {{title_key}}
+                            </button>*@
 
                                         <p class="mt-2"> {{title_key}}</p>
 
@@ -190,6 +203,7 @@
 
                         </div>
                     </div>
+
                 </div>
 
 

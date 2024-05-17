@@ -505,6 +505,12 @@ namespace TEEmployee.Models.GKpi
             return ret;
         }
 
+        public bool DeleteKpiModels(string year)
+        {
+            var ret = _kpiRepository.DeleteKpiModelsByYear(int.Parse(year));
+            return ret;
+        }
+
 
 
         public void Dispose()

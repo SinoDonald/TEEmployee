@@ -13,6 +13,6 @@ namespace TEEmployee.Models.GKpi
         List<KpiModel> InsertKpiModelsNew(List<KpiModel> kpiModels);
         List<KpiItem> UpsertKpiItems(List<KpiItem> items);
         bool DeleteKpiItems(List<KpiItem> items);
-
+        bool DeleteKpiModelsByYear(int year);
     }
 }

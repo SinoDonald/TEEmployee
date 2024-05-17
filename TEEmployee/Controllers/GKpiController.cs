@@ -87,8 +87,17 @@ namespace TEEmployee.Controllers
         {
             var ret = _service.UploadKpiFile(kpifiles.InputStream);
 
-            var jj = Json(ret);
+            //var jj = Json(ret);
+            var jj = Json((ret is null) ? "succeed" : "fail");
+
             return jj;
+        }
+
+        [HttpPost]
+        public ActionResult DeleteKpiModels(string year)
+        {
+            var ret = _service.DeleteKpiModels(year);
+            return Json(ret);
         }
 
         protected override void Dispose(bool disposing)

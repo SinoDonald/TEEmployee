@@ -66,6 +66,10 @@ app.controller('GEducationCtrl', ['$scope', '$location', 'appService', '$rootSco
 
 app.controller('AssignCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', function ($scope, $location, appService, $rootScope, $q) {
 
+    $scope.assignOption = {
+        value: 'assign',
+    };
+
     $scope.groupCheckboxList = [
         { id: 1, value: '通識', checked: true },
         { id: 2, value: '規劃', checked: true },
@@ -174,12 +178,16 @@ app.controller('AssignCtrl', ['$scope', '$location', 'appService', '$rootScope',
 
         let records = [];
 
+        let assigned = $scope.assignOption.value === 'assign';  
+
+        console.log(assigned);
+
         for (let user of selectedUsers) {
             for (let chapter of result) {
                 records.push({
                     chapter: chapter,
                     empno: user.empno,
-                    assigned: true,
+                    assigned: assigned,
                 })
             }
         }
@@ -369,7 +377,7 @@ app.controller('CurriculumCtrl', ['$scope', '$location', 'appService', '$rootSco
 
         appService.GetAllRecordsByUser({ empno: empno }).then((ret) => {
 
-            $scope.records = ret.data;
+            $scope.records = ret.data.filter(x => x.assigned);
 
             // mapped to chapter
             const chapters = $scope.records.map(x => x.chapter);

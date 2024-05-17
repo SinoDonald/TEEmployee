@@ -171,6 +171,43 @@ namespace TEEmployee.Models.GKpi
             return;
         }
 
+        public bool DeleteKpiModelsByYear(int year)
+        {
+            if (_conn.State == 0)
+                _conn.Open();
 
+            int ret = 0;
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                // SQL query to delete books written by male authors
+                string deleteKpiItemSql = @"
+                    DELETE FROM KpiItem
+                    WHERE kpi_id IN (
+                        SELECT id
+                        FROM KpiModel
+                        WHERE year=@year
+                    )";
+
+               
+                ret = _conn.Execute(deleteKpiItemSql, new { year });
+
+
+                string deleteKpiModelSql = @"
+                    DELETE FROM KpiModel
+                    WHERE year=@year
+                ";
+
+
+                ret += _conn.Execute(deleteKpiModelSql, new { year });
+
+
+                tran.Commit();
+
+                return ret > 0;
+
+            }
+
+        }
     }
 }
