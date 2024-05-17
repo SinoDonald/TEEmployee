@@ -321,9 +321,9 @@ namespace TEEmployee.Models.GKpi
                 }
                 else if (model.role == "一般工程師")
                 {
-                    if (model.group_name == "土木組" || model.group_name == "規劃組")
+                    if (model.group_name == "排水管線組" || model.group_name == "營運規劃組" || model.group_name == "交通工程組" || model.group_name == "用地開發組")
                     {                       
-                        kpm = processedInput.Where(x => x.role == "規劃組組員").FirstOrDefault();
+                        kpm = processedInput.Where(x => x.role == "規劃群組組員").FirstOrDefault();
                     }
                     else
                     {
