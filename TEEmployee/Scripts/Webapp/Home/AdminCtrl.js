@@ -39,6 +39,10 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('GKpi/DeleteKpiModels', o);
     };
 
+    this.DeleteSolitaryKpiModels = function (o) {
+        return $http.post('GKpi/DeleteSolitaryKpiModels', o);
+    };
+
     // 通知測試 <-- 培文
     this.NotifyUpdate = function (o) {
         return $http.post('Home/NotifyUpdate', o);
@@ -224,6 +228,17 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
     $scope.DeleteKpiModels = (year) => {
 
         appService.DeleteKpiModels({year:year})
+            .then((ret) => {
+                console.log("succeed");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+
+    $scope.DeleteSolitaryKpiModels = () => {
+
+        appService.DeleteSolitaryKpiModels({})
             .then((ret) => {
                 console.log("succeed");
             })

@@ -511,6 +511,11 @@ namespace TEEmployee.Models.GKpi
             return ret;
         }
 
+        public bool DeleteSolitaryKpiModels()
+        {
+            var ret = _kpiRepository.DeleteSolitaryKpiModels();
+            return ret;
+        }
 
 
         public void Dispose()

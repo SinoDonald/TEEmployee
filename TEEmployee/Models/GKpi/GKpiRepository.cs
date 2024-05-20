@@ -209,5 +209,32 @@ namespace TEEmployee.Models.GKpi
             }
 
         }
+
+        public bool DeleteSolitaryKpiModels()
+        {
+            if (_conn.State == 0)
+                _conn.Open();
+
+            int ret = 0;
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                // SQL query to delete books written by male authors
+                string deleteKpiItemSql = @"
+                    DELETE FROM KpiModel
+                    WHERE id NOT IN (
+                        SELECT DISTINCT kpi_id
+                        FROM KpiItem
+                    )";
+
+                ret = _conn.Execute(deleteKpiItemSql);
+
+                tran.Commit();
+
+                return ret > 0;
+
+            }
+
+        }
     }
 }

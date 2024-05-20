@@ -14,5 +14,6 @@ namespace TEEmployee.Models.GKpi
         List<KpiItem> UpsertKpiItems(List<KpiItem> items);
         bool DeleteKpiItems(List<KpiItem> items);
         bool DeleteKpiModelsByYear(int year);
+        bool DeleteSolitaryKpiModels();
     }
 }

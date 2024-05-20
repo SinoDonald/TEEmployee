@@ -100,6 +100,13 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        [HttpPost]
+        public ActionResult DeleteSolitaryKpiModels()
+        {
+            var ret = _service.DeleteSolitaryKpiModels();
+            return Json(ret);
+        }
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();
