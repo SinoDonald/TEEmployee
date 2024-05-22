@@ -352,7 +352,7 @@ namespace TEEmployee.Models.TaskLog
             // group one and group two can watch each other
 
             if (!String.IsNullOrEmpty(user.group_one))
-                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_one).ToList());
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_one || p.group_two == user.group_one).ToList());
 
             if (!String.IsNullOrEmpty(user.group_two))
                 filtered_employees.AddRange(allEmployees.Where(p => p.group_two == user.group_two).ToList());

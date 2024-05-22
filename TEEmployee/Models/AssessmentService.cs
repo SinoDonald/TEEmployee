@@ -477,7 +477,7 @@ namespace TEEmployee.Models
                 filtered_employees.AddRange(allEmployees.Where(p => p.group == user.group).ToList());
 
             if (user.group_one_manager == true)
-                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_one).ToList());
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_one || p.group_two == user.group_one).ToList());
 
             // 智慧組長不互看
             if (user.group_two_manager == true)
