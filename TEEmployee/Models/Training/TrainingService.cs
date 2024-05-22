@@ -178,7 +178,7 @@ namespace TEEmployee.Models.Training
                 }
             }
 
-            records = records.Where(x => x.roc_year == year).ToList();
+            records = records.Where(x => x.start_date.Year - 1911 == year).ToList();
             records = records.OrderBy(x => x.start_date).ThenBy(x => x.training_id).ToList();
 
             List<User> sorted_users = users.OrderBy(x => x.group_one).ThenBy(x => x.empno).ToList();
