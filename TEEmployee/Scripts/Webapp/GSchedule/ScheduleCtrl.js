@@ -549,6 +549,12 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         createHistoryLineChart(lineChart, JSON.parse(schedule.history));
     }
 
+    // 20240508 name string format
+    $scope.formatName = (namestr) => {
+        if (namestr)
+            return namestr.replace(/,/g, '\n');
+        return ''
+    }
 
     //$scope.data = dataservice.get();
     //$scope.auth = dataservice.getAuth();
@@ -1247,6 +1253,13 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
     $scope.createHistoryLineChart = (schedule) => {
         $scope.lineChartName = schedule.content
         createHistoryLineChart(lineChart, JSON.parse(schedule.history));
+    }
+
+    // 20240508 name string format
+    $scope.formatName = (namestr) => {
+        if (namestr)
+            return namestr.replace(/,/g, '\n');
+        return ''
     }
 
 

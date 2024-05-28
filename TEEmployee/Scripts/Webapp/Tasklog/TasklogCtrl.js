@@ -296,7 +296,7 @@ app.controller('UserDetailsCtrl', ['$scope', '$location', '$window', 'appService
 
                 for (let i = 0; i < $scope.projects.length; i++) {
                     if ($scope.projects[i].workHour || $scope.projects[i].overtime) {
-                        $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();
+                        $scope.projects[i].hourStr = `${$scope.projects[i].workHour} + ${$scope.projects[i].overtime} = ${$scope.projects[i].workHour + $scope.projects[i].overtime}`;
                     }
 
                     // 20240304 Update
@@ -717,7 +717,9 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
                 if ($scope.projects[i].workHour || $scope.projects[i].overtime) {
 
-                    $scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();
+                    //$scope.projects[i].hourStr = $scope.projects[i].workHour.toString() + ' + ' + $scope.projects[i].overtime.toString();
+                    $scope.projects[i].hourStr = `${$scope.projects[i].workHour} + ${$scope.projects[i].overtime} = ${$scope.projects[i].workHour + $scope.projects[i].overtime}`;
+
 
                     if (!$scope.projects[i].realHour) {
                         $scope.projects[i].realHour = $scope.projects[i].workHour + $scope.projects[i].overtime;

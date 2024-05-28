@@ -87,8 +87,9 @@
                 <td>
                 </td>
                 <td ng-bind="groupSchedule.Group.projno"></td>
-                <td ng-bind="groupSchedule.Group.content"></td>
-                <td ng-bind="groupSchedule.Group.member"></td>
+                <td ><p ng-bind="groupSchedule.Group.content"></p></td>
+                @*<td ng-bind="groupSchedule.Group.member"></td>*@
+                <td><p ng-bind="formatName(groupSchedule.Group.member)"></p></td>
                 <td>
                     <svg id="svg{{$index}}" width="800" , height="110"></svg>
                 </td>
@@ -116,7 +117,7 @@
                                             編輯
                                         </button>*@
 
-                                    <button ng-show="editFilter" ng-click="createPersonalScheduleModal(detailSchedule.Detail, $index, $parent.$index)" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+                                    <button ng-show="editFilter" ng-click="createPersonalScheduleModal(detailSchedule.Detail, $index, $parent.$index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalLong">
                                         新增細項
                                     </button>
 
@@ -125,7 +126,8 @@
                                 @*<td style="width: 8%" ng-bind="detailSchedule.Detail.projno"></td>*@
                                 <td style="width: 8%"></td>
                                 <td style="width: 8%" ng-bind="detailSchedule.Detail.content"></td>
-                                <td style="width: 8%" ng-bind="detailSchedule.Detail.member"></td>
+                                @*<td style="width: 8%" ng-bind="detailSchedule.Detail.member"></td>*@
+                                <td style="width: 8%"><p ng-bind="formatName(detailSchedule.Detail.member)"></p></td>
                                 <td style="width: 8%">
                                     <svg id="svgChild{{$parent.$index}}-{{$index}}" width="800" , height="110"></svg>
                                 </td>
@@ -148,7 +150,7 @@
                                                     @*<button ng-show="editFilter" ng-click="cloneDeepToModal(groupSchedule.Group, $index); passChosen()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
                                                             編輯
                                                         </button>*@
-                                                    <button ng-show="editFilter" ng-click="cloneDeepToModal(personalSchedule, $index, $parent.$index, $parent.$parent.$index)" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+                                                    <button ng-show="editFilter" ng-click="cloneDeepToModal(personalSchedule, $index, $parent.$index, $parent.$parent.$index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalLong">
                                                         編輯
                                                     </button>
                                                 </td>
@@ -156,7 +158,8 @@
                                                 @*<td style="width: 8%" ng-bind="personalSchedule.projno"></td>*@
                                                 <td style="width: 8%"></td>
                                                 <td style="width: 8%" ng-bind="personalSchedule.content"></td>
-                                                <td style="width: 8%" ng-bind="personalSchedule.member"></td>
+                                                @*<td style="width: 8%" ng-bind="personalSchedule.member"></td>*@
+                                                <td style="width: 8%"><p ng-bind="formatName(personalSchedule.member)"></p></td>
                                                 <td style="width: 8%">
                                                     <svg id="svgGrandChild{{$parent.$parent.$index}}-{{$parent.$index}}-{{$index}}" width="800" , height="110"></svg>
                                                 </td>
