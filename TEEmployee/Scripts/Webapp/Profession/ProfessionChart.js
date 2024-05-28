@@ -294,6 +294,9 @@ function createScoreScatterChart(scoreData, members) {
     // https://www.youtube.com/watch?v=A35nHNLt8nw
     // https://www.youtube.com/watch?v=PNbDrDI97Ng
 
+    // Zoom and pan plugin
+    // https://www.chartjs.org/chartjs-plugin-zoom/latest/
+
     const scatterDataLabels = {
         id: 'scatterDataLabels',
         afterDatasetsDraw(chart, args, options) {
@@ -335,7 +338,26 @@ function createScoreScatterChart(scoreData, members) {
             plugins: {
                 legend: {
                     display: false
-                }
+                },
+                zoom: {
+                    limits: {
+                        x: { min: 0, max: 5, minRange: 1 },
+                        y: { min: 0, max: 5, minRange: 1 }
+                    },
+                    pan: {
+                        enabled: true,
+                        mode: 'xy',
+                    },
+                    zoom: {
+                        wheel: {
+                            enabled: true,
+                        },
+                        pinch: {
+                            enabled: true
+                        },
+                        mode: 'xy',
+                    }
+                },
             },
             scales: {
                 x: {
