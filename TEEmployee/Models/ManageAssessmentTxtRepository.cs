@@ -93,7 +93,7 @@ namespace TEEmployee.Models
                     {
                         user.dutyName = "協理";
                     }                        
-                    else if (user.group_manager) {
+                    else if (user.group_manager && user.duty == "技術經理") {
                         user.dutyName = "技術經理";
                     }
                     else
