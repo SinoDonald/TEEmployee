@@ -1,5 +1,7 @@
-﻿using System;
+﻿using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -86,7 +88,7 @@ namespace TEEmployee.Models.TaskLog
             {
                 yymm = (DateTime.Now.Year - 1911).ToString() + DateTime.Now.ToString("MM");
             }
-           
+
 
             foreach (var item in users)
             {
@@ -121,9 +123,9 @@ namespace TEEmployee.Models.TaskLog
         }
 
 
-        
+
         public List<MonthlyRecord> GetAllMonthlyRecord(string empno, string yymm)
-        {            
+        {
             List<MonthlyRecord> monthlyRecords;
 
             var ret = _monthlyRecordRepository.GetAll();
@@ -144,7 +146,7 @@ namespace TEEmployee.Models.TaskLog
             List<MonthlyRecordData> monthlyRecordData = new List<MonthlyRecordData>();
 
             User user = _userRepository.Get(empno);
-            List<User> users = FilterEmployeeByRole(user);                       
+            List<User> users = FilterEmployeeByRole(user);
 
             var ret = _monthlyRecordRepository.GetAll();
             ret = ret.Where(x => x.yymm == yymm).ToList();
@@ -153,7 +155,7 @@ namespace TEEmployee.Models.TaskLog
             {
                 var record = ret.Where(x => x.empno == employee.empno).FirstOrDefault();
 
-                if(record != null)
+                if (record != null)
                 {
                     monthlyRecordData.Add(new MonthlyRecordData() { MonthlyRecord = record, User = employee });
                 }
@@ -238,7 +240,7 @@ namespace TEEmployee.Models.TaskLog
         /// <param name="empno">員工編號</param>
         /// <returns>刪除成功</returns>
         public bool DeleteProjectTask(List<int> ids, string empno)
-        {         
+        {
             bool ret = true;
 
             try
@@ -249,7 +251,7 @@ namespace TEEmployee.Models.TaskLog
                 //{
                 //    _projectTaskRepository.Delete(id, empno);
                 //}
-               
+
             }
             catch
             {
@@ -385,7 +387,7 @@ namespace TEEmployee.Models.TaskLog
             projectTasks = ret2.Where(x => x.empno == empno && x.yymm == yymm)
                             .OrderBy(x => x.projno).ThenBy(x => x.id).ToList();
 
-            return new MultiTasklogData() {User = user.name, yymm = yymm, ProjectItems = projectItems, ProjectTasks = projectTasks };
+            return new MultiTasklogData() { User = user.name, yymm = yymm, ProjectItems = projectItems, ProjectTasks = projectTasks };
         }
         //=============================
         // Insert User From txt file
@@ -397,7 +399,7 @@ namespace TEEmployee.Models.TaskLog
         /// <returns>新增成功</returns>
         public bool InsertUser()
         {
-            var userTxtRepository = new UserTxtRepository();            
+            var userTxtRepository = new UserTxtRepository();
             var users = userTxtRepository.GetAll();
 
             // special guest
@@ -430,18 +432,138 @@ namespace TEEmployee.Models.TaskLog
         /// <param name="users">員工列舉</param>
         /// <returns>新增成功</returns>
         public bool InsertUserExtra(List<User> users)
-        {           
+        {
             var ret = (_userRepository as UserRepository).Insert(users);
 
             return ret;
         }
 
-               
+        // 20240611 New employee data source from OpenData
+        public bool UploadEmployeeFile(Stream input)
+        {
+            List<User> users = processEmployeeXlsx(input);            
+
+            // special guest
+            User guest = new User
+            {
+                empno = "9991",
+                name = "郭薩爾",
+                gid = "24",
+                profTitle = "工程師三",
+            };
+
+            if (!users.Exists(x => x.empno == guest.empno))
+                users.Add(guest);
+
+            bool ret = (_userRepository as UserRepository).InsertUser(users);
+
+            return ret;
+        }
+
+        private List<User> processEmployeeXlsx(Stream stream)
+        {
+            List<User> users = new List<User>();
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(stream))
+            {
+                var ws = package.Workbook.Worksheets["Employee"];
+
+                int rowCount = ws.Dimension.End.Row;
+
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    User user = new User
+                    {
+                        empno = ws.Cells[row, 1].Text,
+                        name = ws.Cells[row, 2].Text,
+                        gid = ws.Cells[row, 3].Text,
+                        tel = ws.Cells[row, 4].Text,
+                        email = ws.Cells[row, 5].Text,
+                        profTitle = ws.Cells[row, 6].Text,
+                        duty = ws.Cells[row, 7].Text,
+                    };
+
+                    users.Add(user);
+                }
+
+            }
+
+            return users;
+        }
+
+        // 20240611 New employee data source from OpenData
+        public bool UploadProjectItemFile(Stream input)
+        {
+            this.CreateMonthlyRecord(Utilities.yymmStr());
+
+            List<ProjectItem> projectItems = processProjectItemXlsx(input);
+            List<ProjectItem> DBprojectItems = this.GetAllProjectItem().Where(x => x.yymm == projectItems[0].yymm).ToList();
+
+            List<ProjectItem> intersectProjectItems = DBprojectItems.Intersect(projectItems, new ProjectItemEqualityComparer()).ToList();
+            List<ProjectItem> exceptProjectItems = DBprojectItems.Except(intersectProjectItems, new ProjectItemEqualityComparer()).ToList();
+
+            bool deleteResult = this.DeleteProjectItem(exceptProjectItems);
+            bool upsertResult = this.UpsertProjectItem(projectItems);
+
+            return deleteResult || upsertResult;
+        }
+
+        private List<ProjectItem> processProjectItemXlsx(Stream stream)
+        {
+            List<ProjectItem> projectItems = new List<ProjectItem>();
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(stream))
+            {
+                var ws = package.Workbook.Worksheets["TA1CARD"];
+
+                int rowCount = ws.Dimension.End.Row;
+
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    ProjectItem projectItem = new ProjectItem {
+                        empno = ws.Cells[row, 1].Text,
+                        projno = ws.Cells[row, 4].Text,
+                        itemno = ws.Cells[row, 5].Text,
+                        yymm = ws.Cells[row, 6].Text,
+                    };
+
+                    // work type
+                    if (ws.Cells[row, 7].GetValue<int>() == 0)
+                        projectItem.overtime = ws.Cells[row, 8].GetValue<int>();
+                    else
+                        projectItem.workHour = ws.Cells[row, 8].GetValue<int>();
+
+                    // accumulate hours it existed
+                    var ret = projectItems.Find(x =>
+                                                x.empno == projectItem.empno &&
+                                                x.projno == projectItem.projno &&
+                                                x.yymm == projectItem.yymm &&
+                                                x.itemno == projectItem.itemno);
+
+                    if (ret is object)
+                    {
+                        ret.workHour += projectItem.workHour;
+                        ret.overtime += projectItem.overtime;
+                    }
+                    else
+                        projectItems.Add(projectItem);
+
+                }
+
+            }
+
+            return projectItems;
+        }
 
 
-    //--------------------------------------------------------------------------
 
-    public void Dispose()
+        //--------------------------------------------------------------------------
+
+        public void Dispose()
         {
             _projectItemRepository.Dispose();
             _monthlyRecordRepository.Dispose();
@@ -450,7 +572,7 @@ namespace TEEmployee.Models.TaskLog
                 _userRepository.Dispose();
                 _projectTaskRepository.Dispose();
             }
-                
+
         }
 
         public class TasklogData
@@ -468,8 +590,8 @@ namespace TEEmployee.Models.TaskLog
         // 多人詳細內容 <-- 培文
         public class MultiTasklogData
         {
-            public string User { get;set; }
-            public string yymm { get;set; }
+            public string User { get; set; }
+            public string yymm { get; set; }
             public List<ProjectItem> ProjectItems { get; set; }
             public List<ProjectTask> ProjectTasks { get; set; }
         }

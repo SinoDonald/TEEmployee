@@ -393,5 +393,26 @@ namespace TEEmployee.Controllers
                 return Json(ret);
             }                
         }
+                
+        [HttpPost]
+        public JsonResult UploadEmployeeFile(HttpPostedFileBase employeeFile)
+        {
+            using (TasklogService service = new TasklogService())
+            {
+                var ret = service.UploadEmployeeFile(employeeFile.InputStream);
+                return Json(ret);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult UploadProjectItemFile(HttpPostedFileBase projectItemFile)
+        {
+            using (TasklogService service = new TasklogService())
+            {
+                var ret = service.UploadProjectItemFile(projectItemFile.InputStream);
+                return Json(ret);
+            }
+        }
+
     }
 }
