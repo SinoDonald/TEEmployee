@@ -62,8 +62,8 @@ namespace TEEmployee.Models.TaskLog
         {
             int ret;
 
-            string sql = @"INSERT INTO ProjectTask (empno, yymm, projno, content, endDate, note, realHour) 
-                        VALUES(@empno, @yymm, @projno, @content, @endDate, @note, @realHour)";
+            string sql = @"INSERT INTO ProjectTask (empno, yymm, projno, content, endDate, note, realHour, projectType) 
+                        VALUES(@empno, @yymm, @projno, @content, @endDate, @note, @realHour, @projectType)";
 
             ret = _conn.Execute(sql, projectTask);
 
@@ -74,7 +74,7 @@ namespace TEEmployee.Models.TaskLog
         {
             int ret;
 
-            string sql = @"UPDATE ProjectTask SET projno=@projno, content=@content, endDate=@endDate, note=@note, realHour=@realHour WHERE id=@id";
+            string sql = @"UPDATE ProjectTask SET projno=@projno, content=@content, endDate=@endDate, note=@note, realHour=@realHour, projectType=@projectType WHERE id=@id";
 
             ret = _conn.Execute(sql, projectTask);
 
@@ -84,6 +84,19 @@ namespace TEEmployee.Models.TaskLog
         public bool Upsert(ProjectTask projectTask)
         {
             throw new NotImplementedException();
+        }
+
+        public void AddProjectTypeColumn()
+        {           
+            _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                string sql = @"ALTER TABLE ProjectTask ADD COLUMN projectType INTEGER";
+                _conn.Execute(sql);
+                tran.Commit();
+            }
+
         }
     }
 }

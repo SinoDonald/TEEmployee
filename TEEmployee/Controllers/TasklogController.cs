@@ -324,6 +324,23 @@ namespace TEEmployee.Controllers
         //    return Json(ret);
         //}
 
+        [HttpPost]
+        public JsonResult AddProjectTypeColumn()
+        {               
+            try
+            {
+                _service.AddProjectTypeColumn();
+                var response = new { Success = true };
+                return Json(response);
+            }
+            catch
+            {
+                var response = new { Success = false };
+                return Json(response);
+            }
+        }
+
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

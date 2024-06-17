@@ -224,7 +224,7 @@ namespace TEEmployee.Models.TaskLog
                         _projectTaskRepository.Insert(item);
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 ret = false;
             }
@@ -559,6 +559,11 @@ namespace TEEmployee.Models.TaskLog
             return projectItems;
         }
 
+        // Add new column in project task table
+        public void AddProjectTypeColumn()
+        {
+            (_projectTaskRepository as ProjectTaskRepository).AddProjectTypeColumn();
+        }
 
 
         //--------------------------------------------------------------------------

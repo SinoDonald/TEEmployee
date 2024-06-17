@@ -249,8 +249,10 @@ app.controller('UserDetailsCtrl', ['$scope', '$location', '$window', 'appService
     $scope.ctrl = {};
     $scope.ctrl.datepicker = moment().add(-3, 'months').locale('zh-tw').format('YYYY-MM');
     $scope.ctrl.datepicker1 = moment().add(-1, 'months').locale('zh-tw').format('YYYY-MM');
-    $scope.user = userDetailsFactory.get().user;
+    $scope.user = userDetailsFactory.get().user;    
 
+    let projectTypeMap = ['', '計畫執行', '研發創新', '技術深根'];
+    
     $scope.GetUserAllMonthlyRecordData = () => {
         // 取得個人各月詳細工作項目
         appService.GetUserContent({ startMonth: $scope.ctrl.datepicker, endMonth: $scope.ctrl.datepicker1, user: $scope.user }).then((ret) => {
@@ -272,7 +274,7 @@ app.controller('UserDetailsCtrl', ['$scope', '$location', '$window', 'appService
                         $scope.projects.push({ logs: [], projno: task.projno, realHour: task.realHour });
                         projidx = $scope.projects.length - 1;
                     }
-                    $scope.projects[projidx].logs.push({ user: data.User, yymm: data.yymm, id: task.id, content: task.content, endDate: task.endDate, note: task.note });
+                    $scope.projects[projidx].logs.push({ user: data.User, yymm: data.yymm, id: task.id, content: task.content, endDate: task.endDate, note: task.note, projectType: projectTypeMap[task.projectType] });
                 }
 
                 // fill in project item
@@ -324,6 +326,8 @@ app.controller('UsersDetailsCtrl', ['$scope', '$window', 'appService', '$rootSco
     $scope.ctrl = {};
     $scope.ctrl.datepicker = `${Number(myFactory.get().monthlyRecord.slice(0, 3)) + 1911}-${myFactory.get().monthlyRecord.slice(3, 5)}`;
 
+    let projectTypeMap = ['', '計畫執行', '研發創新', '技術深根'];
+
     $scope.GetMemberAllMonthlyRecordData = () => {
         let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`;
 
@@ -352,7 +356,7 @@ app.controller('UsersDetailsCtrl', ['$scope', '$window', 'appService', '$rootSco
                                 $scope.projects.push({ logs: [], projno: task.projno, realHour: task.realHour });
                                 projidx = $scope.projects.length - 1;
                             }
-                            $scope.projects[projidx].logs.push({ user: data.User, yymm: data.yymm, id: task.id, content: task.content, endDate: task.endDate, note: task.note });
+                            $scope.projects[projidx].logs.push({ user: data.User, yymm: data.yymm, id: task.id, content: task.content, endDate: task.endDate, note: task.note, projectType: projectTypeMap[task.projectType] });
                         }
 
                         // fill in project item
@@ -484,6 +488,12 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
     $scope.months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
     $scope.years = [];
 
+    $scope.projectTypes = [
+        { value: '1', name: '計畫執行' },
+        { value: '2', name: '研發創新' },
+        { value: '3', name: '技術深根' },
+    ]
+
     $scope.ctrl = {};
     $scope.ctrl.datepicker = moment().locale('zh-tw').format('YYYY-MM');
     /*$scope.ctrl.datepicker = "";*/
@@ -530,6 +540,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
             $scope.projects[projectidx].logs[idx].content = '';
             $scope.projects[projectidx].logs[idx].endDate = '';
             $scope.projects[projectidx].logs[idx].note = '';
+            $scope.projects[projectidx].logs[idx].projectType = '';
         }
         else {
 
@@ -575,7 +586,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
                 projectTasks.push({
                     id: log.id, yymm: yymm, projno: project.projno, realHour: project.realHour,
-                    content: log.content, endDate: log.endDate, note: log.note
+                    content: log.content, endDate: log.endDate, note: log.note, projectType: Number(log.projectType),
                 });
 
             }
@@ -679,7 +690,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                     projidx = $scope.projects.length - 1;
                 }
 
-                $scope.projects[projidx].logs.push({ id: task.id, content: task.content, endDate: task.endDate, note: task.note });
+                $scope.projects[projidx].logs.push({ id: task.id, content: task.content, endDate: task.endDate, note: task.note, projectType: (task.projectType) > 0 ? task.projectType.toString() : '' });
 
             }
 

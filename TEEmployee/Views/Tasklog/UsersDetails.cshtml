@@ -53,6 +53,7 @@
                     <th>實際時數</th>
                     <th>詳細工作內容</th>
                     <th>(預計)完成日期</th>
+                    <th>類型</th>
                     <th>備註</th>
                 </tr>
             </thead>
@@ -66,6 +67,7 @@
                     <td rowspan="{{project.logs.length}}" ng-if="$index === 0" ng-bind="project.realHour"></td>
                     <td><p ng-bind="log.content"></p></td>
                     <td ng-bind="log.endDate"></td>
+                    <td ng-bind="log.projectType"></td>
                     <td ng-bind="log.note"></td>
             </tbody>
         </table>

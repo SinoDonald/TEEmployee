@@ -42,5 +42,6 @@ namespace TEEmployee.Models.TaskLog
         /// 實際時數
         /// </summary>
         public int realHour { get; set; }
+        public int projectType { get; set; }
     }
 }
