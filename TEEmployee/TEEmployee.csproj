@@ -253,6 +253,8 @@
     <Compile Include="Models\Schedule\ScheduleService.cs" />
     <Compile Include="Models\SelfAssessmentChart.cs" />
     <Compile Include="Models\SelfAssessmentTxtRepository.cs" />
+    <Compile Include="Models\Talent\CvRawExtractor.cs" />
+    <Compile Include="Models\Talent\CvRaw.cs" />
     <Compile Include="Models\Talent\ITalentRepository.cs" />
     <Compile Include="Models\Talent\TalentRepository.cs" />
     <Compile Include="Models\Talent\TalentService.cs" />

@@ -44,33 +44,82 @@ namespace TEEmployee.Models.Talent
         /// </summary>
         /// <param name="empno"></param>
         /// <returns></returns>
+        //public List<CV> GetAll(string empno)
+        //{
+        //    List<User> users = new UserRepository().GetAll().OrderBy(x => x.empno).ToList();
+        //    UpdateUsersGroup(users); // 更新SQL員工當前所屬群組
+        //    User user = users.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+
+        //    string sql = @"SELECT * FROM userCV WHERE empno=@empno";
+        //    List<CV> ret = _conn.Query<CV>(sql, new { empno }).ToList();
+        //    if (ret.Count() != 0)
+        //    {
+        //        CV userCV = ret.FirstOrDefault();
+        //        userCV.pic = userCV.empno;
+        //    }
+
+        //    if (user.department_manager)
+        //    {
+        //        ret = new List<CV>();
+        //        sql = @"SELECT * FROM userCV ORDER BY empno";
+        //        List<CV> userCVs = _conn.Query<CV>(sql, new { empno }).Distinct().ToList();
+
+        //        // 加入到職員工的所有名單
+        //        foreach (User employee in users)
+        //        {
+        //            CV userCV = userCVs.Where(x => x.empno.Equals(employee.empno)).FirstOrDefault();
+        //            if (userCV != null)
+        //            {
+        //                userCV.pic = employee.empno;
+        //                ret.Add(userCV);
+        //            }
+        //            // 未上傳履歷名單
+        //            else
+        //            {
+        //                ret.Add(new CV() { empno = employee.empno, name = employee.name, pic = "0000", educational = "" });
+        //            }
+        //        }
+        //    }
+
+        //    return ret;
+        //}
+
         public List<CV> GetAll(string empno)
         {
+            List<CV> ret = new List<CV>();
+            CV cvExtra = GetCVExtraAndMerit(empno);
+            MapCvProperty(cvExtra);
+
             List<User> users = new UserRepository().GetAll().OrderBy(x => x.empno).ToList();
             UpdateUsersGroup(users); // 更新SQL員工當前所屬群組
             User user = users.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+            cvExtra.pic = cvExtra.empno;
+            ret.Add(cvExtra);
 
-            string sql = @"SELECT * FROM userCV WHERE empno=@empno";
-            List<CV> ret = _conn.Query<CV>(sql, new { empno }).ToList();
-            if(ret.Count() != 0)
-            {
-                CV userCV = ret.FirstOrDefault();
-                userCV.pic = userCV.empno;
-            }
+            //string sql = @"SELECT * FROM userCV WHERE empno=@empno";
+            //List<CV> ret = _conn.Query<CV>(sql, new { empno }).ToList();
+            //if (ret.Count() != 0)
+            //{
+            //    CV userCV = ret.FirstOrDefault();
+            //    userCV.pic = userCV.empno;
+            //}
 
             if (user.department_manager)
             {
-                ret = new List<CV>();
-                sql = @"SELECT * FROM userCV ORDER BY empno";
-                List<CV> userCVs = _conn.Query<CV>(sql, new { empno }).Distinct().ToList();
+                //ret = new List<CV>();
+                //sql = @"SELECT * FROM userCV ORDER BY empno";
+                //List<CV> userCVs = _conn.Query<CV>(sql, new { empno }).Distinct().ToList();
+
+                List<CV> cVs = GetAllCVExtraAndMerit();
 
                 // 加入到職員工的所有名單
                 foreach (User employee in users)
                 {
-                    CV userCV = userCVs.Where(x => x.empno.Equals(employee.empno)).FirstOrDefault();
+                    CV userCV = cVs.Where(x => x.empno.Equals(employee.empno)).FirstOrDefault();
                     if (userCV != null)
                     {
                         userCV.pic = employee.empno;
+                        MapCvProperty(userCV);
                         ret.Add(userCV);
                     }
                     // 未上傳履歷名單
@@ -83,13 +132,119 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
+
+
         /// <summary>
         /// 取得員工履歷
         /// </summary>
         /// <param name="empno"></param>
         /// <returns></returns>
+        /// 
+
+        //public List<CV> Get(string empno)
+        //{
+        //    List<CV> ret;
+
+        //    string sql = @"SELECT * FROM userCV WHERE empno=@empno";
+        //    ret = _conn.Query<CV>(sql, new { empno }).ToList();
+
+        //    foreach (CV userCV in ret)
+        //    {
+        //        if (String.IsNullOrEmpty(userCV.planning)) { userCV.planning = ""; }
+        //        if (String.IsNullOrEmpty(userCV.educational)) { userCV.educational = ""; }
+
+        //        // 計算年齡, 民國轉西元後計算年齡
+        //        CultureInfo culture = new CultureInfo("zh-TW");
+        //        culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+        //        DateTime birthday = DateTime.Parse(userCV.birthday, culture);
+        //        DateTime now = DateTime.Now;
+        //        int age = now.Year - birthday.Year;
+        //        if (now.Month < birthday.Month || (now.Month == birthday.Month && now.Day < birthday.Day))
+        //        {
+        //            age--;
+        //        }
+        //        userCV.age = age.ToString();
+
+        //        // 解析SQL seniority文字, 儲存工作、公司與職位年資
+        //        Tuple<string, string, string> analyzeSeniority = AnalyzeSeniority(userCV.seniority);
+        //        userCV.workYears = analyzeSeniority.Item1; // 工作年資
+        //        userCV.companyYears = analyzeSeniority.Item2; // 公司年資
+        //        userCV.seniority = analyzeSeniority.Item3; // 職務經歷
+
+        //        // 取得核心專業盤點的專業與管理能力分數
+        //        List<Skill> getAllScores = new ProfessionRepository().GetAll();
+        //        // 專業能力_領域技能
+        //        List<Skill> domainSkills = getAllScores.Where(x => x.skill_type.Equals("domain")).Where(x => x.role.Equals(userCV.group_one)).OrderBy(x => x.id).ToList();
+        //        foreach (Skill skill in domainSkills)
+        //        {
+        //            Score userScore = skill.scores.Where(x => x.empno.Equals(userCV.empno)).FirstOrDefault();
+        //            if (userScore != null)
+        //            {
+        //                if (userScore.score >= 4)
+        //                {
+        //                    userCV.domainSkill += skill.content + "：" + userScore.score + "\n";
+        //                }
+        //            }
+        //        }
+        //        if (userCV.domainSkill != null)
+        //        {
+        //            userCV.domainSkill = userCV.domainSkill.Substring(0, userCV.domainSkill.Length - 1); // 移除最後的"/n"
+        //        }
+        //        else
+        //        {
+        //            userCV.domainSkill = "\n";
+        //        }
+        //        // 專業能力_核心技能
+        //        List<Skill> coreSkills = getAllScores.Where(x => x.skill_type.Equals("core")).OrderBy(x => x.id).ToList();
+        //        foreach (Skill skill in coreSkills)
+        //        {
+        //            Score userScore = skill.scores.Where(x => x.empno.Equals(userCV.empno)).FirstOrDefault();
+        //            if (userScore != null)
+        //            {
+        //                if (userScore.score >= 4)
+        //                {
+        //                    userCV.coreSkill += skill.content + "：" + userScore.score + "\n";
+        //                }
+        //            }
+        //        }
+        //        if (userCV.coreSkill != null)
+        //        {
+        //            userCV.coreSkill = userCV.coreSkill.Substring(0, userCV.coreSkill.Length - 1); // 移除最後的"/n"
+        //        }
+        //        else
+        //        {
+        //            userCV.coreSkill = "\n";
+        //        }
+        //        // 管理能力
+        //        List<Skill> manageSkills = getAllScores.Where(x => x.skill_type.Equals("manage")).OrderBy(x => x.id).ToList();
+        //        foreach (Skill skill in manageSkills)
+        //        {
+        //            Score userScore = skill.scores.Where(x => x.empno.Equals(userCV.empno)).FirstOrDefault();
+        //            if (userScore != null)
+        //            {
+        //                if (userScore.score >= 4)
+        //                {
+        //                    userCV.manageSkill += skill.content + "：" + userScore.score + "\n";
+        //                }
+        //            }
+        //        }
+        //        if (userCV.manageSkill != null)
+        //        {
+        //            userCV.manageSkill = userCV.manageSkill.Substring(0, userCV.manageSkill.Length - 1); // 移除最後的"/n"
+        //        }
+        //        else
+        //        {
+        //            userCV.manageSkill = "\n";
+        //        }
+        //    }
+
+        //    return ret;
+        //}
+
         public List<CV> Get(string empno)
         {
+            CV cvextra = GetCVExtraAndMerit(empno);
+
             List<CV> ret;
 
             string sql = @"SELECT * FROM userCV WHERE empno=@empno";
@@ -101,16 +256,16 @@ namespace TEEmployee.Models.Talent
                 if (String.IsNullOrEmpty(userCV.educational)) { userCV.educational = ""; }
 
                 // 計算年齡, 民國轉西元後計算年齡
-                CultureInfo culture = new CultureInfo("zh-TW");
-                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-                DateTime birthday = DateTime.Parse(userCV.birthday, culture);
-                DateTime now = DateTime.Now;
-                int age = now.Year - birthday.Year;
-                if (now.Month < birthday.Month || (now.Month == birthday.Month && now.Day < birthday.Day))
-                {
-                    age--;
-                }
-                userCV.age = age.ToString();
+                //CultureInfo culture = new CultureInfo("zh-TW");
+                //culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                //DateTime birthday = DateTime.Parse(userCV.birthday, culture);
+                //DateTime now = DateTime.Now;
+                //int age = now.Year - birthday.Year;
+                //if (now.Month < birthday.Month || (now.Month == birthday.Month && now.Day < birthday.Day))
+                //{
+                //    age--;
+                //}
+                //userCV.age = age.ToString();
 
                 // 解析SQL seniority文字, 儲存工作、公司與職位年資
                 Tuple<string, string, string> analyzeSeniority = AnalyzeSeniority(userCV.seniority);
@@ -187,17 +342,20 @@ namespace TEEmployee.Models.Talent
 
             return ret;
         }
+
+
+
         /// <summary>
         /// 取得所有員工職等職級
         /// </summary>
         /// <param name="empno"></param>
         /// <returns></returns>
         public List<string> GetSenioritys()
-        { 
+        {
             // 公司所有職等
             string sql = @"SELECT * FROM jobTitle";
             List<string> jobTitles = _conn.Query<JobTitle>(sql).ToList().Select(x => x.name).ToList();
-            
+
             // 部門同仁所有職等
             sql = @"SELECT * FROM userCV ORDER BY empno";
             List<string> senioritys = _conn.Query<CV>(sql, new { }).Where(x => x.seniority != null).Select(x => x.seniority).Distinct().OrderBy(x => x).ToList();
@@ -215,7 +373,7 @@ namespace TEEmployee.Models.Talent
                             string jobTitle = jobTitles.Where(s => saveSeniority.Equals(s)).Select(s => s).FirstOrDefault();
                             if (jobTitle != null)
                             {
-                                if(seniorityList.Where(x => x.Equals(jobTitle)).FirstOrDefault() == null)
+                                if (seniorityList.Where(x => x.Equals(jobTitle)).FirstOrDefault() == null)
                                 {
                                     seniorityList.Add(jobTitle);
                                 }
@@ -238,7 +396,7 @@ namespace TEEmployee.Models.Talent
         public List<CV> ConditionFilter(ConditionFilter filter, List<CV> userCVs)
         {
             List<CV> filterUserCVs = new List<CV>();
-            try{ filterUserCVs = userCVs.Where(x => filter.age1 <= Age(x.birthday) && Age(x.birthday) <= filter.age2).ToList(); } // 年齡 
+            try { filterUserCVs = userCVs.Where(x => filter.age1 <= Age(x.birthday) && Age(x.birthday) <= filter.age2).ToList(); } // 年齡 
             catch (Exception) { }
             try { filterUserCVs = filterUserCVs.Where(x => filter.companyYear1 <= CompanyYears(x.seniority) && CompanyYears(x.seniority) <= filter.companyYear2).ToList(); } // 公司年資 
             catch (Exception) { }
@@ -351,7 +509,7 @@ namespace TEEmployee.Models.Talent
             bool ret = false;
             string sql = @"SELECT * FROM userCV ORDER BY empno";
             List<CV> userCVs = _conn.Query<CV>(sql).ToList();
-            foreach(Ability user in users)
+            foreach (Ability user in users)
             {
                 CV userCV = userCVs.Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
                 userCV.position = user.position;
@@ -456,11 +614,11 @@ namespace TEEmployee.Models.Talent
         {
             List<string> updateUsers = new List<string>();
             List<FileInfo> fileInfoList = FileLastestUpdate(filesInfo); // 解析更新上傳時間
-            List <CV> usersCV = GetLastestUpdate();
-            foreach(FileInfo fileInfo in fileInfoList)
+            List<CV> usersCV = GetLastestUpdate();
+            foreach (FileInfo fileInfo in fileInfoList)
             {
                 string userLastestUpdate = usersCV.Where(x => x.empno.Equals(fileInfo.empno)).Select(x => x.lastest_update).FirstOrDefault();
-                if(userLastestUpdate != null)
+                if (userLastestUpdate != null)
                 {
                     CultureInfo culture = new CultureInfo("zh-TW");
                     DateTime sqlDate = DateTime.Parse(userLastestUpdate, culture); // 資料庫的檔案更新時間
@@ -483,7 +641,7 @@ namespace TEEmployee.Models.Talent
         public List<FileInfo> FileLastestUpdate(List<string> filesInfo)
         {
             List<FileInfo> fileInfos = new List<FileInfo>();
-            foreach(string info in filesInfo)
+            foreach (string info in filesInfo)
             {
                 try
                 {
@@ -497,7 +655,7 @@ namespace TEEmployee.Models.Talent
                     fileInfo.lastModifiedDate = DateTime.Parse(lastModifiedDate, culture).ToString();
                     fileInfos.Add(fileInfo);
                 }
-                catch(Exception) { }
+                catch (Exception) { }
             }
             return fileInfos;
         }
@@ -587,18 +745,18 @@ namespace TEEmployee.Models.Talent
                                     }
                                     else { userCV.performance = ""; }
                                     if (!String.IsNullOrEmpty(userCV.empno) && !String.IsNullOrEmpty(userCV.name))
-                                    { 
+                                    {
                                         userCVs.Add(userCV);
                                     }
                                 }
-                                catch(Exception)
-                                { 
-                                
+                                catch (Exception)
+                                {
+
                                 }
                             }
                         }
-                        catch(Exception)
-                        { 
+                        catch (Exception)
+                        {
 
                         }
                     }
@@ -617,7 +775,7 @@ namespace TEEmployee.Models.Talent
                 directory.EnumerateFiles().ToList().ForEach(f => f.Delete());
                 directory.EnumerateDirectories().ToList().ForEach(d => d.Delete(true));
             }
-            catch(Exception) { }
+            catch (Exception) { }
 
             return userCVs;
         }
@@ -727,7 +885,7 @@ namespace TEEmployee.Models.Talent
             {
                 returnParagraph += paragraph + "\n";
             }
-            if(returnParagraph.Length > 2 || returnParagraph.Equals("\n"))
+            if (returnParagraph.Length > 2 || returnParagraph.Equals("\n"))
             {
                 returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
             }
@@ -770,9 +928,9 @@ namespace TEEmployee.Models.Talent
             List<string> jobTitles = new List<string>();
             string sql = @"SELECT * FROM jobTitle";
             jobTitles = _conn.Query<JobTitle>(sql).ToList().Select(x => x.name/*.Replace("(", "").Replace(")", "")*/).ToList();
-            foreach(string jobTitle in _conn.Query<JobTitle>(sql).ToList().Select(x => x.name.Replace("(", "").Replace(")", "")).ToList())
+            foreach (string jobTitle in _conn.Query<JobTitle>(sql).ToList().Select(x => x.name.Replace("(", "").Replace(")", "")).ToList())
             {
-                if(jobTitles.Where(x => x.Equals(jobTitle)).FirstOrDefault() == null)
+                if (jobTitles.Where(x => x.Equals(jobTitle)).FirstOrDefault() == null)
                 {
                     jobTitles.Add(jobTitle);
                 }
@@ -822,7 +980,7 @@ namespace TEEmployee.Models.Talent
                         {
                             string jobTitle = jobTitles.Where(s => changeParagraph.Contains(s)).FirstOrDefault();
                             index = changeParagraph.IndexOf(jobTitle);
-                            if(changeParagraph.Substring(index - 1, 1) == "(")
+                            if (changeParagraph.Substring(index - 1, 1) == "(")
                             {
                                 changeParagraph = changeParagraph.Insert(index - 1, " ");
                                 string position = changeParagraph.Split(' ')[changeParagraph.Split(' ').Length - 1].Replace("(", "").Replace(")", "");
@@ -899,10 +1057,10 @@ namespace TEEmployee.Models.Talent
                 try
                 {
                     string sql = @"SELECT * FROM userCV WHERE empno=@empno";
-                    string project = _conn.Query<CV>(sql, new { empno }).ToList().FirstOrDefault().project; 
+                    string project = _conn.Query<CV>(sql, new { empno }).ToList().FirstOrDefault().project;
                     workYear = ProjectRegex(project).LastOrDefault().start;
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     string error = ex.Message + "\n" + ex.ToString();
                 }
@@ -913,7 +1071,7 @@ namespace TEEmployee.Models.Talent
                 for (int i = 0; i < userSenioritys.Count; i++)
                 {
                     if (i.Equals(0))
-                    {                        
+                    {
                         // 西元轉民國
                         DateTime companyDT = DateTime.Parse(userCV.companyYears);
                         DateTime seniorityDT = DateTime.Parse(userSenioritys[i].start);
@@ -939,7 +1097,7 @@ namespace TEEmployee.Models.Talent
                         seniority += userSenioritys[i].position + "：" + calcYMD.y + "年" + calcYMD.m + "月\n"/* + calcYMD.d + "日\n"*/;
                     }
                 }
-                if(seniority.Length > 2)
+                if (seniority.Length > 2)
                 {
                     seniority = seniority.Substring(0, seniority.Length - 1);
                 }
@@ -1053,7 +1211,7 @@ namespace TEEmployee.Models.Talent
                                 seniority.position = changeName.Substring(0, index);
                                 seniority.manager = changeName.Substring(index + 1, changeName.Length - index - 1);
                             }
-                            else if(match.Groups[5].Value.Contains(")") && match.Groups[5].Value.IndexOf(')') != match.Groups[5].Value.Length - 1)
+                            else if (match.Groups[5].Value.Contains(")") && match.Groups[5].Value.IndexOf(')') != match.Groups[5].Value.Length - 1)
                             {
                                 string changeName = match.Groups[5].Value.Replace("重大", "").Replace("（", "(").Replace("）", ")");
                                 int index = changeName.IndexOf(')');
@@ -1101,15 +1259,15 @@ namespace TEEmployee.Models.Talent
             start = DateTime.Parse(SECtoNow.start, culture);
             end = DateTime.Parse(SECtoNow.end, culture); // 迄今
             List<Seniority> SEC = senioritys.Where(x => x.company.Equals("中興工程")).Where(x => x.position == null && x != SECtoNow).ToList();
-            foreach(Seniority item in SEC)
+            foreach (Seniority item in SEC)
             {
                 // 結束日+1月如果在迄今的時間內, 則比對開始工作日期
                 DateTime endDate = DateTime.Parse(item.end, culture).AddMonths(1);
-                if(IsInDate(endDate, start, end))
+                if (IsInDate(endDate, start, end))
                 {
                     // 開始工作日期取較小值
                     DateTime startDate = DateTime.Parse(item.start, culture);
-                    if((startDate - start).Days < 0)
+                    if ((startDate - start).Days < 0)
                     {
                         start = startDate;
                     }
@@ -1123,7 +1281,7 @@ namespace TEEmployee.Models.Talent
             List<Seniority> SECSenioritys = senioritys.Where(x => x.company.Contains("中興")).Where(x => x.position != null).Where(x => IsInDate(DateTime.Parse(x.start, culture), start, end)).ToList();
             Seniority nowPosition = SECSenioritys.Where(x => x.now == true).FirstOrDefault(); // 找到目前職位
             List<StartEndDate> startEndDates = new List<StartEndDate>();
-            if(nowPosition == null)
+            if (nowPosition == null)
             {
                 nowPosition = SECSenioritys.Where(x => x.position != null).FirstOrDefault(); // 找到目前職位
             }
@@ -1372,10 +1530,10 @@ namespace TEEmployee.Models.Talent
                         List<Skill> domainSkills = getAllScores.Where(x => x.skill_type.Equals("domain")).Where(x => x.role.Equals(user.group_one)).OrderBy(x => x.id).ToList();
                         int domainSkillCount = domainSkills.Count();
                         double domainScore = 0.0;
-                        foreach(Skill skill in domainSkills)
+                        foreach (Skill skill in domainSkills)
                         {
                             Score userScore = skill.scores.Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
-                            if(userScore != null)
+                            if (userScore != null)
                             {
                                 domainScore += userScore.score;
                                 if (userScore.score >= 4)
@@ -1454,7 +1612,7 @@ namespace TEEmployee.Models.Talent
                     catch (Exception ex) { error = "foreach User Error\n" + ex.Message + "\n" + ex.ToString(); }
                 }
             }
-            catch(Exception ex) { error = "GetAll User or Skill Error\n" + ex.Message + "\n" + ex.ToString(); }
+            catch (Exception ex) { error = "GetAll User or Skill Error\n" + ex.Message + "\n" + ex.ToString(); }
 
             return new Tuple<List<Ability>, string>(users, error);
         }
@@ -1466,7 +1624,7 @@ namespace TEEmployee.Models.Talent
         public bool ImportFile(HttpPostedFileBase file)
         {
             bool ret = false;
-            List<CV> userCVs = new List<CV>(); 
+            List<CV> userCVs = new List<CV>();
             try
             {
                 if (Path.GetExtension(file.FileName) != ".xlsx") throw new ApplicationException("請使用Excel 2007(.xlsx)格式");
@@ -1480,13 +1638,13 @@ namespace TEEmployee.Models.Talent
                     int i = 0;
                     foreach (Row row in sheet.Descendants<Row>())
                     {
-                        if(i > 0)
+                        if (i > 0)
                         {
                             int j = 0;
                             CV userCV = new CV();
                             foreach (Cell cell in row.Descendants<Cell>())
                             {
-                                if(j.Equals(0))
+                                if (j.Equals(0))
                                 {
                                     userCV.empno = GetCellText(cell, strTable);
                                 }
@@ -1632,7 +1790,7 @@ namespace TEEmployee.Models.Talent
                 userCV.disadvantage = line.Substring(disadvantage, life - disadvantage).Trim().Replace("1.4典型劣勢", "").Replace(".", "。\n").Replace("\uff00", ";"); // 劣勢
                 string test = line.Substring(work, values - work).Trim().Replace("4.2價值觀:⼯作成果", "").Replace(".", "。\n").Replace("\uff00", ";"); // 工作成果
                 int index = test.LastIndexOf("12345678");
-                if(index != 0)
+                if (index != 0)
                 {
                     userCV.test = test.Substring(0, index);
                 }
@@ -1641,7 +1799,7 @@ namespace TEEmployee.Models.Talent
                     userCV.test = test;
                 }
                 userCVs.Add(userCV);
-                if(SaveTest(userCVs) == true)
+                if (SaveTest(userCVs) == true)
                 {
                     ret = line; // 儲存測評資料
                 }
@@ -1720,6 +1878,58 @@ namespace TEEmployee.Models.Talent
 
             return userCV;
         }
+
+        // ************************************* //
+
+        public CV GetCVExtraAndMerit(string empno)
+        {
+            CV ret;
+
+            //string sql = @"SELECT * FROM userCVExtra AS u LEFT JOIN merit AS m ON u.empno = m.empno";
+            string sql = @"SELECT * FROM userCVExtra WHERE empno=@empno";
+            ret = _conn.Query<CV>(sql, new { empno }).SingleOrDefault();
+
+            return ret;
+        }
+
+        public List<CV> GetAllCVExtraAndMerit()
+        {
+            List<CV> ret;
+
+            //string sql = @"SELECT * FROM userCVExtra AS u LEFT JOIN merit AS m ON u.empno = m.empno";
+            string sql = @"SELECT * FROM userCVExtra";
+            ret = _conn.Query<CV>(sql).ToList();
+
+            return ret;
+        }
+
+        public void MapCvProperty(CV cv)
+        {            
+            var cvRaws = GetCVStringList(cv.empno);
+            cv.age = CvRawExtractor.ExtractAge(cvRaws);
+            cv.educational = CvRawExtractor.ExtractEducation(cvRaws);
+            cv.expertise = CvRawExtractor.ExtractExpertise(cvRaws);
+            cv.academic = CvRawExtractor.ExtractAcademic(cvRaws);
+            cv.language = CvRawExtractor.ExtractLanguage(cvRaws);
+            cv.treatise = CvRawExtractor.ExtractTreatise(cvRaws);
+            cv.license = CvRawExtractor.ExtractLicense(cvRaws);
+            cv.training = CvRawExtractor.ExtractTraining(cvRaws);
+            cv.honor = CvRawExtractor.ExtractHonor(cvRaws);
+            cv.experience = CvRawExtractor.ExtractExperience(cvRaws);
+            cv.project = CvRawExtractor.ExtractProject(cvRaws);
+        }
+
+        public List<CvRaw> GetCVStringList(string empno)
+        {
+            List<CvRaw> ret;
+
+            string sql = @"SELECT * FROM userCV WHERE empno=@empno";
+            ret = _conn.Query<CvRaw>(sql, new { empno }).ToList();
+
+            return ret;
+        }
+
+
 
         public void Dispose()
         {
