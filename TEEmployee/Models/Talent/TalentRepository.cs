@@ -245,10 +245,10 @@ namespace TEEmployee.Models.Talent
         {
             CV cvextra = GetCVExtraAndMerit(empno);
             MapCvProperty(cvextra);
-            List<CV> ret;
+            List<CV> ret = new List<CV>() { cvextra };
 
-            string sql = @"SELECT * FROM userCV WHERE empno=@empno";
-            ret = _conn.Query<CV>(sql, new { empno }).ToList();
+            //string sql = @"SELECT * FROM userCV WHERE empno=@empno";
+            //ret = _conn.Query<CV>(sql, new { empno }).ToList();
 
             foreach (CV userCV in ret)
             {
@@ -268,10 +268,10 @@ namespace TEEmployee.Models.Talent
                 //userCV.age = age.ToString();
 
                 // 解析SQL seniority文字, 儲存工作、公司與職位年資
-                Tuple<string, string, string> analyzeSeniority = AnalyzeSeniority(userCV.seniority);
-                userCV.workYears = analyzeSeniority.Item1; // 工作年資
-                userCV.companyYears = analyzeSeniority.Item2; // 公司年資
-                userCV.seniority = analyzeSeniority.Item3; // 職務經歷
+                //Tuple<string, string, string> analyzeSeniority = AnalyzeSeniority(userCV.seniority);
+                //userCV.workYears = analyzeSeniority.Item1; // 工作年資
+                //userCV.companyYears = analyzeSeniority.Item2; // 公司年資
+                //userCV.seniority = analyzeSeniority.Item3; // 職務經歷
 
                 // 取得核心專業盤點的專業與管理能力分數
                 List<Skill> getAllScores = new ProfessionRepository().GetAll();
@@ -1904,7 +1904,7 @@ namespace TEEmployee.Models.Talent
         }
 
         public void MapCvProperty(CV cv)
-        {            
+        {
             var cvRaws = GetCVStringList(cv.empno);
             cv.age = CvRawExtractor.ExtractAge(cvRaws);
             cv.educational = CvRawExtractor.ExtractEducation(cvRaws);

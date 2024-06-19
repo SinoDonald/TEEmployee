@@ -21,6 +21,14 @@ namespace TEEmployee.Models.Talent
         {
             var texts = inputs.Where(x => x.datatype == "學歷").Select(x => x.dataitem).ToList();
 
+            var parsedList = texts.Select((words) =>
+            {
+                var p = words.Split('|');
+
+                return $"{p[0]} ({p[1]}) {p[2]} {p[3]}";
+
+            }).ToList();
+
             //var parsedList = texts.Select(words =>
             //{
             //    var p = words.Split('|');
