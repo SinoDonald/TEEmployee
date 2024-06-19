@@ -307,6 +307,13 @@ namespace TEEmployee.Models.Profession
                 return null;
             }
         }
+
+        public bool DeleteAll()
+        {
+            var ret = _professionRepository.DeleteAll();
+            return ret;
+        }
+
         public void Dispose()
         {
             _professionRepository.Dispose();

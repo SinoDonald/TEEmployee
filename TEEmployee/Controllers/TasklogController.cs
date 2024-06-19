@@ -341,6 +341,19 @@ namespace TEEmployee.Controllers
         }
 
 
+        //=============================
+        // Database reset
+        //=============================
+
+        [HttpPost]
+        public JsonResult DeleteAll()
+        {
+            // Only delete ProjectTask and MonthlyRecord
+            var ret = _service.DeleteAll();
+            return Json(ret);
+        }
+
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

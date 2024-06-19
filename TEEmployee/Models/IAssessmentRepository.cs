@@ -16,6 +16,7 @@ namespace TEEmployee.Models
         List<Assessment> GetResponse(string year, string manager, string user);
         List<Assessment> GetAllResponses();
         List<string> GetChartYearList();
+        bool DeleteAll();
         void Dispose();
     }
 }

@@ -89,6 +89,29 @@ namespace TEEmployee.Models.Forum
             return ret > 0;
         }
 
+        public bool DeleteAll()
+        {
+            _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                try
+                {
+                    _conn.Execute(@"DELETE FROM Reply", tran);
+                    _conn.Execute(@"DELETE FROM Post", tran);
+
+                    tran.Commit();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
+            }
+
+        }
+
         public void Dispose()
         {
             _conn.Close();

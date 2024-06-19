@@ -331,33 +331,33 @@ namespace TEEmployee.Models
         /// 更新評主管名單
         /// </summary>
         /// <returns>主管名單</returns>
-        public List<User> SetScorePeople()
-        {
-            List<User> users = new List<User>();
-            int index = 0;
-            int i = 0;
-            foreach (User user in _userRepository.GetAll())
-            {
-                if (user != null)
-                {
-                    if (user.dutyName.Equals("NULL"))
-                    {
-                        user.dutyName = "";
-                    }
-                    if (user.empno.Equals("4125"))
-                    {
-                        user.dutyName = "協理";
-                        index = i;
-                    }
+        //public List<User> SetScorePeople()
+        //{
+        //    List<User> users = new List<User>();
+        //    int index = 0;
+        //    int i = 0;
+        //    foreach (User user in _userRepository.GetAll())
+        //    {
+        //        if (user != null)
+        //        {
+        //            if (user.dutyName.Equals("NULL"))
+        //            {
+        //                user.dutyName = "";
+        //            }
+        //            if (user.empno.Equals("4125"))
+        //            {
+        //                user.dutyName = "協理";
+        //                index = i;
+        //            }
 
-                    users.Add(user);
-                }
-                i++;
-            }
-            // 依員編排序
-            users = users.OrderByDescending(x => x.dutyName).ThenBy(x => x.empno).ToList();
-            return users;
-        }
+        //            users.Add(user);
+        //        }
+        //        i++;
+        //    }
+        //    // 依員編排序
+        //    users = users.OrderByDescending(x => x.dutyName).ThenBy(x => x.empno).ToList();
+        //    return users;
+        //}
         public List<User> GetManagers()
         {
             var allManagers = _userRepository.GetManagers().OrderBy(x => x.empno).ToList();
@@ -1014,6 +1014,11 @@ namespace TEEmployee.Models
         }
 
 
+        public bool DeleteAll()
+        {
+            var ret = _assessmentRepository.DeleteAll();
+            return ret;
+        }
 
 
         public void Dispose()

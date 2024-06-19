@@ -75,6 +75,12 @@ namespace TEEmployee.Models.Forum
             return ret;
         }
 
+        public bool DeleteAll()
+        {
+            var ret = _forumRepository.DeleteAll();
+            return ret;
+        }
+
         public void Dispose()
         {
             _forumRepository.Dispose();

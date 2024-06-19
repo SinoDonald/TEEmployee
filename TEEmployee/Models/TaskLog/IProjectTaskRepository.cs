@@ -14,6 +14,7 @@ namespace TEEmployee.Models.TaskLog
         bool Upsert(ProjectTask projectTask);
         bool Update(ProjectTask projectTask);
         bool Delete(int id, string empno);
+        bool DeleteAll();
         void Dispose();
     }
 }

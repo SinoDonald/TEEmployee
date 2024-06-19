@@ -19,6 +19,7 @@ namespace TEEmployee.Models.GSchedule
         bool Insert(ProjectSchedule projectSchedule);
         bool Update(ProjectSchedule projectSchedule);
         bool Delete(ProjectSchedule projectSchedule);
+        bool DeleteAll();
         /// <summary>
         /// 取得年份
         /// </summary>

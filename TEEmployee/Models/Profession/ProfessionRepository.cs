@@ -260,7 +260,7 @@ namespace TEEmployee.Models.Profession
                 string delScoresql = @"DELETE FROM Score WHERE skill_id=@id";
                 // NEW: delete all related personals
                 string delPersonalsql = @"DELETE FROM Personal WHERE skill_id=@id";
-                
+
 
                 try
                 {
@@ -446,7 +446,7 @@ namespace TEEmployee.Models.Profession
             string sql = @"DELETE FROM Personal WHERE skill_id=@skill_id AND empno=@empno";
 
             try
-            {               
+            {
                 ret = _conn.Execute(sql, personals);
             }
             catch (Exception)
@@ -457,6 +457,31 @@ namespace TEEmployee.Models.Profession
             return ret > 0;
 
         }
+
+        public bool DeleteAll()
+        {
+            _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {                           
+                try
+                {
+                    _conn.Execute(@"DELETE FROM Personal", tran);
+                    _conn.Execute(@"DELETE FROM Score", tran);
+                    //_conn.Execute(@"DELETE FROM Skill", tran);
+
+                    tran.Commit();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
+            }
+
+        }
+
 
         // 下載profession.db <-- 培文
         public string DownloadProfessionDB()
@@ -492,7 +517,7 @@ namespace TEEmployee.Models.Profession
 
                     foreach (Skill skill in skills)
                     {
-                        foreach(Score score in skill.scores)
+                        foreach (Score score in skill.scores)
                         {
                             row++;
                             col = 1;

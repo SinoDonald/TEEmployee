@@ -278,12 +278,12 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
-        [HttpPost]
-        public JsonResult SetScorePeople()
-        {
-            var ret = _service.SetScorePeople();
-            return Json(ret);
-        }
+        //[HttpPost]
+        //public JsonResult SetScorePeople()
+        //{
+        //    var ret = _service.SetScorePeople();
+        //    return Json(ret);
+        //}
 
         //[HttpPost]
         //public JsonResult GetAllEmployeesWithState()
@@ -510,7 +510,23 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
-        
+        //=============================
+        // Database reset
+        //=============================
+
+        [HttpPost]
+        public JsonResult DeleteAll()
+        {
+            var ret1 = _service.DeleteAll();
+
+            AssessmentService _service2 = new AssessmentService("manage");
+            var ret2 = _service2.DeleteAll();
+
+            var ret = ret1 || ret2;
+
+            return Json(ret);
+        }        
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

@@ -13,5 +13,6 @@ namespace TEEmployee.Models.Forum
         List<Reply> GetReplies(int postId);
         bool InsertPost(Post post);
         bool InsertReply(Reply reply);
+        bool DeleteAll();
     }
 }

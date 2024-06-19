@@ -18,6 +18,7 @@ namespace TEEmployee.Models.Profession
         bool UpsertPersonal(List<Personal> personals);
         bool DeletePersonal(List<Personal> personals);
         string DownloadProfessionDB(); // 下載profession.db
+        bool DeleteAll();
 
         //Schedule Update(Schedule schedule);
         //bool Update(List<Schedule> schedules);

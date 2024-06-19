@@ -61,6 +61,17 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        //=============================
+        // Database reset
+        //=============================
+
+        [HttpPost]
+        public JsonResult DeleteAll()
+        {
+            var ret = _service.DeleteAll();
+            return Json(ret);
+        }
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

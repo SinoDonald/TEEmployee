@@ -622,6 +622,12 @@ namespace TEEmployee.Models.GSchedule
             return ret;
         }
 
+        public bool DeleteAll()
+        {
+            var ret = _scheduleRepository.DeleteAll();
+            return ret;
+        }
+
         public void Dispose()
         {
             _scheduleRepository.Dispose();

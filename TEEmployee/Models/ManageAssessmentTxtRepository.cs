@@ -450,6 +450,31 @@ namespace TEEmployee.Models
 
             return s;
         }
+
+        public bool DeleteAll()
+        {
+            string dn = Path.Combine(_appData, $"ManageResponse");
+
+            try
+            {
+                if (Directory.Exists(dn))
+                {
+                    var directories = Directory.GetDirectories(dn);
+                    foreach (var directory in directories)
+                    {
+                        Directory.Delete(directory, true); // true to delete subdirectories and files
+                    }
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
         public void Dispose()
         {
             return;

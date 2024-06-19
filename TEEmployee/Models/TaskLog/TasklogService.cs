@@ -18,13 +18,16 @@ namespace TEEmployee.Models.TaskLog
         {
             _projectTaskRepository = new ProjectTaskRepository();
             _userRepository = new UserRepository();
+
+            // For all departments
+            this.CreateMonthlyRecord(Utilities.yymmStr());
         }
         public TasklogService(bool isDB)
         {
             if (isDB) _projectItemRepository = new ProjectItemRepository();
             else _projectItemRepository = new ProjectItemTxtRepository();
 
-            _monthlyRecordRepository = new MonthlyRecordRepository();
+            _monthlyRecordRepository = new MonthlyRecordRepository();            
         }
 
         public bool InsertProjectItem(ProjectItem projectItem)
@@ -559,10 +562,20 @@ namespace TEEmployee.Models.TaskLog
             return projectItems;
         }
 
+
         // Add new column in project task table
         public void AddProjectTypeColumn()
         {
             (_projectTaskRepository as ProjectTaskRepository).AddProjectTypeColumn();
+        }
+
+        // Only delete ProjectTask and MonthlyRecord
+        public bool DeleteAll()
+        {
+            var ret1 = _projectTaskRepository.DeleteAll();
+            var ret2 = _monthlyRecordRepository.DeleteAll();
+
+            return ret1 && ret2;
         }
 
 

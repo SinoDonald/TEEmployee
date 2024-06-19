@@ -11,10 +11,10 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             url: '/ManagerSuggest',
             templateUrl: 'Assessment/ManagerSuggest'
         })
-        .state('SetManager', {
-            url: '/SetManager',
-            templateUrl: 'Assessment/SetManager'
-        })
+        //.state('SetManager', {
+        //    url: '/SetManager',
+        //    templateUrl: 'Assessment/SetManager'
+        //})
 
 }]);
 
@@ -46,9 +46,9 @@ app.service('appService', ['$http', function ($http) {
     };
 
     // 取得所有員工名單
-    this.SetScorePeople = function (o) {
-        return $http.post('Assessment/SetScorePeople', o);
-    }
+    //this.SetScorePeople = function (o) {
+    //    return $http.post('Assessment/SetScorePeople', o);
+    //}
 
     // Check states of all employee, return true if any of it is 'sent'
     this.ManageResponseStateCheck = function (o) {
@@ -264,15 +264,15 @@ app.controller('ManagerSuggestCtrl', ['$scope', '$window', 'appService', '$rootS
     document.addEventListener('input', onExpandableTextareaInput)
 
 }]);
-app.controller('SetManagerCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', function ($scope, $window, appService, $rootScope, myFactory) {
+//app.controller('SetManagerCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', function ($scope, $window, appService, $rootScope, myFactory) {
 
-    // 取得所有員工名單
-    appService.SetScorePeople({})
-        .then(function (ret) {
-            $scope.SetScorePeople = ret.data;
-        })
-        .catch(function (ret) {
-            alert('Error');
-        });
+//    // 取得所有員工名單
+//    appService.SetScorePeople({})
+//        .then(function (ret) {
+//            $scope.SetScorePeople = ret.data;
+//        })
+//        .catch(function (ret) {
+//            alert('Error');
+//        });
 
-}]);
+//}]);

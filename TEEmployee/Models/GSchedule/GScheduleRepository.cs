@@ -606,6 +606,29 @@ namespace TEEmployee.Models.GSchedule
         }
 
 
+        public bool DeleteAll()
+        {
+            _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                try
+                {
+                    _conn.Execute(@"DELETE FROM Milestone", tran);
+                    _conn.Execute(@"DELETE FROM Schedule", tran);
+
+                    tran.Commit();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
+            }
+
+        }
+
         public void Dispose()
         {
             _conn.Close();

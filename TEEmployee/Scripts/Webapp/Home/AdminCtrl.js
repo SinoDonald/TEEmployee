@@ -43,6 +43,30 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('GKpi/DeleteSolitaryKpiModels', o);
     };
 
+    this.DeleteAssessemnt = function (o) {
+        return $http.post('Assessment/DeleteAll', o);
+    };
+
+    this.DeleteProfession = function (o) {
+        return $http.post('Profession/DeleteAll', o);
+    };
+
+    this.DeleteGSchedule = function (o) {
+        return $http.post('GSchedule/DeleteAll', o);
+    };
+
+    this.DeletePromotion = function (o) {
+        return $http.post('Promotion/DeleteAll', o);
+    };
+
+    this.DeleteTasklog = function (o) {
+        return $http.post('Tasklog/DeleteAll', o);
+    };
+
+    this.DeleteForum = function (o) {
+        return $http.post('Forum/DeleteAll', o);
+    };
+
     // 通知測試 <-- 培文
     this.NotifyUpdate = function (o) {
         return $http.post('Home/NotifyUpdate', o);
@@ -324,5 +348,66 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
         alert(result);
     };
 
+    // Reset Database
 
+    $scope.DeleteAssessemnt = () => {
+        appService.DeleteAssessemnt({})
+            .then((ret) => {
+                alert("Successfully deleted");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+
+    $scope.DeleteProfession = () => {
+        appService.DeleteProfession({})
+            .then((ret) => {
+                alert("Successfully deleted");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+    
+
+    $scope.DeleteGSchedule = () => {
+        appService.DeleteGSchedule({})
+            .then((ret) => {
+                alert("Successfully deleted");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+
+    $scope.DeletePromotion = () => {
+        appService.DeletePromotion({})
+            .then((ret) => {
+                alert("Successfully deleted");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+
+    $scope.DeleteTasklog = () => {
+        appService.DeleteTasklog({})
+            .then((ret) => {
+                alert("Successfully deleted");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+
+    $scope.DeleteForum = () => {
+        appService.DeleteForum({})
+            .then((ret) => {
+                alert("Successfully deleted");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
 }]);

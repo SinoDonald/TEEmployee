@@ -15,6 +15,7 @@ namespace TEEmployee.Models.TaskLog
         bool Upsert(List<MonthlyRecord> monthlyRecord);
         bool Update(MonthlyRecord monthlyRecord);
         bool Delete(MonthlyRecord monthlyRecord);
+        bool DeleteAll();
         void Dispose();
     }
 }

@@ -16,7 +16,7 @@ namespace TEEmployee.Models.TaskLog
         public MonthlyRecordRepository()
         {
             string tasklogConnection = ConfigurationManager.ConnectionStrings["TasklogConnection"].ConnectionString;
-            var builder = new SQLiteConnectionStringBuilder("Data Source=./mydatabase.db") { BinaryGUID = true };
+            //var builder = new SQLiteConnectionStringBuilder("Data Source=./mydatabase.db") { BinaryGUID = true };
             _conn = new SQLiteConnection(tasklogConnection);
 
             SqlMapper.AddTypeHandler(new GuidByteHandler());
@@ -118,6 +118,32 @@ namespace TEEmployee.Models.TaskLog
             //ret = _conn.Execute(sql, monthlyRecord);
 
             //return ret > 0 ? true : false;
+
+
+
+
+        }
+
+        public bool DeleteAll()
+        {
+            if (_conn.State == 0)
+                _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                try
+                {
+                    _conn.Execute(@"DELETE FROM MonthlyRecord", tran);
+                    tran.Commit();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
+            }
+
         }
     }
 }

@@ -237,7 +237,7 @@
                         </div>
 
                         @*@if (Session["Admin"] is object)*@
-                        @if (Session["empno"] is "6846" || Session["empno"] is "7291" || Session["empno"] is "7596") // 以婕才能匯入組織表
+                        @if (Session["Admin"] is object || Session["empno"] is "6846" || Session["empno"] is "7291" || Session["empno"] is "7596") // 以婕才能匯入組織表
                         {
                             <div class="col-lg-4 col-sm-6">
                                 <a class="portfolio-box" href="@Url.Action("Admin")">
@@ -278,7 +278,7 @@
                         </div>
 
 
-                        @if (Session["empno"] is "7596")
+                        @*@if (Session["empno"] is "7596")
                         {
                             <div class="col-lg-4 col-sm-6">
                                 <a class="portfolio-box" href="@Url.Action("Index", "Test")">
@@ -290,7 +290,7 @@
                                     <p class="text-center mt-2 h3">TTTest</p>
                                 </a>
                             </div>
-                        }
+                        }*@
 
 
 

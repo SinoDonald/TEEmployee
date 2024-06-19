@@ -853,5 +853,60 @@ namespace TEEmployee.Models
 
             return performances;
         }
+
+        public bool DeleteAll()
+        {
+            var ret1 = DeleteAllResponse();
+            var ret2 = DeleteAllFeedback();
+
+            return ret1 || ret2;
+        }
+
+        private bool DeleteAllResponse()
+        {
+            string dn = Path.Combine(_appData, $"Response");
+
+            try
+            {
+                if (Directory.Exists(dn))
+                {
+                    var directories = Directory.GetDirectories(dn);
+                    foreach (var directory in directories)
+                    {
+                        Directory.Delete(directory, true); // true to delete subdirectories and files
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        private bool DeleteAllFeedback()
+        {
+            string dn = Path.Combine(_appData, $"Feedback");
+
+            try
+            {
+                if (Directory.Exists(dn))
+                {
+                    var directories = Directory.GetDirectories(dn);
+                    foreach (var directory in directories)
+                    {
+                        Directory.Delete(directory, true); // true to delete subdirectories and files
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
     }
 }

@@ -98,5 +98,28 @@ namespace TEEmployee.Models.TaskLog
             }
 
         }
+
+        public bool DeleteAll()
+        {
+            if (_conn.State == 0)
+                _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                try
+                {
+                    _conn.Execute(@"DELETE FROM ProjectTask", tran);
+                    tran.Commit();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
+            }
+
+        }
+
     }
 }
