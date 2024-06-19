@@ -244,7 +244,7 @@ namespace TEEmployee.Models.Talent
         public List<CV> Get(string empno)
         {
             CV cvextra = GetCVExtraAndMerit(empno);
-
+            MapCvProperty(cvextra);
             List<CV> ret;
 
             string sql = @"SELECT * FROM userCV WHERE empno=@empno";
@@ -1118,7 +1118,7 @@ namespace TEEmployee.Models.Talent
         /// </summary>
         /// <param name="empno"></param>
         /// <returns></returns>
-        private List<Seniority> ProjectRegex(string project)
+        public List<Seniority> ProjectRegex(string project)
         {
             List<Seniority> senioritys = new List<Seniority>();
             string company = string.Empty;
@@ -1341,7 +1341,7 @@ namespace TEEmployee.Models.Talent
         /// </summary>
         /// <param name="empno"></param>
         /// <returns></returns>
-        (DateTime st, DateTime ed, int y, int m, int d) CalcYMD(DateTime start, DateTime end)
+        public static (DateTime st, DateTime ed, int y, int m, int d) CalcYMD(DateTime start, DateTime end)
         {
             if (end.CompareTo(start) < 0) (start, end) = (end, start);
             int years = (end.Year - start.Year);
@@ -1917,6 +1917,8 @@ namespace TEEmployee.Models.Talent
             cv.honor = CvRawExtractor.ExtractHonor(cvRaws);
             cv.experience = CvRawExtractor.ExtractExperience(cvRaws);
             cv.project = CvRawExtractor.ExtractProject(cvRaws);
+            try { cv.seniority = CvRawExtractor.ExtractSeniority(cvRaws); }
+            catch (Exception) { string error = cv.empno; }
         }
 
         public List<CvRaw> GetCVStringList(string empno)
