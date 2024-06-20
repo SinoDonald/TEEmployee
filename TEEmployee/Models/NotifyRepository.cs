@@ -184,14 +184,15 @@ namespace TEEmployee.Models
                 if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }
                 if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
                 // 主管才會收到通知
-                if (groupManagers.Count > 0 || empno.Equals("4125"))
+                if (user.department_manager.Equals(true) || user.group_manager.Equals(true) || user.group_one_manager.Equals(true) ||
+                    user.group_two_manager.Equals(true) || user.group_three_manager.Equals(true))
                 {
                     // 檢查有sent自評表的user
                     List<string> sentEmpnos = new List<string>();
 
                     // 找到同group的user
                     List<User> sameGroupUsers = new List<User>();
-                    if (empno.Equals("4125"))
+                    if (user.department_manager.Equals(true))
                     {
                         sameGroupUsers = users;
                     }
@@ -312,7 +313,7 @@ namespace TEEmployee.Models
             List<List<User>> managerList = new List<List<User>>();
             List<User> users = GetAll();
             User user = Get(empno);
-            managerList.Add(users.Where(x => x.empno.Equals("4125")).ToList()); // 協理
+            managerList.Add(users.Where(x => x.department_manager.Equals(true)).ToList()); // 協理
             users = users.Where(x => x.group != null && x.group_one != null && x.group_two != null && x.group_three != null).ToList();
             managerList.Add(users.Where(x => x.group.Equals(user.group) && x.group_manager.Equals(true)).ToList());
             if (state.Equals("freeback"))

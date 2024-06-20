@@ -14,7 +14,7 @@
             <div class="col-sm-2">
                 <input type="submit" value="成功典範" ng-click="TalentSuccessExample()" class="btn btn-outline-primary" style="text-align:center" />
             </div>
-            @if (Session["empno"] is "4125" || Session["empno"] is "7291")
+            @if (Session["leader"] is true || Session["empno"] is "7291")
             {
                 <div class="col-sm-2">
                     <input type="submit" value="High Performers Pool" ng-click="TalentHighPerformers()" class="btn btn-outline-primary" style="text-align:center" />
@@ -45,7 +45,7 @@
             <br />
         </div>
 
-        @if (Session["empno"] is "4125" || Session["empno"] is "7291")
+        @if (Session["leader"] is true || Session["empno"] is "7291")
         {
             <div id="collapseOne" class="panel-collapse collapse in">
                 <div class="panel-body">

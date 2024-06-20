@@ -197,7 +197,7 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult Get(string empno)
         {
-            if(Session["empno"].ToString() != "4125")
+            if(Session["leader"] is true)
             {
                 empno = Session["empno"].ToString();
             }

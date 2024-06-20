@@ -1,13 +1,13 @@
 ﻿
 <div ng-controller="GroupPlanCtrl" class="container">
 
-    <div class="row" ng-if="user.empno == '4125' || user.empno == '7291' || user.group_manager == 1">
+    <div class="row" ng-if="user.department_manager == 1 || user.group_manager == 1 || user.empno == '7291'">
         <div class="form-group">
             <div class="row">
-                <div class="col-sm-1" ng-if="user.empno == '4125' || user.empno == '7291'">
+                <div class="col-sm-1" ng-if="user.department_manager == 1 || user.empno == '7291'">
                     <label for="SelectGroup">請選擇組別</label>
                 </div>
-                <div class="col-sm-1" ng-if="user.empno == '4125' || user.empno == '7291'">
+                <div class="col-sm-1" ng-if="user.department_manager == 1 || user.empno == '7291'">
                     <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
                         <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
                     </select>
@@ -54,8 +54,3 @@
     </div>
 
 </div>
-
-
-
-
-

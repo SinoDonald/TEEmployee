@@ -279,7 +279,7 @@ namespace TEEmployee.Models.Talent
                     int b5 = merit.B5; b5 ^= number; b5 /= number;
                     userCV.performance = b1 + "\n" + b2 + "\n" + b3 + "\n" + b4 + "\n" + b5;
                 }
-                else { userCV.performance = "0\n0\n0\n0\n0\n"; }
+                else { userCV.performance = ""; }
                 // 解析SQL seniority文字, 儲存工作、公司與職位年資
                 try
                 {
