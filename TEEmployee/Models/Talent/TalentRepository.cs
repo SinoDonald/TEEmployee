@@ -91,7 +91,7 @@ namespace TEEmployee.Models.Talent
             MapCvProperty(cvExtra);
 
             List<User> users = new UserRepository().GetAll().OrderBy(x => x.empno).ToList();
-            UpdateUsersGroup(users); // 更新SQL員工當前所屬群組
+            //UpdateUsersGroup(users); // 更新SQL員工當前所屬群組
             User user = users.Where(x => x.empno.Equals(empno)).FirstOrDefault();
             cvExtra.pic = cvExtra.empno;
             ret.Add(cvExtra);
@@ -267,14 +267,31 @@ namespace TEEmployee.Models.Talent
                 //}
                 //userCV.age = age.ToString();
 
+                // 考績資料
+                Merit merit = GetMerit(empno); // 取得年度考績資料
+                if(merit != null)
+                {
+                    int number = Convert.ToInt16(empno);
+                    int b1 = merit.B1; b1 ^= number; b1 /= number;
+                    int b2 = merit.B2; b2 ^= number; b2 /= number;
+                    int b3 = merit.B3; b3 ^= number; b3 /= number;
+                    int b4 = merit.B4; b4 ^= number; b4 /= number;
+                    int b5 = merit.B5; b5 ^= number; b5 /= number;
+                    userCV.performance = b1 + "\n" + b2 + "\n" + b3 + "\n" + b4 + "\n" + b5;
+                }
+                else { userCV.performance = "0\n0\n0\n0\n0\n"; }
                 // 解析SQL seniority文字, 儲存工作、公司與職位年資
-                //Tuple<string, string, string> analyzeSeniority = AnalyzeSeniority(userCV.seniority);
-                //userCV.workYears = analyzeSeniority.Item1; // 工作年資
-                //userCV.companyYears = analyzeSeniority.Item2; // 公司年資
-                //userCV.seniority = analyzeSeniority.Item3; // 職務經歷
+                try
+                {
+                    Tuple<string, string, string> analyzeSeniority = AnalyzeSeniority(userCV.seniority);
+                    userCV.workYears = analyzeSeniority.Item1; // 工作年資
+                    userCV.companyYears = analyzeSeniority.Item2; // 公司年資
+                    userCV.seniority = analyzeSeniority.Item3; // 職務經歷
+                }
+                catch (Exception) { }
 
                 // 取得核心專業盤點的專業與管理能力分數
-                List<Skill> getAllScores = new ProfessionRepository().GetAll();
+                List <Skill> getAllScores = new ProfessionRepository().GetAll();
                 // 專業能力_領域技能
                 List<Skill> domainSkills = getAllScores.Where(x => x.skill_type.Equals("domain")).Where(x => x.role.Equals(userCV.group_one)).OrderBy(x => x.id).ToList();
                 foreach (Skill skill in domainSkills)
@@ -488,14 +505,14 @@ namespace TEEmployee.Models.Talent
                 _conn.Open();
                 using (var tran = _conn.BeginTransaction())
                 {
-                    string sql = @"UPDATE userCV SET 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three WHERE empno=@empno";
+                    string sql = @"UPDATE userCVExtra SET 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three WHERE empno=@empno";
                     _conn.Execute(sql, users, tran);
                     tran.Commit();
                     ret = true;
                 }
                 _conn.Close();
             }
-            catch (Exception) { }
+            catch (Exception ex) { string error = ex.Message + "\n" + ex.ToString(); _conn.Close(); }
 
             return ret;
         }
@@ -1492,19 +1509,22 @@ namespace TEEmployee.Models.Talent
                 // 先確認資料庫中是否已更新當季的資料
                 using (var tran = _conn.BeginTransaction())
                 {
-                    //string sql = @"DELETE FROM userCV";
-                    //_conn.Execute(sql);
-                    string sql = @"INSERT INTO userCV (empno, name, 'group', group_one, group_two, group_three, birthday, address, performance, expertise, treatise, language, academic, license, training, honor, experience, project, lastest_update, planning, test, advantage, disadvantage, developed, future)
-                            VALUES(@empno, @name, @group, @group_one, @group_two, @group_three, @birthday, @address, @performance, @expertise, @treatise, @language, @academic, @license, @training, @honor, @experience, @project, @lastest_update, @planning, @test, @advantage, @disadvantage, @developed, @future)
-                            ON CONFLICT(empno)
-                            DO UPDATE SET name=@name, 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three, birthday=@birthday, address=@address, performance=@performance, expertise=@expertise, treatise=@treatise, language=@language, academic=@academic, license=@license, training=@training, honor=@honor, experience=@experience, project=@project, lastest_update=@lastest_update";
+                    //string sql = @"INSERT INTO userCVExtra (empno, name, 'group', group_one, group_two, group_three, birthday, address, performance, expertise, treatise, language, academic, license, training, honor, experience, project, lastest_update, planning, test, advantage, disadvantage, developed, future)
+                    //        VALUES(@empno, @name, @group, @group_one, @group_two, @group_three, @birthday, @address, @performance, @expertise, @treatise, @language, @academic, @license, @training, @honor, @experience, @project, @lastest_update, @planning, @test, @advantage, @disadvantage, @developed, @future)
+                    //        ON CONFLICT(empno)
+                    //        DO UPDATE SET name=@name, 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three, birthday=@birthday, address=@address, performance=@performance, expertise=@expertise, treatise=@treatise, language=@language, academic=@academic, license=@license, training=@training, honor=@honor, experience=@experience, project=@project, lastest_update=@lastest_update";
+                    string sql = @"INSERT INTO userCVExtra (empno, name, 'group', group_one, group_two, group_three, address, lastest_update, planning, test, advantage, disadvantage, developed, future, position, choice1, choice2, choice3, choice4, choice5)
+                                 VALUES(@empno, @name, @group, @group_one, @group_two, @group_three, @address, @lastest_update, @planning, @test, @advantage, @disadvantage, @developed, @future, @position, @choice1, @choice2, @choice3, @choice4, @choice5)
+                                 ON CONFLICT(empno)
+                                 DO UPDATE SET name=@name, 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three, address=@address, lastest_update=@lastest_update, planning=@planning, test=@test, advantage=@advantage, disadvantage=@disadvantage, developed=@developed, future=@future, position=@position, choice1=@choice1, choice2=@choice2, choice3=@choice3, choice4=@choice4, choice5=@choice5";
+
                     _conn.Execute(sql, userCVs);
 
                     tran.Commit();
                 }
                 _conn.Close();
             }
-            catch (Exception) { }
+            catch (Exception ex) { string error = ex.Message + "\n" + ex.ToString(); _conn.Close(); }
 
             return ret;
         }
@@ -1880,6 +1900,16 @@ namespace TEEmployee.Models.Talent
         }
 
         // ************************************* //
+
+        public Merit GetMerit(string empno)
+        {
+            Merit ret;
+
+            string sql = @"SELECT * FROM merit WHERE empno=@empno";
+            ret = _conn.Query<Merit>(sql, new { empno }).SingleOrDefault();
+
+            return ret;
+        }
 
         public CV GetCVExtraAndMerit(string empno)
         {

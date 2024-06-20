@@ -104,4 +104,13 @@ namespace TEEmployee.Models
         public bool choice4 { get; set; } // 建立系統性、計畫性的學習能力 - 學習力具體
         public bool choice5 { get; set; } // 適應變化的韌性 - 懂得取捨、不放棄
     }
+    // 考績 <-- 培文
+    public class Merit
+    {
+        public int B1 { get; set; }
+        public int B2 { get; set; }
+        public int B3 { get; set; }
+        public int B4 { get; set; }
+        public int B5 { get; set; }
+    }
 }

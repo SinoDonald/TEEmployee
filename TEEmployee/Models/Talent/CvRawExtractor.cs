@@ -45,8 +45,36 @@ namespace TEEmployee.Models.Talent
             //var sortedList = parsedList.OrderByDescending(x => x.GraduationYear).Select(x => x.FormatedEduString).ToList();
             //var combinedString = string.Join("\n", sortedList);
             var combinedString = string.Join("\n", texts);
+            List<string> educations = combinedString.Split(new char[] { '\n' }).ToList();
+            string education = ReturnEducationalParagraph(educations); // 大學學歷以上才加入
 
-            return combinedString;
+            return education;
+        }
+        /// <summary>
+        /// 大學學歷以上才加入
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
+        private static string ReturnEducationalParagraph(List<string> educations)
+        {
+            string returnParagraph = string.Empty;
+            foreach (string paragraph in educations)
+            {
+                if (paragraph.Contains("大學") || paragraph.Contains("學士") || paragraph.Contains("碩士") || paragraph.Contains("博士"))
+                {
+                    string[] splitString = paragraph.Split('|');
+                    try
+                    {
+                        returnParagraph += splitString[0] + "(" + splitString[1] + ")　" + splitString[2] + "　" + splitString[3] + "\n";
+                    }
+                    catch (Exception) { }
+                }
+            }
+            if (returnParagraph.Length > 2)
+            {
+                returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
+            }
+            return returnParagraph;
         }
 
         public static string ExtractExpertise(List<CvRaw> inputs)
