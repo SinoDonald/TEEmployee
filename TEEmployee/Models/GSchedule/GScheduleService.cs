@@ -621,6 +621,24 @@ namespace TEEmployee.Models.GSchedule
             bool ret = _scheduleRepository.SaveResponse(view, year, group, manager_id, name, response);
             return ret;
         }
+        /// <summary>
+        /// 刪除群組規劃
+        /// </summary>
+        /// <returns></returns>
+        public bool DeleteGroupPlan()
+        {
+            var ret = _scheduleRepository.DeleteGroupPlan();
+            return ret;
+        }
+        /// <summary>
+        /// 刪除個人規劃
+        /// </summary>
+        /// <returns></returns>
+        public bool DeletePersonalPlan()
+        {
+            var ret = _scheduleRepository.DeletePersonalPlan();
+            return ret;
+        }
 
         public bool DeleteAll()
         {

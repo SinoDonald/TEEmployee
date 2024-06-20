@@ -56,6 +56,16 @@ namespace TEEmployee.Models.GSchedule
         /// <param name="view"></param>
         /// <returns></returns>
         bool SaveResponse(string view, string year, string group, string manager_id, string name, List<Planning> response);
+        /// <summary>
+        /// 刪除群組規劃
+        /// </summary>
+        /// <returns></returns>
+        bool DeleteGroupPlan();
+        /// <summary>
+        /// 刪除個人規劃
+        /// </summary>
+        /// <returns></returns>
+        bool DeletePersonalPlan();
         void Dispose();
     }
 }

@@ -197,7 +197,7 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult Get(string empno)
         {
-            if(Session["leader"] is true)
+            if(Session["leader"] is false)
             {
                 empno = Session["empno"].ToString();
             }
@@ -230,6 +230,16 @@ namespace TEEmployee.Controllers
                 ret = true;
             //}
             
+            return Json(ret);
+        }
+        /// <summary>
+        /// 刪除人才資料庫
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult DeleteTalent()
+        {
+            var ret = _service.DeleteTalent();
             return Json(ret);
         }
 

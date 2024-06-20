@@ -67,11 +67,28 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Forum/DeleteAll', o);
     };
 
-    // 通知測試 <-- 培文
+    // =================== 培文 ===================
+
+    // 刪除群組規劃
+    this.DeleteGroupPlan = function (o) {
+        return $http.post('GSchedule/DeleteGroupPlan', o);
+    };
+
+    // 刪除個人規劃
+    this.DeletePersonalPlan = function (o) {
+        return $http.post('GSchedule/DeletePersonalPlan', o);
+    };
+
+    // 刪除人才資料庫
+    this.DeleteTalent = function (o) {
+        return $http.post('Talent/DeleteTalent', o);
+    };
+
+    // 通知測試
     this.NotifyUpdate = function (o) {
         return $http.post('Home/NotifyUpdate', o);
     };
-    // 人才培訓資料庫 <-- 培文
+    // 人才培訓資料庫
     this.TalentUpdate = function (o) {
         return $http.post('Home/TalentUpdate', o);
     };
@@ -405,6 +422,42 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
         appService.DeleteForum({})
             .then((ret) => {
                 alert("Successfully deleted");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+
+    // 刪除群組規劃
+    $scope.DeleteGroupPlan = () => {
+        appService.DeleteGroupPlan({})
+            .then((ret) => {
+                if (ret.data == true) alert("刪除成功");
+                else alert("刪除失敗");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+
+    // 刪除個人規劃
+    $scope.DeletePersonalPlan = () => {
+        appService.DeletePersonalPlan({})
+            .then((ret) => {
+                if (ret.data == true) alert("刪除成功");
+                else alert("刪除失敗");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+
+    // 刪除人才資料庫
+    $scope.DeleteTalent = () => {
+        appService.DeleteTalent({})
+            .then((ret) => {
+                if (ret.data == true) alert("刪除成功");
+                else alert("刪除失敗");
             })
             .catch((ret) => {
                 alert('Error');

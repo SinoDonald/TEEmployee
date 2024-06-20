@@ -86,12 +86,13 @@ namespace TEEmployee.Models.Talent
 
         public List<CV> GetAll(string empno)
         {
+            List<User> users = new UserRepository().GetAll().OrderBy(x => x.empno).ToList();
+            UpdateUsersGroup(users); // 更新SQL員工當前所屬群組
+
             List<CV> ret = new List<CV>();
             CV cvExtra = GetCVExtraAndMerit(empno);
             MapCvProperty(cvExtra);
 
-            List<User> users = new UserRepository().GetAll().OrderBy(x => x.empno).ToList();
-            //UpdateUsersGroup(users); // 更新SQL員工當前所屬群組
             User user = users.Where(x => x.empno.Equals(empno)).FirstOrDefault();
             cvExtra.pic = cvExtra.empno;
             ret.Add(cvExtra);
@@ -374,7 +375,7 @@ namespace TEEmployee.Models.Talent
             List<string> jobTitles = _conn.Query<JobTitle>(sql).ToList().Select(x => x.name).ToList();
 
             // 部門同仁所有職等
-            sql = @"SELECT * FROM userCV ORDER BY empno";
+            sql = @"SELECT * FROM userCVExtra ORDER BY empno";
             List<string> senioritys = _conn.Query<CV>(sql, new { }).Where(x => x.seniority != null).Select(x => x.seniority).Distinct().OrderBy(x => x).ToList();
             List<string> seniorityList = new List<string>();
             foreach (string seniority in senioritys)
@@ -505,7 +506,11 @@ namespace TEEmployee.Models.Talent
                 _conn.Open();
                 using (var tran = _conn.BeginTransaction())
                 {
-                    string sql = @"UPDATE userCVExtra SET 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three WHERE empno=@empno";
+                    //string sql = @"UPDATE userCVExtra SET 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three WHERE empno=@empno";
+                    string sql = @"INSERT INTO userCVExtra (empno, name, 'group', group_one, group_two, group_three)
+                                 VALUES(@empno, @name, @group, @group_one, @group_two, @group_three)
+                                 ON CONFLICT(empno)
+                                 DO UPDATE SET name=@name, 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three";
                     _conn.Execute(sql, users, tran);
                     tran.Commit();
                     ret = true;
@@ -524,7 +529,7 @@ namespace TEEmployee.Models.Talent
         public bool SaveChoice(List<Ability> users)
         {
             bool ret = false;
-            string sql = @"SELECT * FROM userCV ORDER BY empno";
+            string sql = @"SELECT * FROM userCVExtra ORDER BY empno";
             List<CV> userCVs = _conn.Query<CV>(sql).ToList();
             foreach (Ability user in users)
             {
@@ -544,7 +549,7 @@ namespace TEEmployee.Models.Talent
                 {
                     //string sql = @"DELETE FROM userCV";
                     //_conn.Execute(sql);
-                    sql = @"UPDATE userCV SET position=@position, choice1=@choice1, choice2=@choice2, choice3=@choice3, choice4=@choice4, choice5=@choice5 WHERE empno=@empno";
+                    sql = @"UPDATE userCVExtra SET position=@position, choice1=@choice1, choice2=@choice2, choice3=@choice3, choice4=@choice4, choice5=@choice5 WHERE empno=@empno";
                     _conn.Execute(sql, userCVs);
 
                     tran.Commit();
@@ -689,7 +694,7 @@ namespace TEEmployee.Models.Talent
                 _conn.Open();
                 using (var tran = _conn.BeginTransaction())
                 {
-                    string sql = @"SELECT * FROM userCV";
+                    string sql = @"SELECT * FROM userCVExtra";
                     ret = _conn.Query<CV>(sql).ToList();
 
                     tran.Commit();
@@ -1073,7 +1078,7 @@ namespace TEEmployee.Models.Talent
                 string workYear = string.Empty;
                 try
                 {
-                    string sql = @"SELECT * FROM userCV WHERE empno=@empno";
+                    string sql = @"SELECT * FROM userCVExtra WHERE empno=@empno";
                     string project = _conn.Query<CV>(sql, new { empno }).ToList().FirstOrDefault().project;
                     workYear = ProjectRegex(project).LastOrDefault().start;
                 }
@@ -1601,7 +1606,7 @@ namespace TEEmployee.Models.Talent
                         {
                             userAbility.empno = user.empno;
                             userAbility.name = user.name;
-                            string sql = @"SELECT * FROM userCV ORDER BY empno";
+                            string sql = @"SELECT * FROM userCVExtra ORDER BY empno";
                             try
                             {
                                 CV userCV = _conn.Query<CV>(sql).ToList().Where(x => !String.IsNullOrEmpty(x.empno)).Where(x => x.empno.Equals(user.empno)).FirstOrDefault();
@@ -1734,7 +1739,7 @@ namespace TEEmployee.Models.Talent
                 _conn.Open();
                 using (var tran = _conn.BeginTransaction())
                 {
-                    string sql = @"UPDATE userCV SET performance=@performance WHERE empno=@empno";
+                    string sql = @"UPDATE userCVExtra SET performance=@performance WHERE empno=@empno";
                     _conn.Execute(sql, userCVs, tran);
                     tran.Commit();
                     ret = true;
@@ -1759,7 +1764,7 @@ namespace TEEmployee.Models.Talent
                 _conn.Open();
                 using (var tran = _conn.BeginTransaction())
                 {
-                    string sql = @"UPDATE userCV SET educational=@educational, seniority=@seniority WHERE empno=@empno";
+                    string sql = @"UPDATE userCVExtra SET educational=@educational, seniority=@seniority WHERE empno=@empno";
                     _conn.Execute(sql, userCVs, tran);
                     tran.Commit();
                     ret = true;
@@ -1863,7 +1868,7 @@ namespace TEEmployee.Models.Talent
                 _conn.Open();
                 using (var tran = _conn.BeginTransaction())
                 {
-                    string sql = @"UPDATE userCV SET test=@test, advantage=@advantage, disadvantage=@disadvantage WHERE empno=@empno";
+                    string sql = @"UPDATE userCVExtra SET test=@test, advantage=@advantage, disadvantage=@disadvantage WHERE empno=@empno";
                     _conn.Execute(sql, userCVs, tran);
                     tran.Commit();
                     ret = true;
@@ -1888,7 +1893,7 @@ namespace TEEmployee.Models.Talent
                 _conn.Open();
                 using (var tran = _conn.BeginTransaction())
                 {
-                    string sql = @"UPDATE userCV SET planning=@planning, test=@test, advantage=@advantage, disadvantage=@disadvantage, developed=@developed, future=@future WHERE empno=@empno";
+                    string sql = @"UPDATE userCVExtra SET planning=@planning, test=@test, advantage=@advantage, disadvantage=@disadvantage, developed=@developed, future=@future WHERE empno=@empno";
                     _conn.Execute(sql, userCV, tran);
                     tran.Commit();
                 }
@@ -1898,9 +1903,38 @@ namespace TEEmployee.Models.Talent
 
             return userCV;
         }
+        /// <summary>
+        /// 刪除人才資料庫
+        /// </summary>
+        /// <returns></returns>
+        public bool DeleteTalent()
+        {
+            bool ret = false;
+
+            try
+            {
+                _conn.Open();
+                using (var tran = _conn.BeginTransaction())
+                {
+                    string sql = @"UPDATE userCVExtra SET 'group'='', group_one='', group_two='', group_three='', address='', lastest_update='', planning='', test='', advantage='', disadvantage='', developed='', future='', position='', choice1=0, choice2=0, choice3=0, choice4=0, choice5=0";
+                    _conn.Execute(sql, tran);
+                    tran.Commit();
+                    ret = true;
+                }
+                _conn.Close();
+            }
+            catch (Exception ex) { string error = ex.Message + "\n" + ex.ToString(); }
+
+            return ret;
+        }
 
         // ************************************* //
 
+        /// <summary>
+        /// 取得考績
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
         public Merit GetMerit(string empno)
         {
             Merit ret;

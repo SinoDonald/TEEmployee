@@ -74,6 +74,11 @@ namespace TEEmployee.Models.Talent
         /// <param name="users"></param>
         /// <returns></returns>
         List<CV> ConditionFilter(ConditionFilter filter, List<CV> userCVs);
+        /// <summary>
+        /// 刪除人才資料庫
+        /// </summary>
+        /// <returns></returns>
+        bool DeleteTalent();
         void Dispose();
     }
 }

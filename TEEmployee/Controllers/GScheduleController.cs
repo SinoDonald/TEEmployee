@@ -255,6 +255,26 @@ namespace TEEmployee.Controllers
             bool ret = _service.SaveResponse(view, year, group, Session["empno"].ToString(), name, response);
             return Json(ret);
         }
+        /// <summary>
+        /// 刪除群組規劃
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult DeleteGroupPlan()
+        {
+            var ret = _service.DeleteGroupPlan();
+            return Json(ret);
+        }
+        /// <summary>
+        /// 刪除個人規劃
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult DeletePersonalPlan()
+        {
+            var ret = _service.DeletePersonalPlan();
+            return Json(ret);
+        }
 
         //=============================
         // Database reset

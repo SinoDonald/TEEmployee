@@ -252,6 +252,15 @@ namespace TEEmployee.Models.Talent
             CV ret = _talentRepository.SaveResponse(userCV, planning);
             return ret;
         }
+        /// <summary>
+        /// 刪除人才資料庫
+        /// </summary>
+        /// <returns></returns>
+        public bool DeleteTalent()
+        {
+            var ret = _talentRepository.DeleteTalent();
+            return ret;
+        }
 
         public void Dispose()
         {

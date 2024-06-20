@@ -604,6 +604,48 @@ namespace TEEmployee.Models.GSchedule
 
             return ret;
         }
+        /// <summary>
+        /// 刪除群組規劃
+        /// </summary>
+        /// <returns></returns>
+        public bool DeleteGroupPlan()
+        {
+            bool ret = false;
+            string folder = "App_Data";
+            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/" + folder), "GSchedule");
+            // 檢查資料夾是否存在
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+            string relativePath = Path.Combine(folder, "GSchedule", "GroupPlan");
+            relativePath = Path.Combine(folderPath, "GroupPlan");
+            try { Directory.Delete(relativePath, true); ret = true; }
+            catch(Exception ex) { string error = ex.Message + "\n" + ex.ToString(); }
+
+            return ret;
+        }
+        /// <summary>
+        /// 刪除個人規劃
+        /// </summary>
+        /// <returns></returns>
+        public bool DeletePersonalPlan()
+        {
+            bool ret = false;
+            string folder = "App_Data";
+            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/" + folder), "GSchedule");
+            // 檢查資料夾是否存在
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+            string relativePath = Path.Combine(folder, "GSchedule", "PersonalPlan");
+            relativePath = Path.Combine(folderPath, "PersonalPlan");
+            try { Directory.Delete(relativePath, true); ret = true; }
+            catch { }
+
+            return ret;
+        }
 
 
         public bool DeleteAll()
