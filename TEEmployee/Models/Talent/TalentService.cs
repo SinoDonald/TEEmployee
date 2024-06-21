@@ -15,74 +15,6 @@ namespace TEEmployee.Models.Talent
             _talentRepository = new TalentRepository();
         }
         /// <summary>
-        /// 比對上傳的檔案更新時間
-        /// </summary>
-        /// <param name="filesInfo"></param>
-        /// <returns></returns>
-        public List<string> CompareLastestUpdate(List<string> filesInfo)
-        {
-            List<string> updateUsers = _talentRepository.CompareLastestUpdate(filesInfo);
-            return updateUsers;
-        }
-        /// <summary>
-        /// 上傳員工履歷表多檔, 並解析Word後存到SQL
-        /// </summary>
-        /// <param name="filesInfo"></param>
-        /// <returns></returns>
-        public void Uploaded(HttpPostedFileBase[] files)
-        {
-            if (files.Count() > 0)
-            {
-                try
-                {
-                    //// 取得現在SQL存檔的更新時間
-                    //List<CV> userCVs = _talentRepository.GetLastestUpdate();
-                    foreach (HttpPostedFileBase uploadFile in files)
-                    {
-                        try
-                        {
-                            //string empno = Regex.Replace(Path.GetFileName(uploadFile.FileName), "[^0-9]", ""); // 僅保留數字
-                            //string lastest_update = userCVs.Where(x => x.empno.Equals(empno)).Select(x => x.lastest_update).FirstOrDefault();
-                            if (uploadFile.ContentLength > 0)
-                            {
-                                string savePath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data"), "Talent\\CV\\"); // 人員履歷表Word檔路徑
-                                // 檢查資料夾是否存在, 沒有則建立資料夾
-                                if (!Directory.Exists(savePath))
-                                {
-                                    Directory.CreateDirectory(savePath);
-                                }
-                                uploadFile.SaveAs(savePath + uploadFile.FileName);
-                            }
-                        }
-                        catch (NullReferenceException) { }
-                    }
-                    List<User> users = new UserRepository().GetAll(); // 取得員工群組
-                    _talentRepository.SaveUserCV(users); // 讀取Word人員履歷表
-                }
-                catch (Exception) { }
-            }
-        }
-        /// <summary>
-        /// 上傳員工經歷文字檔
-        /// </summary>
-        /// <param name="filesInfo"></param>
-        /// <returns></returns>
-        public bool UploadExperience(HttpPostedFileBase file)
-        {
-            var ret = _talentRepository.UploadExperience(file);
-            return ret;
-        }
-        /// <summary>
-        /// 上傳年度績效檔案
-        /// </summary>
-        /// <param name="filesInfo"></param>
-        /// <returns></returns>
-        public bool ImportFile(HttpPostedFileBase file)
-        {
-            var ret = _talentRepository.ImportFile(file);
-            return ret;
-        }
-        /// <summary>
         /// 上傳測評資料檔案
         /// </summary>
         /// <param name="filesInfo"></param>
@@ -245,16 +177,6 @@ namespace TEEmployee.Models.Talent
             return cv;
         }
         /// <summary>
-        /// 更新人才培訓資料庫
-        /// </summary>
-        /// <param name="filesInfo"></param>
-        /// <returns></returns>
-        public void TalentUpdate()
-        {
-            List<User> users = new UserRepository().GetAll(); // 取得員工群組
-            _talentRepository.SaveUserCV(users); // 讀取Word人員履歷表
-        }
-        /// <summary>
         /// 儲存回覆
         /// </summary>
         /// <param name="filesInfo"></param>
@@ -278,5 +200,77 @@ namespace TEEmployee.Models.Talent
         {
             _talentRepository.Dispose();
         }
+
+
+        // **************************** 上傳Word檔或文字檔解析 **************************** //
+
+        ///// <summary>
+        ///// 更新人才培訓資料庫
+        ///// </summary>
+        ///// <param name="filesInfo"></param>
+        ///// <returns></returns>
+        //public void TalentUpdate()
+        //{
+        //    List<User> users = new UserRepository().GetAll(); // 取得員工群組
+        //    _talentRepository.SaveUserCV(users); // 讀取Word人員履歷表
+        //}
+        ///// <summary>
+        ///// 上傳員工履歷表多檔, 並解析Word後存到SQL
+        ///// </summary>
+        ///// <param name="filesInfo"></param>
+        ///// <returns></returns>
+        //public void Uploaded(HttpPostedFileBase[] files)
+        //{
+        //    if (files.Count() > 0)
+        //    {
+        //        try
+        //        {
+        //            //// 取得現在SQL存檔的更新時間
+        //            //List<CV> userCVs = _talentRepository.GetLastestUpdate();
+        //            foreach (HttpPostedFileBase uploadFile in files)
+        //            {
+        //                try
+        //                {
+        //                    //string empno = Regex.Replace(Path.GetFileName(uploadFile.FileName), "[^0-9]", ""); // 僅保留數字
+        //                    //string lastest_update = userCVs.Where(x => x.empno.Equals(empno)).Select(x => x.lastest_update).FirstOrDefault();
+        //                    if (uploadFile.ContentLength > 0)
+        //                    {
+        //                        string savePath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data"), "Talent\\CV\\"); // 人員履歷表Word檔路徑
+        //                        // 檢查資料夾是否存在, 沒有則建立資料夾
+        //                        if (!Directory.Exists(savePath))
+        //                        {
+        //                            Directory.CreateDirectory(savePath);
+        //                        }
+        //                        uploadFile.SaveAs(savePath + uploadFile.FileName);
+        //                    }
+        //                }
+        //                catch (NullReferenceException) { }
+        //            }
+        //            List<User> users = new UserRepository().GetAll(); // 取得員工群組
+        //            _talentRepository.SaveUserCV(users); // 讀取Word人員履歷表
+        //        }
+        //        catch (Exception) { }
+        //    }
+        //}
+        ///// <summary>
+        ///// 上傳員工經歷文字檔
+        ///// </summary>
+        ///// <param name="filesInfo"></param>
+        ///// <returns></returns>
+        //public bool UploadExperience(HttpPostedFileBase file)
+        //{
+        //    var ret = _talentRepository.UploadExperience(file);
+        //    return ret;
+        //}
+        ///// <summary>
+        ///// 上傳年度績效檔案
+        ///// </summary>
+        ///// <param name="filesInfo"></param>
+        ///// <returns></returns>
+        //public bool ImportFile(HttpPostedFileBase file)
+        //{
+        //    var ret = _talentRepository.ImportFile(file);
+        //    return ret;
+        //}
     }
 }

@@ -92,14 +92,6 @@ app.service('appService', ['$http', function ($http) {
     this.NotifyUpdate = function (o) {
         return $http.post('Home/NotifyUpdate', o);
     };
-    // 人才培訓資料庫
-    this.TalentUpdate = function (o) {
-        return $http.post('Home/TalentUpdate', o);
-    };
-    // 比對上傳版本
-    this.CompareLastestUpdate = (o) => {
-        return $http.post('Talent/CompareLastestUpdate', o);
-    };
     // 檢視user.db
     this.ReviewUserDB = (o) => {
         return $http.post('Home/ReviewUserDB', o);
@@ -108,6 +100,10 @@ app.service('appService', ['$http', function ($http) {
     this.ReviewProfessionDB = (o) => {
         return $http.post('Home/ReviewProfessionDB', o);
     };
+    //// 人才培訓資料庫
+    //this.TalentUpdate = function (o) {
+    //    return $http.post('Home/TalentUpdate', o);
+    //};
 
 }]);
 
@@ -303,35 +299,6 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
 
     }
 
-    // 儲存上傳檔案的檔名與最後修改時間
-    const filepicker = document.getElementById("filepicker");
-    filepicker.addEventListener("change", (event) => {
-        //$scope.filesInfo = [];
-        //const files = event.target.files;
-        //for (const file of files) {
-        //    $scope.filesInfo.push(file.name + "：" + file.lastModifiedDate);
-        //}
-        //appService.CompareLastestUpdate({ filesInfo: $scope.filesInfo }).then((ret) => {
-        //    var updateUsers = ret.data;
-        //    for (var file of files) {
-        //        for (var updateUser of updateUsers) {
-        //            if (file.name === updateUser) {
-        //                var trueOrFalse = true;
-        //            }
-        //        }
-        //    }
-        //});
-    });
-
-    // 人才培訓資料庫 <-- 培文
-    $scope.TalentUpdate = () => {
-        appService.TalentUpdate({ }).then((ret) => {
-            if (ret.data) {
-                console.log("succeed");
-            }
-        });
-    }
-
     // 檢視user.db
     $scope.ReviewUserDB = () => {
         appService.ReviewUserDB({})
@@ -353,6 +320,15 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
                 alert(ret.dada);
             });
     }
+
+    //// 人才培訓資料庫 <-- 培文
+    //$scope.TalentUpdate = () => {
+    //    appService.TalentUpdate({ }).then((ret) => {
+    //        if (ret.data) {
+    //            console.log("succeed");
+    //        }
+    //    });
+    //}
     
     // client to server
     formKpiElem.onsubmit = async (e) => {

@@ -67,49 +67,6 @@ namespace TEEmployee.Controllers
         // Web API
         // -----------------------------------------
 
-
-        /// <summary>
-        /// 比對上傳的檔案更新時間
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public JsonResult CompareLastestUpdate(List<string> filesInfo)
-        {
-            var ret = _service.CompareLastestUpdate(filesInfo);
-            return Json(ret);
-        }
-        /// <summary>
-        /// 上傳員工履歷表多檔, 並解析Word後存到SQL
-        /// </summary>
-        /// <param name="files"></param>
-        /// <returns></returns>
-        public ActionResult Uploaded(HttpPostedFileBase[] files)
-        {
-            _service.Uploaded(files);
-            return RedirectToAction("Index", "Home");
-        }
-        /// <summary>
-        /// 上傳員工經歷文字檔
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        public ActionResult UploadExperience(HttpPostedFileBase file)
-        {
-            var ret = _service.UploadExperience(file);
-            return RedirectToAction("Index", "Home");
-        }
-        /// <summary>
-        /// 上傳年度績效檔案
-        /// </summary>
-        /// <param name="importFile"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public JsonResult ImportFile(HttpPostedFileBase importFile)
-        {
-            if (importFile == null) return Json(new { Status = 0, Message = "No File Selected" });
-            var ret = _service.ImportFile(importFile);
-            return Json(ret);
-        }
         /// <summary>
         /// 上傳測評資料檔案
         /// </summary>
@@ -248,5 +205,40 @@ namespace TEEmployee.Controllers
             _service.Dispose();
             base.Dispose(disposing);
         }
+
+        // **************************** 上傳Word檔或文字檔解析 **************************** //
+
+        ///// <summary>
+        ///// 上傳年度績效檔案
+        ///// </summary>
+        ///// <param name="importFile"></param>
+        ///// <returns></returns>
+        //[HttpPost]
+        //public JsonResult ImportFile(HttpPostedFileBase importFile)
+        //{
+        //    if (importFile == null) return Json(new { Status = 0, Message = "No File Selected" });
+        //    var ret = _service.ImportFile(importFile);
+        //    return Json(ret);
+        //}
+        ///// <summary>
+        ///// 上傳員工履歷表多檔, 並解析Word後存到SQL
+        ///// </summary>
+        ///// <param name="files"></param>
+        ///// <returns></returns>
+        //public ActionResult Uploaded(HttpPostedFileBase[] files)
+        //{
+        //    _service.Uploaded(files);
+        //    return RedirectToAction("Index", "Home");
+        //}
+        ///// <summary>
+        ///// 上傳員工經歷文字檔
+        ///// </summary>
+        ///// <param name="file"></param>
+        ///// <returns></returns>
+        //public ActionResult UploadExperience(HttpPostedFileBase file)
+        //{
+        //    var ret = _service.UploadExperience(file);
+        //    return RedirectToAction("Index", "Home");
+        //}
     }
 }

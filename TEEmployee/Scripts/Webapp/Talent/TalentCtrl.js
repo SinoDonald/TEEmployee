@@ -269,29 +269,29 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
             });
     }
 
-    // 上傳年度績效檔案
-    $(document).on("click", "#btnUpload", function () {
-        var files = $("#importFile").get(0).files;
+    //// 上傳年度績效檔案
+    //$(document).on("click", "#btnUpload", function () {
+    //    var files = $("#importFile").get(0).files;
 
-        var formData = new FormData();
-        formData.append('importFile', files[0]);
+    //    var formData = new FormData();
+    //    formData.append('importFile', files[0]);
 
-        $.ajax({
-            url: 'Talent/ImportFile',
-            data: formData,
-            type: 'POST',
-            contentType: false,
-            processData: false,
-            success: function (data) {
-                if (data === true) {
-                    alert("更新完成");
-                }
-                else {
-                    alert("上傳格式錯誤");
-                }
-            }
-        });
-    });
+    //    $.ajax({
+    //        url: 'Talent/ImportFile',
+    //        data: formData,
+    //        type: 'POST',
+    //        contentType: false,
+    //        processData: false,
+    //        success: function (data) {
+    //            if (data === true) {
+    //                alert("更新完成");
+    //            }
+    //            else {
+    //                alert("上傳格式錯誤");
+    //            }
+    //        }
+    //    });
+    //});
 
 }]);
 

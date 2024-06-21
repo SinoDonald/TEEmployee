@@ -15,36 +15,6 @@ namespace TEEmployee.Models.Talent
         /// <returns></returns>
         bool SaveChoice(List<Ability> users);
         /// <summary>
-        /// 比對上傳的檔案更新時間
-        /// </summary>
-        /// <param name="users"></param>
-        /// <returns></returns>
-        List<string> CompareLastestUpdate(List<string> filesInfo);
-        /// <summary>
-        /// 取得現在SQL存檔的更新時間
-        /// </summary>
-        /// <param name="users"></param>
-        /// <returns></returns>
-        List<CV> GetLastestUpdate();
-        /// <summary>
-        /// 讀取Word人員履歷表
-        /// </summary>
-        /// <param name="users"></param>
-        /// <returns></returns>
-        List<CV> SaveUserCV(List<User> userGroups);
-        /// <summary>
-        /// 上傳員工經歷文字檔
-        /// </summary>
-        /// <param name="users"></param>
-        /// <returns></returns>
-        bool UploadExperience(HttpPostedFileBase file);
-        /// <summary>
-        /// 上傳年度績效檔案
-        /// </summary>
-        /// <param name="users"></param>
-        /// <returns></returns>
-        bool ImportFile(HttpPostedFileBase file);
-        /// <summary>
         /// 上傳測評資料檔案
         /// </summary>
         /// <param name="users"></param>
@@ -80,5 +50,26 @@ namespace TEEmployee.Models.Talent
         /// <returns></returns>
         bool DeleteTalent();
         void Dispose();
+
+        // ************** 上傳Word檔或文字檔解析 ************** //
+
+        ///// <summary>
+        ///// 上傳年度績效檔案
+        ///// </summary>
+        ///// <param name="users"></param>
+        ///// <returns></returns>
+        //bool ImportFile(HttpPostedFileBase file);
+        ///// <summary>
+        ///// 讀取Word人員履歷表
+        ///// </summary>
+        ///// <param name="users"></param>
+        ///// <returns></returns>
+        //List<CV> SaveUserCV(List<User> userGroups);
+        ///// <summary>
+        ///// 上傳員工經歷文字檔
+        ///// </summary>
+        ///// <param name="users"></param>
+        ///// <returns></returns>
+        //bool UploadExperience(HttpPostedFileBase file);
     }
 }

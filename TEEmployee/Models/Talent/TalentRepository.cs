@@ -54,8 +54,7 @@ namespace TEEmployee.Models.Talent
             MapCvProperty(cvExtra);
 
             User user = users.Where(x => x.empno.Equals(empno)).FirstOrDefault();
-            cvExtra.pic = cvExtra.empno;
-            ret.Add(cvExtra);
+            cvExtra.pic = cvExtra.empno;            
 
             if (user.department_manager)
             {
@@ -77,6 +76,7 @@ namespace TEEmployee.Models.Talent
                     }
                 }
             }
+            else { ret.Add(cvExtra); }
 
             return ret;
         }
@@ -330,7 +330,7 @@ namespace TEEmployee.Models.Talent
             catch (Exception) { }
             try { if (!String.IsNullOrEmpty(filter.educational)) { filterUserCVs = filterUserCVs.Where(x => EducationalName(x.educational).Equals(filter.educational)).ToList(); } } // 教育程度 
             catch (Exception) { }
-            try { if (!String.IsNullOrEmpty(filter.seniority)) { filterUserCVs = filterUserCVs.Where(x => x.seniority.Contains(filter.seniority)).ToList(); } } // 曾任職等
+            try { if (!String.IsNullOrEmpty(filter.seniority)) { filterUserCVs = filterUserCVs.Where(x => AllSeniority(x.seniority, filter.seniority)).ToList(); } } // 曾任職等
             catch (Exception) { }
             try { if (!String.IsNullOrEmpty(filter.nowPosition)) { filterUserCVs = filterUserCVs.Where(x => x.seniority.Split('\n')[2].Split('：')[0].Equals(filter.nowPosition)).ToList(); } } // 當前職等
             catch (Exception) { }
@@ -374,6 +374,13 @@ namespace TEEmployee.Models.Talent
 
             return educational;
         }
+        private bool AllSeniority(string seniority, string chooseName)
+        {
+            bool ret = false;
+            List<string> senioritys = seniority.Split(new char[] { '\n' }).Select(x => x.Split('：')[0]).ToList();
+            if(senioritys.Any(x => x.Equals(chooseName))) { ret = true; }
+            return ret;
+        }
         /// <summary>
         /// 儲存選項
         /// </summary>
@@ -409,634 +416,6 @@ namespace TEEmployee.Models.Talent
             catch (Exception) { }
 
             return ret;
-        }
-        /// <summary>
-        /// 比對上傳的檔案更新時間
-        /// </summary>
-        /// <param name="empno"></param>
-        /// <returns></returns>
-        public List<string> CompareLastestUpdate(List<string> filesInfo)
-        {
-            List<string> updateUsers = new List<string>();
-            List<FileInfo> fileInfoList = FileLastestUpdate(filesInfo); // 解析更新上傳時間
-            List<CV> usersCV = GetLastestUpdate();
-            foreach (FileInfo fileInfo in fileInfoList)
-            {
-                string userLastestUpdate = usersCV.Where(x => x.empno.Equals(fileInfo.empno)).Select(x => x.lastest_update).FirstOrDefault();
-                if (userLastestUpdate != null)
-                {
-                    CultureInfo culture = new CultureInfo("zh-TW");
-                    DateTime sqlDate = DateTime.Parse(userLastestUpdate, culture); // 資料庫的檔案更新時間
-                    DateTime fileDate = DateTime.Parse(fileInfo.lastModifiedDate, culture); // 要上傳檔案的更新時間
-                    if ((fileDate.Ticks - sqlDate.Ticks) > 0)
-                    {
-                        CV userCV = usersCV.Where(x => x.empno.Equals(fileInfo.empno)).FirstOrDefault();
-                        string addFileName = userCV.empno + userCV.name + ".docx";
-                        updateUsers.Add(addFileName);
-                    }
-                }
-            }
-            return updateUsers;
-        }
-        /// <summary>
-        /// 解析更新上傳時間
-        /// </summary>
-        /// <param name="empno"></param>
-        /// <returns></returns>
-        public List<FileInfo> FileLastestUpdate(List<string> filesInfo)
-        {
-            List<FileInfo> fileInfos = new List<FileInfo>();
-            foreach (string info in filesInfo)
-            {
-                try
-                {
-                    FileInfo fileInfo = new FileInfo();
-                    fileInfo.empno = Regex.Replace(Path.GetFileName(info.Split('：')[0]), "[^0-9]", ""); // 僅保留數字
-                    // 解析時間
-                    string lastModifiedDate = info.Split('：')[1];
-                    int GMTindex = lastModifiedDate.IndexOf("GMT");
-                    lastModifiedDate = lastModifiedDate.Substring(4, GMTindex - 4);
-                    CultureInfo culture = new CultureInfo("zh-TW");
-                    fileInfo.lastModifiedDate = DateTime.Parse(lastModifiedDate, culture).ToString();
-                    fileInfos.Add(fileInfo);
-                }
-                catch (Exception) { }
-            }
-            return fileInfos;
-        }
-        /// <summary>
-        /// 取得現在SQL存檔的更新時間
-        /// </summary>
-        /// <param name="empno"></param>
-        /// <returns></returns>
-        public List<CV> GetLastestUpdate()
-        {
-            List<CV> ret = new List<CV>();
-            try
-            {
-                _conn.Open();
-                using (var tran = _conn.BeginTransaction())
-                {
-                    string sql = @"SELECT * FROM userCVExtra";
-                    ret = _conn.Query<CV>(sql).ToList();
-
-                    tran.Commit();
-                }
-                _conn.Close();
-            }
-            catch (Exception) { }
-
-            return ret;
-        }
-        /// <summary>
-        /// 讀取Word人員履歷表
-        /// </summary>
-        /// <param name="empno"></param>
-        /// <returns></returns>
-        public List<CV> SaveUserCV(List<User> users)
-        {
-            List<CV> userCVs = new List<CV>();
-            string folderPath = Path.Combine(_appData, "Talent\\CV"); // 人員履歷表Word檔路徑
-            string[] files = Directory.GetFiles(folderPath);
-            foreach (string file in files)
-            {
-                string empno = Regex.Replace(Path.GetFileName(file), "[^0-9]", ""); // 僅保留數字
-                string lastUpdate = File.GetLastWriteTime(file).ToString();
-                if (File.Exists(file))
-                {
-                    if (Path.GetExtension(file).Contains(".doc"))
-                    {
-                        try
-                        {
-                            using (WordprocessingDocument doc = WordprocessingDocument.Open(file, false))
-                            {
-                                SavePicture(doc, empno); // 儲存圖片
-                                // 解析文字
-                                try
-                                {
-                                    CV userCV = ReadWord(doc, empno, lastUpdate);
-                                    // 加入使用者群組
-                                    User user = users.Where(x => x.empno.ToString().Equals(empno)).FirstOrDefault();
-                                    if (user != null)
-                                    {
-                                        try
-                                        {
-                                            userCV.group = user.group;
-                                            userCV.group_one = user.group_one;
-                                            userCV.group_two = user.group_two;
-                                            userCV.group_three = user.group_three;
-                                        }
-                                        catch (Exception)
-                                        {
-
-                                        }
-                                    }
-                                    // 加入三年績效考核與High Performance資訊
-                                    CV cv = GetAll(empno).FirstOrDefault();
-                                    if (cv != null)
-                                    {
-                                        userCV.advantage = cv.advantage; // 優勢
-                                        userCV.disadvantage = cv.disadvantage; // 劣勢
-                                        userCV.test = cv.test; // 工作成果
-                                        userCV.developed = cv.developed; // 待發展能力
-                                        userCV.future = cv.future; // 未來發展規劃
-                                        userCV.performance = cv.performance; // 近三年考績
-                                        userCV.position = cv.position; // 職位
-                                        userCV.choice1 = cv.choice1; // 專業性 – 專家的潛質
-                                        userCV.choice2 = cv.choice2; // 格局、視野大 - 舉一反三
-                                        userCV.choice3 = cv.choice3; // 責任心驅動的主動性 - 捨我其誰
-                                        userCV.choice4 = cv.choice4; // 建立系統性、計畫性的學習能力 - 學習力具體
-                                        userCV.choice5 = cv.choice5; // 適應變化的韌性 - 懂得取捨、不放棄
-                                    }
-                                    else { userCV.performance = ""; }
-                                    if (!String.IsNullOrEmpty(userCV.empno) && !String.IsNullOrEmpty(userCV.name))
-                                    {
-                                        userCVs.Add(userCV);
-                                    }
-                                }
-                                catch (Exception)
-                                {
-
-                                }
-                            }
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-                    }
-                }
-            }
-            try
-            {
-                UpdateUserCV(userCVs); // 更新資料庫
-            }
-            catch (Exception) { }
-
-            // 移除資料夾內檔案
-            try
-            {
-                DirectoryInfo directory = new DirectoryInfo(folderPath);
-                directory.EnumerateFiles().ToList().ForEach(f => f.Delete());
-                directory.EnumerateDirectories().ToList().ForEach(d => d.Delete(true));
-            }
-            catch (Exception) { }
-
-            return userCVs;
-        }
-        /// <summary>
-        /// 儲存圖片
-        /// </summary>
-        /// <param name="empno"></param>
-        /// <returns></returns>
-        public void SavePicture(WordprocessingDocument doc, string empno)
-        {
-            string savePath = HttpContext.Current.Server.MapPath("~/Content/CV");
-            int imgCount = doc.MainDocumentPart.GetPartsOfType<ImagePart>().Count();
-            if (imgCount > 0)
-            {
-                List<ImagePart> imgParts = new List<ImagePart>(doc.MainDocumentPart.ImageParts);
-                foreach (ImagePart imgPart in imgParts)
-                {
-                    Image img = Image.FromStream(imgPart.GetStream());
-                    //string imgfileName = imgPart.Uri.OriginalString.Substring(imgPart.Uri.OriginalString.LastIndexOf("/") + 1);
-                    img.Save(savePath + "\\" + empno + ".jpg");
-                }
-            }
-        }
-        /// <summary>
-        /// 解析文字
-        /// </summary>
-        /// <param name="empno"></param>
-        /// <returns></returns>
-        private CV ReadWord(WordprocessingDocument doc, string empno, string lastUpdate)
-        {
-            CV userCV = new CV();
-            userCV.empno = empno;
-            userCV.lastest_update = lastUpdate;
-
-            List<Table> tables = doc.MainDocumentPart.Document.Body.Elements<Table>().ToList();
-            foreach (Table table in tables)
-            {
-                //取得TableRow陣列
-                var rows = table.Elements<TableRow>().ToArray();
-                for (int i = 0; i < rows.Length; i++)
-                {
-                    //取得TableRow的TableCell陣列
-                    var cells = rows[i].Elements<TableCell>().ToArray();
-                    // 儲存Word檔中所有的資訊
-                    string title = cells[0].InnerText;
-                    switch (title)
-                    {
-                        case "姓　　名：":
-                            userCV.name = cells[1].InnerText;
-                            break;
-                        case "出生日期：":
-                            userCV.birthday = cells[1].InnerText;
-                            break;
-                        case "出 生 地：":
-                            userCV.address = cells[1].InnerText;
-                            break;
-                        case "學　　歷：":
-                            //userCV.educational = cells[1].Elements<Paragraph>().Select(o => o.InnerText).FirstOrDefault();
-                            userCV.educational = ReturnEducationalParagraph(cells);
-                            break;
-                        case "專　　長：":
-                            userCV.expertise = ReturnParagraph(cells);
-                            break;
-                        case "論　　著：":
-                            userCV.treatise = ReturnParagraph(cells);
-                            break;
-                        case "語文能力：":
-                            userCV.language = ReturnParagraph(cells);
-                            break;
-                        case "參加學術組織：":
-                            userCV.academic = ReturnParagraph(cells);
-                            break;
-                        case "專業證照：":
-                            userCV.license = ReturnParagraph(cells);
-                            break;
-                        case "技術訓練：":
-                            userCV.training = ReturnParagraph(cells);
-                            break;
-                        case "榮　　譽：":
-                            userCV.honor = ReturnParagraph(cells);
-                            break;
-                        case "經歷概要：":
-                            userCV.experience = ReturnParagraph(cells);
-                            break;
-                        case "經　　歷：":
-                            Tuple<string, string> projectAndSeiority = ReturnProjectParagraph(cells);
-                            userCV.project = projectAndSeiority.Item1;
-                            userCV.seniority = projectAndSeiority.Item2;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-
-            return userCV;
-        }
-        /// <summary>
-        /// 回傳Word解析後的文字並分段
-        /// </summary>
-        /// <param name="empno"></param>
-        /// <returns></returns>
-        private string ReturnParagraph(TableCell[] cells)
-        {
-            string returnParagraph = string.Empty;
-            foreach (string paragraph in cells[1].Elements<Paragraph>().Select(o => o.InnerText).ToList())
-            {
-                returnParagraph += paragraph + "\n";
-            }
-            if (returnParagraph.Length > 2 || returnParagraph.Equals("\n"))
-            {
-                returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
-            }
-            return returnParagraph;
-        }
-        /// <summary>
-        /// 大學學歷以上才加入
-        /// </summary>
-        /// <param name="empno"></param>
-        /// <returns></returns>
-        private string ReturnEducationalParagraph(TableCell[] cells)
-        {
-            string returnParagraph = string.Empty;
-            foreach (string paragraph in cells[1].Elements<Paragraph>().Select(o => o.InnerText).ToList())
-            {
-                if (paragraph.Contains("大學") || paragraph.Contains("學士") || paragraph.Contains("碩士") || paragraph.Contains("博士"))
-                {
-                    string[] splitString = paragraph.Split('　');
-                    try
-                    {
-                        returnParagraph += splitString[2] + splitString[3] + "　" + splitString[0] + "　" + splitString[1] + "\n";
-                    }
-                    catch (Exception) { }
-                }
-            }
-            if (returnParagraph.Length > 2)
-            {
-                returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
-            }
-            return returnParagraph;
-        }
-        /// <summary>
-        /// 經歷文字解析
-        /// </summary>
-        /// <param name="empno"></param>
-        /// <returns></returns>
-        private Tuple<string, string> ReturnProjectParagraph(TableCell[] cells)
-        {
-            // 讀取jobTitle資料庫內公司所有職等
-            List<string> jobTitles = new List<string>();
-            string sql = @"SELECT * FROM jobTitle";
-            jobTitles = _conn.Query<JobTitle>(sql).ToList().Select(x => x.name/*.Replace("(", "").Replace(")", "")*/).ToList();
-            foreach (string jobTitle in _conn.Query<JobTitle>(sql).ToList().Select(x => x.name.Replace("(", "").Replace(")", "")).ToList())
-            {
-                if (jobTitles.Where(x => x.Equals(jobTitle)).FirstOrDefault() == null)
-                {
-                    jobTitles.Add(jobTitle);
-                }
-            }
-            jobTitles.Add("製圖工程師");
-            jobTitles.Add("正工程師");
-            jobTitles.Add("工程師");
-            jobTitles.Add("繪圖員");
-            jobTitles.Add("實習生");
-
-            string returnParagraph = string.Empty;
-            foreach (string paragraph in cells[1].Elements<Paragraph>().Select(o => o.InnerText).ToList())
-            {
-                string changeParagraph = paragraph.Replace(" ", "").Replace("（", "(").Replace("）", ")");
-                if (changeParagraph.Contains(")"))
-                {
-                    int index = changeParagraph.IndexOf(")");
-                    changeParagraph = changeParagraph.Insert(index + 1, " ");
-                    // 任職區間, 如果"~"前後都是數字則結尾補上空白
-                    if (changeParagraph.Contains("迄今"))
-                    {
-                        index = changeParagraph.IndexOf("迄今");
-                        changeParagraph = changeParagraph.Insert(index + 2, " ");
-                    }
-                    else
-                    {
-                        try
-                        {
-                            Regex regex = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))\s*(\d*\.\d*)~(\d*\.\d*)", RegexOptions.IgnoreCase);
-                            //將比對後集合傳給 MatchCollection
-                            MatchCollection matches = null;
-                            matches = regex.Matches(changeParagraph);
-                            Match match = matches[0];
-                            if (match.Groups[3].Value != null)
-                            {
-                                index = changeParagraph.IndexOf(match.Groups[3].Value);
-                                changeParagraph = changeParagraph.Insert(index + match.Groups[3].Value.Length, " ");
-                            }
-                        }
-                        catch (Exception) { }
-                    }
-                    // 檢查職等是否包含(), 並在職稱前面加空白
-                    if (jobTitles.Any(s => changeParagraph.Contains(s)))
-                    {
-                        Regex rg = new Regex(@"(\([_a-zA-Z0-9]\))");
-                        if (rg.IsMatch(changeParagraph))
-                        {
-                            string jobTitle = jobTitles.Where(s => changeParagraph.Contains(s)).FirstOrDefault();
-                            index = changeParagraph.IndexOf(jobTitle);
-                            if (changeParagraph.Substring(index - 1, 1) == "(")
-                            {
-                                changeParagraph = changeParagraph.Insert(index - 1, " ");
-                                string position = changeParagraph.Split(' ')[changeParagraph.Split(' ').Length - 1].Replace("(", "").Replace(")", "");
-                                string changeName = ChangeName(position); // 職稱文字判斷
-                                changeParagraph = changeParagraph.Replace(changeParagraph.Split(' ')[changeParagraph.Split(' ').Length - 1], changeName);
-                            }
-                            else
-                            {
-                                changeParagraph = changeParagraph.Insert(index, " ");
-                                string changeName = ChangeName(changeParagraph.Split(' ')[changeParagraph.Split(' ').Length - 1]); // 職稱文字判斷
-                                changeParagraph = changeParagraph.Replace(changeParagraph.Split(' ')[changeParagraph.Split(' ').Length - 1], changeName);
-                            }
-                        }
-                    }
-                }
-
-                returnParagraph += changeParagraph + "\n";
-            }
-            if (returnParagraph.Length > 2)
-            {
-                returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
-            }
-            // 中興工程職務經歷
-            List<Seniority> senioritys = ProjectRegex(returnParagraph);
-            //string seniority = Seniority(senioritys);
-            string seniority = string.Empty;
-
-            return new Tuple<string, string>(returnParagraph, seniority);
-        }
-        /// <summary>
-        /// 上傳員工經歷文字檔
-        /// </summary>
-        /// <param name="empno"></param>
-        /// <returns></returns>
-        public bool UploadExperience(HttpPostedFileBase file)
-        {
-            List<CV> userCVs = new List<CV>(); // 員工公司年資
-            List<Seniority> senioritys = new List<Seniority>(); // 員工職務年資
-            // 讀取文字檔
-            byte[] byts = new byte[file.InputStream.Length];
-            file.InputStream.Read(byts, 0, byts.Length);
-            var requestContent = Encoding.Default.GetString(byts);
-            string[] array = requestContent.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            int totalCount = array.Length; // 導入的記錄總數 
-            for (int i = 0; i < array.Length; i++)
-            {
-                string item = array[i].Split('|')[0];
-                if (item.Equals("基本資料"))
-                {
-                    CV userCV = new CV();
-                    userCV.empno = array[i].Split('|')[1];
-                    userCV.companyYears = array[i].Split('|')[array[i].Split('|').Length - 1];
-                    userCVs.Add(userCV);
-                }
-                else if (item.Equals("職等歷程"))
-                {
-                    Seniority userSeniority = new Seniority();
-                    userSeniority.empno = array[i].Split('|')[1];
-                    userSeniority.start = array[i].Split('|')[2];
-                    userSeniority.position = array[i].Split('|')[array[i].Split('|').Length - 1].Split(' ')[1];
-                    senioritys.Add(userSeniority);
-                }
-                else if (item.Equals("學歷"))
-                {
-                    CV userCV = userCVs.Where(x => x.empno.Equals(array[i].Split('|')[1])).FirstOrDefault();
-                    userCV.educational += array[i].Split('|')[5] + " (" + array[i].Split('|')[6] + "年畢業)　" + array[i].Split('|')[3] + "　" + array[i].Split('|')[4] + "\n";
-                }
-            }
-
-            List<string> empnos = senioritys.Select(x => x.empno).Distinct().ToList();
-            foreach (string empno in empnos)
-            {
-                string workYear = string.Empty;
-                try
-                {
-                    string sql = @"SELECT * FROM userCVExtra WHERE empno=@empno";
-                    string project = _conn.Query<CV>(sql, new { empno }).ToList().FirstOrDefault().project;
-                    workYear = ProjectRegex(project).LastOrDefault().start;
-                }
-                catch (Exception ex)
-                {
-                    string error = ex.Message + "\n" + ex.ToString();
-                }
-
-                CV userCV = userCVs.Where(x => x.empno.Equals(empno)).FirstOrDefault();
-                string seniority = string.Empty;
-                List<Seniority> userSenioritys = senioritys.Where(x => x.empno.Equals(empno)).OrderByDescending(x => x.start).ToList();
-                for (int i = 0; i < userSenioritys.Count; i++)
-                {
-                    if (i.Equals(0))
-                    {
-                        // 西元轉民國
-                        DateTime companyDT = DateTime.Parse(userCV.companyYears);
-                        DateTime seniorityDT = DateTime.Parse(userSenioritys[i].start);
-                        CultureInfo culture = new CultureInfo("zh-TW");
-                        culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-                        string companyDate = companyDT.ToString("yyy.MM.dd", culture);
-                        if (workYear != "")
-                        {
-                            seniority += "工作年資：" + workYear + "~迄今\n公司年資：" + companyDate + "~迄今\n";
-                        }
-                        else
-                        {
-                            seniority += "工作年資：\n公司年資：" + companyDate + "~迄今\n";
-                        }
-                        string seniorityDate = seniorityDT.ToString("yyy.MM.dd", culture);
-                        seniority += userSenioritys[i].position + "：" + seniorityDate + "~迄今\n";
-                    }
-                    else
-                    {
-                        DateTime start = DateTime.Parse(userSenioritys[i].start);
-                        DateTime end = DateTime.Parse(userSenioritys[i - 1].start);
-                        (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, end);
-                        seniority += userSenioritys[i].position + "：" + calcYMD.y + "年" + calcYMD.m + "月\n"/* + calcYMD.d + "日\n"*/;
-                    }
-                }
-                if (seniority.Length > 2)
-                {
-                    seniority = seniority.Substring(0, seniority.Length - 1);
-                }
-                if (userCV.educational.Length > 2)
-                {
-                    userCV.educational = userCV.educational.Substring(0, userCV.educational.Length - 1);
-                }
-                userCV.seniority = seniority;
-            }
-
-
-            bool ret = SaveExperience(userCVs); // 儲存員工經歷
-
-            return ret;
-        }
-        /// <summary>
-        /// Regex解析文字後, 儲存工作、公司與職位年資
-        /// </summary>
-        /// <param name="empno"></param>
-        /// <returns></returns>
-        public List<Seniority> ProjectRegex(string project)
-        {
-            List<Seniority> senioritys = new List<Seniority>();
-            string company = string.Empty;
-            foreach (string readLine in project.Split('\n'))
-            {
-                try
-                {
-                    Regex rg = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))");
-                    if (rg.IsMatch(readLine))
-                    {
-                        Seniority seniority = new Seniority();
-                        // 先查詢有幾個space
-                        int spaceCount = readLine.Split(' ').Length;
-                        if (spaceCount <= 3)
-                        {
-                            rg = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))\ (\d*\.\d*)~(.*)\ (.*)", RegexOptions.IgnoreCase);
-                            MatchCollection m = rg.Matches(readLine); //將比對後集合傳給 MatchCollection
-                            Match match = m[0];
-                            string[] startStr = match.Groups[2].Value.Split('.');
-                            string start = startStr[0].PadLeft(3, '0') + "." + startStr[1].PadLeft(2, '0');
-                            seniority.start = start;
-                            if (match.Groups[3].Value.Equals("迄今"))
-                            {
-                                string year = (DateTime.Now.Year - 1911).ToString("000");
-                                string month = DateTime.Now.Month.ToString("00");
-                                seniority.end = year + "." + month;
-                                seniority.now = true;
-                            }
-                            else
-                            {
-                                string[] endStr = match.Groups[3].Value.Split('.');
-                                string end = endStr[0].PadLeft(3, '0') + "." + endStr[1].PadLeft(2, '0');
-                                seniority.end = end;
-                            }
-                            if (match.Groups[4].Value.Contains("中興"))
-                            {
-                                company = "中興工程";
-                                seniority.company = company;
-                            }
-                            else
-                            {
-                                rg = new Regex(@"(\([\u4e00-\u9fa5]\))\ (\d*\.\d*)~(.*)\ (.*)", RegexOptions.IgnoreCase);
-                                if (rg.IsMatch(readLine))
-                                {
-                                    company = match.Groups[4].Value;
-                                    seniority.company = company;
-                                }
-                                else
-                                {
-                                    seniority.company = company;
-                                    seniority.department = match.Groups[4].Value;
-                                }
-                            }
-                            senioritys.Add(seniority);
-                        }
-                        else
-                        {
-                            rg = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))\ (\d*\.\d*)~(.*)\ (.*)\ (.*)", RegexOptions.IgnoreCase);
-                            MatchCollection m = rg.Matches(readLine); //將比對後集合傳給 MatchCollection
-                            Match match = m[0];
-                            string[] startStr = match.Groups[2].Value.Split('.');
-                            string start = startStr[0].PadLeft(3, '0') + "." + startStr[1].PadLeft(2, '0');
-                            seniority.start = start;
-                            if (match.Groups[3].Value.Equals("迄今"))
-                            {
-                                string year = (DateTime.Now.Year - 1911).ToString("000");
-                                string month = DateTime.Now.Month.ToString("00");
-                                seniority.end = year + "." + month;
-                                seniority.now = true;
-                            }
-                            else
-                            {
-                                string[] endStr = match.Groups[3].Value.Split('.');
-                                string end = endStr[0].PadLeft(3, '0') + "." + endStr[1].PadLeft(2, '0');
-                                seniority.end = end;
-                            }
-                            seniority.company = company;
-                            seniority.department = match.Groups[4].Value;
-                            if (match.Groups[5].Value.Contains("兼"))
-                            {
-                                string changeName = match.Groups[5].Value.Replace("重大", "").Replace("（", "(").Replace("）", ")");
-                                int index = changeName.IndexOf('兼');
-                                seniority.position = changeName.Substring(0, index);
-                                seniority.manager = changeName.Substring(index + 1, changeName.Length - index - 1);
-                            }
-                            else if (match.Groups[5].Value.Contains("/"))
-                            {
-                                string changeName = match.Groups[5].Value.Replace("重大", "").Replace("（", "(").Replace("）", ")");
-                                int index = changeName.IndexOf('/');
-                                seniority.position = changeName.Substring(0, index);
-                                seniority.manager = changeName.Substring(index + 1, changeName.Length - index - 1);
-                            }
-                            else if (match.Groups[5].Value.Contains(")") && match.Groups[5].Value.IndexOf(')') != match.Groups[5].Value.Length - 1)
-                            {
-                                string changeName = match.Groups[5].Value.Replace("重大", "").Replace("（", "(").Replace("）", ")");
-                                int index = changeName.IndexOf(')');
-                                seniority.position = changeName.Substring(0, index + 1);
-                                seniority.manager = changeName.Substring(index + 1, changeName.Length - index - 1);
-                            }
-                            else
-                            {
-                                string changeName = match.Groups[5].Value.Replace("（", "(").Replace("）", ")");
-                                changeName = ChangeName(changeName); // 職稱文字判斷
-                                seniority.position = changeName;
-                            }
-                            senioritys.Add(seniority);
-                        }
-                    }
-                }
-                catch (Exception) { }
-            }
-
-            return senioritys;
         }
         /// <summary>
         /// 中興工程資料
@@ -1425,115 +804,6 @@ namespace TEEmployee.Models.Talent
             return new Tuple<List<Ability>, string>(users, error);
         }
         /// <summary>
-        /// 上傳年度績效檔案
-        /// </summary>
-        /// <param name="empno"></param>
-        /// <returns></returns>
-        public bool ImportFile(HttpPostedFileBase file)
-        {
-            bool ret = false;
-            List<CV> userCVs = new List<CV>();
-            try
-            {
-                if (Path.GetExtension(file.FileName) != ".xlsx") throw new ApplicationException("請使用Excel 2007(.xlsx)格式");
-                var stream = file.InputStream;
-                using (SpreadsheetDocument doc = SpreadsheetDocument.Open(stream, false))
-                {
-                    WorksheetPart worksheetPart = (WorksheetPart)doc.WorkbookPart.GetPartById(doc.WorkbookPart.Workbook.Descendants<Sheet>().First().Id);
-                    Worksheet sheet = worksheetPart.Worksheet;
-                    //取得共用字串表
-                    SharedStringTable strTable = doc.WorkbookPart.SharedStringTablePart.SharedStringTable;
-                    int i = 0;
-                    foreach (Row row in sheet.Descendants<Row>())
-                    {
-                        if (i > 0)
-                        {
-                            int j = 0;
-                            CV userCV = new CV();
-                            foreach (Cell cell in row.Descendants<Cell>())
-                            {
-                                if (j.Equals(0))
-                                {
-                                    userCV.empno = GetCellText(cell, strTable);
-                                }
-                                else if (j.Equals(1))
-                                {
-                                    userCV.name = GetCellText(cell, strTable);
-                                }
-                                else
-                                {
-                                    userCV.performance += GetCellText(cell, strTable) + "\n";
-                                }
-                                j++;
-                            }
-                            if (String.IsNullOrEmpty(userCV.performance))
-                            {
-                                userCV.performance = "";
-                            }
-                            else if (userCV.performance.Length > 2 || userCV.performance.Equals("\n"))
-                            {
-                                userCV.performance = userCV.performance.Substring(0, userCV.performance.Length - 1);
-                            }
-                            userCVs.Add(userCV);
-                        }
-                        i++;
-                    }
-                }
-
-                ret = SavePerformance(userCVs); // 儲存年度績效
-            }
-            catch (Exception)
-            {
-
-            }
-
-            return ret;
-        }
-        /// <summary>
-        /// 解析年度績效文字
-        /// </summary>
-        /// <param name="empno"></param>
-        /// <returns></returns>
-        private string GetCellText(Cell cell, SharedStringTable strTable)
-        {
-            if (cell.ChildElements.Count == 0)
-            {
-                return null;
-            }
-            string val = cell.CellValue.InnerText;
-            //若為共享字串時的處理邏輯
-            if (cell.DataType != null && cell.DataType == CellValues.SharedString)
-            {
-                val = strTable.ChildElements[int.Parse(val)].InnerText;
-            }
-            return val;
-        }
-        /// <summary>
-        /// 儲存年度績效
-        /// </summary>
-        /// <param name="empno"></param>
-        /// <returns></returns>
-        public bool SavePerformance(List<CV> userCVs)
-        {
-            bool ret = false;
-
-            try
-            {
-                _conn.Open();
-                using (var tran = _conn.BeginTransaction())
-                {
-                    string sql = @"UPDATE userCVExtra SET performance=@performance WHERE empno=@empno";
-                    _conn.Execute(sql, userCVs, tran);
-                    tran.Commit();
-                    ret = true;
-                }
-                _conn.Close();
-            }
-            catch (Exception) { }
-
-            return ret;
-        }
-        /// <summary>
         /// 儲存員工經歷
         /// </summary>
         /// <param name="empno"></param>
@@ -1784,5 +1054,668 @@ namespace TEEmployee.Models.Talent
         {
             return;
         }
+
+
+        // **************************** 上傳Word檔或文字檔解析 **************************** //
+
+        ///// <summary>
+        ///// 上傳年度績效檔案
+        ///// </summary>
+        ///// <param name="empno"></param>
+        ///// <returns></returns>
+        //public bool ImportFile(HttpPostedFileBase file)
+        //{
+        //    bool ret = false;
+        //    List<CV> userCVs = new List<CV>();
+        //    try
+        //    {
+        //        if (Path.GetExtension(file.FileName) != ".xlsx") throw new ApplicationException("請使用Excel 2007(.xlsx)格式");
+        //        var stream = file.InputStream;
+        //        using (SpreadsheetDocument doc = SpreadsheetDocument.Open(stream, false))
+        //        {
+        //            WorksheetPart worksheetPart = (WorksheetPart)doc.WorkbookPart.GetPartById(doc.WorkbookPart.Workbook.Descendants<Sheet>().First().Id);
+        //            Worksheet sheet = worksheetPart.Worksheet;
+        //            //取得共用字串表
+        //            SharedStringTable strTable = doc.WorkbookPart.SharedStringTablePart.SharedStringTable;
+        //            int i = 0;
+        //            foreach (Row row in sheet.Descendants<Row>())
+        //            {
+        //                if (i > 0)
+        //                {
+        //                    int j = 0;
+        //                    CV userCV = new CV();
+        //                    foreach (Cell cell in row.Descendants<Cell>())
+        //                    {
+        //                        if (j.Equals(0))
+        //                        {
+        //                            userCV.empno = GetCellText(cell, strTable);
+        //                        }
+        //                        else if (j.Equals(1))
+        //                        {
+        //                            userCV.name = GetCellText(cell, strTable);
+        //                        }
+        //                        else
+        //                        {
+        //                            userCV.performance += GetCellText(cell, strTable) + "\n";
+        //                        }
+        //                        j++;
+        //                    }
+        //                    if (String.IsNullOrEmpty(userCV.performance))
+        //                    {
+        //                        userCV.performance = "";
+        //                    }
+        //                    else if (userCV.performance.Length > 2 || userCV.performance.Equals("\n"))
+        //                    {
+        //                        userCV.performance = userCV.performance.Substring(0, userCV.performance.Length - 1);
+        //                    }
+        //                    userCVs.Add(userCV);
+        //                }
+        //                i++;
+        //            }
+        //        }
+
+        //        ret = SavePerformance(userCVs); // 儲存年度績效
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //    }
+
+        //    return ret;
+        //}
+        ///// <summary>
+        ///// 解析年度績效文字
+        ///// </summary>
+        ///// <param name="empno"></param>
+        ///// <returns></returns>
+        //private string GetCellText(Cell cell, SharedStringTable strTable)
+        //{
+        //    if (cell.ChildElements.Count == 0)
+        //    {
+        //        return null;
+        //    }
+        //    string val = cell.CellValue.InnerText;
+        //    //若為共享字串時的處理邏輯
+        //    if (cell.DataType != null && cell.DataType == CellValues.SharedString)
+        //    {
+        //        val = strTable.ChildElements[int.Parse(val)].InnerText;
+        //    }
+        //    return val;
+        //}
+        ///// <summary>
+        ///// 儲存年度績效
+        ///// </summary>
+        ///// <param name="empno"></param>
+        ///// <returns></returns>
+        //public bool SavePerformance(List<CV> userCVs)
+        //{
+        //    bool ret = false;
+
+        //    try
+        //    {
+        //        _conn.Open();
+        //        using (var tran = _conn.BeginTransaction())
+        //        {
+        //            string sql = @"UPDATE userCVExtra SET performance=@performance WHERE empno=@empno";
+        //            _conn.Execute(sql, userCVs, tran);
+        //            tran.Commit();
+        //            ret = true;
+        //        }
+        //        _conn.Close();
+        //    }
+        //    catch (Exception) { }
+
+        //    return ret;
+        //}
+        ///// <summary>
+        ///// 讀取Word人員履歷表
+        ///// </summary>
+        ///// <param name="empno"></param>
+        ///// <returns></returns>
+        //public List<CV> SaveUserCV(List<User> users)
+        //{
+        //    List<CV> userCVs = new List<CV>();
+        //    string folderPath = Path.Combine(_appData, "Talent\\CV"); // 人員履歷表Word檔路徑
+        //    string[] files = Directory.GetFiles(folderPath);
+        //    foreach (string file in files)
+        //    {
+        //        string empno = Regex.Replace(Path.GetFileName(file), "[^0-9]", ""); // 僅保留數字
+        //        string lastUpdate = File.GetLastWriteTime(file).ToString();
+        //        if (File.Exists(file))
+        //        {
+        //            if (Path.GetExtension(file).Contains(".doc"))
+        //            {
+        //                try
+        //                {
+        //                    using (WordprocessingDocument doc = WordprocessingDocument.Open(file, false))
+        //                    {
+        //                        SavePicture(doc, empno); // 儲存圖片
+        //                        // 解析文字
+        //                        try
+        //                        {
+        //                            CV userCV = ReadWord(doc, empno, lastUpdate);
+        //                            // 加入使用者群組
+        //                            User user = users.Where(x => x.empno.ToString().Equals(empno)).FirstOrDefault();
+        //                            if (user != null)
+        //                            {
+        //                                try
+        //                                {
+        //                                    userCV.group = user.group;
+        //                                    userCV.group_one = user.group_one;
+        //                                    userCV.group_two = user.group_two;
+        //                                    userCV.group_three = user.group_three;
+        //                                }
+        //                                catch (Exception)
+        //                                {
+
+        //                                }
+        //                            }
+        //                            // 加入三年績效考核與High Performance資訊
+        //                            CV cv = GetAll(empno).FirstOrDefault();
+        //                            if (cv != null)
+        //                            {
+        //                                userCV.advantage = cv.advantage; // 優勢
+        //                                userCV.disadvantage = cv.disadvantage; // 劣勢
+        //                                userCV.test = cv.test; // 工作成果
+        //                                userCV.developed = cv.developed; // 待發展能力
+        //                                userCV.future = cv.future; // 未來發展規劃
+        //                                userCV.performance = cv.performance; // 近三年考績
+        //                                userCV.position = cv.position; // 職位
+        //                                userCV.choice1 = cv.choice1; // 專業性 – 專家的潛質
+        //                                userCV.choice2 = cv.choice2; // 格局、視野大 - 舉一反三
+        //                                userCV.choice3 = cv.choice3; // 責任心驅動的主動性 - 捨我其誰
+        //                                userCV.choice4 = cv.choice4; // 建立系統性、計畫性的學習能力 - 學習力具體
+        //                                userCV.choice5 = cv.choice5; // 適應變化的韌性 - 懂得取捨、不放棄
+        //                            }
+        //                            else { userCV.performance = ""; }
+        //                            if (!String.IsNullOrEmpty(userCV.empno) && !String.IsNullOrEmpty(userCV.name))
+        //                            {
+        //                                userCVs.Add(userCV);
+        //                            }
+        //                        }
+        //                        catch (Exception)
+        //                        {
+
+        //                        }
+        //                    }
+        //                }
+        //                catch (Exception)
+        //                {
+
+        //                }
+        //            }
+        //        }
+        //    }
+        //    try
+        //    {
+        //        UpdateUserCV(userCVs); // 更新資料庫
+        //    }
+        //    catch (Exception) { }
+
+        //    // 移除資料夾內檔案
+        //    try
+        //    {
+        //        DirectoryInfo directory = new DirectoryInfo(folderPath);
+        //        directory.EnumerateFiles().ToList().ForEach(f => f.Delete());
+        //        directory.EnumerateDirectories().ToList().ForEach(d => d.Delete(true));
+        //    }
+        //    catch (Exception) { }
+
+        //    return userCVs;
+        //}
+        ///// <summary>
+        ///// 儲存圖片
+        ///// </summary>
+        ///// <param name="empno"></param>
+        ///// <returns></returns>
+        //public void SavePicture(WordprocessingDocument doc, string empno)
+        //{
+        //    string savePath = HttpContext.Current.Server.MapPath("~/Content/CV");
+        //    int imgCount = doc.MainDocumentPart.GetPartsOfType<ImagePart>().Count();
+        //    if (imgCount > 0)
+        //    {
+        //        List<ImagePart> imgParts = new List<ImagePart>(doc.MainDocumentPart.ImageParts);
+        //        foreach (ImagePart imgPart in imgParts)
+        //        {
+        //            Image img = Image.FromStream(imgPart.GetStream());
+        //            //string imgfileName = imgPart.Uri.OriginalString.Substring(imgPart.Uri.OriginalString.LastIndexOf("/") + 1);
+        //            img.Save(savePath + "\\" + empno + ".jpg");
+        //        }
+        //    }
+        //}
+        ///// <summary>
+        ///// 解析文字
+        ///// </summary>
+        ///// <param name="empno"></param>
+        ///// <returns></returns>
+        //private CV ReadWord(WordprocessingDocument doc, string empno, string lastUpdate)
+        //{
+        //    CV userCV = new CV();
+        //    userCV.empno = empno;
+        //    userCV.lastest_update = lastUpdate;
+
+        //    List<Table> tables = doc.MainDocumentPart.Document.Body.Elements<Table>().ToList();
+        //    foreach (Table table in tables)
+        //    {
+        //        //取得TableRow陣列
+        //        var rows = table.Elements<TableRow>().ToArray();
+        //        for (int i = 0; i < rows.Length; i++)
+        //        {
+        //            //取得TableRow的TableCell陣列
+        //            var cells = rows[i].Elements<TableCell>().ToArray();
+        //            // 儲存Word檔中所有的資訊
+        //            string title = cells[0].InnerText;
+        //            switch (title)
+        //            {
+        //                case "姓　　名：":
+        //                    userCV.name = cells[1].InnerText;
+        //                    break;
+        //                case "出生日期：":
+        //                    userCV.birthday = cells[1].InnerText;
+        //                    break;
+        //                case "出 生 地：":
+        //                    userCV.address = cells[1].InnerText;
+        //                    break;
+        //                case "學　　歷：":
+        //                    //userCV.educational = cells[1].Elements<Paragraph>().Select(o => o.InnerText).FirstOrDefault();
+        //                    userCV.educational = ReturnEducationalParagraph(cells);
+        //                    break;
+        //                case "專　　長：":
+        //                    userCV.expertise = ReturnParagraph(cells);
+        //                    break;
+        //                case "論　　著：":
+        //                    userCV.treatise = ReturnParagraph(cells);
+        //                    break;
+        //                case "語文能力：":
+        //                    userCV.language = ReturnParagraph(cells);
+        //                    break;
+        //                case "參加學術組織：":
+        //                    userCV.academic = ReturnParagraph(cells);
+        //                    break;
+        //                case "專業證照：":
+        //                    userCV.license = ReturnParagraph(cells);
+        //                    break;
+        //                case "技術訓練：":
+        //                    userCV.training = ReturnParagraph(cells);
+        //                    break;
+        //                case "榮　　譽：":
+        //                    userCV.honor = ReturnParagraph(cells);
+        //                    break;
+        //                case "經歷概要：":
+        //                    userCV.experience = ReturnParagraph(cells);
+        //                    break;
+        //                case "經　　歷：":
+        //                    Tuple<string, string> projectAndSeiority = ReturnProjectParagraph(cells);
+        //                    userCV.project = projectAndSeiority.Item1;
+        //                    userCV.seniority = projectAndSeiority.Item2;
+        //                    break;
+        //                default:
+        //                    break;
+        //            }
+        //        }
+        //    }
+
+        //    return userCV;
+        //}
+        ///// <summary>
+        ///// 回傳Word解析後的文字並分段
+        ///// </summary>
+        ///// <param name="empno"></param>
+        ///// <returns></returns>
+        //private string ReturnParagraph(TableCell[] cells)
+        //{
+        //    string returnParagraph = string.Empty;
+        //    foreach (string paragraph in cells[1].Elements<Paragraph>().Select(o => o.InnerText).ToList())
+        //    {
+        //        returnParagraph += paragraph + "\n";
+        //    }
+        //    if (returnParagraph.Length > 2 || returnParagraph.Equals("\n"))
+        //    {
+        //        returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
+        //    }
+        //    return returnParagraph;
+        //}
+        ///// <summary>
+        ///// 大學學歷以上才加入
+        ///// </summary>
+        ///// <param name="empno"></param>
+        ///// <returns></returns>
+        //private string ReturnEducationalParagraph(TableCell[] cells)
+        //{
+        //    string returnParagraph = string.Empty;
+        //    foreach (string paragraph in cells[1].Elements<Paragraph>().Select(o => o.InnerText).ToList())
+        //    {
+        //        if (paragraph.Contains("大學") || paragraph.Contains("學士") || paragraph.Contains("碩士") || paragraph.Contains("博士"))
+        //        {
+        //            string[] splitString = paragraph.Split('　');
+        //            try
+        //            {
+        //                returnParagraph += splitString[2] + splitString[3] + "　" + splitString[0] + "　" + splitString[1] + "\n";
+        //            }
+        //            catch (Exception) { }
+        //        }
+        //    }
+        //    if (returnParagraph.Length > 2)
+        //    {
+        //        returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
+        //    }
+        //    return returnParagraph;
+        //}
+        ///// <summary>
+        ///// 經歷文字解析
+        ///// </summary>
+        ///// <param name="empno"></param>
+        ///// <returns></returns>
+        //private Tuple<string, string> ReturnProjectParagraph(TableCell[] cells)
+        //{
+        //    // 讀取jobTitle資料庫內公司所有職等
+        //    List<string> jobTitles = new List<string>();
+        //    string sql = @"SELECT * FROM jobTitle";
+        //    jobTitles = _conn.Query<JobTitle>(sql).ToList().Select(x => x.name/*.Replace("(", "").Replace(")", "")*/).ToList();
+        //    foreach (string jobTitle in _conn.Query<JobTitle>(sql).ToList().Select(x => x.name.Replace("(", "").Replace(")", "")).ToList())
+        //    {
+        //        if (jobTitles.Where(x => x.Equals(jobTitle)).FirstOrDefault() == null)
+        //        {
+        //            jobTitles.Add(jobTitle);
+        //        }
+        //    }
+        //    jobTitles.Add("製圖工程師");
+        //    jobTitles.Add("正工程師");
+        //    jobTitles.Add("工程師");
+        //    jobTitles.Add("繪圖員");
+        //    jobTitles.Add("實習生");
+
+        //    string returnParagraph = string.Empty;
+        //    foreach (string paragraph in cells[1].Elements<Paragraph>().Select(o => o.InnerText).ToList())
+        //    {
+        //        string changeParagraph = paragraph.Replace(" ", "").Replace("（", "(").Replace("）", ")");
+        //        if (changeParagraph.Contains(")"))
+        //        {
+        //            int index = changeParagraph.IndexOf(")");
+        //            changeParagraph = changeParagraph.Insert(index + 1, " ");
+        //            // 任職區間, 如果"~"前後都是數字則結尾補上空白
+        //            if (changeParagraph.Contains("迄今"))
+        //            {
+        //                index = changeParagraph.IndexOf("迄今");
+        //                changeParagraph = changeParagraph.Insert(index + 2, " ");
+        //            }
+        //            else
+        //            {
+        //                try
+        //                {
+        //                    Regex regex = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))\s*(\d*\.\d*)~(\d*\.\d*)", RegexOptions.IgnoreCase);
+        //                    //將比對後集合傳給 MatchCollection
+        //                    MatchCollection matches = null;
+        //                    matches = regex.Matches(changeParagraph);
+        //                    Match match = matches[0];
+        //                    if (match.Groups[3].Value != null)
+        //                    {
+        //                        index = changeParagraph.IndexOf(match.Groups[3].Value);
+        //                        changeParagraph = changeParagraph.Insert(index + match.Groups[3].Value.Length, " ");
+        //                    }
+        //                }
+        //                catch (Exception) { }
+        //            }
+        //            // 檢查職等是否包含(), 並在職稱前面加空白
+        //            if (jobTitles.Any(s => changeParagraph.Contains(s)))
+        //            {
+        //                Regex rg = new Regex(@"(\([_a-zA-Z0-9]\))");
+        //                if (rg.IsMatch(changeParagraph))
+        //                {
+        //                    string jobTitle = jobTitles.Where(s => changeParagraph.Contains(s)).FirstOrDefault();
+        //                    index = changeParagraph.IndexOf(jobTitle);
+        //                    if (changeParagraph.Substring(index - 1, 1) == "(")
+        //                    {
+        //                        changeParagraph = changeParagraph.Insert(index - 1, " ");
+        //                        string position = changeParagraph.Split(' ')[changeParagraph.Split(' ').Length - 1].Replace("(", "").Replace(")", "");
+        //                        string changeName = ChangeName(position); // 職稱文字判斷
+        //                        changeParagraph = changeParagraph.Replace(changeParagraph.Split(' ')[changeParagraph.Split(' ').Length - 1], changeName);
+        //                    }
+        //                    else
+        //                    {
+        //                        changeParagraph = changeParagraph.Insert(index, " ");
+        //                        string changeName = ChangeName(changeParagraph.Split(' ')[changeParagraph.Split(' ').Length - 1]); // 職稱文字判斷
+        //                        changeParagraph = changeParagraph.Replace(changeParagraph.Split(' ')[changeParagraph.Split(' ').Length - 1], changeName);
+        //                    }
+        //                }
+        //            }
+        //        }
+
+        //        returnParagraph += changeParagraph + "\n";
+        //    }
+        //    if (returnParagraph.Length > 2)
+        //    {
+        //        returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
+        //    }
+        //    // 中興工程職務經歷
+        //    List<Seniority> senioritys = ProjectRegex(returnParagraph);
+        //    //string seniority = Seniority(senioritys);
+        //    string seniority = string.Empty;
+
+        //    return new Tuple<string, string>(returnParagraph, seniority);
+        //}
+        ///// <summary>
+        ///// 上傳員工經歷文字檔
+        ///// </summary>
+        ///// <param name="empno"></param>
+        ///// <returns></returns>
+        //public bool UploadExperience(HttpPostedFileBase file)
+        //{
+        //    List<CV> userCVs = new List<CV>(); // 員工公司年資
+        //    List<Seniority> senioritys = new List<Seniority>(); // 員工職務年資
+        //    // 讀取文字檔
+        //    byte[] byts = new byte[file.InputStream.Length];
+        //    file.InputStream.Read(byts, 0, byts.Length);
+        //    var requestContent = Encoding.Default.GetString(byts);
+        //    string[] array = requestContent.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+        //    int totalCount = array.Length; // 導入的記錄總數 
+        //    for (int i = 0; i < array.Length; i++)
+        //    {
+        //        string item = array[i].Split('|')[0];
+        //        if (item.Equals("基本資料"))
+        //        {
+        //            CV userCV = new CV();
+        //            userCV.empno = array[i].Split('|')[1];
+        //            userCV.companyYears = array[i].Split('|')[array[i].Split('|').Length - 1];
+        //            userCVs.Add(userCV);
+        //        }
+        //        else if (item.Equals("職等歷程"))
+        //        {
+        //            Seniority userSeniority = new Seniority();
+        //            userSeniority.empno = array[i].Split('|')[1];
+        //            userSeniority.start = array[i].Split('|')[2];
+        //            userSeniority.position = array[i].Split('|')[array[i].Split('|').Length - 1].Split(' ')[1];
+        //            senioritys.Add(userSeniority);
+        //        }
+        //        else if (item.Equals("學歷"))
+        //        {
+        //            CV userCV = userCVs.Where(x => x.empno.Equals(array[i].Split('|')[1])).FirstOrDefault();
+        //            userCV.educational += array[i].Split('|')[5] + " (" + array[i].Split('|')[6] + "年畢業)　" + array[i].Split('|')[3] + "　" + array[i].Split('|')[4] + "\n";
+        //        }
+        //    }
+
+        //    List<string> empnos = senioritys.Select(x => x.empno).Distinct().ToList();
+        //    foreach (string empno in empnos)
+        //    {
+        //        string workYear = string.Empty;
+        //        try
+        //        {
+        //            string sql = @"SELECT * FROM userCVExtra WHERE empno=@empno";
+        //            string project = _conn.Query<CV>(sql, new { empno }).ToList().FirstOrDefault().project;
+        //            workYear = ProjectRegex(project).LastOrDefault().start;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            string error = ex.Message + "\n" + ex.ToString();
+        //        }
+
+        //        CV userCV = userCVs.Where(x => x.empno.Equals(empno)).FirstOrDefault();
+        //        string seniority = string.Empty;
+        //        List<Seniority> userSenioritys = senioritys.Where(x => x.empno.Equals(empno)).OrderByDescending(x => x.start).ToList();
+        //        for (int i = 0; i < userSenioritys.Count; i++)
+        //        {
+        //            if (i.Equals(0))
+        //            {
+        //                // 西元轉民國
+        //                DateTime companyDT = DateTime.Parse(userCV.companyYears);
+        //                DateTime seniorityDT = DateTime.Parse(userSenioritys[i].start);
+        //                CultureInfo culture = new CultureInfo("zh-TW");
+        //                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+        //                string companyDate = companyDT.ToString("yyy.MM.dd", culture);
+        //                if (workYear != "")
+        //                {
+        //                    seniority += "工作年資：" + workYear + "~迄今\n公司年資：" + companyDate + "~迄今\n";
+        //                }
+        //                else
+        //                {
+        //                    seniority += "工作年資：\n公司年資：" + companyDate + "~迄今\n";
+        //                }
+        //                string seniorityDate = seniorityDT.ToString("yyy.MM.dd", culture);
+        //                seniority += userSenioritys[i].position + "：" + seniorityDate + "~迄今\n";
+        //            }
+        //            else
+        //            {
+        //                DateTime start = DateTime.Parse(userSenioritys[i].start);
+        //                DateTime end = DateTime.Parse(userSenioritys[i - 1].start);
+        //                (DateTime st, DateTime ed, int y, int m, int d) calcYMD = CalcYMD(start, end);
+        //                seniority += userSenioritys[i].position + "：" + calcYMD.y + "年" + calcYMD.m + "月\n"/* + calcYMD.d + "日\n"*/;
+        //            }
+        //        }
+        //        if (seniority.Length > 2)
+        //        {
+        //            seniority = seniority.Substring(0, seniority.Length - 1);
+        //        }
+        //        if (userCV.educational.Length > 2)
+        //        {
+        //            userCV.educational = userCV.educational.Substring(0, userCV.educational.Length - 1);
+        //        }
+        //        userCV.seniority = seniority;
+        //    }
+
+
+        //    bool ret = SaveExperience(userCVs); // 儲存員工經歷
+
+        //    return ret;
+        //}
+        ///// <summary>
+        ///// Regex解析文字後, 儲存工作、公司與職位年資
+        ///// </summary>
+        ///// <param name="empno"></param>
+        ///// <returns></returns>
+        //public List<Seniority> ProjectRegex(string project)
+        //{
+        //    List<Seniority> senioritys = new List<Seniority>();
+        //    string company = string.Empty;
+        //    foreach (string readLine in project.Split('\n'))
+        //    {
+        //        try
+        //        {
+        //            Regex rg = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))");
+        //            if (rg.IsMatch(readLine))
+        //            {
+        //                Seniority seniority = new Seniority();
+        //                // 先查詢有幾個space
+        //                int spaceCount = readLine.Split(' ').Length;
+        //                if (spaceCount <= 3)
+        //                {
+        //                    rg = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))\ (\d*\.\d*)~(.*)\ (.*)", RegexOptions.IgnoreCase);
+        //                    MatchCollection m = rg.Matches(readLine); //將比對後集合傳給 MatchCollection
+        //                    Match match = m[0];
+        //                    string[] startStr = match.Groups[2].Value.Split('.');
+        //                    string start = startStr[0].PadLeft(3, '0') + "." + startStr[1].PadLeft(2, '0');
+        //                    seniority.start = start;
+        //                    if (match.Groups[3].Value.Equals("迄今"))
+        //                    {
+        //                        string year = (DateTime.Now.Year - 1911).ToString("000");
+        //                        string month = DateTime.Now.Month.ToString("00");
+        //                        seniority.end = year + "." + month;
+        //                        seniority.now = true;
+        //                    }
+        //                    else
+        //                    {
+        //                        string[] endStr = match.Groups[3].Value.Split('.');
+        //                        string end = endStr[0].PadLeft(3, '0') + "." + endStr[1].PadLeft(2, '0');
+        //                        seniority.end = end;
+        //                    }
+        //                    if (match.Groups[4].Value.Contains("中興"))
+        //                    {
+        //                        company = "中興工程";
+        //                        seniority.company = company;
+        //                    }
+        //                    else
+        //                    {
+        //                        rg = new Regex(@"(\([\u4e00-\u9fa5]\))\ (\d*\.\d*)~(.*)\ (.*)", RegexOptions.IgnoreCase);
+        //                        if (rg.IsMatch(readLine))
+        //                        {
+        //                            company = match.Groups[4].Value;
+        //                            seniority.company = company;
+        //                        }
+        //                        else
+        //                        {
+        //                            seniority.company = company;
+        //                            seniority.department = match.Groups[4].Value;
+        //                        }
+        //                    }
+        //                    senioritys.Add(seniority);
+        //                }
+        //                else
+        //                {
+        //                    rg = new Regex(@"(\([\u4e00-\u9fa5_a-zA-Z0-9]\))\ (\d*\.\d*)~(.*)\ (.*)\ (.*)", RegexOptions.IgnoreCase);
+        //                    MatchCollection m = rg.Matches(readLine); //將比對後集合傳給 MatchCollection
+        //                    Match match = m[0];
+        //                    string[] startStr = match.Groups[2].Value.Split('.');
+        //                    string start = startStr[0].PadLeft(3, '0') + "." + startStr[1].PadLeft(2, '0');
+        //                    seniority.start = start;
+        //                    if (match.Groups[3].Value.Equals("迄今"))
+        //                    {
+        //                        string year = (DateTime.Now.Year - 1911).ToString("000");
+        //                        string month = DateTime.Now.Month.ToString("00");
+        //                        seniority.end = year + "." + month;
+        //                        seniority.now = true;
+        //                    }
+        //                    else
+        //                    {
+        //                        string[] endStr = match.Groups[3].Value.Split('.');
+        //                        string end = endStr[0].PadLeft(3, '0') + "." + endStr[1].PadLeft(2, '0');
+        //                        seniority.end = end;
+        //                    }
+        //                    seniority.company = company;
+        //                    seniority.department = match.Groups[4].Value;
+        //                    if (match.Groups[5].Value.Contains("兼"))
+        //                    {
+        //                        string changeName = match.Groups[5].Value.Replace("重大", "").Replace("（", "(").Replace("）", ")");
+        //                        int index = changeName.IndexOf('兼');
+        //                        seniority.position = changeName.Substring(0, index);
+        //                        seniority.manager = changeName.Substring(index + 1, changeName.Length - index - 1);
+        //                    }
+        //                    else if (match.Groups[5].Value.Contains("/"))
+        //                    {
+        //                        string changeName = match.Groups[5].Value.Replace("重大", "").Replace("（", "(").Replace("）", ")");
+        //                        int index = changeName.IndexOf('/');
+        //                        seniority.position = changeName.Substring(0, index);
+        //                        seniority.manager = changeName.Substring(index + 1, changeName.Length - index - 1);
+        //                    }
+        //                    else if (match.Groups[5].Value.Contains(")") && match.Groups[5].Value.IndexOf(')') != match.Groups[5].Value.Length - 1)
+        //                    {
+        //                        string changeName = match.Groups[5].Value.Replace("重大", "").Replace("（", "(").Replace("）", ")");
+        //                        int index = changeName.IndexOf(')');
+        //                        seniority.position = changeName.Substring(0, index + 1);
+        //                        seniority.manager = changeName.Substring(index + 1, changeName.Length - index - 1);
+        //                    }
+        //                    else
+        //                    {
+        //                        string changeName = match.Groups[5].Value.Replace("（", "(").Replace("）", ")");
+        //                        changeName = ChangeName(changeName); // 職稱文字判斷
+        //                        seniority.position = changeName;
+        //                    }
+        //                    senioritys.Add(seniority);
+        //                }
+        //            }
+        //        }
+        //        catch (Exception) { }
+        //    }
+
+        //    return senioritys;
+        //}
     }
 }

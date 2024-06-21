@@ -134,19 +134,6 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
         /// <summary>
-        /// 人才培訓資料庫
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public JsonResult TalentUpdate()
-        {
-            var ret = "";
-            TalentService _service = new TalentService();
-            _service.TalentUpdate();
-
-            return Json(ret);
-        }
-        /// <summary>
         /// 檢視user.db
         /// </summary>
         /// <returns></returns>
@@ -414,5 +401,18 @@ namespace TEEmployee.Controllers
             }
         }
 
+        ///// <summary>
+        ///// 人才培訓資料庫
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpPost]
+        //public JsonResult TalentUpdate()
+        //{
+        //    var ret = "";
+        //    TalentService _service = new TalentService();
+        //    _service.TalentUpdate();
+
+        //    return Json(ret);
+        //}
     }
 }

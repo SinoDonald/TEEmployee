@@ -82,7 +82,7 @@
         </button>
     </div>
 
-    <div>
+    @*<div>
         <h4 class="lime">人才培育資料庫</h4>
         <div class="row">
             <div class="col-sm-4">
@@ -91,7 +91,6 @@
                         <h4 class="text-success">員工履歷Word檔(多檔)</h4>
                         @using (Html.BeginForm("Uploaded", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
-                            @*因為要多個上傳 所以要用到multiple屬性*@
                             <input type="file" id="filepicker" name="files" multiple />
                             <input type="submit" value="上傳" />
                         }
@@ -112,7 +111,7 @@
             </div>
 
         </div>
-    </div>
+    </div>*@
 
     <div>
         <h4 class="lime">其他</h4>
