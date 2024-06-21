@@ -37,11 +37,13 @@ namespace TEEmployee.Models.Training
         /// <summary>
         /// 培訓課程開始日期
         /// </summary>
-        public DateTime start_date { get; set; }
+        public string start_date { get; set; }
+        //public DateTime start_date { get; set; }
         /// <summary>
         /// 培訓課程結束日期
         /// </summary>
-        public DateTime end_date { get; set; }
+        public string end_date { get; set; }
+        //public DateTime end_date { get; set; }
         /// <summary>
         /// 培訓課程總時數
         /// </summary>

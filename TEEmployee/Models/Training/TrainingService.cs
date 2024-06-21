@@ -30,6 +30,7 @@ namespace TEEmployee.Models.Training
         {
             var ret = _trainingRepository.GetAllRecords();
             var settings = new JsonSerializerSettings { DateFormatString = "yyyy/MM/dd" };
+
             return JsonConvert.SerializeObject(ret, settings);
         }
 
@@ -96,8 +97,10 @@ namespace TEEmployee.Models.Training
                         record.training_id = parts[4];
                         record.title = parts[5];
                         record.organization = parts[6];
-                        record.start_date = DateTime.Parse(parts[7]);
-                        record.end_date = DateTime.Parse(parts[8]);
+                        //record.start_date = DateTime.Parse(parts[7]);
+                        //record.end_date = DateTime.Parse(parts[8]);
+                        record.start_date = parts[7];
+                        record.end_date = parts[8];
                         record.duration = float.Parse(parts[9]);
 
                         records.Add(record);
@@ -178,7 +181,8 @@ namespace TEEmployee.Models.Training
                 }
             }
 
-            records = records.Where(x => x.start_date.Year - 1911 == year).ToList();
+            //records = records.Where(x => x.start_date.Year - 1911 == year).ToList();
+            records = records.Where(x => int.Parse(x.start_date.Substring(0, 4)) - 1911 == year).ToList();
             records = records.OrderBy(x => x.start_date).ThenBy(x => x.training_id).ToList();
 
             List<User> sorted_users = users.OrderBy(x => x.group_one).ThenBy(x => x.empno).ToList();
@@ -249,7 +253,8 @@ namespace TEEmployee.Models.Training
                         row++;
 
                         sheet.Cells[row, 1].Value = item.title;
-                        sheet.Cells[row, 2].Value = item.start_date.ToString("yyyy/MM/dd");
+                        //sheet.Cells[row, 2].Value = item.start_date.ToString("yyyy/MM/dd");
+                        sheet.Cells[row, 2].Value = item.start_date;
                         sheet.Cells[row, 3].Value = item.duration;
 
                     }
