@@ -236,5 +236,29 @@ namespace TEEmployee.Models.GKpi
             }
 
         }
+
+        public bool DeleteAll()
+        {
+            _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                try
+                {
+                    _conn.Execute(@"DELETE FROM KpiItem", tran);
+                    _conn.Execute(@"DELETE FROM KpiModel", tran);
+
+                    tran.Commit();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
+            }
+
+        }
+
     }
 }

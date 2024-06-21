@@ -67,6 +67,10 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Forum/DeleteAll', o);
     };
 
+    this.DeleteKpi = function (o) {
+        return $http.post('GKpi/DeleteAll', o);
+    };
+
     // =================== 培文 ===================
 
     // 刪除群組規劃
@@ -420,6 +424,16 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
 
     $scope.DeleteForum = () => {
         appService.DeleteForum({})
+            .then((ret) => {
+                alert("Successfully deleted");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+
+    $scope.DeleteKpi = () => {
+        appService.DeleteKpi({})
             .then((ret) => {
                 alert("Successfully deleted");
             })

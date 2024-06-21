@@ -7,16 +7,16 @@
     <div class="form-group d-flex justify-content-between">
         <h3>請選擇要給予建議的主管(可複選)</h3>
         @if (Session["leader"] is object)
-         {
-             <div>
-                @*<a class="btn btn-outline-primary btn-lg mr-2" href="Assessment" role="button">名單設定</a>*@                
+        {
+            <div>
+                @*<a class="btn btn-outline-primary btn-lg mr-2" href="Assessment" role="button">名單設定</a>*@
                 <button type="button" ng-click="GetAllScoreManagers()" class="btn btn-outline-primary btn-lg mr-2" data-toggle="modal" data-target="#exampleModal">名單設定</button>
-             </div>
-             <div>
+            </div>
+            <div>
                 <button type="button" ng-click="CheckState()" class="btn btn-outline-primary btn-lg mr-2" data-toggle="modal" data-target="#exampleModalLong">填寫情況</button>
                 @*<a ng-click="CheckState()" class="btn btn-outline-primary btn-lg mr-2" role="button">填寫情況</a>*@
-             </div>
-         }
+            </div>
+        }
         <div>
             <a class="btn btn-outline-primary btn-lg mr-2" href="Assessment" role="button">返回</a>
         </div>
@@ -29,7 +29,7 @@
                     <h5 class="card-title">{{item.Employee.name}} {{item.Employee.dutyName}}</h5>
                     <p class="card-text">{{item.Employee.empno}}</p>
                     <input type="submit" value="填問卷" ng-if="item.State != 'sent'" ng-click="ManagerSuggest(item.Employee)" class="btn btn-warning" />
-                    <button class="btn btn-success" ng-if="item.State == 'sent'" ng-click="ManagerSuggest(item.Employee)">已填寫</button>                    
+                    <button class="btn btn-success" ng-if="item.State == 'sent'" ng-click="ManagerSuggest(item.Employee)">已填寫</button>
                 </div>
             </div>
         </div>
@@ -48,22 +48,30 @@
                 <div class="modal-body">
                     <img ng-if="loading" class="mx-auto d-block" src="~/Content/assets/img/Walk.gif" />
                     @*<h4>尚未填寫</h4>*@
-                    <h4 class="mt-2">設計</h4>
-                    <ul class="list-group">
-                        <li ng-repeat="item in manageResponseStates | filter: 'unfinished' | filter: '設計'" ng-bind="item.Employee.name" class="list-group-item"></li>
-                    </ul>
-                    <h4 class="mt-2">規劃</h4>
-                    <ul class="list-group">
-                        <li ng-repeat="item in manageResponseStates | filter: 'unfinished' | filter: '規劃'" ng-bind="item.Employee.name" class="list-group-item"></li>
-                    </ul>
-                    <h4 class="mt-2">專管</h4>
-                    <ul class="list-group">
-                        <li ng-repeat="item in manageResponseStates | filter: 'unfinished' | filter: '專管'" ng-bind="item.Employee.name" class="list-group-item"></li>
-                    </ul>
-                    <h4 class="mt-2">行政</h4>
-                    <ul class="list-group">
-                        <li ng-repeat="item in manageResponseStates | filter: 'unfinished' | filter: '行政'" ng-bind="item.Employee.name" class="list-group-item"></li>
-                    </ul>
+
+                    <div ng-repeat="g in groupList">
+                        <h4 class="mt-2">{{g}}</h4>
+                        <ul class="list-group">
+                            <li ng-repeat="item in manageResponseStates | filter: 'unfinished' | filter: g" ng-bind="item.Employee.name" class="list-group-item"></li>
+                        </ul>
+                    </div>
+
+                    @*<h4 class="mt-2">設計</h4>
+                        <ul class="list-group">
+                            <li ng-repeat="item in manageResponseStates | filter: 'unfinished' | filter: '設計'" ng-bind="item.Employee.name" class="list-group-item"></li>
+                        </ul>
+                        <h4 class="mt-2">規劃</h4>
+                        <ul class="list-group">
+                            <li ng-repeat="item in manageResponseStates | filter: 'unfinished' | filter: '規劃'" ng-bind="item.Employee.name" class="list-group-item"></li>
+                        </ul>
+                        <h4 class="mt-2">專管</h4>
+                        <ul class="list-group">
+                            <li ng-repeat="item in manageResponseStates | filter: 'unfinished' | filter: '專管'" ng-bind="item.Employee.name" class="list-group-item"></li>
+                        </ul>
+                        <h4 class="mt-2">行政</h4>
+                        <ul class="list-group">
+                            <li ng-repeat="item in manageResponseStates | filter: 'unfinished' | filter: '行政'" ng-bind="item.Employee.name" class="list-group-item"></li>
+                        </ul>*@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
@@ -73,7 +81,7 @@
         </div>
     </div>
 
-   
+
     <!--Set Score Manager Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
