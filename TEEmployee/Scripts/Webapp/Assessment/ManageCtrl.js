@@ -123,6 +123,10 @@ app.controller('ManagerOptionCtrl', ['$scope', '$location', 'appService', '$root
             .then((ret) => {
                 $scope.manageResponseStates = ret.data;
                 $scope.loading = false;
+                $scope.groupList = [...new Set(ret.data.map(x => x.Employee.group).filter(x => x !== ''))]; // For all department
+
+                if ($scope.groupList.includes('設計') && $scope.groupList.includes('規劃') && $scope.groupList.includes('專管'))
+                    $scope.groupList = ['設計', '規劃', '專管', '行政'];
             })
             .catch((ret) => {
                 alert('Error');

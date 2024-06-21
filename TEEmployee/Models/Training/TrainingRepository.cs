@@ -23,6 +23,13 @@ namespace TEEmployee.Models.Training
             string sql = @"SELECT * FROM Record";
             var ret = _conn.Query<Record>(sql).ToList();
 
+            ret.ForEach(x => {
+                string[] sparts = x.start_date.Split(' ');
+                string[] eparts = x.end_date.Split(' ');
+                x.start_date = sparts[0];
+                x.end_date = eparts[0];
+                });
+
             return ret;
         }
 
@@ -30,6 +37,13 @@ namespace TEEmployee.Models.Training
         {
             string sql = @"SELECT * FROM Record WHERE empno=@empno";
             var ret = _conn.Query<Record>(sql, new { empno }).ToList();
+
+            ret.ForEach(x => {
+                string[] sparts = x.start_date.Split(' ');
+                string[] eparts = x.end_date.Split(' ');
+                x.start_date = sparts[0];
+                x.end_date = eparts[0];
+            });
 
             return ret;
         }
@@ -40,10 +54,14 @@ namespace TEEmployee.Models.Training
 
             using (var tran = _conn.BeginTransaction())
             {
+                // Just scan table
                 string sql = @"INSERT INTO Record (empno, roc_year, training_type, training_id, title, organization, start_date, end_date, duration) 
-                        VALUES(@empno, @roc_year, @training_type, @training_id, @title, @organization, @start_date, @end_date, @duration) 
-                        ON CONFLICT(empno, training_id) 
-                        DO NOTHING";
+                        VALUES(@empno, @roc_year, @training_type, @training_id, @title, @organization, @start_date, @end_date, @duration)";
+
+                //string sql = @"INSERT INTO Record (empno, roc_year, training_type, training_id, title, organization, start_date, end_date, duration) 
+                //        VALUES(@empno, @roc_year, @training_type, @training_id, @title, @organization, @start_date, @end_date, @duration) 
+                //        ON CONFLICT(empno, training_id) 
+                //        DO NOTHING";
 
                 var ret = _conn.Execute(sql, records);
 

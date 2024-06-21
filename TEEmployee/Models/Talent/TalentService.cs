@@ -124,7 +124,19 @@ namespace TEEmployee.Models.Talent
                 //}
                 //else
                 //{
+
+                if (user.gid == "24")
+                {                    
                     groups = new List<string> { "全部顯示", "規劃", "設計", "專管" };
+                }
+                else // For other departments
+                {
+                    groups = new List<string> { "全部顯示"};
+                    List<string> grouplist = allEmployees.Select(x => x.group).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                    groups.AddRange(grouplist);
+                }
+
+                //groups = new List<string> { "全部顯示", "規劃", "設計", "專管" };
                 //}
             }
             else

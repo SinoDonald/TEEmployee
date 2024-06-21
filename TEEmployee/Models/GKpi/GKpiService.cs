@@ -154,7 +154,19 @@ namespace TEEmployee.Models.GKpi
             List<string> groups = (_userRepository as UserRepository).GetSubGroups(empno);
 
             if (user.department_manager)
-                groups.AddRange(new List<string>() { "規劃", "設計", "專管" });
+            {
+                if (user.gid == "24")
+                {
+                    groups.AddRange(new List<string>() { "規劃", "設計", "專管" });
+                }
+                else // For other departments
+                {
+                    var allEmployees = _userRepository.GetAll();
+                    List<string> grouplist = allEmployees.Select(x => x.group).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                    groups.AddRange(grouplist);
+                }
+            }
+                
             if (user.group_manager)
                 groups.Add(user.group);
 
@@ -249,8 +261,10 @@ namespace TEEmployee.Models.GKpi
         /// <param name="input">年度KPI項目Stream</param>
         /// <returns>個人年度KPI項目列舉</returns>
         /// <remarks>上傳EXCEL檔，匯入資料庫</remarks>
-        public List<KpiModel> UploadKpiFile(Stream input)
+        public List<KpiModel> UploadKpiFile(Stream input, string empno)
         {
+            string gid = _userRepository.Get(empno).gid;
+
             // Insert KpiModels then Insert Kpiitems
             List<KpiModel> processedInput = ProcessKpiXlsx(input);
             List<KpiModel> insertedModels = InsertKpiModelsNew();
@@ -263,104 +277,194 @@ namespace TEEmployee.Models.GKpi
             // 專管組長有細分
             // 規劃組員無細分
 
-            foreach (var model in insertedModels)
+            if (gid == "24")
             {
-                KpiModel kpm = new KpiModel();
 
-                if (model.role == "技術經理")
+                foreach (var model in insertedModels)
                 {
-                    kpm = processedInput.Where(x => x.role == "技術經理").FirstOrDefault();
-                }
-                else if (model.role == "重大計畫經理")
-                {
-                    kpm = processedInput.Where(x => x.role == "重大計畫經理").FirstOrDefault();
-                }
-                else if (model.role == "一般計畫經理")
-                {
-                    kpm = processedInput.Where(x => x.role == "一般計畫經理").FirstOrDefault();
-                }
-                else if (model.role == "組長")
-                {
-                    // 管理 kpi = Excel 組長 kpi
+                    KpiModel kpm = new KpiModel();
 
-                    if (model.kpi_type == "管理")
+                    if (model.role == "技術經理")
                     {
-                        if (model.group_name == "專管")
+                        kpm = processedInput.Where(x => x.role == "技術經理").FirstOrDefault();
+                    }
+                    else if (model.role == "重大計畫經理")
+                    {
+                        kpm = processedInput.Where(x => x.role == "重大計畫經理").FirstOrDefault();
+                    }
+                    else if (model.role == "一般計畫經理")
+                    {
+                        kpm = processedInput.Where(x => x.role == "一般計畫經理").FirstOrDefault();
+                    }
+                    else if (model.role == "組長")
+                    {
+                        // 管理 kpi = Excel 組長 kpi
+
+                        if (model.kpi_type == "管理")
                         {
-                            User user = _userRepository.Get(model.empno);
-                            kpm = processedInput.Where(x =>
-                                x.role.Contains(user.group_one.Substring(0, 2)) &&
-                                x.role.Contains("組長")).FirstOrDefault();
+                            if (model.group_name == "專管")
+                            {
+                                User user = _userRepository.Get(model.empno);
+                                kpm = processedInput.Where(x =>
+                                    x.role.Contains(user.group_one.Substring(0, 2)) &&
+                                    x.role.Contains("組長")).FirstOrDefault();
+                            }
+                            else
+                            {
+                                kpm = processedInput.Where(x =>
+                                    x.role.Contains(model.group_name.Substring(0, 2)) &&
+                                    x.role.Contains("組長")).FirstOrDefault();
+                            }
+                        }
+                        // 專業 kpi = Excel 組員 kpi
+                        else
+                        {
+                            if (model.group_name == "專管" || model.group_name == "設計")
+                            {
+                                User user = _userRepository.Get(model.empno);
+                                kpm = processedInput.Where(x =>
+                                    x.role.Contains(user.group_one.Substring(0, 2)) &&
+                                    x.role.Contains("組員")).FirstOrDefault();
+                            }
+                            else
+                            {
+                                kpm = processedInput.Where(x =>
+                                    x.role.Contains(model.group_name.Substring(0, 2)) &&
+                                    x.role.Contains("組員")).FirstOrDefault();
+                            }
+                        }
+
+
+                    }
+                    else if (model.role == "一般工程師")
+                    {
+                        if (model.group_name == "排水管線組" || model.group_name == "營運規劃組" || model.group_name == "交通工程組" || model.group_name == "用地開發組")
+                        {
+                            kpm = processedInput.Where(x => x.role == "規劃群組組員").FirstOrDefault();
                         }
                         else
                         {
                             kpm = processedInput.Where(x =>
-                                x.role.Contains(model.group_name.Substring(0, 2)) &&
-                                x.role.Contains("組長")).FirstOrDefault();
+                            x.role.Contains(model.group_name.Substring(0, 2)) &&
+                            x.role.Contains("組員")).FirstOrDefault();
                         }
+
+
                     }
-                    // 專業 kpi = Excel 組員 kpi
-                    else
+                    else if (model.role == "行政專員")
                     {
-                        if (model.group_name == "專管" || model.group_name == "設計")
-                        {
-                            User user = _userRepository.Get(model.empno);
-                            kpm = processedInput.Where(x =>
-                                x.role.Contains(user.group_one.Substring(0, 2)) &&
-                                x.role.Contains("組員")).FirstOrDefault();
-                        }
-                        else
-                        {
-                            kpm = processedInput.Where(x => 
-                                x.role.Contains(model.group_name.Substring(0, 2)) &&
-                                x.role.Contains("組員")).FirstOrDefault();
-                        }
+
                     }
 
-                    
-                }
-                else if (model.role == "一般工程師")
-                {
-                    if (model.group_name == "排水管線組" || model.group_name == "營運規劃組" || model.group_name == "交通工程組" || model.group_name == "用地開發組")
-                    {                       
-                        kpm = processedInput.Where(x => x.role == "規劃群組組員").FirstOrDefault();
+                    if (kpm == null || kpm.items == null)
+                    {
+
                     }
                     else
                     {
-                        kpm = processedInput.Where(x =>
-                        x.role.Contains(model.group_name.Substring(0, 2)) &&
-                        x.role.Contains("組員")).FirstOrDefault();
-                    }
+                        //List<KpiItem> kpiItems = kpm.items.GetRange(0, kpm.items.Count);
+                        List<KpiItem> kpiItems = kpm.items;
+                        foreach (var kpiitem in kpiItems)
+                        {
+                            KpiItem kp = kpiitem.ShallowCopy();
+                            kp.kpi_id = model.id;
+                            createdKpiitems.Add(kp);
+                        }
 
-                    
-                }
-                else if (model.role == "行政專員")
-                {
 
-                }
-
-                if (kpm == null || kpm.items == null)
-                {
-
-                }
-                else
-                {
-                    //List<KpiItem> kpiItems = kpm.items.GetRange(0, kpm.items.Count);
-                    List<KpiItem> kpiItems = kpm.items;
-                    foreach (var kpiitem in kpiItems)
-                    {
-                        KpiItem kp = kpiitem.ShallowCopy();
-                        kp.kpi_id = model.id;
-                        createdKpiitems.Add(kp);
+                        //createdKpiitems.AddRange(kpiItems);
                     }
 
 
-                    //createdKpiitems.AddRange(kpiItems);
+
                 }
 
 
 
             }
+            else // For other departments
+            {
+                foreach (var model in insertedModels)
+                {
+                    KpiModel kpm = new KpiModel();
+
+                    if (model.role == "技術經理")
+                    {
+                        kpm = processedInput.Where(x => x.role == "技術經理").FirstOrDefault();
+                    }
+                    else if (model.role == "重大計畫經理")
+                    {
+                        kpm = processedInput.Where(x => x.role == "重大計畫經理").FirstOrDefault();
+                    }
+                    else if (model.role == "一般計畫經理")
+                    {
+                        kpm = processedInput.Where(x => x.role == "一般計畫經理").FirstOrDefault();
+                    }
+                    else if (model.role == "組長")
+                    {
+                        // 管理 kpi = Excel 組長 kpi
+
+                        if (model.kpi_type == "管理")
+                        {
+                            
+                            User user = _userRepository.Get(model.empno);
+                            kpm = processedInput.Where(x =>
+                                x.role.Contains(user.group_one.Substring(0, 2)) &&
+                                x.role.Contains("組長")).FirstOrDefault();
+                           
+                        }
+                        // 專業 kpi = Excel 組員 kpi
+                        else
+                        {
+                           
+                            User user = _userRepository.Get(model.empno);
+                            kpm = processedInput.Where(x =>
+                                x.role.Contains(user.group_one.Substring(0, 2)) &&
+                                x.role.Contains("組員")).FirstOrDefault();
+                          
+                        }
+
+
+                    }
+                    else if (model.role == "一般工程師")
+                    {
+                       
+                        kpm = processedInput.Where(x =>
+                        x.role.Contains(model.group_name.Substring(0, 2)) &&
+                        x.role.Contains("組員")).FirstOrDefault();
+
+
+                    }
+                    else if (model.role == "行政專員")
+                    {
+
+                    }
+
+                    if (kpm == null || kpm.items == null)
+                    {
+
+                    }
+                    else
+                    {
+                        //List<KpiItem> kpiItems = kpm.items.GetRange(0, kpm.items.Count);
+                        List<KpiItem> kpiItems = kpm.items;
+                        foreach (var kpiitem in kpiItems)
+                        {
+                            KpiItem kp = kpiitem.ShallowCopy();
+                            kp.kpi_id = model.id;
+                            createdKpiitems.Add(kp);
+                        }
+
+
+                        //createdKpiitems.AddRange(kpiItems);
+                    }
+
+
+
+                }
+
+            }
+
 
             this.UpdateKpiItems(createdKpiitems, new List<KpiItem>(), "");
 
@@ -517,6 +621,11 @@ namespace TEEmployee.Models.GKpi
             return ret;
         }
 
+        public bool DeleteAll()
+        {
+            var ret = _kpiRepository.DeleteAll();
+            return ret;
+        }
 
         public void Dispose()
         {

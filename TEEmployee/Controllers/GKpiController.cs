@@ -85,7 +85,7 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public ActionResult UploadKpiFile(HttpPostedFileBase kpifiles)
         {
-            var ret = _service.UploadKpiFile(kpifiles.InputStream);
+            var ret = _service.UploadKpiFile(kpifiles.InputStream, Session["empno"].ToString());
 
             //var jj = Json(ret);
             var jj = Json((ret is null) ? "succeed" : "fail");
@@ -104,6 +104,17 @@ namespace TEEmployee.Controllers
         public ActionResult DeleteSolitaryKpiModels()
         {
             var ret = _service.DeleteSolitaryKpiModels();
+            return Json(ret);
+        }
+
+        //=============================
+        // Database reset
+        //=============================
+
+        [HttpPost]
+        public JsonResult DeleteAll()
+        {
+            var ret = _service.DeleteAll();
             return Json(ret);
         }
 

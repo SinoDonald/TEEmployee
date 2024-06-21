@@ -600,7 +600,15 @@ namespace TEEmployee.Models
 
                 if (user.department_manager)
                 {
-                    groups = new List<string> { "規劃", "設計", "專管" };
+                    if (user.gid == "24")
+                    {
+                        groups = new List<string> { "規劃", "設計", "專管" };
+                    }
+                    else // For other departments
+                    {
+                        groups = allEmployees.Select(x => x.group).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                    }
+                    
                 }
                 else
                 {
@@ -645,8 +653,8 @@ namespace TEEmployee.Models
                 }
 
                 //special case
-                if (groups.Remove("規劃組"))
-                    groups.Insert(groups.FindIndex(x => x == "規劃") + 1, "規劃組");
+                //if (groups.Remove("規劃組"))
+                //    groups.Insert(groups.FindIndex(x => x == "規劃") + 1, "規劃組");
 
             }
 

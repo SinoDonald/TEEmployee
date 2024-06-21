@@ -31,6 +31,9 @@ app.controller('TrainingCtrl', ['$scope', '$location', 'appService', '$rootScope
 
         $scope.records.forEach(x => x.roc_year = Number(x.start_date.substring(0, 4) - 1911));
 
+        //$scope.records.forEach(x => x.start_date = x.start_date.split(' ')[0]);
+        //$scope.records.forEach(x => x.end_date = x.end_date.split(' ')[0]);
+        
     })
 
     const formElem = document.querySelector('#formElem');
