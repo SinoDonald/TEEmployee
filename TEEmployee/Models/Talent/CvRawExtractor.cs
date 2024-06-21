@@ -11,12 +11,22 @@ namespace TEEmployee.Models.Talent
     {
         private static readonly string[] ChineseDigits = { "零", "一", "二", "三", "四", "五", "六", "七", "八", "九" };
 
+        /// <summary>
+        /// 基本資料
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <returns></returns>
         public static string ExtractAge(List<CvRaw> inputs)
         {
             string age = inputs.FirstOrDefault(x => x.datatype == "基本資料")?.dataitem;
             return age;
         }
 
+        /// <summary>
+        /// 學歷
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <returns></returns>
         public static string ExtractEducation(List<CvRaw> inputs)
         {
             var texts = inputs.Where(x => x.datatype == "學歷").Select(x => x.dataitem).ToList();
@@ -50,6 +60,7 @@ namespace TEEmployee.Models.Talent
 
             return education;
         }
+
         /// <summary>
         /// 大學學歷以上才加入
         /// </summary>
@@ -77,6 +88,11 @@ namespace TEEmployee.Models.Talent
             return returnParagraph;
         }
 
+        /// <summary>
+        /// 專長
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <returns></returns>
         public static string ExtractExpertise(List<CvRaw> inputs)
         {
             var texts = inputs.Where(x => x.datatype == "專長").Select(x => x.dataitem).ToList();
@@ -88,7 +104,11 @@ namespace TEEmployee.Models.Talent
             return combinedString;
         }
 
-
+        /// <summary>
+        /// 論著
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <returns></returns>
         public static string ExtractTreatise(List<CvRaw> inputs)
         {
             var texts = inputs.Where(x => x.datatype == "論著").Select(x => x.dataitem).ToList();
@@ -106,6 +126,11 @@ namespace TEEmployee.Models.Talent
             return combinedString;
         }
 
+        /// <summary>
+        /// 語文能力
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <returns></returns>
         public static string ExtractLanguage(List<CvRaw> inputs)
         {
             var texts = inputs.Where(x => x.datatype == "語文能力").Select(x => x.dataitem).ToList();
@@ -117,6 +142,11 @@ namespace TEEmployee.Models.Talent
             return combinedString;
         }
 
+        /// <summary>
+        /// 學術組織
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <returns></returns>
         public static string ExtractAcademic(List<CvRaw> inputs)
         {
             var texts = inputs.Where(x => x.datatype == "學術組織").Select(x => x.dataitem).ToList();
@@ -134,7 +164,11 @@ namespace TEEmployee.Models.Talent
             return combinedString;
         }
 
-
+        /// <summary>
+        /// 專業證照
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <returns></returns>
         public static string ExtractLicense(List<CvRaw> inputs)
         {
             var texts = inputs.Where(x => x.datatype == "專業證照").Select(x => x.dataitem).ToList();
@@ -155,7 +189,11 @@ namespace TEEmployee.Models.Talent
             return combinedString;
         }
 
-
+        /// <summary>
+        /// 技術訓練
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <returns></returns>
         public static string ExtractTraining(List<CvRaw> inputs)
         {
             var texts = inputs.Where(x => x.datatype == "技術訓練").Select(x => x.dataitem).ToList();
@@ -173,7 +211,11 @@ namespace TEEmployee.Models.Talent
             return combinedString;
         }
 
-
+        /// <summary>
+        /// 榮譽
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <returns></returns>
         public static string ExtractHonor(List<CvRaw> inputs)
         {
             var texts = inputs.Where(x => x.datatype == "榮譽").Select(x => x.dataitem).ToList();
@@ -191,7 +233,11 @@ namespace TEEmployee.Models.Talent
             return combinedString;
         }
 
-
+        /// <summary>
+        /// 經歷概要
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <returns></returns>
         public static string ExtractExperience(List<CvRaw> inputs)
         {
             var texts = inputs.Where(x => x.datatype == "經歷概要").Select(x => x.dataitem).ToList();
@@ -203,6 +249,11 @@ namespace TEEmployee.Models.Talent
             return combinedString;
         }
 
+        /// <summary>
+        /// 職等歷程
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <returns></returns>
         public static string ExtractSeniority(List<CvRaw> inputs)
         {
             var texts = inputs.Where(x => x.datatype == "職等歷程").Select(x => x.dataitem)/*.Reverse()*/.ToList();
@@ -215,33 +266,29 @@ namespace TEEmployee.Models.Talent
 
             return seniority;
         }
-
+        /// <summary>
+        /// 解析公司、工作、職務年資
+        /// </summary>
+        /// <param name="jobTitles"></param>
+        /// <param name="project"></param>
+        /// <returns></returns>
         private static string AnalysisSeniority(List<string> jobTitles, string project)
         {
-            CV userCV = new CV(); // 員工公司年資
-            List<Seniority> senioritys = new List<Seniority>(); // 員工職務年資
+            CV userCV = new CV();
+            List<Seniority> senioritys = new List<Seniority>();
             for (int i = 0; i < jobTitles.Count(); i++)
             {
-                if (i == 0) // 基本資料：公司到職日
-                {
-                    userCV.companyYears = jobTitles[i].Split('|')[0];
-                }
+                if (i == 0) { userCV.companyYears = jobTitles[i].Split('|')[0]; } // 基本資料：公司到職日 --> 計算員工公司年資
                 Seniority userSeniority = new Seniority();
                 userSeniority.start = jobTitles[i].Split('|')[0];
                 userSeniority.position = jobTitles[i].Split('|')[jobTitles[i].Split('|').Length - 1];
                 senioritys.Add(userSeniority);
             }
-
+            // 工作年資
             string workYear = string.Empty;
-            try
-            {
-                workYear = ProjectRegex(project).LastOrDefault().start;
-            }
-            catch (Exception ex)
-            {
-                string error = ex.Message + "\n" + ex.ToString();
-            }
-
+            try { if (!String.IsNullOrEmpty(project)) { workYear = ProjectRegex(project).LastOrDefault().start; } }
+            catch (Exception ex) { string error = ex.Message + "\n" + ex.ToString(); }
+            // 職務年資
             string seniority = string.Empty;
             senioritys = senioritys.OrderByDescending(x => x.start).ToList();
             for (int i = 0; i < senioritys.Count; i++)
@@ -254,14 +301,8 @@ namespace TEEmployee.Models.Talent
                     CultureInfo culture = new CultureInfo("zh-TW");
                     culture.DateTimeFormat.Calendar = new TaiwanCalendar();
                     string companyDate = companyDT.ToString("yyy.MM.dd", culture);
-                    if (workYear != "")
-                    {
-                        seniority += "工作年資：" + workYear + "~迄今\n公司年資：" + companyDate + "~迄今\n";
-                    }
-                    else
-                    {
-                        seniority += "工作年資：\n公司年資：" + companyDate + "~迄今\n";
-                    }
+                    if (!String.IsNullOrEmpty(workYear)) { seniority += "工作年資：" + workYear + "~迄今\n公司年資：" + companyDate + "~迄今\n"; }
+                    else { seniority += "工作年資：\n公司年資：" + companyDate + "~迄今\n"; }
                     string seniorityDate = seniorityDT.ToString("yyy.MM.dd", culture);
                     seniority += senioritys[i].position + "：" + seniorityDate + "~迄今\n";
                 }
@@ -280,6 +321,11 @@ namespace TEEmployee.Models.Talent
 
             return seniority;
         }
+        /// <summary>
+        /// 解析工作年資
+        /// </summary>
+        /// <param name="project"></param>
+        /// <returns></returns>
         public static List<Seniority> ProjectRegex(string project)
         {
             List<Seniority> senioritys = new List<Seniority>();
@@ -404,7 +450,7 @@ namespace TEEmployee.Models.Talent
         {
             List<string> removeStr = new List<string>() { "一", "二", "三", "四" }; // 職稱內要判斷有無()
             string word = removeStr.Where(s => changeName.Contains(s)).Select(s => s).FirstOrDefault();
-            if (word != null)
+            if (!String.IsNullOrEmpty(word))
             {
                 changeName = changeName.Replace("(", "").Replace(")", "");
                 int index = changeName.LastIndexOf(word);
@@ -421,6 +467,11 @@ namespace TEEmployee.Models.Talent
             return changeName;
         }
 
+        /// <summary>
+        /// 經歷
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <returns></returns>
         public static string ExtractProject(List<CvRaw> inputs)
         {
             var texts = inputs.Where(x => x.datatype == "經歷").Select(x => x.dataitem).ToList();
