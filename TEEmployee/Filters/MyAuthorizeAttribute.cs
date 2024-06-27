@@ -11,8 +11,7 @@ namespace TEEmployee.Filters
 {
     public class MyAuthorizeAttribute : AuthorizeAttribute
     {
-        private IUserRepository _userRepository;
-        private HashSet<string> SinoGuests = new HashSet<string> { "9991" };
+        private IUserRepository _userRepository;        
 
         public MyAuthorizeAttribute()
         {
@@ -125,6 +124,19 @@ namespace TEEmployee.Filters
                     if (ConfigurationManager.AppSettings["Admin"].Contains(ret.empno))
                     {
                         filterContext.HttpContext.Session["Admin"] = true;
+
+                        if (filterContext.HttpContext.Session["group"] is null)
+                            filterContext.HttpContext.Session["group"] = "";
+
+                        if (filterContext.HttpContext.Session["group_one"] is null)
+                            filterContext.HttpContext.Session["group_one"] = "";
+
+                        if (filterContext.HttpContext.Session["group_two"] is null)
+                            filterContext.HttpContext.Session["group_two"] = "";
+
+                        if (filterContext.HttpContext.Session["group_three"] is null)
+                            filterContext.HttpContext.Session["group_three"] = "";                        
+
                     }
                     //filterContext.HttpContext.Session["role"] = ret.Role;
                 }

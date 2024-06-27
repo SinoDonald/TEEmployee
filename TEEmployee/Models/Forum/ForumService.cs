@@ -27,6 +27,16 @@ namespace TEEmployee.Models.Forum
             var users = _userRepository.GetAll();
             ret.ForEach(x => x.name = users.Find(y => y.empno == x.empno).name);
 
+            foreach (var item in ret)
+            {
+                if (item.anonymous)
+                {
+                    item.name = "匿名";
+                    item.empno = "0000";
+                }
+                
+            }
+
             return ret;
         }
 
@@ -43,6 +53,23 @@ namespace TEEmployee.Models.Forum
             var users = _userRepository.GetAll();
             post.name = users.Find(y => y.empno == post.empno).name;
             replies.ForEach(x => x.name = users.Find(y => y.empno == x.empno).name);
+
+            if (post.anonymous)
+            {
+                post.name = "匿名";
+                post.empno = "0000";
+            }
+            
+            foreach (var item in replies)
+            {
+                if (item.anonymous)
+                {
+                    item.name = "匿名";
+                    item.empno = "0000";
+                }
+
+            }
+
 
             return (post, replies);
         }

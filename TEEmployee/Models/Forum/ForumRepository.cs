@@ -71,8 +71,8 @@ namespace TEEmployee.Models.Forum
 
         public bool InsertPost(Post post)
         {            
-            string sql = @"INSERT INTO Post (empno, title, content, postDate) 
-                    VALUES(@empno, @title, @content, @postDate)";
+            string sql = @"INSERT INTO Post (empno, title, content, postDate, anonymous) 
+                    VALUES(@empno, @title, @content, @postDate, @anonymous)";
 
             var ret = _conn.Execute(sql, post);
 
@@ -81,8 +81,8 @@ namespace TEEmployee.Models.Forum
 
         public bool InsertReply(Reply reply)
         {
-            string sql = @"INSERT INTO Reply (postId, empno, replyContent, replyDate) 
-                    VALUES(@postId, @empno, @replyContent, @replyDate)";
+            string sql = @"INSERT INTO Reply (postId, empno, replyContent, replyDate, anonymous) 
+                    VALUES(@postId, @empno, @replyContent, @replyDate, @anonymous)";
 
             var ret = _conn.Execute(sql, reply);
 

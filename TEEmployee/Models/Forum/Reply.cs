@@ -34,5 +34,6 @@ namespace TEEmployee.Models.Forum
         /// 回文日期
         /// </summary>
         public string replyDate { get; set; }
+        public bool anonymous { get; set; }
     }
 }

@@ -278,8 +278,15 @@
                             <label for="exampleFormControlTextarea1">回覆內容</label>
                             <textarea ng-model="modal.content" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
                         </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" ng-model="modal.anonymous">
+                            <label class="form-check-label" for="defaultCheck1">
+                                匿名
+                            </label>
+                        </div>
                     </form>
                 </div>
+                
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="createReply()">發布</button>

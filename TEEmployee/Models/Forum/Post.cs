@@ -38,5 +38,6 @@ namespace TEEmployee.Models.Forum
         /// 回文數量
         /// </summary>
         public int count { get; set; }
+        public bool anonymous { get; set; }
     }
 }

@@ -55,6 +55,7 @@ app.controller('IndexCtrl', ['$scope', '$window', 'appService', '$rootScope', '$
             title: $scope.modal.title,
             content: $scope.modal.content,
             postDate: currentTime,
+            anonymous: $scope.modal.anonymous,
         }
 
         appService.InsertPost({ post: post }).then((ret) => {
@@ -113,6 +114,7 @@ app.controller('PostCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
             postId: $window.postId,
             replyContent: $scope.modal.content,
             replyDate: currentTime,
+            anonymous: $scope.modal.anonymous,
         }
 
         appService.InsertReply({ reply: reply }).then((ret) => {
