@@ -154,7 +154,7 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        @*<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/GroupPlan')}" ui-sref="GroupPlan">群組規劃</a>
                 <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/PersonalPlan')}" ui-sref="PersonalPlan">個人規劃</a>
@@ -163,7 +163,21 @@
                 <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Group')}" ui-sref="Group">群組行事曆</a>
                 <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Personal')}" ui-sref="Personal">個人行事曆</a>
             </div>
+        </div>*@
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <span class="navbar-brand mt-2 h1 border border-secondary rounded ml-2 p-1">參考文件</span>
+            <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/GroupPlan')}" ui-sref="GroupPlan">群組規劃</a>
+            <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/PersonalPlan')}" ui-sref="PersonalPlan">個人規劃</a>
+            <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Project')}" ui-sref="Project">計畫行事曆</a>
         </div>
+        <div class="navbar-nav">
+            <span class="navbar-brand mt-2 h1 border border-secondary rounded ml-2 p-1">填寫介面</span>
+            <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Group')}" ui-sref="Group">群組行事曆</a>
+            <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Personal')}" ui-sref="Personal">個人行事曆</a>
+            <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Future')}" ui-sref="Future">未來3年數位轉型規劃</a>
+        </div>
+    </div>
     </nav>
 
 
