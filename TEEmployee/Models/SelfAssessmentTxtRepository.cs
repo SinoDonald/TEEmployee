@@ -785,6 +785,13 @@ namespace TEEmployee.Models
 
                 System.IO.File.WriteAllLines(fn, lines);
 
+                // 如果submit+read, 則取消通知
+                try
+                {
+                    string[] state = lines[0].Split(';');
+                    if (state[0].Equals("submit") && state[2].Equals("read")) { ret = true; }
+                }
+                catch { }
             }
             catch
             {

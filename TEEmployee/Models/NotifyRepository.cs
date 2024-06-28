@@ -47,7 +47,6 @@ namespace TEEmployee.Models
         public List<bool> GetNotify(string season, List<User> users, string date, string empno)
         {
             _conn.Open();
-
             // 先檢查是否有建立過Table的檔案存在
             string _appData = HttpContext.Current.Server.MapPath("~/App_Data");
             string filePath = Path.Combine(_appData, season + ".log");
@@ -124,6 +123,7 @@ namespace TEEmployee.Models
                     sw.WriteLine(dateTime + " 建檔成功。");
                 }
             }
+            _conn.Close();
 
             // 從資料庫抓取使用者需通知的項目
             List<bool> ret = UserNotifyState(empno);
@@ -290,6 +290,8 @@ namespace TEEmployee.Models
         public List<bool> UserNotifyState(string empno)
         {
             List<bool> ret = new List<bool>();
+            
+            _conn.Open();
             using (var tran = _conn.BeginTransaction())
             {
                 string sql = @"SELECT * FROM userNotify WHERE empno=@empno";
@@ -304,6 +306,7 @@ namespace TEEmployee.Models
 
                 tran.Commit();
             }
+            _conn.Close();
 
             return  ret;
         }
