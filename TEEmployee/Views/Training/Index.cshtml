@@ -70,6 +70,7 @@
             <th>培訓民國年度</th>
             <th>培訓種類</th>
             <th>培訓編號</th>
+            <th>培訓分類</th>
             <th>培訓名稱</th>
             <th>主辦單位</th>
             <th>開始日期</th>
@@ -82,6 +83,14 @@
             <td ng-bind="item.roc_year"></td>
             <td ng-bind="item.training_type"></td>
             <td ng-bind="item.training_id"></td>
+            <td>
+                <div>
+                    <select class="form-select" id="SelectType" name="SelectType" ng-model="log.projectType" aria-label="Select the Type">
+                        <option value="" disabled>請選擇...</option>
+                        <option ng-repeat="option in projectTypes" value="{{option.value}}">{{option.name}}</option>
+                    </select>
+                </div>
+            </td>
             <td ng-bind="item.title"></td>
             <td ng-bind="item.organization"></td>
             <td ng-bind="item.start_date"></td>

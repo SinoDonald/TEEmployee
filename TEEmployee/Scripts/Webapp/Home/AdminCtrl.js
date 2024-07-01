@@ -191,7 +191,7 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
                 $scope.dada.push(newdata);
             }
 
-            
+
 
             appService.InsertUserExtra({ usersJson: JSON.stringify($scope.dada) })
                 .then((ret) => {
@@ -268,7 +268,7 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
 
     $scope.DeleteKpiModels = (year) => {
 
-        appService.DeleteKpiModels({year:year})
+        appService.DeleteKpiModels({ year: year })
             .then((ret) => {
                 console.log("succeed");
             })
@@ -329,7 +329,7 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
     //        }
     //    });
     //}
-    
+
     // client to server
     formKpiElem.onsubmit = async (e) => {
         e.preventDefault();
@@ -346,6 +346,43 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
     };
 
     // Reset Database
+    $scope.ResetDB = (dbname) => {
+        switch (dbname) {
+            case '自評表':
+                $scope.DeleteAssessemnt();
+                break;
+            case '核心專業':
+                $scope.DeleteProfession();
+                break;
+            case '行事曆':
+                $scope.DeleteGSchedule();
+                break;
+            case '升等規劃':
+                $scope.DeletePromotion();
+                break;
+            case '工作紀錄':
+                $scope.DeleteTasklog();
+                break;
+            case '我要抱抱':
+                $scope.DeleteForum();
+                break;
+            case 'KPI':
+                $scope.DeleteKpi();
+                break;
+            case '群組規劃':
+                $scope.DeleteGroupPlan();
+                break;
+            case '個人規劃':
+                $scope.DeletePersonalPlan();
+                break;
+            case '人才資料庫':
+                $scope.DeleteTalent();
+                break;
+            default:
+                console.log('Sorry');
+        }
+    }
+
 
     $scope.DeleteAssessemnt = () => {
         appService.DeleteAssessemnt({})
@@ -366,7 +403,7 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
                 alert('Error');
             });
     }
-    
+
 
     $scope.DeleteGSchedule = () => {
         appService.DeleteGSchedule({})

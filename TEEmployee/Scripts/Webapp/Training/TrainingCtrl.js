@@ -25,6 +25,8 @@ app.service('appService', ['$http', function ($http) {
 
 app.controller('TrainingCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', function ($scope, $location, appService, $rootScope, $q) {
 
+    let trainingTypeMap = ['', '創新領域', '領域專業', '通用專業', '經驗交流'];
+
     appService.GetAllRecordsByUser({}).then((ret) => {
 
         $scope.records = ret.data;

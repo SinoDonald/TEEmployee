@@ -25,22 +25,66 @@
             margin-top: 1em;
             margin-bottom: 1em;
         }
+
+        .modal-content {
+            padding: 16px;
+            text-align: center;
+        }
+
+        .customBtn {
+            background-color: #04AA6D;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            opacity: 0.9;
+        }
+
+        .cancelbtn, .deletebtn {
+            float: left;
+            width: 50%;
+        }
+
+        /* Add a color to the cancel button */
+        .cancelbtn {
+            background-color: #ccc;
+            color: black;
+        }
+            .cancelbtn:hover {
+                opacity: 1;
+            }
+        /* Add a color to the delete button */
+        .deletebtn {
+            background-color: #f44336;
+        }
+            .deletebtn:hover {
+                opacity: 1;
+            }
+
+        /* Clear floats */
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
     </style>
 }
 
 <div ng-controller="AdminCtrl" class="container">
 
     <header>
-        <h2>Admin0613</h2>
+        <h2>Admin0701</h2>
     </header>
 
     <div>
         <h4 class="lime">帳號管理</h4>
         @*<div class="d-inline-block">
-            <button type="button" class="btn btn-outline-info" name="addRow" ng-click="UpdateUser()">
-                更新員工名單
-            </button>
-        </div>*@
+                <button type="button" class="btn btn-outline-info" name="addRow" ng-click="UpdateUser()">
+                    更新員工名單
+                </button>
+            </div>*@
 
         <div class="d-inline-block">
             <label for="input" class="btn btn-outline-danger m-0">匯入組織表</label>
@@ -65,15 +109,15 @@
 
     </div>
     @*<div>
-        <h4 class="lime">工作紀錄管控表</h4>
-        <button type="button" class="btn btn-outline-success" name="addRow" ng-click="InsertProjectItem()">
-            更新旬卡資料
-        </button>
+            <h4 class="lime">工作紀錄管控表</h4>
+            <button type="button" class="btn btn-outline-success" name="addRow" ng-click="InsertProjectItem()">
+                更新旬卡資料
+            </button>
 
-        <button type="button" class="btn btn-outline-warning" name="addRow" ng-click="CreateMonthlyRecord()">
-            建立本月工作紀錄表
-        </button>
-    </div>*@
+            <button type="button" class="btn btn-outline-warning" name="addRow" ng-click="CreateMonthlyRecord()">
+                建立本月工作紀錄表
+            </button>
+        </div>*@
 
     <div>
         <h4 class="lime">年度行事曆目標</h4>
@@ -83,35 +127,35 @@
     </div>
 
     @*<div>
-        <h4 class="lime">人才培育資料庫</h4>
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="text-success">員工履歷Word檔(多檔)</h4>
-                        @using (Html.BeginForm("Uploaded", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                        {
-                            <input type="file" id="filepicker" name="files" multiple />
-                            <input type="submit" value="上傳" />
-                        }
+            <h4 class="lime">人才培育資料庫</h4>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="text-success">員工履歷Word檔(多檔)</h4>
+                            @using (Html.BeginForm("Uploaded", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                                <input type="file" id="filepicker" name="files" multiple />
+                                <input type="submit" value="上傳" />
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="text-success">員工經歷文字檔</h4>
-                        @using (Html.BeginForm("UploadExperience", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                        {
-                            <input type="file" id="filepicker" name="file" />
-                            <input type="submit" value="上傳" />
-                        }
+                <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="text-success">員工經歷文字檔</h4>
+                            @using (Html.BeginForm("UploadExperience", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                                <input type="file" id="filepicker" name="file" />
+                                <input type="submit" value="上傳" />
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
 
-        </div>
-    </div>*@
+            </div>
+        </div>*@
 
     <div>
         <h4 class="lime">其他</h4>
@@ -136,39 +180,93 @@
 
     <div>
         <h4 class="lime">資料庫重置</h4>
-        <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteAssessemnt()">
+
+        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '自評表'">
             自評表
         </button>
-        <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteProfession()">
+        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '核心專業'">
             核心專業
         </button>
-        <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteGSchedule()">
+        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '行事曆'">
             行事曆
         </button>
-        <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeletePromotion()">
+        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '升等規劃'">
             升等規劃
         </button>
-        <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteTasklog()">
+        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '工作紀錄'">
             工作紀錄
         </button>
-        <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteForum()">
+        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '我要抱抱'">
             我要抱抱
         </button>
-        <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteKpi()">
+        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = 'KPI'">
             KPI
         </button>
-
-        @*培文*@
-        <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteGroupPlan()">
+        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '群組規劃'">
             群組規劃
         </button>
-        <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeletePersonalPlan()">
+        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '個人規劃'">
             個人規劃
         </button>
-        <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteTalent()">
+        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '人才資料庫'">
             人才資料庫
         </button>
+
+        <!--<button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteAssessemnt()">
+        自評表
+    </button>
+    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteProfession()">
+        核心專業
+    </button>
+    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteGSchedule()">
+        行事曆
+    </button>
+    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeletePromotion()">
+        升等規劃
+    </button>
+    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteTasklog()">
+        工作紀錄
+    </button>
+    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteForum()">
+        我要抱抱
+    </button>
+    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteKpi()">
+        KPI
+    </button>-->
+        @*培文*@
+        <!--<button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteGroupPlan()">
+        群組規劃
+    </button>
+    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeletePersonalPlan()">
+        個人規劃
+    </button>
+    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteTalent()">
+        人才資料庫
+    </button>-->
     </div>
+
+    <!-- Button trigger modal -->
+    @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        Launch demo modal
+    </button>*@
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h1>重置【{{resetedDB}}】</h1>
+                    <p>確定要重置{{resetedDB}}資料庫?</p>
+
+                    <div class="clearfix">
+                        <button type="button" class="customBtn cancelbtn" data-dismiss="modal">取消</button>
+                        <button type="button" class="customBtn deletebtn" data-dismiss="modal" ng-click="ResetDB(resetedDB)">確定</button>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+
 
 </div>
 
