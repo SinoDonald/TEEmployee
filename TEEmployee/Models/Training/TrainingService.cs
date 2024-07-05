@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -273,6 +274,78 @@ namespace TEEmployee.Models.Training
             }
 
         }
+
+        public bool UpdateUserRecords(List<Record> records)
+        {            
+            //bool ret = _trainingRepository.UpdateRecords(records);
+            bool ret = _trainingRepository.UpsertRecords(records);
+            return ret;
+        }
+
+        public List<Record> GetRecentRecords()
+        {
+            // recent one week
+            var records = _trainingRepository.GetAllRecords();
+
+            DateTime oneWeekAgo = DateTime.Now.AddDays(-30);
+            List<Record> recentRecords = new List<Record>();
+
+            foreach (var record in records)
+            {                
+                if (DateTime.TryParseExact(record.start_date, "yyyy/M/d",
+                        new CultureInfo("zh-TW"), DateTimeStyles.None, out DateTime parsedDate))
+                {
+                    if (parsedDate >= oneWeekAgo && parsedDate <= DateTime.Now)
+                    {
+                        recentRecords.Add(record);
+                    }
+                }
+            }
+
+            return recentRecords;
+        }
+
+        public dynamic GetRecentRecordsObject()
+        {
+            var userEmail = _userRepository.GetAll().ToDictionary(d => d.empno, d => d.email);
+            dynamic ret = new JArray();
+            
+            // records which hours >= 8
+            var records = _trainingRepository.GetAllRecords().Where(x => x.duration >= 8);
+            
+            // recent one month
+            DateTime oneWeekAgo = DateTime.Now.AddDays(-30);
+            List<Record> recentRecords = new List<Record>();
+
+            foreach (var record in records)
+            {
+                if (DateTime.TryParseExact(record.start_date, "yyyy/M/d",
+                        new CultureInfo("zh-TW"), DateTimeStyles.None, out DateTime parsedDate))
+                {
+                    if (parsedDate >= oneWeekAgo && parsedDate <= DateTime.Now)
+                    {
+                        recentRecords.Add(record);                        
+                    }
+                }
+            }
+
+            // get traning extra, filter out already emailSent records
+            recentRecords = _trainingRepository
+                .GetRecordExtraByRecords(recentRecords)
+                .Where(x => !x.emailSent).ToList();
+
+            // create dynamic object
+            foreach (var record in recentRecords)
+            {
+                dynamic recordObj = new JObject();
+                recordObj.record = JObject.FromObject(record);
+                recordObj.email = userEmail[record.empno];
+                ret.Add(recordObj);
+            }
+
+            return JsonConvert.SerializeObject(ret);
+        }
+
 
         public void Dispose()
         {

@@ -39,7 +39,7 @@ namespace TEEmployee.Controllers
 
         [HttpPost]
         public ContentResult GetAllRecordsByUser(string empno)
-        {
+        {            
             if (string.IsNullOrEmpty(empno))
             {
                 empno = Session["empno"].ToString();
@@ -72,6 +72,27 @@ namespace TEEmployee.Controllers
             var excelData = _service.DownloadGroupExcel(year, Session["empno"].ToString());
 
             return File(excelData, contentType, fileName);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateUserRecords(List<Record> records)
+        {
+            var ret = _service.UpdateUserRecords(records);
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult GetRecentRecords()
+        {
+            var ret = _service.GetRecentRecords();
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public ContentResult GetRecentRecordsObject()
+        {
+            var ret = _service.GetRecentRecordsObject();
+            return Content(ret, "application/json");
         }
 
         protected override void Dispose(bool disposing)

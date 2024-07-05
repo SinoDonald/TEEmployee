@@ -20,12 +20,21 @@ app.service('appService', ['$http', function ($http) {
     this.DownloadGroupExcel = (o) => {
         return $http.post('Training/DownloadGroupExcel', o, config);
     };
-
+    this.UpdateUserRecords = (o) => {
+        return $http.post('Training/UpdateUserRecords', o);
+    };
 }]);
 
-app.controller('TrainingCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', function ($scope, $location, appService, $rootScope, $q) {
+app.controller('TrainingCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
 
-    let trainingTypeMap = ['', '創新領域', '領域專業', '通用專業', '經驗交流'];
+    let trainingCustomTypeMap = ['', '創新領域', '領域專業', '通用專業', '經驗交流'];
+
+    $scope.trainingCustomTypes = [
+        { value: '1', name: '創新領域' },
+        { value: '2', name: '領域專業' },
+        { value: '3', name: '通用專業' },
+        { value: '4', name: '經驗交流' },
+    ]
 
     appService.GetAllRecordsByUser({}).then((ret) => {
 
@@ -33,9 +42,11 @@ app.controller('TrainingCtrl', ['$scope', '$location', 'appService', '$rootScope
 
         $scope.records.forEach(x => x.roc_year = Number(x.start_date.substring(0, 4) - 1911));
 
+        $scope.records.forEach(x => x.customTypeStrValue = x.customType > 0 ? x.customType.toString() : '');
+
         //$scope.records.forEach(x => x.start_date = x.start_date.split(' ')[0]);
         //$scope.records.forEach(x => x.end_date = x.end_date.split(' ')[0]);
-        
+
     })
 
     const formElem = document.querySelector('#formElem');
@@ -59,7 +70,25 @@ app.controller('TrainingCtrl', ['$scope', '$location', 'appService', '$rootScope
         };
     }
 
-    
+    $scope.changeCustomType = (record) => {
+
+        if (record.customTypeStrValue) {
+            record.customType = Number(record.customTypeStrValue);
+            record.updated = true;
+        }
+    }
+
+    $scope.UpdateUserRecords = () => {
+
+        let updatedRecords = $scope.records.filter(x => x.updated);
+
+        appService.UpdateUserRecords({ records: updatedRecords })
+            .then((ret) => {
+                if (ret.data)
+                    $window.location.reload();                
+            })           
+
+    }
 
 
 }]);
@@ -81,14 +110,14 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         $scope.auth = ret.data;
 
         $scope.selectedYear = $scope.years[0].toString();
-        
+
         let group_array = $scope.auth.Users.map(x => x.group_one);
         $scope.groups = [...new Set(group_array)];
         $scope.selectedGroup = "";
     });
 
 
-    $scope.selectYear = () => {       
+    $scope.selectYear = () => {
         $scope.selectGroup();
     }
 
@@ -105,13 +134,13 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         let employee_array = $scope.auth.Users.filter(x => x.group_one === $scope.selectedGroup).map(x => ({
             user: x,
             count: x.trainings.filter(y => (y.start_date.substring(0, 4)) == $scope.selectedYear).length,
-        }));  
+        }));
 
 
         $scope.employees = employee_array;
         $scope.selectedEmployee = $scope.employees[0].user.empno;
         $scope.selectEmployee();
-        
+
     }
 
     $scope.selectEmployee = () => {

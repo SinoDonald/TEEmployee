@@ -47,6 +47,8 @@ namespace TEEmployee.Models.Training
         /// <summary>
         /// 培訓課程總時數
         /// </summary>
-        public float duration { get; set; }        
+        public float duration { get; set; }
+        public int customType { get; set; }
+        public bool emailSent { get; set; }
     }
 }

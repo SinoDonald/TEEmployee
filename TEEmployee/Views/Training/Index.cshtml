@@ -17,13 +17,22 @@
         #childNav {
             margin-top: 80px;
         }
+
+        .stickyheader {
+            position: sticky;
+            top: 80px;
+        }
+        .stickythead {
+            position: sticky;
+            top: 135.9px;
+        }
     </style>
 }
 
 
 <div ng-controller="TrainingCtrl" class="container-fluid">
 
-    <nav class="navbar navbar-expand-lg navbar-dark" id="childNav" style="background-color: #4CAF50">
+    <nav class="navbar navbar-expand-lg navbar-dark stickyheader" id="childNav" style="background-color: #4CAF50">
         <a class="navbar-brand" href="#">培訓紀錄與規劃</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -40,6 +49,9 @@
                         <a class="nav-link" href="@Url.Action("Group", "Training")">群組培訓紀錄</a>
                     </li>
                 }
+                <li class="d-flex align-content-center">
+                    <button type="button" class="ml-3 my-auto btn-primary btn-sm" ng-click="UpdateUserRecords()">儲存</button>
+                </li>
 
                 @*<li class="nav-item">
             <a class="nav-link" href="#">個人課程規劃</a>
@@ -53,7 +65,7 @@
 
    
 
-    @if (Session["Admin"] is true)
+    @*@if (Session["Admin"] is true)
     {
         <div>
             <form id="formElem">
@@ -61,42 +73,45 @@
                 <input type="submit">
             </form>
         </div>
-    }
+    }*@
 
 
     <table class="table">
-        <tr>
-            <th>員工編號</th>
-            <th>培訓民國年度</th>
-            <th>培訓種類</th>
-            <th>培訓編號</th>
-            <th>培訓分類</th>
-            <th>培訓名稱</th>
-            <th>主辦單位</th>
-            <th>開始日期</th>
-            <th>結束日期</th>
-            <th>時數</th>
-        </tr>
-
-        <tr ng-repeat="item in records">
-            <td ng-bind="item.empno"></td>
-            <td ng-bind="item.roc_year"></td>
-            <td ng-bind="item.training_type"></td>
-            <td ng-bind="item.training_id"></td>
-            <td>
-                <div>
-                    <select class="form-select" id="SelectType" name="SelectType" ng-model="log.projectType" aria-label="Select the Type">
-                        <option value="" disabled>請選擇...</option>
-                        <option ng-repeat="option in projectTypes" value="{{option.value}}">{{option.name}}</option>
-                    </select>
-                </div>
-            </td>
-            <td ng-bind="item.title"></td>
-            <td ng-bind="item.organization"></td>
-            <td ng-bind="item.start_date"></td>
-            <td ng-bind="item.end_date"></td>
-            <td ng-bind="item.duration"></td>
-        </tr>
+        <thead class="stickythead thead-light">
+            <tr>
+                <th scope="col" style="width: 5%">員工編號</th>
+                <th scope="col" style="width: 7%">培訓民國年度</th>
+                <th scope="col" style="width: 7%">培訓種類</th>
+                <th scope="col" style="width: 7%">培訓編號</th>
+                <th scope="col" style="width: 10%">培訓分類</th>
+                <th scope="col">培訓名稱</th>
+                <th scope="col" style="width: 10%">主辦單位</th>
+                <th scope="col" style="width: 7%">開始日期</th>
+                <th scope="col" style="width: 7%">結束日期</th>
+                <th scope="col" style="width: 5%">時數</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in records">
+                <td ng-bind="item.empno"></td>
+                <td ng-bind="item.roc_year"></td>
+                <td ng-bind="item.training_type"></td>
+                <td ng-bind="item.training_id"></td>
+                <td>
+                    <div>
+                        <select class="form-select" id="SelectType" name="SelectType" ng-model="item.customTypeStrValue" ng-change="changeCustomType(item)" aria-label="Select the Type">
+                            <option value="" disabled>請選擇...</option>
+                            <option ng-repeat="option in trainingCustomTypes" value="{{option.value}}">{{option.name}}</option>
+                        </select>
+                    </div>
+                </td>
+                <td ng-bind="item.title"></td>
+                <td ng-bind="item.organization"></td>
+                <td ng-bind="item.start_date"></td>
+                <td ng-bind="item.end_date"></td>
+                <td ng-bind="item.duration"></td>
+            </tr>
+        </tbody>
 
     </table>
 
