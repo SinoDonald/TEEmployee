@@ -74,8 +74,8 @@
 
     <div class="d-flex">
         @*<div ng-model="datum">
-            <p>{{datum.empno}} - {{datum.name}} - {{datum.kpi_type}} - {{datum.group_name}}</p>
-        </div>*@
+                <p>{{datum.empno}} - {{datum.name}} - {{datum.kpi_type}} - {{datum.group_name}}</p>
+            </div>*@
 
         <div class="switch-button mb-3">
             <input ng-model="showLast" ng-click="autoExpand()" class="switch-button-checkbox" type="checkbox">
@@ -84,6 +84,19 @@
         <div>
             <button class="ml-5 animate-btn" id="button" type="button" ng-click="updateKpiItems()"></button>
         </div>
+        @if (Session["role"] == "Manager")
+        {
+            <div>
+                <form id="formKpiElem">
+                    <div class="py-2 px-2 ml-4 border border-primary rounded">
+                        <input type="file" id="kpifilepicker" name="kpifiles">
+                        <input type="submit" value="上傳" />
+                    </div>
+                </form>
+            </div>
+        }
+
+
     </div>
 
     <table class="table">
@@ -113,10 +126,10 @@
         <tbody>
             <tr ng-repeat="item in datum.items">
                 @*<td>
-            <button ng-click="removeKpiItem($index)" type="button" class="btn btn-sm">
-                <span class="material-symbols-outlined">disabled_by_default</span>
-            </button>
-        </td>*@
+                        <button ng-click="removeKpiItem($index)" type="button" class="btn btn-sm">
+                            <span class="material-symbols-outlined">disabled_by_default</span>
+                        </button>
+                    </td>*@
                 <td ng-bind="item.content">
                     @*<input ng-model="item.content" class="form-control" type="text" placeholder="項目">*@
                 </td>
@@ -128,8 +141,8 @@
                 </td>
                 <td ng-bind="item.weight">
                     @*<div class="form-check">
-                <input ng-model="item.weight" type="number" min="0" step="0.1" class="form-control" placeholder="權重">
-            </div>*@
+                            <input ng-model="item.weight" type="number" min="0" step="0.1" class="form-control" placeholder="權重">
+                        </div>*@
                 </td>
                 <td ng-show="!showLast">
                     <div class="form-check">
@@ -137,16 +150,16 @@
                     </div>
                 </td>
                 @*<td ng-show="!showLast">
-                    <input ng-model="item.h1_reason" class="form-control" type="text" placeholder="說明詳細情形">
-                </td>*@
-            <td ng-show="!showLast">
-                <textarea class="form-control autoExpand" ng-model="item.h1_reason" placeholder="說明詳細情形" cols="50" rows="1"></textarea>
-            </td>
+                        <input ng-model="item.h1_reason" class="form-control" type="text" placeholder="說明詳細情形">
+                    </td>*@
+                <td ng-show="!showLast">
+                    <textarea class="form-control autoExpand" ng-model="item.h1_reason" placeholder="說明詳細情形" cols="50" rows="1"></textarea>
+                </td>
                 @*<td ng-show="!showLast">
-            <div class="form-check">
-                <input ng-model="item.h1_manager_check" ng-disabled="auth[0] == datum.empno" class="form-check-input" type="checkbox">
-            </div>
-        </td>*@
+                        <div class="form-check">
+                            <input ng-model="item.h1_manager_check" ng-disabled="auth[0] == datum.empno" class="form-check-input" type="checkbox">
+                        </div>
+                    </td>*@
                 @*<td ng-show="!showLast" ng-bind="item.h1_feedback"></td>*@
                 <td ng-show="!showLast">
                     <p ng-repeat="fb in item.h1_feedbacks"><span class="badge badge-secondary" style="font-size: 1em" ng-bind="fb.slice(0,3)"></span><span ng-bind="fb.slice(3)"></span></p>
@@ -157,17 +170,17 @@
                     </div>
                 </td>
                 @*<td ng-show="showLast">
-            <input ng-model="item.h2_reason" class="form-control" type="text" placeholder="說明詳細情形">
-        </td>*@
+                        <input ng-model="item.h2_reason" class="form-control" type="text" placeholder="說明詳細情形">
+                    </td>*@
                 <td ng-show="showLast">
                     <textarea class="form-control autoExpand" ng-model="item.h2_reason" placeholder="說明詳細情形" cols="50" rows="1"></textarea>
                 </td>
 
                 @*<td ng-show="showLast">
-            <div class="form-check">
-                <input ng-model="item.h2_manager_check" ng-disabled="auth[0] == datum.empno" class="form-check-input" type="checkbox">
-            </div>
-        </td>*@
+                        <div class="form-check">
+                            <input ng-model="item.h2_manager_check" ng-disabled="auth[0] == datum.empno" class="form-check-input" type="checkbox">
+                        </div>
+                    </td>*@
                 @*<td ng-show="showLast" ng-bind="item.h2_feedback"></td>*@
                 <td ng-show="showLast">
                     @*<p ng-repeat="fb in item.h2_feedbacks" ng-bind="fb"></p>*@
@@ -193,8 +206,8 @@
 
 
     @*<div>
-        <button class="animate-btn" id="button" type="button" ng-click="updateKpiItems()"></button>
-    </div>*@
+            <button class="animate-btn" id="button" type="button" ng-click="updateKpiItems()"></button>
+        </div>*@
 
 
 

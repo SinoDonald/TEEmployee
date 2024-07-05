@@ -25,7 +25,7 @@ app.service('appService', ['$http', function ($http) {
 
 }]);
 
-app.controller('FillinCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', '$timeout', function ($scope, $location, appService, $rootScope, $q, $timeout) {
+app.controller('FillinCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', '$timeout', function ($scope, $window, appService, $rootScope, $q, $timeout) {
 
     appService.GetAuth({}).then((ret) => {
         $scope.auth = ret.data;
@@ -273,6 +273,30 @@ app.controller('FillinCtrl', ['$scope', '$location', 'appService', '$rootScope',
         }, 0);
     }
 
+    
+
+    // client to server
+    const formKpiElem = document.querySelector('#formKpiElem');
+
+    if (formKpiElem) {
+
+        formKpiElem.onsubmit = async (e) => {
+            e.preventDefault();
+
+            // don't add '/' before MVC controller
+            let response = await fetch('GKpi/UploadKpiFile', {
+                method: 'POST',
+                body: new FormData(formKpiElem)
+            });
+
+            let result = await response.json();
+
+            alert(result);
+
+            $window.location.reload()
+        };
+
+    }   
 
 }]);
 
