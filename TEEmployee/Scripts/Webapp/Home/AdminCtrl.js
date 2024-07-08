@@ -188,6 +188,10 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
                 row[18] = (row[18] === 'Y') ? true : false;
                 newdata.assistant_project_manager = row[18];
 
+                // new: custom_duty
+                row[19] = (row[19]) ? row[19] : '';
+                newdata.custom_duty = row[19];
+
                 $scope.dada.push(newdata);
             }
 

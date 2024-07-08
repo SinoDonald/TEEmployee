@@ -33,6 +33,7 @@ namespace TEEmployee.Models
         public string projects { get; set; }
         public bool project_manager { get; set; }
         public bool assistant_project_manager { get; set; }
+        public string custom_duty { get; set; }
 
         [ScriptIgnore]
         public string gid { get; set; }

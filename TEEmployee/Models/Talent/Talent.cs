@@ -39,6 +39,7 @@ namespace TEEmployee.Models
         public bool choice4 { get; set; } // 建立系統性、計畫性的學習能力 - 學習力具體
         public bool choice5 { get; set; } // 適應變化的韌性 - 懂得取捨、不放棄
         public bool selectPosition { get; set; } // 開放身份選擇
+        public string custom_duty { get; set; } // 現在職務
     }
     /// <summary>
     /// 專案紀錄

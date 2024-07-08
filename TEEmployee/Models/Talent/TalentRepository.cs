@@ -131,12 +131,18 @@ namespace TEEmployee.Models.Talent
                 if(merit != null)
                 {
                     int number = Convert.ToInt16(empno);
-                    int b1 = merit.B1; b1 ^= number; b1 /= number;
-                    int b2 = merit.B2; b2 ^= number; b2 /= number;
-                    int b3 = merit.B3; b3 ^= number; b3 /= number;
-                    int b4 = merit.B4; b4 ^= number; b4 /= number;
-                    int b5 = merit.B5; b5 ^= number; b5 /= number;
-                    userCV.performance = b1 + "\n" + b2 + "\n" + b3 + "\n" + b4 + "\n" + b5;
+                    //int b1 = merit.B1; b1 ^= number; b1 /= number;
+                    //int b2 = merit.B2; b2 ^= number; b2 /= number;
+                    //int b3 = merit.B3; b3 ^= number; b3 /= number;
+                    //int b4 = merit.B4; b4 ^= number; b4 /= number;
+                    //int b5 = merit.B5; b5 ^= number; b5 /= number;
+                    //userCV.performance = b1 + "\n" + b2 + "\n" + b3 + "\n" + b4 + "\n" + b5;
+
+                    int[] merits = new int[] { merit.B1, merit.B2, merit.B3, merit.B4, merit.B5 };
+                    var dms = merits.Select(x => DecodeMerit(x, number)).ToArray();
+                    userCV.performance = dms[0] + "\n" + dms[1] + "\n" + dms[2] + "\n" + dms[3] + "\n" + dms[4];
+
+
                 }
                 else { userCV.performance = ""; }
                 // 解析SQL seniority文字, 儲存工作、公司與職位年資
@@ -555,6 +561,7 @@ namespace TEEmployee.Models.Talent
                         {
                             userAbility.empno = user.empno;
                             userAbility.name = user.name;
+                            userAbility.custom_duty = user.custom_duty;
                             string sql = @"SELECT * FROM userCVExtra ORDER BY empno";
                             try
                             {
@@ -811,6 +818,16 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
 
+        private string DecodeMerit(int merit, int salt)
+        {
+            if (merit == 0)
+                return "";
+            
+            merit ^= salt;
+            merit /= salt;
+
+            return merit.ToString();
+        }
 
 
         public void Dispose()

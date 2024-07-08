@@ -298,8 +298,19 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
 app.controller('TalentHighPerformersCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', 'dataservice', 'highperformers', function ($scope, $location, $window, appService, $rootScope, dataservice, highperformers) {
 
     $scope.GetAll = highperformers.get(); // 取得員工履歷
-    $scope.positions = ['', '技術經理', '計畫經理', '組長'];
-    $scope.groups = ['全部顯示', '技術經理', '計畫經理', '組長'];
+    //$scope.positions = ['', '技術經理', '計畫經理', '組長'];
+    //$scope.groups = ['全部顯示', '技術經理', '計畫經理', '組長'];
+    $scope.groups = ['全部顯示', '技術經理', '技術組長', '一般計畫經理', '重大計畫經理', '重大計畫副理', '計畫組長', '研發案主持人'];
+    $scope.positions = ['', '技術經理', '技術組長', '一般計畫經理', '重大計畫經理', '重大計畫副理', '計畫組長', '研發案主持人'];
+
+    // get age    
+    appService.GetAll({}).then((ret) => {
+
+        for (let item of $scope.GetAll) {
+            item.age = ret.data.find(x => x.empno === item.empno).age;
+        }  
+    })
+
     $scope.selectedGroup = $scope.groups[0];
 
     // 依群組顯示
