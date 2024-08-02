@@ -18,7 +18,17 @@ namespace TEEmployee.Models.Talent
         /// <returns></returns>
         public static string ExtractAge(List<CvRaw> inputs)
         {
-            string age = inputs.FirstOrDefault(x => x.datatype == "基本資料")?.dataitem;
+            string age = "";
+
+            try
+            {
+                age = inputs.FirstOrDefault(x => x.datatype == "基本資料")?.dataitem;
+            }
+            catch
+            {
+
+            }
+            
             return age;
         }
 
@@ -29,34 +39,49 @@ namespace TEEmployee.Models.Talent
         /// <returns></returns>
         public static string ExtractEducation(List<CvRaw> inputs)
         {
+            string education = "";
             var texts = inputs.Where(x => x.datatype == "學歷").Select(x => x.dataitem).ToList();
 
-            var parsedList = texts.Select((words) =>
+            try
             {
-                var p = words.Split('|');
+                var parsedList = texts.Select((words) =>
+                {
+                    var p = words.Split('|');
 
-                return $"{p[0]} ({p[1]}) {p[2]} {p[3]}";
+                    return $"{p[0]} ({p[1]}) {p[2]} {p[3]}";
 
-            }).ToList();
+                }).ToList();
 
-            //var parsedList = texts.Select(words =>
-            //{
-            //    var p = words.Split('|');
-            //    var yearPart = p[1].Replace("年畢業", "");
-            //    int graduationYear = Int32.Parse(yearPart);
+                //var parsedList = texts.Select(words =>
+                //{
+                //    var p = words.Split('|');
+                //    var yearPart = p[1].Replace("年畢業", "");
+                //    int graduationYear = Int32.Parse(yearPart);
 
-            //    return new
-            //    {
-            //        FormatedEduString = $"{p[0]} ({p[1]}) {p[2]} {p[3]}",
-            //        GraduationYear = graduationYear
-            //    };
-            //}).ToList();
+                //    return new
+                //    {
+                //        FormatedEduString = $"{p[0]} ({p[1]}) {p[2]} {p[3]}",
+                //        GraduationYear = graduationYear
+                //    };
+                //}).ToList();
 
-            //var sortedList = parsedList.OrderByDescending(x => x.GraduationYear).Select(x => x.FormatedEduString).ToList();
-            //var combinedString = string.Join("\n", sortedList);
-            var combinedString = string.Join("\n", texts);
-            List<string> educations = combinedString.Split(new char[] { '\n' }).ToList();
-            string education = ReturnEducationalParagraph(educations); // 大學學歷以上才加入
+                //var sortedList = parsedList.OrderByDescending(x => x.GraduationYear).Select(x => x.FormatedEduString).ToList();
+                //var combinedString = string.Join("\n", sortedList);
+                var combinedString = string.Join("\n", texts);
+                List<string> educations = combinedString.Split(new char[] { '\n' }).ToList();
+                education = ReturnEducationalParagraph(educations); // 大學學歷以上才加入
+            }
+            catch
+            {
+                var concatString = "";
+
+                foreach (var item in texts)
+                {
+                    concatString += item;
+                }
+
+                return concatString;
+            }
 
             return education;
         }
@@ -69,22 +94,31 @@ namespace TEEmployee.Models.Talent
         private static string ReturnEducationalParagraph(List<string> educations)
         {
             string returnParagraph = string.Empty;
-            foreach (string paragraph in educations)
+
+            try
             {
-                if (paragraph.Contains("大學") || paragraph.Contains("學士") || paragraph.Contains("碩士") || paragraph.Contains("博士"))
+                foreach (string paragraph in educations)
                 {
-                    string[] splitString = paragraph.Split('|');
-                    try
+                    if (paragraph.Contains("大學") || paragraph.Contains("學士") || paragraph.Contains("碩士") || paragraph.Contains("博士"))
                     {
-                        returnParagraph += splitString[0] + "(" + splitString[1] + ")　" + splitString[2] + "　" + splitString[3] + "\n";
+                        string[] splitString = paragraph.Split('|');
+                        try
+                        {
+                            returnParagraph += splitString[0] + "(" + splitString[1] + ")　" + splitString[2] + "　" + splitString[3] + "\n";
+                        }
+                        catch (Exception) { }
                     }
-                    catch (Exception) { }
+                }
+                if (returnParagraph.Length > 2)
+                {
+                    returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
                 }
             }
-            if (returnParagraph.Length > 2)
+            catch
             {
-                returnParagraph = returnParagraph.Substring(0, returnParagraph.Length - 1);
+
             }
+            
             return returnParagraph;
         }
 
@@ -95,13 +129,30 @@ namespace TEEmployee.Models.Talent
         /// <returns></returns>
         public static string ExtractExpertise(List<CvRaw> inputs)
         {
+            string expertise = "";
             var texts = inputs.Where(x => x.datatype == "專長").Select(x => x.dataitem).ToList();
 
-            var parsedList = texts.Select((x, index) => $"{index + 1}.{x}").ToList();
+            try
+            {
+                var parsedList = texts.Select((x, index) => $"{index + 1}.{x}").ToList();
 
-            var combinedString = string.Join("\n", parsedList);
+                var combinedString = string.Join("\n", parsedList);
 
-            return combinedString;
+                expertise = combinedString;
+            }
+            catch
+            {
+                var concatString = "";
+
+                foreach (var item in texts)
+                {
+                    concatString += item;
+                }
+
+                return concatString;
+            }
+
+            return expertise;
         }
 
         /// <summary>
@@ -111,19 +162,36 @@ namespace TEEmployee.Models.Talent
         /// <returns></returns>
         public static string ExtractTreatise(List<CvRaw> inputs)
         {
+            string treatise = "";
             var texts = inputs.Where(x => x.datatype == "論著").Select(x => x.dataitem).ToList();
 
-            var parsedList = texts.Select((words, index) =>
+            try
             {
-                var p = words.Split('|');
+                var parsedList = texts.Select((words, index) =>
+                {
+                    var p = words.Split('|');
 
-                return $"{index + 1}.{p[0]}\n({p[1]})";
+                    return $"{index + 1}.{p[0]}\n({p[1]})";
 
-            }).ToList();
+                }).ToList();
 
-            var combinedString = string.Join("\n", parsedList);
+                var combinedString = string.Join("\n", parsedList);
 
-            return combinedString;
+                treatise = combinedString;
+            }
+            catch
+            {
+                var concatString = "";
+
+                foreach (var item in texts)
+                {
+                    concatString += item;
+                }
+
+                return concatString;
+            }            
+
+            return treatise;
         }
 
         /// <summary>
@@ -133,13 +201,30 @@ namespace TEEmployee.Models.Talent
         /// <returns></returns>
         public static string ExtractLanguage(List<CvRaw> inputs)
         {
+            string language = "";
             var texts = inputs.Where(x => x.datatype == "語文能力").Select(x => x.dataitem).ToList();
 
-            var parsedList = texts.Select((x, index) => $"{index + 1}.{x}").ToList();
+            try
+            {
+                var parsedList = texts.Select((x, index) => $"{index + 1}.{x}").ToList();
 
-            var combinedString = string.Join("\n", parsedList);
+                var combinedString = string.Join("\n", parsedList);
 
-            return combinedString;
+                language = combinedString;
+            }
+            catch
+            {
+                var concatString = "";
+
+                foreach (var item in texts)
+                {
+                    concatString += item;
+                }
+
+                return concatString;
+            }
+
+            return language;
         }
 
         /// <summary>
@@ -149,19 +234,37 @@ namespace TEEmployee.Models.Talent
         /// <returns></returns>
         public static string ExtractAcademic(List<CvRaw> inputs)
         {
+            string academic = "";
             var texts = inputs.Where(x => x.datatype == "學術組織").Select(x => x.dataitem).ToList();
 
-            var parsedList = texts.Select((words, index) =>
+            try
             {
-                var p = words.Split('|');
+                var parsedList = texts.Select((words, index) =>
+                {
+                    var p = words.Split('|');
 
-                return $"{index + 1}.{p[0]} {p[1]}";
+                    return $"{index + 1}.{p[0]} {p[1]}";
 
-            }).ToList();
+                }).ToList();
 
-            var combinedString = string.Join("\n", parsedList);
+                var combinedString = string.Join("\n", parsedList);
 
-            return combinedString;
+                academic = combinedString;
+            }
+            catch
+            {
+                var concatString = "";
+
+                foreach (var item in texts)
+                {
+                    concatString += item;
+                }
+
+                return concatString;
+            }
+            
+
+            return academic;
         }
 
         /// <summary>
@@ -171,22 +274,40 @@ namespace TEEmployee.Models.Talent
         /// <returns></returns>
         public static string ExtractLicense(List<CvRaw> inputs)
         {
+            string license = "";
             var texts = inputs.Where(x => x.datatype == "專業證照").Select(x => x.dataitem).ToList();
 
-            var parsedList = texts.Select((words, index) =>
+            try
             {
-                var p = words.Split('|');
+                var parsedList = texts.Select((words, index) =>
+                {
+                    var p = words.Split('|');
 
-                if (string.IsNullOrEmpty(p[1]))
-                    return $"{index + 1}.{p[0]} ({p[2]})";
-                else
-                    return $"{index + 1}.{p[0]} ({p[1]}、{p[2]})";
+                    if (string.IsNullOrEmpty(p[1]))
+                        return $"{index + 1}.{p[0]} ({p[2]})";
+                    else
+                        return $"{index + 1}.{p[0]} ({p[1]}、{p[2]})";
 
-            }).ToList();
+                }).ToList();
 
-            var combinedString = string.Join("\n", parsedList);
+                var combinedString = string.Join("\n", parsedList);
 
-            return combinedString;
+                license = combinedString;
+            }
+            catch
+            {
+                var concatString = "";
+
+                foreach (var item in texts)
+                {
+                    concatString += item;
+                }
+
+                return concatString;
+            }           
+
+            return license;
+
         }
 
         /// <summary>
@@ -196,19 +317,37 @@ namespace TEEmployee.Models.Talent
         /// <returns></returns>
         public static string ExtractTraining(List<CvRaw> inputs)
         {
+            string training = "";
             var texts = inputs.Where(x => x.datatype == "技術訓練").Select(x => x.dataitem).ToList();
 
-            var parsedList = texts.Select((words, index) =>
+            try
             {
-                var p = words.Split('|');
+                var parsedList = texts.Select((words, index) =>
+                {
+                    var p = words.Split('|');
 
-                return $"{index + 1}.{p[0]} ({p[1]}) {p[2]}\n({p[3]})";
+                    return $"{index + 1}.{p[0]} ({p[1]}) {p[2]}\n({p[3]})";
 
-            }).ToList();
+                }).ToList();
 
-            var combinedString = string.Join("\n", parsedList);
+                var combinedString = string.Join("\n", parsedList);
 
-            return combinedString;
+                training = combinedString;
+            }
+            catch
+            {
+                var concatString = "";
+
+                foreach (var item in texts)
+                {
+                    concatString += item;
+                }
+
+                return concatString;
+            }
+            
+
+            return training;
         }
 
         /// <summary>
@@ -218,19 +357,37 @@ namespace TEEmployee.Models.Talent
         /// <returns></returns>
         public static string ExtractHonor(List<CvRaw> inputs)
         {
+            string honor = "";
             var texts = inputs.Where(x => x.datatype == "榮譽").Select(x => x.dataitem).ToList();
 
-            var parsedList = texts.Select((words, index) =>
+            try
             {
-                var p = words.Split('|');
+                
+                var parsedList = texts.Select((words, index) =>
+                {
+                    var p = words.Split('|');
 
-                return $"{index + 1}.{p[0]} {p[1]} ({p[2]})";
+                    return $"{index + 1}.{p[0]} {p[1]} ({p[2]})";
 
-            }).ToList();
+                }).ToList();
 
-            var combinedString = string.Join("\n", parsedList);
+                var combinedString = string.Join("\n", parsedList);
 
-            return combinedString;
+                honor = combinedString;
+            }
+            catch
+            {
+                var concatString = "";
+
+                foreach (var item in texts)
+                {
+                    concatString += item;
+                }
+
+                return concatString;
+            }            
+
+            return honor;
         }
 
         /// <summary>
@@ -240,13 +397,30 @@ namespace TEEmployee.Models.Talent
         /// <returns></returns>
         public static string ExtractExperience(List<CvRaw> inputs)
         {
+            string experience = "";
             var texts = inputs.Where(x => x.datatype == "經歷概要").Select(x => x.dataitem).ToList();
 
-            var parsedList = texts.Select((x, index) => $"{index + 1}.{x}").ToList();
+            try
+            {              
+                var parsedList = texts.Select((x, index) => $"{index + 1}.{x}").ToList();
 
-            var combinedString = string.Join("\n", parsedList);
+                var combinedString = string.Join("\n", parsedList);
 
-            return combinedString;
+                experience = combinedString;
+            }
+            catch
+            {
+                var concatString = "";
+
+                foreach (var item in texts)
+                {
+                    concatString += item;
+                }
+
+                return concatString;
+            }            
+
+            return experience;
         }
 
         /// <summary>
@@ -480,49 +654,63 @@ namespace TEEmployee.Models.Talent
             int outerCount = 1;
             int innerCount = 1;
 
-            foreach (var words in texts)
+            try
             {
-                var p = words.Split('|');
-
-                // Outer (W|W|E|E)
-                if (string.IsNullOrEmpty(p[2]) && string.IsNullOrEmpty(p[3]) && !string.IsNullOrEmpty(p[1]))
+                foreach (var words in texts)
                 {
-                    combinedString += $"({ChineseDigits[outerCount]}) {p[0]} {p[1]}\n";
-                    outerCount++;
-                    innerCount = 1;
-                    continue;
-                }
+                    var p = words.Split('|');
 
-                // Inner Case 1(W|W|W|E)
-                if (!string.IsNullOrEmpty(p[2]) && string.IsNullOrEmpty(p[3]))
-                {
-                    combinedString += $"({innerCount}) {p[0]} {p[1]} {p[2]}\n";
-                    innerCount++;
-                    continue;
-                }
+                    // Outer (W|W|E|E)
+                    if (string.IsNullOrEmpty(p[2]) && string.IsNullOrEmpty(p[3]) && !string.IsNullOrEmpty(p[1]))
+                    {
+                        combinedString += $"({ChineseDigits[outerCount]}) {p[0]} {p[1]}\n";
+                        outerCount++;
+                        innerCount = 1;
+                        continue;
+                    }
 
-                // Inner Case 2(W|E|E|E)
-                if (string.IsNullOrEmpty(p[2]) && string.IsNullOrEmpty(p[3]))
-                {
-                    combinedString += $"({innerCount}) {p[0]} {p[1]} {p[2]}\n";
-                    innerCount++;
-                    continue;
-                }
+                    // Inner Case 1(W|W|W|E)
+                    if (!string.IsNullOrEmpty(p[2]) && string.IsNullOrEmpty(p[3]))
+                    {
+                        combinedString += $"({innerCount}) {p[0]} {p[1]} {p[2]}\n";
+                        innerCount++;
+                        continue;
+                    }
 
-                // Bullet Case 1 (W|E|E|W)
-                if (!string.IsNullOrEmpty(p[0]) && !string.IsNullOrEmpty(p[3]))
-                {
-                    combinedString += $"． {p[3]}({p[0]})\n";
-                    continue;
-                }
+                    // Inner Case 2(W|E|E|E)
+                    if (string.IsNullOrEmpty(p[2]) && string.IsNullOrEmpty(p[3]))
+                    {
+                        combinedString += $"({innerCount}) {p[0]} {p[1]} {p[2]}\n";
+                        innerCount++;
+                        continue;
+                    }
 
-                // Bullet Case 2 (E|E|E|W)
-                if (string.IsNullOrEmpty(p[0]) && !string.IsNullOrEmpty(p[3]))
-                {
-                    combinedString += $"． {p[3]}\n";
-                    continue;
+                    // Bullet Case 1 (W|E|E|W)
+                    if (!string.IsNullOrEmpty(p[0]) && !string.IsNullOrEmpty(p[3]))
+                    {
+                        combinedString += $"． {p[3]}({p[0]})\n";
+                        continue;
+                    }
+
+                    // Bullet Case 2 (E|E|E|W)
+                    if (string.IsNullOrEmpty(p[0]) && !string.IsNullOrEmpty(p[3]))
+                    {
+                        combinedString += $"． {p[3]}\n";
+                        continue;
+                    }
                 }
             }
+            catch
+            {
+                var concatString = "";
+
+                foreach (var item in texts)
+                {
+                    concatString += item;
+                }
+
+                return concatString;
+            }            
 
             return combinedString;
         }

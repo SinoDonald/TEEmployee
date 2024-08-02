@@ -112,14 +112,25 @@ namespace TEEmployee.Models.Profession
             var employeeGroups = GetEmployeeGroups(empno);
             var groups = managerGroups.Concat(employeeGroups).Distinct();
 
+            var groupmembers = this.GetGroupMembers(role).Select(x => x.empno).ToList();
+            
             // group skills
             // check role
             if (groups.Contains(role))
-                ret = _professionRepository.GetAllScoresByRole(new List<string> { role });
+            {
+                var domainSkills = _professionRepository.GetAllScoresByRole(new List<string> { role });
+
+                foreach (var item in domainSkills)
+                {
+                    item.scores = item.scores?.Where(x => groupmembers.Contains(x.empno)).ToList();
+                }
+
+                ret.AddRange(domainSkills);
+            }           
 
             // shared skills
             var sharedSkills = _professionRepository.GetAllScoresByRole(new List<string> { "shared" });
-            var groupmembers = this.GetGroupMembers(role).Select(x => x.empno).ToList();
+            
             foreach (var item in sharedSkills)
             {
                 item.scores = item.scores?.Where(x => groupmembers.Contains(x.empno)).ToList();

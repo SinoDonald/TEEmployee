@@ -216,7 +216,7 @@ function createScoreScatterChart(scoreData, members) {
 
         for (let item of domain) {
             let foundScore = item.scores.find(y => y.empno === x.empno);
-            if (foundScore) {
+            if (foundScore && foundScore.score) {
                 domainSum = domainSum + foundScore.score;
                 domainCount++;
             }

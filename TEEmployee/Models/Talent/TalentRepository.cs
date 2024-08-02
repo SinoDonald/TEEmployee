@@ -66,7 +66,15 @@ namespace TEEmployee.Models.Talent
                     if (userCV != null)
                     {
                         userCV.pic = employee.empno;
-                        MapCvProperty(userCV);
+
+                        try
+                        {
+                            MapCvProperty(userCV);
+                        }
+                        catch
+                        {
+
+                        }
                         ret.Add(userCV);
                     }
                     // 未上傳履歷名單

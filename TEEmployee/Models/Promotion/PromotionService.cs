@@ -160,6 +160,9 @@ namespace TEEmployee.Models.Promotion
 
             string[] strs = this.NextConditions(user.profTitle);
 
+            // 20240716 update: remove "(" and ")" of job title
+            strs[0] = strs[0].Replace("(", "").Replace(")", "");
+
             // modify content            
 
             promotions[0].content = promotions[0].content.Replace("xxx", strs[0]);
