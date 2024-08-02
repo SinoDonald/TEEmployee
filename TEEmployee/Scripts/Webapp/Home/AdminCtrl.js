@@ -143,6 +143,12 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
             // `rows` is an array of rows
             // each row being an array of cells.
 
+            if (rows[0][0] !== 'empno') {
+                alert('Oops!')
+                return;
+            }
+                
+
             rows.shift();
 
             for (let row of rows) {
