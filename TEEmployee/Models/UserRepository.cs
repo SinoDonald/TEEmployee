@@ -37,11 +37,18 @@ namespace TEEmployee.Models
             ret = _conn.Query<User>(sql).ToList();
 
             // for informal employee
-            List<User> customRet;
-            string customSql = @"SELECT * FROM customUser AS u LEFT JOIN userExtra AS e ON u.empno = e.empno";
-            customRet = _conn.Query<User>(customSql).ToList();
+            try
+            {
+                List<User> customRet;
+                string customSql = @"SELECT * FROM customUser AS u LEFT JOIN userExtra AS e ON u.empno = e.empno";
+                customRet = _conn.Query<User>(customSql).ToList();
 
-            ret.AddRange(customRet);
+                ret.AddRange(customRet);
+            }
+            catch
+            {
+
+            }      
 
             return ret;
         }
@@ -64,8 +71,16 @@ namespace TEEmployee.Models
             // for informal employee
             if (ret is null)
             {
-                sql = @"SELECT * FROM customUser AS u LEFT JOIN userExtra AS e ON u.empno = e.empno WHERE u.empno=@id";
-                ret = _conn.Query<User>(sql, new { id }).SingleOrDefault();
+                try
+                {
+                    sql = @"SELECT * FROM customUser AS u LEFT JOIN userExtra AS e ON u.empno = e.empno WHERE u.empno=@id";
+                    ret = _conn.Query<User>(sql, new { id }).SingleOrDefault();
+                }
+                catch
+                {
+
+                }
+                
             }
 
             return ret;
