@@ -409,7 +409,7 @@ namespace TEEmployee.Models.GKpi
                             
                             User user = _userRepository.Get(model.empno);
                             kpm = processedInput.Where(x =>
-                                x.role.Contains(user.group_one.Substring(0, 2)) &&
+                                x.role.Contains(user.group_one.Substring(0, user.group_one.Length - 1)) &&
                                 x.role.Contains("組長")).FirstOrDefault();
                            
                         }
@@ -419,7 +419,7 @@ namespace TEEmployee.Models.GKpi
                            
                             User user = _userRepository.Get(model.empno);
                             kpm = processedInput.Where(x =>
-                                x.role.Contains(user.group_one.Substring(0, 2)) &&
+                                x.role.Contains(user.group_one.Substring(0, user.group_one.Length - 1)) &&
                                 x.role.Contains("組員")).FirstOrDefault();
                           
                         }
@@ -430,7 +430,7 @@ namespace TEEmployee.Models.GKpi
                     {
                        
                         kpm = processedInput.Where(x =>
-                        x.role.Contains(model.group_name.Substring(0, 2)) &&
+                        x.role.Contains(model.group_name.Substring(0, model.group_name.Length - 1)) &&
                         x.role.Contains("組員")).FirstOrDefault();
 
 
