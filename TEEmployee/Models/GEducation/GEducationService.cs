@@ -35,9 +35,21 @@ namespace TEEmployee.Models.GEducation
         /// </summary>
         /// <param name="input">課程資料的stream</param>
         /// <returns>使否更新成功</returns>
-        public bool UploadCourseFile(Stream input)
+        public bool UploadCourseFile(Stream input, string empno)
         {
-            List<Chapter> chapters = processCourseXlsx(input);
+            var user = _userRepository.Get(empno);
+            List<Chapter> chapters = new List<Chapter>();
+
+            if (user.gid == "24")
+            {
+                chapters = processCourseXlsx(input);
+            }
+            else
+            {
+                chapters = processCourseXlsxGlobal(input);
+            }
+
+            //List<Chapter> chapters = processCourseXlsx(input);
 
             bool ret = _educationRepository.InsertChapters(chapters);
 
@@ -439,6 +451,112 @@ namespace TEEmployee.Models.GEducation
         {
             var ret = _educationRepository.GetAllRecordsByUser(empno);
             return ret;
+        }
+
+        public bool DeleteAll()
+        {
+            var ret = _educationRepository.DeleteAll();
+            return ret;
+        }
+
+        private List<Chapter> processCourseXlsxGlobal(Stream stream)
+        {
+            List<Chapter> chapters = new List<Chapter>();
+            List<Chapter> chapter_collection = GetAllChapters();
+            List<string> departments = new List<string> { "機械部", "園路部", "工管部" };
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(stream))
+            {
+                ExcelWorksheet worksheet = null;
+
+                foreach (var ws in package.Workbook.Worksheets)
+                {
+                    if (departments.Contains(ws.Name))
+                    {
+                        worksheet = ws;
+                        break;
+                    }
+                        
+                }
+
+                if (worksheet is null) return chapters;
+
+                int rowCount = worksheet.Dimension.End.Row;
+                string current_course_title = "";
+
+                for (int row = 4; row <= rowCount; row++)
+                {
+                    // Get values from columns
+                    string columnAValue = worksheet.Cells[row, 1].Text;
+                    string columnBValue = worksheet.Cells[row, 2].Text;
+                    string columnCValue = worksheet.Cells[row, 3].Text;
+                    string columnDValue = worksheet.Cells[row, 4].Text;
+                    string columnEValue = worksheet.Cells[row, 5].Text;
+                    string columnHValue = worksheet.Cells[row, 8].Text;
+                    string columnIValue = worksheet.Cells[row, 9].Text;
+
+                    // True end of row
+                    if (columnCValue == "")
+                    {
+                        break;
+                    }
+
+                    // Start of a new course
+                    if (columnBValue != "")
+                    {
+                        //current_course_title = columnBValue.Substring(4);
+                        current_course_title = columnBValue;
+                    }
+
+
+
+                    Chapter chapter = new Chapter();
+                    string group_one = "";
+                    string scope = "";
+                    string type = "";
+
+
+                    if (columnIValue.Contains('-'))
+                    {
+                        try
+                        {
+                            string[] words = columnIValue.Split('-');
+                            group_one = words[0];
+                            scope = words[1];
+                            type = words[2];
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                    }
+
+                    chapter.id = int.Parse(columnAValue);
+
+                    if (chapter_collection.Any(x => x.id == chapter.id))
+                        continue;
+
+                    chapter.course_group = columnHValue;
+                    chapter.course_group_one = group_one;
+                    chapter.course_title = current_course_title;
+
+                    chapter.chapter_type = type;
+                    chapter.chapter_scope = scope;
+                    chapter.chapter_title = columnCValue;
+                    chapter.duration = columnDValue;
+                    chapter.createdTime = columnEValue;
+
+                    //chapter.chapter_code = buildChapterCode(chapter);
+
+                    chapters.Add(chapter);
+
+                }
+
+            }
+
+            return chapters;
         }
 
         public void Dispose()

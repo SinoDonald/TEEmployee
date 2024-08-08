@@ -186,5 +186,28 @@ namespace TEEmployee.Models.GEducation
         //    return resultList.ToList();
         //}
 
+        public bool DeleteAll()
+        {
+            _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                try
+                {
+                    _conn.Execute(@"DELETE FROM Record", tran);
+                    _conn.Execute(@"DELETE FROM Chapter", tran);
+
+                    tran.Commit();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
+            }
+
+        }
+
     }
 }

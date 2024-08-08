@@ -176,8 +176,8 @@ namespace TEEmployee.Models.GSchedule
         /// <returns>更新的行事曆項目</returns>
         public Schedule UpdateSchedule(Schedule schedule, string empno)
         {
-            if (!CheckIsAuthorized(schedule, empno))
-                return null;
+            //if (!CheckIsAuthorized(schedule, empno))
+            //    return null;
 
             Schedule ret = _scheduleRepository.Update(schedule);
             return ret;
@@ -191,8 +191,8 @@ namespace TEEmployee.Models.GSchedule
         /// <returns>新增的行事曆項目</returns>
         public Schedule InsertSchedule(Schedule schedule, string empno)
         {
-            if (!CheckIsAuthorized(schedule, empno))
-                return null;
+            //if (!CheckIsAuthorized(schedule, empno))
+            //    return null;
 
             Schedule ret = _scheduleRepository.Insert(schedule);
             return ret;
@@ -206,8 +206,8 @@ namespace TEEmployee.Models.GSchedule
         /// <returns>是否刪除成功</returns>
         public bool DeleteSchedule(Schedule schedule, string empno)
         {
-            if (!CheckIsAuthorized(schedule, empno))
-                return false;
+            //if (!CheckIsAuthorized(schedule, empno))
+            //    return false;
 
             List<Schedule> deletedSchedules = new List<Schedule>();
 
@@ -279,6 +279,8 @@ namespace TEEmployee.Models.GSchedule
 
                 authorization.GroupAuthorities.Add(groupAuthority);
             }
+
+            AddCustomAgent(authorization);
 
             return authorization;
         }
@@ -375,6 +377,21 @@ namespace TEEmployee.Models.GSchedule
         {
             List<User> users = _userRepository.GetAll();
             return users.Where(x => x.group_one == group || x.group_two == group || x.group_three == group).ToList();
+        }
+
+        private void AddCustomAgent(Authorization auth)
+        {
+            if (auth.User.empno == "8485")
+            {
+                var group = auth.GroupAuthorities.Find(x => x.GroupName == "營運規劃組");
+
+                if (group != null)
+                {
+                    group.Editable = true;
+                    group.Members = GetGroupMembers(group.GroupName).Select(x => x.name).ToList();
+                }
+                    
+            }
         }
 
 

@@ -70,25 +70,29 @@ app.controller('AssignCtrl', ['$scope', '$location', 'appService', '$rootScope',
         value: 'assign',
     };
 
-    $scope.groupCheckboxList = [
-        { id: 1, value: '通識', checked: true },
-        { id: 2, value: '規劃', checked: true },
-        { id: 3, value: '專管', checked: true },
-        { id: 4, value: '設計', checked: true },
-    ];
+    //$scope.groupCheckboxList = [
+    //    { id: 1, value: '通識', checked: true },
+    //    { id: 2, value: '規劃', checked: true },
+    //    { id: 3, value: '專管', checked: true },
+    //    { id: 4, value: '設計', checked: true },
+    //];
 
-    $scope.levelCheckboxList = [
-        { id: 1, value: 'G通識', checked: true },
-        { id: 2, value: 'A基礎', checked: true },
-        { id: 3, value: 'B進階', checked: true },
-        { id: 4, value: 'C案例', checked: true },
-    ];
+    //$scope.levelCheckboxList = [
+    //    { id: 1, value: 'G通識', checked: true },
+    //    { id: 2, value: 'A基礎', checked: true },
+    //    { id: 3, value: 'B進階', checked: true },
+    //    { id: 4, value: 'C案例', checked: true },
+    //];
+
+    $scope.groupCheckboxList = [];
+    $scope.levelCheckboxList = [];
+
 
     $scope.updatelevelSelected = () => {
         $scope.levelSelected = $scope.levelCheckboxList.filter(x => x.checked === true).map(x => x.value);
     }
 
-    $scope.updatelevelSelected();
+    //$scope.updatelevelSelected();
 
     $scope.updateGroupSelected = () => {
         const groupSelected = $scope.groupCheckboxList.filter(x => x.checked === true).map(x => x.value);
@@ -128,6 +132,21 @@ app.controller('AssignCtrl', ['$scope', '$location', 'appService', '$rootScope',
 
         /*$scope.chapters = _.groupBy(ret.data, 'course_title');*/
 
+        // 2024 0805 new
+        const uniqueGroups = [...new Set(ret.data.map(item => item.course_group))];
+        $scope.groupCheckboxList = uniqueGroups.map((name, index) => ({
+            id: index + 1,         
+            value: name,
+            checked: true,         
+        }));
+
+        const uniqueChapterTypes = [...new Set(ret.data.map(item => item.chapter_type))];
+        $scope.levelCheckboxList = uniqueChapterTypes.map((name, index) => ({
+            id: index + 1,
+            value: name,
+            checked: true,
+        }));
+
         let group_one_array = ret.data.map(x => ({ group: x.course_group, group_one: x.course_group_one, }));
 
         // remove duplicate object
@@ -138,6 +157,7 @@ app.controller('AssignCtrl', ['$scope', '$location', 'appService', '$rootScope',
         )
         $scope.group_data = group_one_array;
         $scope.updateGroupSelected();
+        $scope.updatelevelSelected();
 
         // First group by "foo"
         const groupedByGroupOne = _.groupBy(ret.data, 'course_group_one');
@@ -293,26 +313,29 @@ app.controller('AssignCtrl', ['$scope', '$location', 'appService', '$rootScope',
 
 app.controller('CurriculumCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', function ($scope, $location, appService, $rootScope, $q) {
 
-    $scope.groupList = [
-        { id: 0, value: '', name: '全部' },
-        { id: 1, value: '通識', name: '通識' },
-        { id: 2, value: '規劃', name: '規劃' },
-        { id: 3, value: '專管', name: '專管' },
-        { id: 4, value: '設計', name: '設計' },
-    ];
+    //$scope.groupList = [
+    //    { id: 0, value: '', name: '全部' },
+    //    { id: 1, value: '通識', name: '通識' },
+    //    { id: 2, value: '規劃', name: '規劃' },
+    //    { id: 3, value: '專管', name: '專管' },
+    //    { id: 4, value: '設計', name: '設計' },
+    //];
 
-    $scope.levelCheckboxList = [
-        { id: 1, value: 'G通識', checked: true },
-        { id: 2, value: 'A基礎', checked: true },
-        { id: 3, value: 'B進階', checked: true },
-        { id: 4, value: 'C案例', checked: true },
-    ];
+    //$scope.levelCheckboxList = [
+    //    { id: 1, value: 'G通識', checked: true },
+    //    { id: 2, value: 'A基礎', checked: true },
+    //    { id: 3, value: 'B進階', checked: true },
+    //    { id: 4, value: 'C案例', checked: true },
+    //];
+
+    $scope.groupList = [];
+    $scope.levelCheckboxList = [];
 
     $scope.updatelevelSelected = () => {
         $scope.levelSelected = $scope.levelCheckboxList.filter(x => x.checked === true).map(x => x.value);
     }
 
-    $scope.updatelevelSelected();
+    //$scope.updatelevelSelected();
 
     appService.GetAuth({}).then((ret) => {
 
@@ -379,6 +402,27 @@ app.controller('CurriculumCtrl', ['$scope', '$location', 'appService', '$rootSco
 
             $scope.records = ret.data.filter(x => x.assigned);
 
+            // 2024 0805 new
+            const uniqueGroups = [...new Set($scope.records.map(item => item.chapter.course_group))];
+            $scope.groupList = uniqueGroups.map((name, index) => ({
+                id: index + 1,
+                value: name,
+                name: name,
+            }));
+
+            $scope.groupList.unshift({
+                id: 0,
+                value: '',
+                name: '全部',
+            });
+
+            const uniqueChapterTypes = [...new Set($scope.records.map(item => item.chapter.chapter_type))];
+            $scope.levelCheckboxList = uniqueChapterTypes.map((name, index) => ({
+                id: index + 1,
+                value: name,
+                checked: true,
+            }));
+
             // mapped to chapter
             const chapters = $scope.records.map(x => x.chapter);
 
@@ -392,6 +436,8 @@ app.controller('CurriculumCtrl', ['$scope', '$location', 'appService', '$rootSco
                     return _.groupBy(itemsGroupOne, 'chapter_scope');
                 });
             });
+
+            $scope.updatelevelSelected();
 
             $scope.groupStructure = groupedByChapterScope;
 

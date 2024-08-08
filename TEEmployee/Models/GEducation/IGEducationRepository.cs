@@ -16,6 +16,7 @@ namespace TEEmployee.Models.GEducation
         bool UpsertRecords(List<Record> records);
         Record UpdateRecordCompleted(Record record);
         Chapter UpdateChapterDigitalized(Chapter chapter);
+        bool DeleteAll();
 
     }
 }

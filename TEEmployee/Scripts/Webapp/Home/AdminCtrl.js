@@ -71,6 +71,9 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('GKpi/DeleteAll', o);
     };
 
+    this.DeleteGEducation = function (o) {
+        return $http.post('GEducation/DeleteAll', o);
+    };
     // =================== 培文 ===================
 
     // 刪除群組規劃
@@ -388,6 +391,9 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
             case '人才資料庫':
                 $scope.DeleteTalent();
                 break;
+            case '拓展專業培養':
+                $scope.DeleteGEducation();
+                break;
             default:
                 console.log('Sorry');
         }
@@ -457,6 +463,16 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
 
     $scope.DeleteKpi = () => {
         appService.DeleteKpi({})
+            .then((ret) => {
+                alert("Successfully deleted");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+
+    $scope.DeleteGEducation = () => {
+        appService.DeleteGEducation({})
             .then((ret) => {
                 alert("Successfully deleted");
             })

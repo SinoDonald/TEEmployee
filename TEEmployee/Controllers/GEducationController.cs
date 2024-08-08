@@ -58,7 +58,7 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult UploadCourseFile(HttpPostedFileBase courseFile)
         {
-            var ret = _service.UploadCourseFile(courseFile.InputStream);
+            var ret = _service.UploadCourseFile(courseFile.InputStream, Session["empno"].ToString());
             return Json(ret);
         }
 
@@ -94,6 +94,13 @@ namespace TEEmployee.Controllers
         public JsonResult GetAllRecordsByUser(string empno)
         {
             var ret = _service.GetAllRecordsByUser(empno);
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteAll()
+        {
+            var ret = _service.DeleteAll();
             return Json(ret);
         }
 
