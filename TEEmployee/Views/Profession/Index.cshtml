@@ -182,6 +182,17 @@
             font-family: 'Agdasima', sans-serif;
             line-height: 2em;
         }
+
+        .nav-isActive {
+            /*border-bottom: 2px solid #f4623a;*/
+            /*background-color: #FFB347;*/
+            background-color: rgba(255, 179, 71, 0.8);
+            color: white;
+        }
+
+        .nav-custom {
+            border-radius: 10px;
+        }
     </style>
 }
 
@@ -198,15 +209,15 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-item nav-link" ui-sref="Skill">群組專業規劃</a>
+                <a class="nav-item nav-link nav-custom" ng-class="{'nav-isActive': isActive('/Skill')}" ui-sref="Skill">群組專業規劃</a>
 
                 @if (Session["role"] is "Manager")
                 {
-                    <a class="nav-item nav-link" ui-sref="Score">群組專業盤點</a>
-                    <a class="nav-item nav-link" ui-sref="Chart">長條圖</a>
-                    <a class="nav-item nav-link" ui-sref="Scatter">散佈圖</a>
+                    <a class="nav-item nav-link nav-custom" ng-class="{'nav-isActive': isActive('/Score')}" ui-sref="Score">群組專業盤點</a>
+                    <a class="nav-item nav-link nav-custom" ng-class="{'nav-isActive': isActive('/Chart')}" ui-sref="Chart">長條圖</a>
+                    <a class="nav-item nav-link nav-custom" ng-class="{'nav-isActive': isActive('/Scatter')}" ui-sref="Scatter">散佈圖</a>
                 }
-                <a class="nav-item nav-link" ui-sref="Personal">個人專業盤點</a>
+                <a class="nav-item nav-link nav-custom" ng-class="{'nav-isActive': isActive('/Personal')}" ui-sref="Personal">個人專業盤點</a>
             </div>
         </div>
     </nav>

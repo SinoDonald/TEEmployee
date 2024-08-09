@@ -102,6 +102,10 @@ app.controller('ProfessionCtrl', ['$scope', '$location', 'appService', '$rootSco
     //    dataservice.set(ret.data);
     //})
 
+    $scope.isActive = (destination) => {
+        return destination === $location.path();
+    }
+
     dataservice.set(appService.GetAuthorization({}));
     $location.path('/Skill');
 

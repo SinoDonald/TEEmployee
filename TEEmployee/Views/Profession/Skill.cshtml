@@ -17,7 +17,7 @@
             <div class="p-3 mb-2 bg-secondary text-white d-flex justify-content-center align-items-center">
                 <h2>領域技能</h2>
                 <div>
-                    <button ng-disabled="!editable" type="button" ng-click="cloneDeepToModal(domain, 'domain')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
+                    <button ng-hide="!editable" type="button" ng-click="cloneDeepToModal(domain, 'domain')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
                         <span class="material-icons text-white">edit_note</span>
                     </button>
                 </div>
@@ -32,7 +32,7 @@
             <div class="p-3 mb-2 bg-secondary text-white d-flex justify-content-center align-items-center">
                 <h2>核心技能</h2>
                 <div>
-                    <button ng-disabled="!auth.User.department_manager" type="button" ng-click="cloneDeepToModal(core, 'core')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
+                    <button ng-hide="!auth.User.department_manager" type="button" ng-click="cloneDeepToModal(core, 'core')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
                         <span class="material-icons text-white">edit_note</span>
                     </button>
                 </div>
@@ -47,7 +47,7 @@
             <div class="p-3 mb-2 bg-secondary text-white d-flex justify-content-center align-items-center">
                 <h2>管理能力</h2>
                 <div>
-                    <button ng-disabled="!auth.User.department_manager" type="button" ng-click="cloneDeepToModal(manage, 'manage')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
+                    <button ng-hide="!auth.User.department_manager" type="button" ng-click="cloneDeepToModal(manage, 'manage')" class="btn btn-sm" data-toggle="modal" data-target="#skillModal">
                         <span class="material-icons text-white">edit_note</span>
                     </button>
                 </div>
