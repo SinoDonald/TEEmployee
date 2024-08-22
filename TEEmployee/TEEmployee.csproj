@@ -191,6 +191,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AgentModel\Agent.cs" />
+    <Compile Include="Models\AgentModel\AgentRepository.cs" />
+    <Compile Include="Models\AgentModel\IAgentRepository.cs" />
     <Compile Include="Models\Assessments\Performance.cs" />
     <Compile Include="Models\Education\Chapter.cs" />
     <Compile Include="Models\Education\Course.cs" />

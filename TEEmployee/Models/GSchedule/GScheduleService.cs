@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using TEEmployee.Models.AgentModel;
 using TEEmployee.Models.TaskLog;
 
 namespace TEEmployee.Models.GSchedule
@@ -12,12 +13,14 @@ namespace TEEmployee.Models.GSchedule
         private IGScheduleRepository _scheduleRepository;
         private IUserRepository _userRepository;
         private IProjectItemRepository _projectItemRepository;
+        private IAgentRepository _agentRepository;
 
         public GScheduleService()
         {
             _scheduleRepository = new GScheduleRepository();
             _userRepository = new UserRepository();
             _projectItemRepository = new ProjectItemRepository();
+            _agentRepository = new AgentRepository();
         }
 
         /// <summary>
@@ -257,13 +260,42 @@ namespace TEEmployee.Models.GSchedule
         /// </summary>
         /// <param name="empno">員工編號</param>
         /// <returns>員工資料動態物件</returns>
-        public Authorization GetAuthorization(string empno)
+        /// 
+
+        public Authorization GetAuthorization(string page_id, string empno)
         {
             Authorization authorization = new Authorization() { User = _userRepository.Get(empno), GroupAuthorities = new List<GroupAuthority>() };
 
             var managerGroups = GetManagerGroups(empno);
             var employeeGroups = GetEmployeeGroups(empno);
             var groups = managerGroups.Concat(employeeGroups).Distinct();
+
+            if (!string.IsNullOrEmpty(page_id))
+            {
+                var agents = _agentRepository.GetPageAgentsByUser(empno, page_id);
+
+                if (page_id == "0" || page_id == "1")
+                {
+                    foreach (var agent in agents)
+                    {
+                        managerGroups = managerGroups.Concat(GetManagerGroups(agent.manno)).Distinct().ToList();
+                        groups = groups.Concat(GetManagerGroups(agent.manno)).Distinct();
+                    }
+                }
+
+                if (page_id == "2")
+                {
+                    foreach (var agent in agents)
+                    {
+                        var manager = _userRepository.Get(agent.manno);
+
+                        if (manager.group_manager)
+                            authorization.User.group_manager = true;
+
+                    }
+                }
+            }
+            
 
             foreach (var group in groups)
             {
@@ -280,10 +312,40 @@ namespace TEEmployee.Models.GSchedule
                 authorization.GroupAuthorities.Add(groupAuthority);
             }
 
-            AddCustomAgent(authorization);
+            //AddCustomAgent(authorization);
 
             return authorization;
         }
+
+
+
+        //public Authorization GetAuthorization(string empno)
+        //{
+        //    Authorization authorization = new Authorization() { User = _userRepository.Get(empno), GroupAuthorities = new List<GroupAuthority>() };
+
+        //    var managerGroups = GetManagerGroups(empno);
+        //    var employeeGroups = GetEmployeeGroups(empno);
+        //    var groups = managerGroups.Concat(employeeGroups).Distinct();
+
+        //    foreach (var group in groups)
+        //    {
+        //        GroupAuthority groupAuthority = new GroupAuthority() { GroupName = group, Members = new List<string>() };
+
+        //        if (managerGroups.Contains(group))
+        //        {
+        //            groupAuthority.Members = GetGroupMembers(group).Select(x => x.name).ToList();
+        //            groupAuthority.Editable = true;
+        //        }
+        //        else
+        //            groupAuthority.Members.Add(authorization.User.name);
+
+        //        authorization.GroupAuthorities.Add(groupAuthority);
+        //    }
+
+        //    AddCustomAgent(authorization);
+
+        //    return authorization;
+        //}
 
         /// <summary>
         /// 取得群組之未來數位轉型行事曆
@@ -549,9 +611,24 @@ namespace TEEmployee.Models.GSchedule
         /// <param name="view"></param>
         /// <param name="empno"></param>
         /// <returns></returns>
-        public User Get(string empno)
+        public User Get(string page_id, string empno)
         {
             var user = _userRepository.Get(empno);
+
+            if (page_id == "3")
+            {
+                var agents = _agentRepository.GetPageAgentsByUser(empno, page_id);
+
+                foreach (var agent in agents)
+                {
+                    var manager = _userRepository.Get(agent.manno);
+
+                    if (manager.group_manager)
+                        user.group_manager = true;
+
+                }
+            }
+            
             return user;
         }
         /// <summary>
@@ -663,11 +740,43 @@ namespace TEEmployee.Models.GSchedule
             return ret;
         }
 
+        public List<Agent> GetAllAgents(string manno)
+        {
+            var agents = _agentRepository.GetAllAgents(manno);
+            agents.ForEach(x => x.name = _userRepository.Get(x.empno).name);
+            return agents;
+        }
+
+        public bool InsertAgent(Agent agent, string manno)
+        {
+            agent.manno = manno;
+            agent.empno = _userRepository.GetAll().Find(x => x.name == agent.name).empno;
+            var ret = _agentRepository.InsertAgent(agent);
+            return ret;
+        }
+
+        public bool UpdateAgent(Agent agent, string manno)
+        {
+            agent.manno = manno;
+            agent.empno = _userRepository.GetAll().Find(x => x.name == agent.name).empno;
+            var ret = _agentRepository.UpdateAgent(agent);
+            return ret;
+        }
+
+        public bool DeleteAgent(Agent agent, string manno)
+        {
+            agent.manno = manno;
+            agent.empno = _userRepository.GetAll().Find(x => x.name == agent.name).empno;
+            var ret = _agentRepository.DeleteAgent(agent);
+            return ret;
+        }
+
         public void Dispose()
         {
             _scheduleRepository.Dispose();
             _userRepository.Dispose();
             _projectItemRepository.Dispose();
+            _agentRepository.Dispose();
         }
     }
 

@@ -94,7 +94,18 @@ app.service('appService', ['$http', function ($http) {
     this.DeleteProjectSchedule = (o) => {
         return $http.post('GSchedule/DeleteProjectSchedule', o);
     };
-
+    this.GetAllAgents = (o) => {
+        return $http.post('GSchedule/GetAllAgents', o);
+    };
+    this.CreateAgent = (o) => {
+        return $http.post('GSchedule/CreateAgent', o);
+    };
+    this.UpdateAgent = (o) => {
+        return $http.post('GSchedule/UpdateAgent', o);
+    };
+    this.DeleteAgent = (o) => {
+        return $http.post('GSchedule/DeleteAgent', o);
+    };
 }]);
 
 app.factory('dataservice', function () {
@@ -170,6 +181,12 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
             }));
         })
 
+        $scope.agentData = ret.data;
+
+        $scope.selectedGroup = $scope.agentData.GroupAuthorities[0].GroupName;
+
+        $scope.filterMembers();
+
         return ret.data;
 
     })
@@ -227,7 +244,93 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
     //    $location.path('/Skill');
     //})
 
+    $scope.filterMembers = () => {
+        let group = $scope.agentData.GroupAuthorities.find(x => x.GroupName === $scope.selectedGroup)
+        $scope.filteredMembers = group.Members
 
+        let user = $scope.filteredMembers.find(x => x.label === $scope.agentData.User.name);
+
+        if (user) {
+            $scope.selectedMember = user.label;
+        }
+        else {
+            $scope.selectedMember = $scope.filteredMembers[0].label;
+        }
+
+        $scope.changeMember();
+    }
+
+    $scope.changeMember = () => {
+        /*$scope.editFilter = $scope.selectedMember === $scope.auth.User.name;*/
+    }
+
+    appService.GetAllAgents({}).then((ret) => {
+
+        ret.data.forEach(x => {
+
+            x.pages = [];
+            x.pages.push(x.page_id.includes('0'));
+            x.pages.push(x.page_id.includes('1'));
+            x.pages.push(x.page_id.includes('2'));
+            x.pages.push(x.page_id.includes('3'));
+                        
+        })
+
+        $scope.agents = ret.data;       
+
+    })
+
+    $scope.createAgent = () => {
+
+        if ($scope.agents.some(agent => agent.name === $scope.selectedMember)) return;
+
+        let userData = $scope.filteredMembers.find(x => x.label === $scope.selectedMember);
+        let newAgent = { name: userData.label, page_id: "" , pages: [false, false, false, false]};
+
+        appService.CreateAgent({ agent: newAgent }).then((ret) => {
+            if (ret.data) {
+                $scope.agents.push(newAgent);
+            }
+        });
+    }
+
+    $scope.deleteAgent = (agent, idx) => {              
+
+        appService.DeleteAgent({ agent: agent }).then((ret) => {
+            if (ret.data) {
+                $scope.agents.splice(idx, 1);
+            }
+        });
+    }
+
+    $scope.updateAgent = (agent, idx) => {
+
+        let newPage_id = "";         
+
+        for (let i = 0; i !== 4; i++) {
+
+            if (i === idx) {
+                if (!agent.pages[i]) {
+                    newPage_id += `${i},`;
+                }
+            } else {
+                if (agent.pages[i]) {
+                    newPage_id += `${i},`;
+                }
+            }
+        }
+       
+        newPage_id = newPage_id.slice(0, -1);
+
+        let updatedAgent = { name: agent.name, page_id: newPage_id }
+
+        appService.UpdateAgent({ agent: updatedAgent }).then((ret) => {
+            if (ret.data) {
+                agent.page_id = newPage_id;
+                agent.pages[idx] = !agent.pages[idx];
+            }
+        });
+    }
 
 }]);
 
@@ -260,7 +363,7 @@ app.controller('GroupPlanCtrl', ['$scope', '$location', 'appService', '$rootScop
     }
 
     // 讀取使用者的資訊
-    appService.Get({ empno: data })
+    appService.Get({ empno: data, page_id: "3" })
         .then(function (ret) {
             $scope.user = ret.data;
             userdata.set(ret.data);
@@ -1201,7 +1304,21 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
 
     let promiseA = dataservice.get();
-    let promiseB = dataservice.getAuth();
+    /*let promiseB = dataservice.getAuth();*/
+    let promiseB = appService.GetAuthorization({page_id: "0"}).then((ret) => {
+
+        // transform member data for multi-selection
+        ret.data.GroupAuthorities.forEach(group => {
+            group.Members = group.Members.map((name, index) => ({
+                id: index,
+                label: name,
+            }));
+        })
+
+        return ret.data;
+
+    });
+
 
     $q.all([promiseA, promiseB]).then((ret) => {
 
@@ -2058,7 +2175,20 @@ app.controller('FutureCtrl', ['$scope', '$location', 'appService', '$rootScope',
 
 
     let promiseA = appService.GetAllFutures({});
-    let promiseB = dataservice.getAuth();
+    //let promiseB = dataservice.getAuth();
+    let promiseB = appService.GetAuthorization({ page_id: "1" }).then((ret) => {
+
+        // transform member data for multi-selection
+        ret.data.GroupAuthorities.forEach(group => {
+            group.Members = group.Members.map((name, index) => ({
+                id: index,
+                label: name,
+            }));
+        })
+
+        return ret.data;
+
+    });
 
     $q.all([promiseA, promiseB]).then((ret) => {
 
@@ -2082,10 +2212,25 @@ app.controller('FutureCtrl', ['$scope', '$location', 'appService', '$rootScope',
 
 app.controller('ProjectCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$timeout', function ($scope, $location, appService, $rootScope, $q, dataservice, $timeout) {
 
-    dataservice.getAuth().then((ret) => {
-        $scope.auth = ret;
+    //dataservice.getAuth().then((ret) => {
+    //    $scope.auth = ret;
+    //    $scope.editable = $scope.auth.User.department_manager || $scope.auth.User.group_manager;
+    //});
+
+    appService.GetAuthorization({ page_id: "2" }).then((ret) => {
+
+        // transform member data for multi-selection
+        ret.data.GroupAuthorities.forEach(group => {
+            group.Members = group.Members.map((name, index) => ({
+                id: index,
+                label: name,
+            }));
+        })
+
+        $scope.auth = ret.data;
         $scope.editable = $scope.auth.User.department_manager || $scope.auth.User.group_manager;
     });
+
 
     const reg = /^\d{4}[a-zA-Z]$/;
     $scope.modal = {};

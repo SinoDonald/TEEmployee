@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Filters;
 using TEEmployee.Models;
+using TEEmployee.Models.AgentModel;
 using TEEmployee.Models.GSchedule;
 
 namespace TEEmployee.Controllers
@@ -83,9 +84,9 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAuthorization()
+        public JsonResult GetAuthorization(string page_id = "")
         {
-            var ret = _service.GetAuthorization(Session["empno"].ToString());
+            var ret = _service.GetAuthorization(page_id, Session["empno"].ToString());
             return Json(ret);
         }
 
@@ -170,9 +171,9 @@ namespace TEEmployee.Controllers
         /// <param name="selectedGroup"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult Get()
+        public JsonResult Get(string page_id = "")
         {
-            var ret = _service.Get(Session["empno"].ToString());
+            var ret = _service.Get(page_id, Session["empno"].ToString());
             return Json(ret);
         }
         /// <summary>
@@ -273,6 +274,34 @@ namespace TEEmployee.Controllers
         public JsonResult DeletePersonalPlan()
         {
             var ret = _service.DeletePersonalPlan();
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllAgents()
+        {
+            var ret = _service.GetAllAgents(Session["empno"].ToString());
+            return Json(ret);
+        }        
+
+        [HttpPost]
+        public JsonResult CreateAgent(Agent agent)
+        {
+            var ret = _service.InsertAgent(agent, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateAgent(Agent agent)
+        {
+            var ret = _service.UpdateAgent(agent, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteAgent(Agent agent)
+        {
+            var ret = _service.DeleteAgent(agent, Session["empno"].ToString());
             return Json(ret);
         }
 

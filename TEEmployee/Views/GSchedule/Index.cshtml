@@ -139,6 +139,55 @@
         .highlight-select {
             background-color: papayawhip;
         }
+
+        /* Hide the default checkbox */
+        /*.toggle-checkbox {
+            display: none;
+        }*/
+
+        /* Style the label to look like a Bootstrap button */
+        /*.toggle-label {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border-radius: 5px;
+            background-color: transparent;
+            color: #f4623a;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            margin: 0;
+            border: 1px solid #f4623a;
+        }*/   
+
+        /* Change the background color when checkbox is checked */
+        /*.toggle-checkbox:checked + .toggle-label {            
+            background-color: #f4623a;
+            color: white;
+        }*/
+
+        
+        /* Style the label to look like a Bootstrap button */
+        .page-toggle {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border-radius: 5px;
+            background-color: transparent;
+            color: #f4623a;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            margin: 0;
+            border: 1px solid #f4623a;
+        }
+
+        .page-toggle-active {
+            background-color: #f4623a;
+            color: white;
+        }      
+
+
     </style>
 }
 
@@ -155,29 +204,38 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         @*<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/GroupPlan')}" ui-sref="GroupPlan">群組規劃</a>
+                    <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/PersonalPlan')}" ui-sref="PersonalPlan">個人規劃</a>
+                    <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Future')}" ui-sref="Future">未來3年數位轉型規劃</a>
+                    <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Project')}" ui-sref="Project">計畫行事曆</a>
+                    <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Group')}" ui-sref="Group">群組行事曆</a>
+                    <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Personal')}" ui-sref="Personal">個人行事曆</a>
+                </div>
+            </div>*@
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
+                <span class="navbar-brand mt-2 h1 border border-secondary rounded ml-2 p-1">參考文件</span>
                 <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/GroupPlan')}" ui-sref="GroupPlan">群組規劃</a>
                 <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/PersonalPlan')}" ui-sref="PersonalPlan">個人規劃</a>
-                <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Future')}" ui-sref="Future">未來3年數位轉型規劃</a>
                 <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Project')}" ui-sref="Project">計畫行事曆</a>
+            </div>
+            <div class="navbar-nav">
+                <span class="navbar-brand mt-2 h1 border border-secondary rounded ml-2 p-1">填寫介面</span>
                 <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Group')}" ui-sref="Group">群組行事曆</a>
                 <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Personal')}" ui-sref="Personal">個人行事曆</a>
+                <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Future')}" ui-sref="Future">未來3年數位轉型規劃</a>
             </div>
-        </div>*@
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-            <span class="navbar-brand mt-2 h1 border border-secondary rounded ml-2 p-1">參考文件</span>
-            <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/GroupPlan')}" ui-sref="GroupPlan">群組規劃</a>
-            <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/PersonalPlan')}" ui-sref="PersonalPlan">個人規劃</a>
-            <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Project')}" ui-sref="Project">計畫行事曆</a>
+            @if (Session["role"] == "Manager")
+            {
+                <div class="navbar-nav">
+                    <div class="ml-3" data-toggle="modal" data-target="#agentModalCenter">
+                        <img src="~/Content/assets/img/agent.png" class="img-fluid " style="max-width: 30px; opacity: 0.5;" alt="Card image cap">
+                    </div>
+                </div>
+            }
+
         </div>
-        <div class="navbar-nav">
-            <span class="navbar-brand mt-2 h1 border border-secondary rounded ml-2 p-1">填寫介面</span>
-            <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Group')}" ui-sref="Group">群組行事曆</a>
-            <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Personal')}" ui-sref="Personal">個人行事曆</a>
-            <a class="nav-item nav-link" ng-class="{'nav-isActive': isActive('/Future')}" ui-sref="Future">未來3年數位轉型規劃</a>
-        </div>
-    </div>
     </nav>
 
 
@@ -194,6 +252,75 @@
             </li>
         </ul>*@
 
+
+    <!-- Agent Modal -->
+    <div class="modal fade" id="agentModalCenter" tabindex="-1" role="dialog" aria-labelledby="agentModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="agentModalCenterTitle">行事曆代理人</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-around w-50 mx-auto mb-4">
+                        <div>
+                            <select class="form-select" id="SelectAgentGroup" name="SelectAgentGroup" ng-model="selectedGroup" ng-change="filterMembers()" aria-label="Select the Group">
+                                <option ng-repeat="group in agentData.GroupAuthorities" value="{{group.GroupName}}">{{group.GroupName}}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select class="form-select" id="SelectAgentMember" name="SelectAgentMember" ng-model="selectedMember" ng-change="changeMember()" aria-label="Select the Group">
+                                <option ng-repeat="member in filteredMembers" value="{{member.label}}">{{member.label}}</option>
+                            </select>
+                        </div>
+                        <button ng-click="createAgent()" type="button" class="btn btn-outline-secondary">新增</button>
+                    </div>
+
+                    <ul class="list-group list-group-flush">
+                        <li ng-repeat="agent in agents" class="list-group-item">
+                            <div class="d-flex align-items-center justify-content-between my-2">
+                                <p ng-bind="agent.name" class="m-0"></p>
+                                <div>
+                                    <button ng-show="agentData.User.group_manager" ng-click="updateAgent(agent, 3)" type="button" class="page-toggle" ng-class="{'page-toggle-active': agent.pages[3]}">群組規劃</button>
+                                    <button ng-show="agentData.User.group_manager" ng-click="updateAgent(agent, 2)" type="button" class="page-toggle" ng-class="{'page-toggle-active': agent.pages[2]}">計畫行事曆</button>
+                                    <button ng-click="updateAgent(agent, 0)" type="button" class="page-toggle" ng-class="{'page-toggle-active': agent.pages[0]}">群組行事曆</button>
+                                    <button ng-click="updateAgent(agent, 1)" type="button" class="page-toggle" ng-class="{'page-toggle-active': agent.pages[1]}">數位轉型規劃</button>
+                                </div>
+
+
+
+                                @*<div>
+            <input ng-click="updateAgent(agent)" ng-model="agent.page3" type="checkbox" id="toggle{{$index}}-1" class="toggle-checkbox">
+            <label for="toggle{{$index}}-1" class="toggle-label">群組規劃</label>
+        </div>
+        <div>
+            <input ng-click="updateAgent(agent)" ng-model="agent.page2" type="checkbox" id="toggle{{$index}}-2" class="toggle-checkbox">
+            <label for="toggle{{$index}}-2" class="toggle-label">計畫行事曆</label>
+        </div>
+        <div>
+            <input ng-click="updateAgent(agent)" ng-model="agent.page0" type="checkbox" id="toggle{{$index}}-3" class="toggle-checkbox">
+            <label for="toggle{{$index}}-3" class="toggle-label">群組行事曆</label>
+        </div>
+        <div>
+            <input ng-click="updateAgent(agent)" ng-model="agent.page1" type="checkbox" id="toggle{{$index}}-4" class="toggle-checkbox">
+            <label for="toggle{{$index}}-4" class="toggle-label">數位轉型規劃</label>
+        </div>*@
+                                <button ng-click="deleteAgent(agent, $index)" type="button" class="btn btn-outline-secondary">刪除</button>
+                            </div>
+                            
+                            
+                        </li>                        
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">儲存</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 </div>
