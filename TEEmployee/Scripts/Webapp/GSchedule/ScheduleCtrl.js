@@ -269,10 +269,10 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
         ret.data.forEach(x => {
 
             x.pages = [];
-            x.pages.push(x.page_id.includes('0'));
-            x.pages.push(x.page_id.includes('1'));
-            x.pages.push(x.page_id.includes('2'));
-            x.pages.push(x.page_id.includes('3'));
+            x.pages.push(x.page_id?.includes('0'));
+            x.pages.push(x.page_id?.includes('1'));
+            x.pages.push(x.page_id?.includes('2'));
+            x.pages.push(x.page_id?.includes('3'));
                         
         })
 
@@ -285,7 +285,7 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
         if ($scope.agents.some(agent => agent.name === $scope.selectedMember)) return;
 
         let userData = $scope.filteredMembers.find(x => x.label === $scope.selectedMember);
-        let newAgent = { name: userData.label, page_id: "" , pages: [false, false, false, false]};
+        let newAgent = { name: userData.label, page_id: "0" , pages: [true, false, false, false]};
 
         appService.CreateAgent({ agent: newAgent }).then((ret) => {
             if (ret.data) {

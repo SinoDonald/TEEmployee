@@ -264,6 +264,10 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="mb-5">
+                        <h5 style="font-family: 'Arial', sans-serif">1. 從員工名單中新增行事曆代理人</h5>
+                        <h5 style="font-family: 'Arial', sans-serif">2. 點選各個行事曆按鈕來<button type="button" class="btn btn-primary">開</button> <button type="button" class="btn btn-outline-primary">關</button> 欲授權的行事曆</h5>
+                    </div>                    
                     <div class="d-flex justify-content-around w-50 mx-auto mb-4">
                         <div>
                             <select class="form-select" id="SelectAgentGroup" name="SelectAgentGroup" ng-model="selectedGroup" ng-change="filterMembers()" aria-label="Select the Group">
@@ -292,26 +296,26 @@
 
 
                                 @*<div>
-            <input ng-click="updateAgent(agent)" ng-model="agent.page3" type="checkbox" id="toggle{{$index}}-1" class="toggle-checkbox">
-            <label for="toggle{{$index}}-1" class="toggle-label">群組規劃</label>
-        </div>
-        <div>
-            <input ng-click="updateAgent(agent)" ng-model="agent.page2" type="checkbox" id="toggle{{$index}}-2" class="toggle-checkbox">
-            <label for="toggle{{$index}}-2" class="toggle-label">計畫行事曆</label>
-        </div>
-        <div>
-            <input ng-click="updateAgent(agent)" ng-model="agent.page0" type="checkbox" id="toggle{{$index}}-3" class="toggle-checkbox">
-            <label for="toggle{{$index}}-3" class="toggle-label">群組行事曆</label>
-        </div>
-        <div>
-            <input ng-click="updateAgent(agent)" ng-model="agent.page1" type="checkbox" id="toggle{{$index}}-4" class="toggle-checkbox">
-            <label for="toggle{{$index}}-4" class="toggle-label">數位轉型規劃</label>
-        </div>*@
+                        <input ng-click="updateAgent(agent)" ng-model="agent.page3" type="checkbox" id="toggle{{$index}}-1" class="toggle-checkbox">
+                        <label for="toggle{{$index}}-1" class="toggle-label">群組規劃</label>
+                    </div>
+                    <div>
+                        <input ng-click="updateAgent(agent)" ng-model="agent.page2" type="checkbox" id="toggle{{$index}}-2" class="toggle-checkbox">
+                        <label for="toggle{{$index}}-2" class="toggle-label">計畫行事曆</label>
+                    </div>
+                    <div>
+                        <input ng-click="updateAgent(agent)" ng-model="agent.page0" type="checkbox" id="toggle{{$index}}-3" class="toggle-checkbox">
+                        <label for="toggle{{$index}}-3" class="toggle-label">群組行事曆</label>
+                    </div>
+                    <div>
+                        <input ng-click="updateAgent(agent)" ng-model="agent.page1" type="checkbox" id="toggle{{$index}}-4" class="toggle-checkbox">
+                        <label for="toggle{{$index}}-4" class="toggle-label">數位轉型規劃</label>
+                    </div>*@
                                 <button ng-click="deleteAgent(agent, $index)" type="button" class="btn btn-outline-secondary">刪除</button>
                             </div>
-                            
-                            
-                        </li>                        
+
+
+                        </li>
                     </ul>
                 </div>
                 <div class="modal-footer">
