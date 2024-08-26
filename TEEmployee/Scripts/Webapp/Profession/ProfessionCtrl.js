@@ -695,11 +695,7 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
         });
 
-
-
     }
-
-
 
     $scope.selectGroup = () => {
         $scope.members = $scope.auth.GroupAuthorities.find(x => x.GroupName === $scope.selectedGroup).Members;

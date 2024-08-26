@@ -21,12 +21,17 @@
                 </select>
             </div>
             <div class="col-5">
+                <br />
+                <label for="SelectGroup">請選擇年齡區間</label>
+                <select class="form-select" id="SelectAge" name="SelectAge" ng-model="agesRange.selectedRange" aria-label="Select the Age">
+                    <option ng-repeat="age in agesRange.rangeOptions" value="{{age.value}}">{{age.name}}</option>
+                </select>
             </div>
         </div>
 
         <div class="row"><br /></div>
 
-        <div class="row container border" ng-repeat="user in data | orderBy:'-age'">
+        <div class="row container border" ng-repeat="user in data | filter: ageFilter | orderBy:'-age'">
             <div class="col text-center w-50 p-3 h-50 d-inline-block">
                 <img type="submit" value={{user.name}} ng-click="TalentRecord(user.empno)" src="~/Content/CV/{{user.empno}}.jpg" class="img-thumbnail" alt="{{user.name}}">
                 <h5>{{user.name}} ({{user.age}})</h5>

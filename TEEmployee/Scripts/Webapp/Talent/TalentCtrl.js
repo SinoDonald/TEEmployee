@@ -303,6 +303,18 @@ app.controller('TalentHighPerformersCtrl', ['$scope', '$location', '$window', 'a
     $scope.groups = ['全部顯示', '技術經理', '技術組長', '一般計畫經理', '重大計畫經理', '重大計畫副理', '計畫組長', '研發案主持人'];
     $scope.positions = ['', '技術經理', '技術組長', '一般計畫經理', '重大計畫經理', '重大計畫副理', '計畫組長', '研發案主持人'];
 
+    $scope.agesRange = {
+        selectedRange: '20,99',
+        rangeOptions: [
+            { name: '全部顯示', value: '20,99' },
+            { name: '60以上', value: '60,99' },
+            { name: '50 ~ 59', value: '50,59' },
+            { name: '40 ~ 49', value: '40,49' },
+            { name: '30 ~ 39', value: '30,39' },
+            { name: '20 ~ 29', value: '20,29' },            
+        ]
+    };
+
     // get age    
     appService.GetAll({}).then((ret) => {
 
@@ -310,7 +322,7 @@ app.controller('TalentHighPerformersCtrl', ['$scope', '$location', '$window', 'a
             item.age = ret.data.find(x => x.empno === item.empno).age;
         }  
     })
-
+        
     $scope.selectedGroup = $scope.groups[0];
 
     // 依群組顯示
@@ -378,6 +390,14 @@ app.controller('TalentHighPerformersCtrl', ['$scope', '$location', '$window', 'a
             .catch(function (ret) {
                 alert('Error');
             });
+    }
+
+    $scope.ageFilter = (user) => {
+
+        let [lowerNumber, upperNumber] = $scope.agesRange.selectedRange.split(',').map(Number);
+        if (user.age >= lowerNumber && user.age <= upperNumber)
+            return true;
+        return false;
     }
 
 }]);
