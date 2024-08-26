@@ -699,7 +699,14 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
     $scope.selectGroup = () => {
         $scope.members = $scope.auth.GroupAuthorities.find(x => x.GroupName === $scope.selectedGroup).Members;
-        $scope.selectedMember = $scope.members[0].empno;
+
+        let self = $scope.members.find(x => x.empno === $scope.auth.User.empno);
+
+        if (self)
+            $scope.selectedMember = self.empno;
+        else
+            $scope.selectedMember = $scope.members[0].empno;
+
         // old place
         //$scope.GetPersonal($scope.selectedMember);
     }
