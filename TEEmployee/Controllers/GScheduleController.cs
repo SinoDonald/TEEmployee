@@ -138,7 +138,7 @@ namespace TEEmployee.Controllers
         public ActionResult UploadProjectSchedule(HttpPostedFileBase file, FormCollection form)
         {
             string jsonString = form.GetValue("projectSchedule").AttemptedValue;
-             ProjectSchedule projectSchedule = JsonConvert.DeserializeObject<ProjectSchedule>(jsonString);
+            ProjectSchedule projectSchedule = JsonConvert.DeserializeObject<ProjectSchedule>(jsonString);
             var ret = _service.UploadProjectSchedule(file, projectSchedule);
 
             return Json(ret);

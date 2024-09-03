@@ -418,7 +418,8 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         // start animation
         //aniBtn.classList.add('onclic');
 
-        appService.UpsertScores({ scores: savedScores }).then((ret) => {
+        // 20240903 update: Due to MaxJsonDeserializerMembers, pass string and deserialize in backend
+        appService.UpsertScores({ scoresJson: JSON.stringify(savedScores) }).then((ret) => {
 
             if (ret.data) {
                 /*aniBtn.classList.remove('onclic');*/

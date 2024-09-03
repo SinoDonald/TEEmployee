@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Filters;
+using TEEmployee.Models;
 using TEEmployee.Models.Profession;
 
 namespace TEEmployee.Controllers
@@ -88,12 +90,21 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        // 20240903 update: Due to MaxJsonDeserializerMembers, pass string and deserialize in backend
         [HttpPost]
-        public JsonResult UpsertScores(List<Score> scores)
+        public JsonResult UpsertScores(string scoresJson)
         {
+            List<Score> scores = JsonConvert.DeserializeObject<List<Score>>(scoresJson);
             var ret = _service.UpsertScores(scores, Session["empno"].ToString());
             return Json(ret);
         }
+       
+        //[HttpPost]
+        //public JsonResult UpsertScores(List<Score> scores)
+        //{
+        //    var ret = _service.UpsertScores(scores, Session["empno"].ToString());
+        //    return Json(ret);
+        //}
 
         [HttpPost]
         public JsonResult GetAll()
