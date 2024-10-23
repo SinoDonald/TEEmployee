@@ -195,6 +195,11 @@
     <Compile Include="Models\AgentModel\AgentRepository.cs" />
     <Compile Include="Models\AgentModel\IAgentRepository.cs" />
     <Compile Include="Models\Assessments\Performance.cs" />
+    <Compile Include="Models\Education2024\Content.cs" />
+    <Compile Include="Models\Education2024\EducationRepository.cs" />
+    <Compile Include="Models\Education2024\EducationService.cs" />
+    <Compile Include="Models\Education2024\IEducationRepository.cs" />
+    <Compile Include="Models\Education2024\Record.cs" />
     <Compile Include="Models\Education\Chapter.cs" />
     <Compile Include="Models\Education\Course.cs" />
     <Compile Include="Models\Education\EducationRepository.cs" />
@@ -396,6 +401,7 @@
     <Content Include="Scripts\Webapp\Assessment\SelfCtrl.min.js">
       <DependentUpon>SelfCtrl.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Webapp\Education\EducationBackupCtrl.js" />
     <Content Include="Scripts\Webapp\Education\EducationCtrl.js" />
     <Content Include="Scripts\Webapp\Forum\ForumCtrl.js" />
     <Content Include="Scripts\Webapp\GEducation\GEducationCtrl.js" />
