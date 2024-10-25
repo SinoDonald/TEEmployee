@@ -155,7 +155,7 @@
                 <td class="title" ng-bind="item.content"></td>
                 <td>
                     <div class="form-check">
-                        <input ng-model="item.achieved" class="form-check-input" type="checkbox" ng-change="UpdatePromotion(item)">
+                        <input ng-model="item.achieved" class="form-check-input" type="checkbox" ng-change="UpdatePromotion(item)" ng-disabled="$index === 0 || $index ===1">
                     </div>
                 </td>
                 <td>

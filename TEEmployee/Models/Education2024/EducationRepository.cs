@@ -26,7 +26,7 @@ namespace TEEmployee.Models.Education2024
         {
             List<Content> ret;
 
-            string sql = @"SELECT * FROM Content";
+            string sql = @"SELECT * FROM Content AS c LEFT JOIN ContentExtra AS e ON c.id = e.content_id";
             ret = _conn.Query<Content>(sql).ToList();
 
             return ret;

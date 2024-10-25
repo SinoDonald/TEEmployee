@@ -40,7 +40,7 @@ namespace TEEmployee.Models.Promotion
         /// <param name="isAdmin">是否為管理員</param>
         /// <returns>包含特定員工升等項目的列舉</returns>
         /// <remarks>若使用者為管理員而非主管，隱藏機敏資料</remarks>
-        public List<Promotion> GetByUser(string empno, bool isAdmin)
+        public List<Promotion> GetByUser(string empno, bool isSensitive)
         {
             var promotions = _promotionRepository.GetByUser(empno);
 
@@ -50,7 +50,7 @@ namespace TEEmployee.Models.Promotion
             this.TransformContent(promotions, empno);
 
             // Hide sensitive infomation for admin
-            if (isAdmin)
+            if (isSensitive)
             {
                 Promotion performance = promotions.Where(x => x.condition == 2).FirstOrDefault();
                 if (performance != null)
@@ -178,9 +178,9 @@ namespace TEEmployee.Models.Promotion
                     return;
                 //break;
 
-                case "製圖師":
-                    promotions.RemoveRange(0, 2);
-                    return;
+                //case "製圖師":
+                //    promotions.RemoveRange(0, 2);
+                //    return;
                     //break;
             }
 
@@ -424,6 +424,10 @@ namespace TEEmployee.Models.Promotion
                 case "規劃師四":
                     next = "規劃師(三)";
                     break;
+
+                case "製圖師":
+                    next = "工程師(四)";
+                    break;
             }
 
             return next;
@@ -530,6 +534,11 @@ namespace TEEmployee.Models.Promotion
                 case "規劃師四":
                     strs = new string[] { "規劃師(四)", "3", "3", "85" };
                     break;
+
+                case "製圖師":
+                    strs = new string[] { "製圖師", "0", "3", "0" };
+                    break;
+
                 default:
                     strs = new string[4];
                     break;
