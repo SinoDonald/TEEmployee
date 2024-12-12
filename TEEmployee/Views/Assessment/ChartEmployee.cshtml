@@ -68,7 +68,7 @@
             <div>
                 <label for="SelectGroup">請選擇組別</label>
                 <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
-                    <option ng-repeat="group in groups" ng-class="{'highlight-select': group == '設計' || group == '規劃'|| group == '專管'|| group == '智慧軌道創新小組'|| group == '行政組'|| group == '計畫管理組'}" value="{{group}}">{{group}}</option>
+                    <option ng-repeat="group in groups" ng-class="{'highlight-select': group == '設計' || group == '規劃'|| group == '專管'|| group == '營運'|| group == '永續與創新小組'|| group == '行政組'}" value="{{group}}">{{group}}</option>
                 </select>
             </div>
             <div>

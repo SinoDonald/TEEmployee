@@ -602,7 +602,8 @@ namespace TEEmployee.Models
                 {
                     if (user.gid == "24")
                     {
-                        groups = new List<string> { "規劃", "設計", "專管" };
+                        //groups = new List<string> { "規劃", "設計", "專管" };
+                        groups = allEmployees.Select(x => x.group).Distinct().Where(x => !string.IsNullOrEmpty(x)).ToList();
                     }
                     else // For other departments
                     {
