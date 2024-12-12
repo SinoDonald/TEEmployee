@@ -26,6 +26,11 @@ namespace TEEmployee.Controllers
         //    return View();
         //}
 
+        public ActionResult Record()
+        {
+            return View();
+        }
+
         /* =======================================
                        Web api
          ====================================== */
