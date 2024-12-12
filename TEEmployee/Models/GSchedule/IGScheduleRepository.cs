@@ -31,7 +31,7 @@ namespace TEEmployee.Models.GSchedule
         /// </summary>
         /// <param name="view"></param>
         /// <returns></returns>
-        string UploadPDFFile(HttpPostedFileBase file, string view, string empno, string folder);
+        string UploadPDFFile(HttpPostedFileBase file, string view, string year, string empno, string folder);
         /// <summary>
         /// 上傳個人規劃PDF
         /// </summary>

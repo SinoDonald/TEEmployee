@@ -305,13 +305,22 @@ namespace TEEmployee.Models.GSchedule
             // 當前民國年
             CultureInfo culture = new CultureInfo("zh-TW");
             culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-            string year = DateTime.Now.ToString("yyy", culture);
+            string thisYear = DateTime.Now.ToString("yyy", culture);
+            int month = DateTime.Now.Month;
 
             List<string> ret = new List<string>();
 
-            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Content"), "GSchedule", view);
-            string thisYearFolderPath = Path.Combine(folderPath, year);            
-            if (!Directory.Exists(thisYearFolderPath)) { Directory.CreateDirectory(thisYearFolderPath); } // 檢查資料夾是否存在
+            //string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Content"), "GSchedule", view);
+            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data"), "GSchedule", view);
+            string yearFolderPath = Path.Combine(folderPath, thisYear);
+            if (!Directory.Exists(yearFolderPath)) { Directory.CreateDirectory(yearFolderPath); }
+            // 11月即增加明年度的資料夾
+            if (month >= 11)
+            {
+                string nextYear = (Convert.ToInt32(thisYear) + 1).ToString();
+                string nextYearFolderPath = Path.Combine(folderPath, nextYear);
+                if (!Directory.Exists(nextYearFolderPath)) { Directory.CreateDirectory(nextYearFolderPath); }
+            }
             // 查詢所有子資料夾
             DirectoryInfo dirInfo = new DirectoryInfo(folderPath);
             ret = dirInfo.GetDirectories().Select(x => x.Name).OrderByDescending(x => x).ToList();
@@ -323,16 +332,16 @@ namespace TEEmployee.Models.GSchedule
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public string UploadPDFFile(HttpPostedFileBase file, string view, string empno, string folder)
+        public string UploadPDFFile(HttpPostedFileBase file, string view, string year, string empno, string folder)
         {
             string path = "";
 
             try
             {
-                // 當前民國年
-                CultureInfo culture = new CultureInfo("zh-TW");
-                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-                string year = DateTime.Now.ToString("yyy", culture);
+                //// 當前民國年
+                //CultureInfo culture = new CultureInfo("zh-TW");
+                //culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                //string year = DateTime.Now.ToString("yyy", culture);
 
                 User user = new UserRepository().GetAll().Where(x => x.empno.Equals(empno)).FirstOrDefault();
 

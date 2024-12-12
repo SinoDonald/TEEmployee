@@ -409,6 +409,7 @@ app.controller('GroupPlanCtrl', ['$scope', '$location', 'appService', '$rootScop
         var formData = new FormData();
         formData.append('file', files[0]);
         formData.append('view', "GroupPlan");
+        formData.append('year', $scope.selectedYear);
         formData.append('folder', "~/App_Data");
 
         $.ajax({
@@ -441,6 +442,7 @@ app.controller('GroupPlanCtrl', ['$scope', '$location', 'appService', '$rootScop
         var formData = new FormData();
         formData.append('file', files[0]);
         formData.append('view', "GroupPlan");
+        formData.append('year', $scope.selectedYear);
         formData.append('folder', "~/Content");
 
         $.ajax({
@@ -551,11 +553,12 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
 
         var formData = new FormData();
         formData.append('file', files[0]);
-        //formData.append('view', "PersonalPlan");
-        //formData.append('folder', "~/App_Data");
+        formData.append('view', "PersonalPlan");
+        formData.append('year', $scope.selectedYear);
+        formData.append('folder', "~/App_Data");
 
         $.ajax({
-            url: 'GSchedule/ImportPDFFile',
+            url: 'GSchedule/UploadPDFFile',
             //enctype: "multipart/form-data",
             data: formData,
             type: 'POST',
@@ -584,6 +587,7 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
         var formData = new FormData();
         formData.append('file', files[0]);
         formData.append('view', "PersonalPlan");
+        formData.append('year', $scope.selectedYear);
         formData.append('folder', "~/Content");
 
         $.ajax({
