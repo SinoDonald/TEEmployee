@@ -50,26 +50,13 @@ namespace TEEmployee.Models.Talent
 
             if (user.department_manager)
             {
-                //if (empno.Equals("4125"))
-                //{
-                //    groups = new List<string> { "High Performer", "全部顯示", "規劃", "設計", "專管" };
-                //}
-                //else
-                //{
-
-                if (user.gid == "24")
-                {                    
-                    groups = new List<string> { "全部顯示", "規劃", "設計", "專管" };
-                }
+                if (user.gid == "24") { groups = new List<string> { "全部顯示", "規劃", "設計", "專管", "營運" }; }
                 else // For other departments
                 {
                     groups = new List<string> { "全部顯示"};
                     List<string> grouplist = allEmployees.Select(x => x.group).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                     groups.AddRange(grouplist);
                 }
-
-                //groups = new List<string> { "全部顯示", "規劃", "設計", "專管" };
-                //}
             }
             else
             {
@@ -81,39 +68,27 @@ namespace TEEmployee.Models.Talent
             {
                 if (!String.IsNullOrEmpty(item.group))
                 {
-                    //三大群組 小組1
+                    //四大群組 小組1
                     if (!String.IsNullOrEmpty(item.group_one) && !groups.Contains(item.group_one))
                     {
                         groups.Insert(groups.FindIndex(x => x == item.group) + 1, item.group_one);
                     }
-
-                    //跨三大群組 小組2 小組3 (協理 only)
+                    //跨四大群組 小組2 小組3 (協理 only)
                     if (user.department_manager)
                     {
-                        if (!String.IsNullOrEmpty(item.group_two) && !groups.Contains(item.group_two))
-                        {
-                            groups.Add(item.group_two);
-                        }
-                        if (!String.IsNullOrEmpty(item.group_three) && !groups.Contains(item.group_three))
-                        {
-                            groups.Add(item.group_three);
-                        }
+                        if (!String.IsNullOrEmpty(item.group_two) && !groups.Contains(item.group_two)) { groups.Add(item.group_two); }
+                        if (!String.IsNullOrEmpty(item.group_three) && !groups.Contains(item.group_three)) { groups.Add(item.group_three); }
                     }
                 }
                 else
                 {
-                    //非三大群組
-                    if (!String.IsNullOrEmpty(item.group_one) && !groups.Contains(item.group_one))
-                    {
-                        groups.Add(item.group_one);
-                    }
+                    //非四大群組
+                    if (!String.IsNullOrEmpty(item.group_one) && !groups.Contains(item.group_one)) { groups.Add(item.group_one); }
                 }
             }
 
             //special case
-            if (groups.Remove("規劃組"))
-                groups.Insert(groups.FindIndex(x => x == "規劃") + 1, "規劃組");
-
+            if (groups.Remove("規劃組")) { groups.Insert(groups.FindIndex(x => x == "規劃") + 1, "規劃組"); }
             if (user.group_one_manager) groups.Add(user.group_one);
             if (user.group_two_manager) groups.Add(user.group_two);
             if (user.group_three_manager) groups.Add(user.group_three);

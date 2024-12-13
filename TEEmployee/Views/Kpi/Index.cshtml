@@ -84,7 +84,7 @@
             <label for="SelectManager">群組</label>
             <select class="form-select manager" id="SelectManager" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
                 <option value="" disabled selected>Select your option</option>
-                <option ng-repeat="group in groups" ng-class="{'highlight-select': group == '設計' || group == '規劃'|| group == '專管'|| group == '智慧軌道創新小組'|| group == '行政組'|| group == '計畫管理組'}" value="{{group}}">{{group}}</option>
+                <option ng-repeat="group in groups" ng-class="{'highlight-select': group == '設計' || group == '規劃'|| group == '專管'|| group == '營運'|| group == '智慧軌道創新小組'|| group == '行政組'|| group == '計畫管理組'}" value="{{group}}">{{group}}</option>
             </select>
         </div>
         <div>
