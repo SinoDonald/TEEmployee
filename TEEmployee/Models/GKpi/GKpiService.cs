@@ -46,7 +46,7 @@ namespace TEEmployee.Models.GKpi
             {
                 kpi.name = users.Find(x => x.empno == kpi.empno).name;
                 kpi.items = kpi.items.OrderBy(x => x.id).ToList();
-            }
+            }            
 
             return ret.Distinct().OrderBy(x => x.empno).ToList();
         }
@@ -218,6 +218,11 @@ namespace TEEmployee.Models.GKpi
                 kpi.name = users.Find(x => x.empno == kpi.empno).name;
                 kpi.items = kpi.items.OrderBy(x => x.id).ToList();
             }
+
+            // Filter by group again in case employee change their group in the same year
+            List<string> grouplist = new List<string> { user.group_one, user.group_two, user.group_three };
+            grouplist.RemoveAll(x => string.IsNullOrEmpty(x));
+            ret = ret.Where(x => grouplist.Contains(x.group_name)).ToList();
 
             return ret.Distinct().OrderBy(x => x.empno).ToList();
         }
