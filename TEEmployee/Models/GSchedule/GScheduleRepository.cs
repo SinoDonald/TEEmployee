@@ -332,9 +332,10 @@ namespace TEEmployee.Models.GSchedule
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public string UploadPDFFile(HttpPostedFileBase file, string view, string year, string empno, string folder)
+        public string UploadPDFFile(HttpPostedFileBase file, string view, string year, string empno)
         {
             string path = "";
+            string folder = "App_Data";
 
             try
             {
@@ -349,13 +350,9 @@ namespace TEEmployee.Models.GSchedule
                 {
                     try
                     {
-                        //string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Content"), "GSchedule", view, year);
-                        string folderPath = Path.Combine(HttpContext.Current.Server.MapPath(folder), "GSchedule", view, year);
+                        string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/" + folder), "GSchedule", view, year);
                         // 檢查資料夾是否存在
-                        if (!Directory.Exists(folderPath))
-                        {
-                            Directory.CreateDirectory(folderPath);
-                        }
+                        if (!Directory.Exists(folderPath)) { Directory.CreateDirectory(folderPath); }
 
                         try
                         {
@@ -366,40 +363,23 @@ namespace TEEmployee.Models.GSchedule
                                 group = group_one;
                             }
                             path = Path.Combine(folderPath, group + Path.GetExtension(file.FileName));
-                            if (view.Equals("PersonalPlan"))
-                            {
-                                path = Path.Combine(folderPath, user.empno + Path.GetExtension(file.FileName));
-                            }
-                            try
-                            {
-                                file.SaveAs(path); // 將檔案存到Server
-                            }
+                            if (view.Equals("PersonalPlan")) { path = Path.Combine(folderPath, user.empno + Path.GetExtension(file.FileName)); }
+
+                            try { file.SaveAs(path); } // 將檔案存到Server
                             catch (Exception)
                             {
-                                folderPath = Path.Combine("Content", "GSchedule", view, year);
+                                folderPath = Path.Combine("App_Data", "GSchedule", view, year);
                                 path = Path.Combine(folderPath, group + Path.GetExtension(file.FileName));
-                                if (view.Equals("PersonalPlan"))
-                                {
-                                    path = Path.Combine(folderPath, user.empno + Path.GetExtension(file.FileName));
-                                }
+                                if (view.Equals("PersonalPlan")) { path = Path.Combine(folderPath, user.empno + Path.GetExtension(file.FileName)); }
                                 file.SaveAs(path); // 將檔案存到Server
                             }
                         }
-                        catch (Exception)
-                        {
-                            path = "Error";
-                        }
+                        catch (Exception) { path = "Error"; }
                     }
-                    catch (Exception ex)
-                    {
-                        path = "Error：Exist無法檢查 or 資料夾無法建立\n" + ex.Message + "\n" + ex.ToString();
-                    }
+                    catch (Exception ex) { path = "Error：Exist無法檢查 or 資料夾無法建立\n" + ex.Message + "\n" + ex.ToString(); }
                 }
             }
-            catch(Exception ex)
-            {
-                path = "Error：年份 or User.db有誤\n" + ex.Message + "\n" + ex.ToString();
-            }
+            catch(Exception ex) { path = "Error：年份 or User.db有誤\n" + ex.Message + "\n" + ex.ToString(); }
 
             return path;
         }
@@ -418,10 +398,7 @@ namespace TEEmployee.Models.GSchedule
                 //string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"));
                 string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data"), "GSchedule", "PersonalPlan", "113");
                 // 檢查資料夾是否存在
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
+                if (!Directory.Exists(folderPath)) { Directory.CreateDirectory(folderPath); }
 
                 string extension = Path.GetExtension(file.FileName);
                 var path = Path.Combine(folderPath, empno + Path.GetExtension(file.FileName));
@@ -455,10 +432,7 @@ namespace TEEmployee.Models.GSchedule
             User user = new UserRepository().GetAll().Where(x => x.name.Equals(userName)).FirstOrDefault();
             string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/" + folder), "GSchedule", view, year);
             // 檢查資料夾是否存在
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
+            if (!Directory.Exists(folderPath)) { Directory.CreateDirectory(folderPath); }
             string relativePath = Path.Combine(folder, "GSchedule", view, year);
             relativePath = folderPath;
             var ret = Path.Combine(relativePath, user.group + ".pdf");
@@ -466,10 +440,7 @@ namespace TEEmployee.Models.GSchedule
             {
                 if (user.group.Equals(""))
                 {
-                    if (user.department_manager)
-                    {
-                        ret = Path.Combine(relativePath, group + ".pdf");
-                    }
+                    if (user.department_manager) { ret = Path.Combine(relativePath, group + ".pdf"); }
                     else
                     {
                         string group_one = new UserRepository().GetAll().Where(x => String.IsNullOrEmpty(x.group)).Where(x => !String.IsNullOrEmpty(x.group_one)).Select(x => x.group_one).Distinct().FirstOrDefault();
@@ -477,10 +448,7 @@ namespace TEEmployee.Models.GSchedule
                     }
                 }
             }
-            else
-            {
-                ret = Path.Combine(relativePath, user.empno + ".pdf");
-            }
+            else { ret = Path.Combine(relativePath, user.empno + ".pdf"); }
             
             return ret;
         }

@@ -648,9 +648,9 @@ namespace TEEmployee.Models.GSchedule
         /// <param name="view"></param>
         /// <param name="empno"></param>
         /// <returns></returns>
-        public string UploadPDFFile(HttpPostedFileBase file, string view, string year, string empno, string folder)
+        public string UploadPDFFile(HttpPostedFileBase file, string view, string year, string empno)
         {
-            string ret = _scheduleRepository.UploadPDFFile(file, view, year, empno, folder);
+            string ret = _scheduleRepository.UploadPDFFile(file, view, year, empno);
             return ret;
         }
         /// <summary>

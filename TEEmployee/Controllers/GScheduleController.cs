@@ -196,7 +196,7 @@ namespace TEEmployee.Controllers
         public ActionResult UploadPDFFile(HttpPostedFileBase file, string view, string year, string folder)
         {
             if (file == null) return Json(new { Status = 0, Message = "No File Selected" });
-            string ret = _service.UploadPDFFile(file, view, year, Session["empno"].ToString(), folder);
+            string ret = _service.UploadPDFFile(file, view, year, Session["empno"].ToString());
             return Json(ret);
         }
         /// <summary>
