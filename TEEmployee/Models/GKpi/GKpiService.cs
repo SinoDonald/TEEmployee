@@ -294,13 +294,13 @@ namespace TEEmployee.Models.GKpi
 
                     if (model.role == "技術經理")
                     {
-                        kpm = processedInput.Where(x => x.role == "技術經理").FirstOrDefault();
+                        //kpm = processedInput.Where(x => x.role == "技術經理").FirstOrDefault();
 
                         // 技術經理也分群
-                        //User user = _userRepository.Get(model.empno);
-                        //kpm = processedInput.Where(x =>
-                        //        x.role.Contains(user.group_one.Substring(0, 2)) &&
-                        //        x.role.Contains("組員")).FirstOrDefault();
+                        User user = _userRepository.Get(model.empno);
+                        kpm = processedInput.Where(x =>
+                                x.role.Contains(user.group)
+                                && x.role.Contains("技術經理")).FirstOrDefault();
                     }
                     else if (model.role == "重大計畫經理")
                     {
@@ -588,7 +588,7 @@ namespace TEEmployee.Models.GKpi
                 bool isNormal = true;
 
                 // 技術 > 協理 (管理)
-                if (user.group_manager && models.Any(x => x.role == "技術經理"))
+                if (user.group_manager && models.Any(x => x.role == user.group + "技術經理"))
                 {
                     kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "管理", role = "技術經理" });
                     isNormal = false;
