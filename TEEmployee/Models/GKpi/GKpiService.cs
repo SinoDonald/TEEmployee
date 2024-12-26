@@ -275,7 +275,7 @@ namespace TEEmployee.Models.GKpi
 
             // Insert KpiModels then Insert Kpiitems
             List<KpiModel> processedInput = ProcessKpiXlsx(input);
-            List<KpiModel> insertedModels = InsertKpiModelsNew();
+            List<KpiModel> insertedModels = InsertKpiModelsNew(processedInput);
 
             List<KpiItem> createdKpiitems = new List<KpiItem>();
 
@@ -569,7 +569,7 @@ namespace TEEmployee.Models.GKpi
         /// </summary>
         /// <returns>個人年度KPI項目列舉</returns>
         // Insert, Update and Delete KpiModels based on current Users in database and kpi relationships this year
-        public List<KpiModel> InsertKpiModelsNew()
+        public List<KpiModel> InsertKpiModelsNew(List<KpiModel> models)
         {
            
             List<User> users = _userRepository.GetAll();
@@ -588,31 +588,31 @@ namespace TEEmployee.Models.GKpi
                 bool isNormal = true;
 
                 // 技術 > 協理 (管理)
-                if (user.group_manager)
+                if (user.group_manager && models.Any(x => x.role == "技術經理"))
                 {
                     kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "管理", role = "技術經理" });
                     isNormal = false;
                 }
                 // 大計畫 > 技術 (計畫)
-                if (user.project_manager && !user.department_manager)
+                if (user.project_manager && !user.department_manager && models.Any(x => x.role == "重大計畫經理"))
                 {
                     kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "計畫", role = "重大計畫經理" });
                     isNormal = false;
                 }
                 // 小計畫 > 技術 (計畫, 專業)
-                if (user.assistant_project_manager)
+                if (user.assistant_project_manager && models.Any(x => x.role == "一般計畫經理"))
                 {
                     kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "計畫", role = "一般計畫經理" });
                     //kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "專業", role = "小型計畫經理" });
                     //isNormal = false;
                 }
                 // 組長 > 技術 (管理, 專業)
-                if (user.group_one_manager/* || user.group_two_manager || user.group_three_manager*/)
+                if (user.group_one_manager && models.Any(x => x.role == user.group_one + "組長") /* || user.group_two_manager || user.group_three_manager*/)
                 {
                     kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "管理", role = "組長" });
 
                     // Special case: 技術長 先不要有組長專業KPI
-                    if (!(user.group_two_manager && user.group_three_manager))
+                    if (!(user.group_two_manager && user.group_three_manager) && models.Any(x => x.role == user.group_one + "組員"))
                     {
                         kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "專業", role = "組長" });
                     }
@@ -621,7 +621,7 @@ namespace TEEmployee.Models.GKpi
                     //isNormal = false;
                 }
                 // 行政
-                if (user.group_one == "行政")
+                if (user.group_one == "行政" && models.Any(x => x.role == "行政專員"))
                 {
                     kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "專業", role = "行政專員" });
                     isNormal = false;
@@ -629,11 +629,11 @@ namespace TEEmployee.Models.GKpi
                 // 一般員工
                 if (isNormal)
                 {
-                    if (!String.IsNullOrEmpty(user.group_one) && !user.group_one_manager)
+                    if (!String.IsNullOrEmpty(user.group_one) && !user.group_one_manager && models.Any(x => x.role == user.group_one + "組員"))
                         kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group_one, kpi_type = "專業", role = "一般工程師" });
-                    if (!String.IsNullOrEmpty(user.group_two) && !user.group_two_manager)
+                    if (!String.IsNullOrEmpty(user.group_two) && !user.group_two_manager && models.Any(x => x.role == user.group_two + "組員"))
                         kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group_two, kpi_type = "專業", role = "一般工程師" });
-                    if (!String.IsNullOrEmpty(user.group_three) && !user.group_three_manager)
+                    if (!String.IsNullOrEmpty(user.group_three) && !user.group_three_manager && models.Any(x => x.role == user.group_three + "組員"))
                         kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group_three, kpi_type = "專業", role = "一般工程師" });
                 }
             }
