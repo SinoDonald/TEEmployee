@@ -157,7 +157,10 @@ namespace TEEmployee.Models.GKpi
             {
                 if (user.gid == "24")
                 {
-                    groups.AddRange(new List<string>() { "規劃", "設計", "專管" });
+                    //groups.AddRange(new List<string>() { "規劃", "設計", "專管" });
+                    var allEmployees = _userRepository.GetAll();
+                    List<string> grouplist = allEmployees.Select(x => x.group).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                    groups.AddRange(grouplist);
                 }
                 else // For other departments
                 {
@@ -220,7 +223,7 @@ namespace TEEmployee.Models.GKpi
             }
 
             // Filter by group again in case employee change their group in the same year
-            List<string> grouplist = new List<string> { user.group_one, user.group_two, user.group_three };
+            List<string> grouplist = new List<string> { user.group, user.group_one, user.group_two, user.group_three };
             grouplist.RemoveAll(x => string.IsNullOrEmpty(x));
             ret = ret.Where(x => grouplist.Contains(x.group_name)).ToList();
 
@@ -292,6 +295,12 @@ namespace TEEmployee.Models.GKpi
                     if (model.role == "技術經理")
                     {
                         kpm = processedInput.Where(x => x.role == "技術經理").FirstOrDefault();
+
+                        // 技術經理也分群
+                        //User user = _userRepository.Get(model.empno);
+                        //kpm = processedInput.Where(x =>
+                        //        x.role.Contains(user.group_one.Substring(0, 2)) &&
+                        //        x.role.Contains("組員")).FirstOrDefault();
                     }
                     else if (model.role == "重大計畫經理")
                     {
@@ -307,52 +316,66 @@ namespace TEEmployee.Models.GKpi
 
                         if (model.kpi_type == "管理")
                         {
-                            if (model.group_name == "專管")
-                            {
-                                User user = _userRepository.Get(model.empno);
-                                kpm = processedInput.Where(x =>
-                                    x.role.Contains(user.group_one.Substring(0, 2)) &&
-                                    x.role.Contains("組長")).FirstOrDefault();
-                            }
-                            else
-                            {
-                                kpm = processedInput.Where(x =>
-                                    x.role.Contains(model.group_name.Substring(0, 2)) &&
-                                    x.role.Contains("組長")).FirstOrDefault();
-                            }
+                            User user = _userRepository.Get(model.empno);
+                            kpm = processedInput.Where(x =>
+                                x.role.Contains(user.group_one.Substring(0, 2)) &&
+                                x.role.Contains("組長")).FirstOrDefault();
+
+                            //if (model.group_name == "專管")
+                            //{
+                            //    User user = _userRepository.Get(model.empno);
+                            //    kpm = processedInput.Where(x =>
+                            //        x.role.Contains(user.group_one.Substring(0, 2)) &&
+                            //        x.role.Contains("組長")).FirstOrDefault();
+                            //}
+                            //else
+                            //{
+                            //    kpm = processedInput.Where(x =>
+                            //        x.role.Contains(model.group_name.Substring(0, 2)) &&
+                            //        x.role.Contains("組長")).FirstOrDefault();
+                            //}
                         }
                         // 專業 kpi = Excel 組員 kpi
                         else
                         {
-                            if (model.group_name == "專管" || model.group_name == "設計")
-                            {
-                                User user = _userRepository.Get(model.empno);
-                                kpm = processedInput.Where(x =>
-                                    x.role.Contains(user.group_one.Substring(0, 2)) &&
-                                    x.role.Contains("組員")).FirstOrDefault();
-                            }
-                            else
-                            {
-                                kpm = processedInput.Where(x =>
-                                    x.role.Contains(model.group_name.Substring(0, 2)) &&
-                                    x.role.Contains("組員")).FirstOrDefault();
-                            }
+                            User user = _userRepository.Get(model.empno);
+                            kpm = processedInput.Where(x =>
+                                x.role.Contains(user.group_one.Substring(0, 2)) &&
+                                x.role.Contains("組員")).FirstOrDefault();
+
+                            //if (model.group_name == "專管" || model.group_name == "設計")
+                            //{
+                            //    User user = _userRepository.Get(model.empno);
+                            //    kpm = processedInput.Where(x =>
+                            //        x.role.Contains(user.group_one.Substring(0, 2)) &&
+                            //        x.role.Contains("組員")).FirstOrDefault();
+                            //}
+                            //else
+                            //{
+                            //    kpm = processedInput.Where(x =>
+                            //        x.role.Contains(model.group_name.Substring(0, 2)) &&
+                            //        x.role.Contains("組員")).FirstOrDefault();
+                            //}
                         }
 
 
                     }
                     else if (model.role == "一般工程師")
                     {
-                        if (model.group_name == "排水管線組" || model.group_name == "營運規劃組" || model.group_name == "交通工程組" || model.group_name == "用地開發組")
-                        {
-                            kpm = processedInput.Where(x => x.role == "規劃群組組員").FirstOrDefault();
-                        }
-                        else
-                        {
-                            kpm = processedInput.Where(x =>
-                            x.role.Contains(model.group_name.Substring(0, 2)) &&
-                            x.role.Contains("組員")).FirstOrDefault();
-                        }
+                        kpm = processedInput.Where(x =>
+                        x.role.Contains(model.group_name.Substring(0, 2)) &&
+                        x.role.Contains("組員")).FirstOrDefault();
+
+                        //if (model.group_name == "排水管線組" || model.group_name == "營運規劃組" || model.group_name == "交通工程組" || model.group_name == "用地開發組")
+                        //{
+                        //    kpm = processedInput.Where(x => x.role == "規劃群組組員").FirstOrDefault();
+                        //}
+                        //else
+                        //{
+                        //    kpm = processedInput.Where(x =>
+                        //    x.role.Contains(model.group_name.Substring(0, 2)) &&
+                        //    x.role.Contains("組員")).FirstOrDefault();
+                        //}
 
 
                     }
@@ -551,7 +574,13 @@ namespace TEEmployee.Models.GKpi
            
             List<User> users = _userRepository.GetAll();
             List<KpiModel> kpimodels = new List<KpiModel>();
+            
+            
             int year = DateTime.Now.Year;
+
+            // Create next year data when it is Nov
+            if (DateTime.Now.Month >= 11)
+                year += 1;
 
             // create data from user role
             foreach (var user in users)
@@ -581,7 +610,14 @@ namespace TEEmployee.Models.GKpi
                 if (user.group_one_manager/* || user.group_two_manager || user.group_three_manager*/)
                 {
                     kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "管理", role = "組長" });
-                    kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "專業", role = "組長" });
+
+                    // Special case: 技術長 先不要有組長專業KPI
+                    if (!(user.group_two_manager && user.group_three_manager))
+                    {
+                        kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "專業", role = "組長" });
+                    }
+
+                    //kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "專業", role = "組長" });
                     //isNormal = false;
                 }
                 // 行政

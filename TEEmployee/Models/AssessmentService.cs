@@ -128,7 +128,7 @@ namespace TEEmployee.Models
             if (user.group_manager)
                 feedbacks.RemoveAll(x => x.Name == depart_manager.name);
             feedbacks.RemoveAll(x => x.Name == user.name);
-          
+
             return feedbacks;
         }
 
@@ -155,8 +155,8 @@ namespace TEEmployee.Models
             else
             {
                 feedbacks.RemoveAll(x => x.Name != user.name);
-            }                
-            
+            }
+
             return feedbacks;
         }
 
@@ -295,8 +295,12 @@ namespace TEEmployee.Models
             foreach (var item in selfAssessments)
             {
                 if (item.Id == 0)
-                    allCategorySelfAssessmentCharts.Add(new CategorySelfAssessmentChart() {
-                        CategoryId = item.CategoryId, CategoryName = item.Content, Charts = new List<SelfAssessmentChart>() });
+                    allCategorySelfAssessmentCharts.Add(new CategorySelfAssessmentChart()
+                    {
+                        CategoryId = item.CategoryId,
+                        CategoryName = item.Content,
+                        Charts = new List<SelfAssessmentChart>()
+                    });
             }
 
             //Sum up votes by Id
@@ -476,15 +480,44 @@ namespace TEEmployee.Models
             if (user.group_manager == true)
                 filtered_employees.AddRange(allEmployees.Where(p => p.group == user.group).ToList());
 
-            if (user.group_one_manager == true)
-                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_one || p.group_two == user.group_one).ToList());
+            // 2024 version
+            //if (user.group_one_manager == true)
+            //    filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_one || p.group_two == user.group_one).ToList());
 
-            // 智慧組長不互看
+            //// 智慧組長不互看
+            //if (user.group_two_manager == true)
+            //    filtered_employees.AddRange(allEmployees.Where(p => p.group_two == user.group_two && p.group_two_manager == false).ToList());
+
+            //if (user.group_three_manager == true)
+            //    filtered_employees.AddRange(allEmployees.Where(p => p.group_three == user.group_three).ToList());
+
+            // 2025 version: 技術長 = 多個小組組長, 組長間不互看
+            if (user.group_one_manager == true)
+            {
+                filtered_employees.AddRange(allEmployees.Where(x =>
+                (x.group_one == user.group_one && !x.group_one_manager) 
+                || (x.group_two == user.group_one && !x.group_two_manager)
+                || (x.group_three == user.group_one && !x.group_three_manager)
+                ));
+            }
+
             if (user.group_two_manager == true)
-                filtered_employees.AddRange(allEmployees.Where(p => p.group_two == user.group_two && p.group_two_manager == false).ToList());
+            {
+                filtered_employees.AddRange(allEmployees.Where(x =>
+                (x.group_one == user.group_two && !x.group_one_manager)
+                || (x.group_two == user.group_two && !x.group_two_manager)
+                || (x.group_three == user.group_two && !x.group_three_manager)
+                ));
+            }
 
             if (user.group_three_manager == true)
-                filtered_employees.AddRange(allEmployees.Where(p => p.group_three == user.group_three).ToList());
+            {
+                filtered_employees.AddRange(allEmployees.Where(x =>
+                (x.group_one == user.group_three && !x.group_one_manager)
+                || (x.group_two == user.group_three && !x.group_two_manager)
+                || (x.group_three == user.group_three && !x.group_three_manager)
+                ));
+            }
 
             filtered_employees = filtered_employees.Distinct().ToList();
 
@@ -609,14 +642,14 @@ namespace TEEmployee.Models
                     {
                         groups = allEmployees.Select(x => x.group).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
                     }
-                    
+
                 }
                 else
                 {
                     groups.Add(user.group);
                     allEmployees = allEmployees.Where(x => x.group == user.group).ToList();
                 }
-                
+
 
                 foreach (var item in allEmployees)
                 {
@@ -640,17 +673,17 @@ namespace TEEmployee.Models
                                 groups.Add(item.group_three);
                             }
                         }
-                        
+
                     }
                     else
                     {
                         //非三大群組
-                        if (!String.IsNullOrEmpty(item.group_one) && !groups.Contains(item.group_one)) 
+                        if (!String.IsNullOrEmpty(item.group_one) && !groups.Contains(item.group_one))
                         {
                             groups.Add(item.group_one);
                         }
                     }
-                                        
+
                 }
 
                 //special case
@@ -795,7 +828,7 @@ namespace TEEmployee.Models
                 var allResponses = (_assessmentRepository as ManageAssessmentTxtRepository).GetAllManagerAssessmentResponses(empno, year);
                 //if (allResponses.Count == 0) break;
 
-                
+
 
                 // Create empty list
                 List<List<int>> Votes = new List<List<int>>();
@@ -875,8 +908,8 @@ namespace TEEmployee.Models
         public List<User> GetAllScoreManagers()
         {
             List<User> users = _userRepository.GetAll();
-            users = users.Where(x => x.department_manager || x.group_manager || x.group_one_manager 
-                                    || x.group_two_manager || x.group_three_manager || x.project_manager).ToList();           
+            users = users.Where(x => x.department_manager || x.group_manager || x.group_one_manager
+                                    || x.group_two_manager || x.group_three_manager || x.project_manager).ToList();
 
             return users;
         }
@@ -902,10 +935,11 @@ namespace TEEmployee.Models
         {
             bool unread = true;
             if (user == empno) unread = false;
-            if (String.IsNullOrEmpty(empno)) {
+            if (String.IsNullOrEmpty(empno))
+            {
                 empno = user;
                 unread = false;
-            }               
+            }
 
             var ret = (_assessmentRepository as SelfAssessmentTxtRepository).UpdateFeedbackNotification(empno, Utilities.DayStr(), unread);
 
@@ -939,9 +973,9 @@ namespace TEEmployee.Models
             User user = _userRepository.Get(empno);
             List<User> users = _userRepository.GetAll();
             List<User> managers = this.GetSubordinateManagers(user);
-            
+
             List<Performance> performances = (_assessmentRepository as SelfAssessmentTxtRepository).GetAllPerformances("2024H1");
-            
+
             dynamic performanceChart = new JArray();
 
             foreach (var manager in managers)
@@ -950,7 +984,7 @@ namespace TEEmployee.Models
                 managerObj.name = manager.name;
                 managerObj.empno = manager.empno;
                 managerObj.groups = new JArray();
-                
+
                 List<string> owned_groups = (_userRepository as UserRepository).GetSubGroups(manager.empno);
 
                 foreach (var group in owned_groups)
@@ -989,7 +1023,7 @@ namespace TEEmployee.Models
         }
 
         public List<Performance> GetAllPerformance(string year, string empno)
-        {            
+        {
             return (_assessmentRepository as SelfAssessmentTxtRepository).GetAllPerformances("2024H1");
         }
 
@@ -1065,15 +1099,15 @@ namespace TEEmployee.Models
 
     public class ChartManagerResponse
     {
-        public User Manager { get; set; }        
+        public User Manager { get; set; }
         public List<List<int>> Votes { get; set; }
         public List<List<string>> Responses { get; set; }
     }
 
     public class ChartManagerData
-    {        
+    {
         public List<Assessment> ManagerAssessments { get; set; }
-        public List<ChartManagerResponse> ChartManagerResponses { get; set; }        
+        public List<ChartManagerResponse> ChartManagerResponses { get; set; }
     }
 
     public class FeedbackNotification

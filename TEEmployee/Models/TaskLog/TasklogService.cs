@@ -354,16 +354,26 @@ namespace TEEmployee.Models.TaskLog
             if (user.group_manager == true)
                 filtered_employees.AddRange(allEmployees.Where(p => p.group == user.group).ToList());
 
-            // group one and group two can watch each other
+            // group one and group two can watch each other           
 
+            //if (!String.IsNullOrEmpty(user.group_one))
+            //    filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_one || p.group_two == user.group_one).ToList());
+
+            //if (!String.IsNullOrEmpty(user.group_two))
+            //    filtered_employees.AddRange(allEmployees.Where(p => p.group_two == user.group_two).ToList());
+
+            //if (!String.IsNullOrEmpty(user.group_three))
+            //    filtered_employees.AddRange(allEmployees.Where(p => p.group_three == user.group_three).ToList());
+
+            // Fix: group one, two, three now have the same weight
             if (!String.IsNullOrEmpty(user.group_one))
-                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_one || p.group_two == user.group_one).ToList());
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_one || p.group_two == user.group_one || p.group_three == user.group_one).ToList());
 
             if (!String.IsNullOrEmpty(user.group_two))
-                filtered_employees.AddRange(allEmployees.Where(p => p.group_two == user.group_two).ToList());
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_two || p.group_two == user.group_two || p.group_three == user.group_two).ToList());
 
             if (!String.IsNullOrEmpty(user.group_three))
-                filtered_employees.AddRange(allEmployees.Where(p => p.group_three == user.group_three).ToList());
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_three || p.group_two == user.group_three || p.group_three == user.group_three).ToList());
 
             filtered_employees = filtered_employees.Distinct().ToList();
 

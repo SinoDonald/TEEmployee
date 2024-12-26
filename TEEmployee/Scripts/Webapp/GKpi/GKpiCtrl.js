@@ -44,6 +44,8 @@ app.controller('FillinCtrl', ['$scope', '$window', 'appService', '$rootScope', '
     }
     if (curMonth > 5)
         $scope.showLast = true;
+    if (curMonth >= 10)
+        $scope.years.unshift(curYear + 1);
 
 
     $scope.selectYear = () => {
@@ -168,7 +170,8 @@ app.controller('FillinCtrl', ['$scope', '$window', 'appService', '$rootScope', '
 
 
 
-    $scope.selectedYear = $scope.years[0].toString();
+    //$scope.selectedYear = $scope.years[0].toString();
+    $scope.selectedYear = curYear.toString();
     $scope.selectYear();
 
     // add at bottom
@@ -320,6 +323,8 @@ app.controller('FeedbackCtrl', ['$scope', '$location', 'appService', '$rootScope
     }
     if (curMonth > 5)
         $scope.showLast = true;
+    if (curMonth >= 10)
+        $scope.years.unshift(curYear + 1);
 
 
     $scope.selectYear = () => {
@@ -497,7 +502,8 @@ app.controller('FeedbackCtrl', ['$scope', '$location', 'appService', '$rootScope
 
 
 
-    $scope.selectedYear = $scope.years[0].toString();
+    //$scope.selectedYear = $scope.years[0].toString();
+    $scope.selectedYear = curYear.toString();
     $scope.selectYear();
 
     // add at bottom
