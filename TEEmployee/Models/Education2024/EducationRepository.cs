@@ -12,7 +12,7 @@ namespace TEEmployee.Models.Education2024
         private IDbConnection _conn;
         public EducationRepository()
         {
-            string educationConnection = ConfigurationManager.ConnectionStrings["GEducationConnection"].ConnectionString;
+            string educationConnection = ConfigurationManager.ConnectionStrings["Education2024Connection"].ConnectionString;
             _conn = new SQLiteConnection(educationConnection);
         }
 
