@@ -158,15 +158,15 @@
             transition: background-color 0.3s ease, color 0.3s ease;
             margin: 0;
             border: 1px solid #f4623a;
-        }*/   
+        }*/
 
         /* Change the background color when checkbox is checked */
-        /*.toggle-checkbox:checked + .toggle-label {            
+        /*.toggle-checkbox:checked + .toggle-label {
             background-color: #f4623a;
             color: white;
         }*/
 
-        
+
         /* Style the label to look like a Bootstrap button */
         .page-toggle {
             display: inline-block;
@@ -185,9 +185,7 @@
         .page-toggle-active {
             background-color: #f4623a;
             color: white;
-        }      
-
-
+        }
     </style>
 }
 
@@ -267,7 +265,7 @@
                     <div class="mb-5">
                         <h5 style="font-family: 'Arial', sans-serif">1. 從員工名單中新增行事曆代理人</h5>
                         <h5 style="font-family: 'Arial', sans-serif">2. 點選各個行事曆按鈕來<button type="button" class="btn btn-primary">開</button> <button type="button" class="btn btn-outline-primary">關</button> 欲授權的行事曆</h5>
-                    </div>                    
+                    </div>
                     <div class="d-flex justify-content-around w-50 mx-auto mb-4">
                         <div>
                             <select class="form-select" id="SelectAgentGroup" name="SelectAgentGroup" ng-model="selectedGroup" ng-change="filterMembers()" aria-label="Select the Group">
@@ -296,21 +294,21 @@
 
 
                                 @*<div>
-                        <input ng-click="updateAgent(agent)" ng-model="agent.page3" type="checkbox" id="toggle{{$index}}-1" class="toggle-checkbox">
-                        <label for="toggle{{$index}}-1" class="toggle-label">群組規劃</label>
-                    </div>
-                    <div>
-                        <input ng-click="updateAgent(agent)" ng-model="agent.page2" type="checkbox" id="toggle{{$index}}-2" class="toggle-checkbox">
-                        <label for="toggle{{$index}}-2" class="toggle-label">計畫行事曆</label>
-                    </div>
-                    <div>
-                        <input ng-click="updateAgent(agent)" ng-model="agent.page0" type="checkbox" id="toggle{{$index}}-3" class="toggle-checkbox">
-                        <label for="toggle{{$index}}-3" class="toggle-label">群組行事曆</label>
-                    </div>
-                    <div>
-                        <input ng-click="updateAgent(agent)" ng-model="agent.page1" type="checkbox" id="toggle{{$index}}-4" class="toggle-checkbox">
-                        <label for="toggle{{$index}}-4" class="toggle-label">數位轉型規劃</label>
-                    </div>*@
+                                        <input ng-click="updateAgent(agent)" ng-model="agent.page3" type="checkbox" id="toggle{{$index}}-1" class="toggle-checkbox">
+                                        <label for="toggle{{$index}}-1" class="toggle-label">群組規劃</label>
+                                    </div>
+                                    <div>
+                                        <input ng-click="updateAgent(agent)" ng-model="agent.page2" type="checkbox" id="toggle{{$index}}-2" class="toggle-checkbox">
+                                        <label for="toggle{{$index}}-2" class="toggle-label">計畫行事曆</label>
+                                    </div>
+                                    <div>
+                                        <input ng-click="updateAgent(agent)" ng-model="agent.page0" type="checkbox" id="toggle{{$index}}-3" class="toggle-checkbox">
+                                        <label for="toggle{{$index}}-3" class="toggle-label">群組行事曆</label>
+                                    </div>
+                                    <div>
+                                        <input ng-click="updateAgent(agent)" ng-model="agent.page1" type="checkbox" id="toggle{{$index}}-4" class="toggle-checkbox">
+                                        <label for="toggle{{$index}}-4" class="toggle-label">數位轉型規劃</label>
+                                    </div>*@
                                 <button ng-click="deleteAgent(agent, $index)" type="button" class="btn btn-outline-secondary">刪除</button>
                             </div>
 
@@ -320,7 +318,7 @@
                 </div>
                 <div class="modal-footer">
                     @*<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">儲存</button>*@
+                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">儲存</button>*@
                 </div>
             </div>
         </div>
@@ -331,7 +329,8 @@
 
 
 @section Scripts {
-    <script src="https://unpkg.com/d3@7.8.2/dist/d3.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    @*<script src="https://unpkg.com/d3@7.8.2/dist/d3.min.js"></script>*@
     <script src="~/Scripts/WebApp/Schedule/GanttPlot.js"></script>
     <script src="~/Scripts/WebApp/GSchedule/HistoryLineChart.js"></script>
     <script src="~/Scripts/WebApp/GSchedule/ScheduleCtrl.js"></script>

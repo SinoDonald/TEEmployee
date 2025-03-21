@@ -178,10 +178,10 @@ namespace TEEmployee.Models.Promotion
                     return;
                 //break;
 
-                //case "製圖師":
-                //    promotions.RemoveRange(0, 2);
-                //    return;
-                    //break;
+                case "製圖師":
+                    promotions.RemoveRange(0, 7);
+                    return;
+                //break;
             }
 
 
