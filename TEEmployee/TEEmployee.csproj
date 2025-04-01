@@ -179,6 +179,7 @@
     <Compile Include="Controllers\GKpiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\GScheduleController.cs" />
+    <Compile Include="Controllers\IssueController.cs" />
     <Compile Include="Controllers\KpiController.cs" />
     <Compile Include="Controllers\ProfessionController.cs" />
     <Compile Include="Controllers\PromotionController.cs" />
@@ -224,6 +225,12 @@
     <Compile Include="Models\GKpi\KpiModel.cs" />
     <Compile Include="Models\GSchedule\ProjectSchedule.cs" />
     <Compile Include="Models\INotifyRepository.cs" />
+    <Compile Include="Models\Issue\ControlledItem.cs" />
+    <Compile Include="Models\Issue\IIssueRepository.cs" />
+    <Compile Include="Models\Issue\Issue.cs" />
+    <Compile Include="Models\Issue\IssueRepository.cs" />
+    <Compile Include="Models\Issue\IssueService.cs" />
+    <Compile Include="Models\Issue\Project.cs" />
     <Compile Include="Models\Kpi\IKpiRepository.cs" />
     <Compile Include="Models\Kpi\KpiItem.cs" />
     <Compile Include="Models\Kpi\KpiModel.cs" />
@@ -409,6 +416,8 @@
     <Content Include="Scripts\Webapp\GSchedule\ScheduleCtrl.js" />
     <Content Include="Scripts\Webapp\Home\AdminCtrl.js" />
     <Content Include="Scripts\Webapp\GKpi\GKpiCtrl.js" />
+    <Content Include="Scripts\Webapp\Issue\Calendar.js" />
+    <Content Include="Scripts\Webapp\Issue\IssueCtrl.js" />
     <Content Include="Scripts\Webapp\Kpi\KpiCtrl.js" />
     <Content Include="Scripts\Webapp\Profession\ProfessionChart.js" />
     <Content Include="Scripts\Webapp\Profession\ProfessionCtrl.js" />
@@ -530,6 +539,8 @@
     <Content Include="Views\GEducation\Curriculum.cshtml" />
     <Content Include="Views\GEducation\Digital.cshtml" />
     <Content Include="Views\Education\Record.cshtml" />
+    <Content Include="Views\Issue\Index.cshtml" />
+    <Content Include="Views\Issue\List.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Promotion\" />

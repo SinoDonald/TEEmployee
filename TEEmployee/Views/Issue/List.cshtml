@@ -1,0 +1,391 @@
+﻿
+@{
+    ViewBag.Title = "小組月會列管事項追蹤表";
+}
+
+@section Styles {
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+
+        .mt100 {
+            margin-top: 100px;
+        }
+
+        .outer-table col:nth-child(1) {
+            width: 10%;
+        }
+
+        .outer-table col:nth-child(2) {
+            width: 10%;
+        }
+
+        .outer-table col:nth-child(3) {
+            width: 30%;
+        }
+
+        .outer-table col:nth-child(4) {
+            width: 20%;
+        }
+
+        .outer-table col:nth-child(5) {
+            width: 10%;
+        }
+
+        .outer-table col:nth-child(6) {
+            width: 10%;
+        }
+
+        .outer-table col:nth-child(7) {
+            width: 10%;
+        }
+
+        .inner-table col:nth-child(1) {
+            width: calc(100% / 9);
+        }
+
+        .inner-table col:nth-child(2) {
+            width: calc(100% / 9 * 3);
+        }
+
+        .inner-table col:nth-child(3) {
+            width: calc(100% / 9 * 2);
+        }
+
+        .inner-table col:nth-child(4) {
+            width: calc(100% / 9);
+        }
+
+        .inner-table col:nth-child(5) {
+            width: calc(100% / 9);
+        }
+
+        .inner-table col:nth-child(6) {
+            width: calc(100% / 9);
+        }
+
+        .issue-row {
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            border-bottom: none;
+        }
+
+            .issue-row:hover {
+                background-color: #d3d3d3;
+            }
+
+        .hover-cell {
+            position: relative;
+        }
+
+            .hover-cell .btn-group {
+                position: absolute;
+                padding: 0.5rem;
+                top: 50%;
+                transform: translateY(-50%);
+                right: 90%;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .hover-cell:hover .btn-group {
+                opacity: 1;
+                visibility: visible;
+                right: 100%;
+            }
+
+
+        .member-toggle {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border-radius: 5px;
+            background-color: transparent;
+            color: #f4623a;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            margin-right: 0.5rem;
+            border: 1px solid #f4623a;
+        }
+
+        .member-toggle-active {
+            background-color: #f4623a;
+            color: white;
+        }
+
+        .circle-badge {
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            /*            both way works*/
+            /*            padding:0.5rem;*/
+            /*            display: inline-block;*/
+
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            color: dimgrey;
+            /*            background-color: linen;*/
+            background-color: mintcream;
+            line-height: 1;
+            margin-inline: 3px;
+        }
+
+        .custom-modal-size {            
+            height: 80vh;
+            max-width: 1000px;
+            /*min-height: 80vh;*/
+        }
+
+
+        /*
+        https://stackoverflow.com/questions/68553824/wrap-titles-in-fullcalendar-v5
+        */
+        .fc-daygrid-event {
+            white-space: normal !important;
+            align-items: normal !important;
+        }
+
+    </style>
+
+}
+
+<div style="height: 100px"></div>
+
+<div ng-controller="IssueCtrl" class="container-fluid">
+
+
+    <div>
+        <div>
+            <label for="selectGroup">群組</label>
+            <select class="form-select" id="selectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
+                <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
+            </select>
+        </div>
+
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#calendarModal">
+            <span class="material-icons" style="color:grey">calendar_month</span>
+        </button>
+
+    </div>
+
+    <div style="padding-inline: 6%">
+        <table class="table table-bordered outer-table">
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>計畫名稱</th>
+                    <th>項次分類</th>
+                    <th>議題</th>
+                    <th>負責人</th>
+                    <th>辦理情形</th>
+                    <th>狀態</th>
+                    <th>登錄時間</th>
+                </tr>
+            </thead>
+            <tbody ng-repeat="projectType in projectTypes" style="border: none;">
+                <tr ng-style="{'background-color': hdColors[$index]}" style="color: white">
+                    <td colspan="7">
+                        <div class="d-flex align-items-center">
+                            <div ng-bind="projectType"></div>
+                            <button type="button" ng-click="createProjectModal($index)" class="btn btn-sm d-inline-flex" data-toggle="modal" data-target="#projectModal">
+                                <span class="material-icons" ng-style="{'color': pjColors[$index] }">add_circle</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-repeat="project in filterProjectType($index)" style="border-bottom: none">
+                    <td class="align-middle text-center hover-cell" ng-style="{'background-color': pjColors[$parent.$index]}">
+                        <div ng-bind="project.name"></div>
+                        <div class="btn-group">
+                            <button type="button" class="btn">
+                                <span class="material-icons" style="color:grey">cancel</span>
+                            </button>
+                            <button type="button" ng-click="createIssueModal(project)" class="btn" data-toggle="modal" data-target="#issueModal">
+                                <span class="material-icons" style="color:grey">add_circle</span>
+                            </button>
+                        </div>
+                    </td>
+                    <td class="p-0" colspan="6">
+                        <table class="table table-bordered inner-table m-0">
+                            <colgroup>
+                                <col>
+                                <col>
+                                <col>
+                                <col>
+                                <col>
+                                <col>
+                            </colgroup>
+                            <tbody style="border: none;">
+                                <tr ng-repeat="issue in project.issues | orderBy:['category', 'custom_order']" ng-click="updateIssueModal(issue)" class="issue-row" data-toggle="modal" data-target="#issueModal">
+                                    <td ng-bind="issue.category + issue.custom_order"></td>
+                                    <td ng-bind="issue.content"></td>
+                                    <td>
+                                        <div>
+                                            <span ng-repeat="obj in issue.memberObjs" ng-bind="obj[0]" class="badge circle-badge"></span>
+                                        </div>
+                                    </td>
+                                    <td ng-bind="issue.progress"></td>
+                                    <td ng-bind="issue.status"></td>
+                                    <td ng-bind="issue.registered_date"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- Project Modal -->
+    <div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="projectModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="projectModalLabel">新增計畫</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @*<div class="form-group">
+                            <label for="projectTypeSelect">計畫分類</label>
+                            <select id="projectTypeSelect" ng-model="projectModal.project_type" class="form-select">
+                                <option value="" selected disabled>請選擇...</option>
+                                <option ng-repeat="projectType in projectTypes" value="{{$index}}">{{projectType}}</option>
+                            </select>
+                        </div>*@
+                    <div class="form-group">
+                        <label for="projectNameInput">計畫名稱</label>
+                        <input type="text" ng-model="projectModal.name" class="form-control" id="projectNameInput" placeholder="請輸入...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" ng-click="createProject()" data-dismiss="modal" class="btn btn-primary">儲存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Issue Modal -->
+    <div class="modal fade" id="issueModal" tabindex="-1" role="dialog" aria-labelledby="issueModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="issueModalLabel" ng-bind="issueModalHeader"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="contentInput">議題</label>
+                        <input type="text" ng-model="issueModal.content" class="form-control" id="contentInput" placeholder="請輸入...">
+                    </div>
+                    <div class="form-group">
+                        <label for="categoryInput">分類</label>
+                        <input type="text" ng-model="issueModal.category" class="form-control" id="categoryInput" placeholder="請輸入...">
+                    </div>
+                    <div class="form-group">
+                        <label for="customOrderInput">項次</label>
+                        <input type="text" ng-model="issueModal.custom_order" class="form-control" id="customOrderInput" placeholder="請輸入...">
+                    </div>
+                    <div class="form-group">
+                        <label for="progressInput">辦理情形</label>
+                        <input type="text" ng-model="issueModal.progress" class="form-control" id="progressInput" placeholder="請輸入...">
+                    </div>
+                    <div class="form-group">
+                        <label for="statusInput">狀態</label>
+                        <input type="text" ng-model="issueModal.status" class="form-control" id="statusInput" placeholder="請輸入...">
+                    </div>
+                    <div class="form-group">
+                        <label>負責人</label>
+                        <div class="d-flex">
+                            <button ng-repeat="member in issueModal.groupMembers" type="button" ng-click="member.selected = !member.selected" class="member-toggle" ng-bind="member.name" ng-class="{'member-toggle-active': member.selected }"></button>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" ng-click="createItemModal()" class="btn btn-secondary">新增管控事項</button>
+                    @*<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>*@
+                    <button type="button" ng-click="upsertIssue()" data-dismiss="modal" class="btn btn-primary">儲存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ControlledItem Modal -->
+    <div class="modal fade" id="itemModal" tabindex="-1" style="z-index: 1070;" role="dialog" aria-labelledby="itemModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content" style="border-width:0.5rem">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="itemModalLabel" ng-bind="isEditItemModal ? '編輯代辦事項' : '新增代辦事項'"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="todoInput">代辦事項</label>
+                        <input type="text" ng-model="itemModal.todo" class="form-control" id="todoInput" placeholder="請輸入...">
+                    </div>
+                    <div class="form-group">
+                        <label for="start">日期</label>
+                        <input type="date" ng-model="itemModal.dateObj"
+                               class="form-control"
+                               id="start"
+                               name="trip-start"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" ng-click="upsertItem()" data-dismiss="modal" class="btn btn-primary">儲存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Calendar Modal -->
+    <div class="modal fade" id="calendarModal" tabindex="-1" role="dialog" aria-labelledby="calendarModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg custom-modal-size" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="calendarModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id='calendar'></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts {
+    <script src="~/Scripts/WebApp/Issue/IssueCtrl.js"></script>
+    <script src="~/Scripts/moment-with-locales.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    @*<script src="~/Scripts/WebApp/Issue/Calendar.js"></script>*@
+}
