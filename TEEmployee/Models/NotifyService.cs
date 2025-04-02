@@ -86,6 +86,34 @@ namespace TEEmployee.Models
 
             return ret;
         }
+        // 年度個人規劃
+        public bool PersonalPlan(string empno)
+        {
+            bool ret = false;
+
+            // 先確認當月為5、11月
+            DateTime now = DateTime.Now;
+            int year = now.Year;
+            int month = now.Month;
+            if (month == 5 || month == 11)
+            {
+                string season = string.Empty;
+                if (month == 5)
+                    season = year + "H1";
+                else
+                    season = year + "H2";
+
+                string _appData = HttpContext.Current.Server.MapPath("~/App_Data");
+                string path = Path.Combine(_appData, "GSchedule", season);
+                // 是否已填寫給予主管建議評估表, 必填協理+group_manager2位
+                List<User> userManagers = UserManagers(empno, "");
+                List<string> managers = userManagers.Select(x => x.empno).ToList();
+                ret = _notifyRepository.ManagerSuggest(path, managers, empno);
+            }
+
+            return ret;
+        }
+
         public void Dispose()
         {
             _notifyRepository.Dispose();
