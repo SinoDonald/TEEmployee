@@ -11,6 +11,9 @@ using DocumentFormat.OpenXml.Drawing.Charts;
 using TEEmployee.Models.TaskLog;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.ComponentModel;
+using TEEmployee.Models.GSchedule;
+using TEEmployee.Models.Profession;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace TEEmployee.Models.Issue
 {
@@ -149,6 +152,7 @@ namespace TEEmployee.Models.Issue
             return ret > 0;
         }
 
+
         public bool InsertIssue(Issue issue)
         {
             int ret = 0;
@@ -204,6 +208,114 @@ namespace TEEmployee.Models.Issue
             ret = _conn.Execute(sql, item);
             return ret > 0;
         }
+
+        public bool DeleteProject(Project project)
+        {
+            _conn.Open();
+
+            bool ret = true;
+            string deleteProjectSql = @"DELETE FROM Project WHERE id=@id;";
+            string deleteIssueSql = @"DELETE FROM Issue WHERE id IN @issueIds;";
+            string deleteItemSql = @"DELETE FROM ControlledItem WHERE issue_id IN @issueIds;";
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                try
+                {
+                    var issueIds = project.issues.Select(x => x.id).ToList();
+
+                    _conn.Execute(deleteItemSql, new { issueIds });
+                    _conn.Execute(deleteIssueSql, new { issueIds });
+                    _conn.Execute(deleteProjectSql, project);
+
+                    tran.Commit();
+                }
+                catch (Exception)
+                {
+                    ret = false;
+                }
+
+            }
+
+            return ret;
+        }
+
+        public bool DeleteIssue(Issue issue)
+        {            
+            _conn.Open();
+
+            bool ret = true;
+            string deleteIssueSql = @"DELETE FROM Issue WHERE id=@id;";
+            string deleteItemSql = @"DELETE FROM ControlledItem WHERE id=@id;";
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                try
+                {
+                    _conn.Execute(deleteItemSql, issue.controlledItems);
+                    _conn.Execute(deleteIssueSql, issue);
+
+                    tran.Commit();
+                }
+                catch (Exception)
+                {
+                    ret = false;
+                }
+
+            }
+
+            return ret;
+        }
+
+        //public bool DeleteIssues(List<Issue> issues)
+        //{
+        //    int ret = 0;
+        //    string sql = @"DELETE FROM Issue WHERE id=@id";
+
+        //    using (var tran = _conn.BeginTransaction())
+        //    {
+        //        try
+        //        {
+        //            foreach (var issue in issues)
+        //            {
+        //                DeleteControlledItems(issue.controlledItems);
+        //            }
+
+        //             _conn.Execute(sql, issues);
+
+        //            tran.Commit();
+        //        }
+        //        catch (Exception)
+        //        {
+        //            return false;
+        //        }
+
+        //    }
+
+
+        //}
+
+
+        //public bool DeleteControlledItems(List<ControlledItem> items)
+        //{
+        //    int ret = 0;
+        //    string sql = @"DELETE FROM ControlledItem WHERE id=@id";
+
+        //    ret = _conn.Execute(sql, items);
+
+        //    return ret > 0;
+        //}
+
+        public bool DeleteControlledItem(ControlledItem item)
+        {
+            int ret = 0;
+            string sql = @"DELETE FROM ControlledItem WHERE id=@id";
+
+            ret = _conn.Execute(sql, item);
+
+            return ret > 0;
+        }
+
 
         public void Dispose()
         {

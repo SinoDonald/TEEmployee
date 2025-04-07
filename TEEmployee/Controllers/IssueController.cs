@@ -54,6 +54,13 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
+        public JsonResult DeleteProject(Project project)
+        {
+            var ret = _service.DeleteProject(project);
+            return Json(ret);
+        }
+
+        [HttpPost]
         public JsonResult CreateIssue(Issue issue)
         {
             var ret = _service.CreateIssue(issue);
@@ -68,6 +75,13 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
+        public JsonResult DeleteIssue(Issue issue)
+        {
+            var ret = _service.DeleteIssue(issue);
+            return Json(ret);
+        }
+
+        [HttpPost]
         public JsonResult CreateControlledItem(ControlledItem item)
         {
             var ret = _service.CreateControlledItem(item);
@@ -78,6 +92,13 @@ namespace TEEmployee.Controllers
         public JsonResult UpdateControlledItem(ControlledItem item)
         {
             var ret = _service.UpdateControlledItem(item);
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteControlledItem(ControlledItem item)
+        {
+            var ret = _service.DeleteControlledItem(item);
             return Json(ret);
         }
 

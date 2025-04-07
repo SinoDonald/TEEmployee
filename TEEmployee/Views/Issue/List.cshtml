@@ -129,15 +129,16 @@
             align-items: center;
             font-size: 16px;
             color: dimgrey;
-            /*            background-color: linen;*/
-            background-color: mintcream;
+            background-color: linen;
+            /*background-color: mintcream;*/
             line-height: 1;
             margin-inline: 3px;
         }
 
-        .custom-modal-size {            
+        .custom-modal-size {
             height: 80vh;
-            max-width: 1000px;
+            max-width: 1200px;
+            /*            max-width: 1000px;*/
             /*min-height: 80vh;*/
         }
 
@@ -149,7 +150,6 @@
             white-space: normal !important;
             align-items: normal !important;
         }
-
     </style>
 
 }
@@ -159,18 +159,18 @@
 <div ng-controller="IssueCtrl" class="container-fluid">
 
 
-    <div>
-        <div>
-            <label for="selectGroup">群組</label>
+    <div class="row justify-content-center mb-3">
+        <div class="col-2">            
             <select class="form-select" id="selectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
                 <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
             </select>
         </div>
-
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#calendarModal">
-            <span class="material-icons" style="color:grey">calendar_month</span>
-        </button>
-
+        <div class="col-2">
+            <button type="button" class="btn btn-secondary d-inline-flex" data-toggle="modal" data-target="#calendarModal">
+                <span class="material-icons">calendar_month</span>
+                <span>追蹤行事曆</span>
+            </button>
+        </div>
     </div>
 
     <div style="padding-inline: 6%">
@@ -210,7 +210,7 @@
                     <td class="align-middle text-center hover-cell" ng-style="{'background-color': pjColors[$parent.$index]}">
                         <div ng-bind="project.name"></div>
                         <div class="btn-group">
-                            <button type="button" class="btn">
+                            <button type="button" class="btn" ng-click="confirmDeleteProject(project)">
                                 <span class="material-icons" style="color:grey">cancel</span>
                             </button>
                             <button type="button" ng-click="createIssueModal(project)" class="btn" data-toggle="modal" data-target="#issueModal">
@@ -234,7 +234,7 @@
                                     <td ng-bind="issue.content"></td>
                                     <td>
                                         <div>
-                                            <span ng-repeat="obj in issue.memberObjs" ng-bind="obj[0]" class="badge circle-badge"></span>
+                                            <span ng-repeat="obj in issue.memberObjs" ng-bind="obj.name[0]" class="badge circle-badge"></span>
                                         </div>
                                     </td>
                                     <td ng-bind="issue.progress"></td>
@@ -286,7 +286,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="issueModalLabel" ng-bind="issueModalHeader"></h5>
+                    <h5 class="modal-title" id="issueModalLabel" ng-bind="isEditIssueModal ? '編輯議題' : '新增議題'"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -296,14 +296,18 @@
                         <label for="contentInput">議題</label>
                         <input type="text" ng-model="issueModal.content" class="form-control" id="contentInput" placeholder="請輸入...">
                     </div>
-                    <div class="form-group">
-                        <label for="categoryInput">分類</label>
-                        <input type="text" ng-model="issueModal.category" class="form-control" id="categoryInput" placeholder="請輸入...">
+
+                    <div class="form-row ">
+                        <div class="form-group col-6">
+                            <label for="categoryInput">分類</label>
+                            <input type="text" ng-model="issueModal.category" class="form-control" id="categoryInput" placeholder="請輸入...">
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="customOrderInput">項次</label>
+                            <input type="text" ng-model="issueModal.custom_order" class="form-control" id="customOrderInput" placeholder="請輸入...">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="customOrderInput">項次</label>
-                        <input type="text" ng-model="issueModal.custom_order" class="form-control" id="customOrderInput" placeholder="請輸入...">
-                    </div>
+
                     <div class="form-group">
                         <label for="progressInput">辦理情形</label>
                         <input type="text" ng-model="issueModal.progress" class="form-control" id="progressInput" placeholder="請輸入...">
@@ -319,12 +323,18 @@
                         </div>
                     </div>
 
-
                 </div>
-                <div class="modal-footer">
-                    <button type="button" ng-click="createItemModal()" class="btn btn-secondary">新增管控事項</button>
-                    @*<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>*@
-                    <button type="button" ng-click="upsertIssue()" data-dismiss="modal" class="btn btn-primary">儲存</button>
+                <div class="modal-footer justify-content-between">
+                    <div>
+                        <button type="button" class="btn btn-sm d-flex" ng-click="confirmDeleteIssue()" ng-show="isEditIssueModal">
+                            <span class="material-icons" style="color: slategrey">delete</span>
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" ng-click="createItemModal()" ng-show="isEditIssueModal" class="btn btn-secondary">新增管控事項</button>
+                        @*<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>*@
+                        <button type="button" ng-click="upsertIssue()" data-dismiss="modal" class="btn btn-primary">儲存</button>
+                    </div>                    
                 </div>
             </div>
         </div>
@@ -333,30 +343,43 @@
 
     <!-- ControlledItem Modal -->
     <div class="modal fade" id="itemModal" tabindex="-1" style="z-index: 1070;" role="dialog" aria-labelledby="itemModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content" style="border-width:0.5rem">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="itemModalLabel" ng-bind="isEditItemModal ? '編輯代辦事項' : '新增代辦事項'"></h5>
+                    <h5 class="modal-title" id="itemModalLabel" ng-bind="isEditItemModal ? '編輯管控事項' : '新增管控事項'"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="todoInput">代辦事項</label>
+                        <label for="todoInput">待辦事項</label>
                         <input type="text" ng-model="itemModal.todo" class="form-control" id="todoInput" placeholder="請輸入...">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" ng-hide="isEditItemModal">
                         <label for="start">日期</label>
                         <input type="date" ng-model="itemModal.dateObj"
                                class="form-control"
                                id="start"
-                               name="trip-start"/>
+                               name="trip-start" />
+                    </div>
+                    <div class="form-group">
+                        <label>負責人</label>
+                        <div class="d-flex">
+                            <button ng-repeat="member in itemModal.memberOptions" type="button" ng-click="member.selected = !member.selected" class="member-toggle" ng-bind="member.name" ng-class="{'member-toggle-active': member.selected }"></button>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                    <button type="button" ng-click="upsertItem()" data-dismiss="modal" class="btn btn-primary">儲存</button>
+                <div class="modal-footer justify-content-between">
+                    <div>
+                        <button type="button" class="btn btn-sm d-flex" ng-click="confirmDeleteItem()" ng-show="isEditItemModal">
+                            <span class="material-icons" style="color: slategrey">delete</span>
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                        <button type="button" ng-click="upsertItem()" data-dismiss="modal" class="btn btn-primary">儲存</button>
+                    </div>
                 </div>
             </div>
         </div>

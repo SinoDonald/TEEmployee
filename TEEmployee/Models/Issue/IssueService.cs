@@ -38,6 +38,12 @@ namespace TEEmployee.Models.Issue
             return ret;
         }
 
+        public bool DeleteProject(Project project)
+        {
+            var ret = _issueRepository.DeleteProject(project);
+            return ret;
+        }
+
         public bool CreateIssue(Issue issue)
         {
             var ret = _issueRepository.InsertIssue(issue);
@@ -50,6 +56,12 @@ namespace TEEmployee.Models.Issue
             return ret;
         }
 
+        public bool DeleteIssue(Issue issue)
+        {
+            var ret = _issueRepository.DeleteIssue(issue);
+            return ret;
+        }
+
         public bool CreateControlledItem(ControlledItem item)
         {
             var ret = _issueRepository.InsertControlledItem(item);
@@ -59,6 +71,12 @@ namespace TEEmployee.Models.Issue
         public bool UpdateControlledItem(ControlledItem item)
         {
             var ret = _issueRepository.UpdateControlledItem(item);
+            return ret;
+        }
+
+        public bool DeleteControlledItem(ControlledItem item)
+        {
+            var ret = _issueRepository.DeleteControlledItem(item);
             return ret;
         }
 

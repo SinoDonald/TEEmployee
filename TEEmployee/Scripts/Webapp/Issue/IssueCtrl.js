@@ -19,11 +19,17 @@ app.service('appService', ['$http', function ($http) {
     this.CreateProject = (o) => {
         return $http.post('Issue/CreateProject', o);
     };
+    this.DeleteProject = (o) => {
+        return $http.post('Issue/DeleteProject', o);
+    };
     this.CreateIssue = (o) => {
         return $http.post('Issue/CreateIssue', o);
     };
     this.UpdateIssue = (o) => {
         return $http.post('Issue/UpdateIssue', o);
+    };
+    this.DeleteIssue = (o) => {
+        return $http.post('Issue/DeleteIssue', o);
     };
     this.CreateItem = (o) => {
         return $http.post('Issue/CreateControlledItem', o);
@@ -31,7 +37,9 @@ app.service('appService', ['$http', function ($http) {
     this.UpdateItem = (o) => {
         return $http.post('Issue/UpdateControlledItem', o);
     };
-    
+    this.DeleteItem = (o) => {
+        return $http.post('Issue/DeleteControlledItem', o);
+    };
 }]);
 
 app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', function ($scope, $location, appService, $rootScope) {
@@ -66,20 +74,37 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
             // member string
             for (const project of $scope.data) {
                 for (const issue of project.issues) {
-                    issue.memberObjs = issue.members ? issue.members.split(',') : []; 
+                    let memberArr = issue.members ? issue.members.split(',') : []; 
+                    issue.memberObjs = memberArr.map(name => ({ name })) // shorthand for property name
                 }
             }
 
             // calendar event data
-            let items = $scope.data
-                .flatMap(project => project.issues)
-                .flatMap(issue => issue.controlledItems);  
 
-            $scope.events = items.map(x => ({
-                title: x.todo,
-                start: x.deadline,
-                item: x,
-            }))
+            // callback function
+
+            $scope.events = $scope.data.flatMap(project =>
+                project.issues.flatMap(issue =>
+                    issue.controlledItems.map(x => ({
+                        item: x,
+                        project_name: project.name,
+                        title: `${project.name}-${issue.category || ''}${issue.custom_order}-${x.members || ''}<br />${x.todo}`,
+                        start: x.deadline
+                    }))
+                )
+            );
+
+            // chain 
+
+            //let items = $scope.data
+            //    .flatMap(project => project.issues)
+            //    .flatMap(issue => issue.controlledItems);  
+
+            //$scope.events = items.map(x => ({
+            //    title: `${x.todo}\n${x.}`,
+            //    start: x.deadline,
+            //    item: x,
+            //}))
 
             $scope.initCalendar($scope.events);
         })
@@ -111,7 +136,7 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
     $scope.createIssueModal = (project) => {
 
-        $scope.issueModalHeader = '新增議題';
+        $scope.isEditIssueModal = false;
         $scope.issueModal = { project_id: project.id };
         $scope.issueModal.groupMembers = $scope.groupMembers.map(x => ({
             name: x.name,
@@ -120,7 +145,8 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     };
 
     $scope.updateIssueModal = (issue) => {
-        $scope.issueModalHeader = '編輯議題';
+
+        $scope.isEditIssueModal = true;
         $scope.issueModal = { ...issue };
         $scope.issueModal.groupMembers = $scope.groupMembers.map(x => ({
             name: x.name,
@@ -157,7 +183,12 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
         $scope.isEditItemModal = false;
         $scope.itemModal = { issue_id: $scope.issueModal.id };
-        
+
+        $scope.itemModal.memberOptions = $scope.issueModal.memberObjs.map(x => ({
+            name: x.name,
+            selected: false,
+        }));
+
         $('#issueModal').modal('hide');
         $('#issueModal').one('hidden.bs.modal', function () {
             $('#itemModal').modal('show');
@@ -169,16 +200,29 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         $scope.isEditItemModal = true;
 
         $scope.itemModal = { ...item };
+
+        let parentIssue = $scope.data
+            .flatMap(project => project.issues)
+            .find(x => x.id === item.issue_id);
+        
+        $scope.itemModal.memberOptions = parentIssue.memberObjs.map(x => ({
+            name: x.name,
+            selected: item.members?.includes(x.name),
+        }));
+
+        //$scope.issueModal.groupMembers = $scope.groupMembers.map(x => ({
+        //    name: x.name,
+        //    selected: issue.members?.includes(x.name),
+        //}));
         
     };
 
 
     $scope.upsertItem = () => {
 
-        let newItem = { ...$scope.itemModal };
-        newItem.deadline = moment(newItem.dateObj).format('YYYY-MM-DD');
+        let newItem = { ...$scope.itemModal };        
 
-        //newIssue.members = newIssue.groupMembers.filter(x => x.selected).map(x => x.name).join(',');
+        newItem.members = newItem.memberOptions.filter(x => x.selected).map(x => x.name).join(',');
 
         if (newItem.id) {
 
@@ -189,12 +233,59 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
         } else {
 
+            newItem.deadline = moment(newItem.dateObj).format('YYYY-MM-DD');
+
             appService.CreateItem({ item: newItem }).then((ret) => {
                 if (ret.data)
                     $scope.getProjectsByGroupOne();
             })
         }
     };
+
+    $scope.confirmDeleteProject = (project) => {
+
+        var result = confirm("確定要刪除這筆計畫(及相關議題和管控事項)嗎？");
+
+        if (result) {
+            appService.DeleteProject({ project: project }).then((ret) => {
+
+                if (ret.data) {
+                    $scope.getProjectsByGroupOne();
+                }
+            })
+        }
+    }
+
+
+    $scope.confirmDeleteIssue = () => {
+
+        var result = confirm("確定要刪除這筆議題(及相關管控事項)嗎？");
+
+        if (result) {
+            appService.DeleteIssue({ issue: $scope.issueModal }).then((ret) => {
+
+                if (ret.data) {
+                    $scope.getProjectsByGroupOne();
+                    $('#issueModal').modal('hide');
+                }
+            })
+        }
+    }
+
+    $scope.confirmDeleteItem = () => {
+                
+        var result = confirm("確定要刪除這筆管控事項嗎？");
+
+        if (result) {
+            appService.DeleteItem({ item: $scope.itemModal }).then((ret) => {
+
+                if (ret.data) {
+                    $scope.getProjectsByGroupOne();
+                    $('#itemModal').modal('hide');
+                }                    
+            })
+        } 
+    }
 
 
     $scope.selectGroup = () => {
@@ -218,7 +309,15 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
                 // https://stackoverflow.com/questions/29544263/how-does-scope-apply-work-exactly-in-angularjs
                 $scope.$apply(); // handle the event that is outside the angularjs event, tell it to refresh the front end
                 $('#itemModal').modal('show');
+            },
+            eventContent: function (info) {
+                return {
+                    html: info.event.title
+                };
             }
+            //eventDidMount: function (info) {
+            //    info.el.querySelector('.fc-event-title').innerHTML = info.event.title;
+            //}
         });
         $scope.calendar.render();
                
