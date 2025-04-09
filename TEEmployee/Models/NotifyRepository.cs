@@ -65,10 +65,15 @@ namespace TEEmployee.Models
                     using (var tran = _conn.BeginTransaction())
                     {
                         SQLiteCommand sqliteCmd = (SQLiteCommand)_conn.CreateCommand();
-                        sqliteCmd.CommandText = "CREATE TABLE IF NOT EXISTS userNotify (empno TEXT, date TEXT, self INTEGER, manager_suggest INTEGER, freeback INTEGER, future INTEGER)";
+                        sqliteCmd.CommandText = "CREATE TABLE IF NOT EXISTS userNotify (empno TEXT, date TEXT, self INTEGER, manager_suggest INTEGER, freeback INTEGER, future INTEGER, personPlan INTEGER, planFreeback INTEGER)";
                         sqliteCmd.ExecuteNonQuery();
                         tran.Commit();
                     }
+                }
+                // 如果已經有Table, 檢查是不是有PersonPlan
+                if(tableExist == true)
+                {
+
                 }
 
                 users = users.OrderBy(x => x.empno).ToList();
@@ -97,6 +102,8 @@ namespace TEEmployee.Models
                         if (bools[1] == true) userNotify.manager_suggest = 1; else userNotify.manager_suggest = 0; // 給予主管建議表
                         if (bools[2] == true) userNotify.freeback = 1; else userNotify.freeback = 0; // 主管給予員工建議
                         if (bools[3] == true) userNotify.future = 1; else userNotify.future = 0; // 未來3年數位轉型規劃
+                        if (bools[4] == true) userNotify.personPlan = 1; else userNotify.personPlan = 0; // 個人規劃
+                        if (bools[5] == true) userNotify.planFreeback = 1; else userNotify.planFreeback = 0; // 個人規劃回饋
 
                         userNotifyList.Add(userNotify);
                     }
@@ -385,6 +392,18 @@ namespace TEEmployee.Models
             //        }
             //    }
             //}
+
+            return ret;
+        }
+        // 年度個人規劃
+        public bool PersonalPlan(string path, string empno)
+        {
+            bool ret = false;
+
+            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+            string filePath = Path.Combine(path, empno + ".pdf");
+            if (File.Exists(filePath)) { ret = false; }
+            else { ret = true; }
 
             return ret;
         }

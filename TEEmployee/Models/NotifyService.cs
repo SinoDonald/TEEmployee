@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -25,9 +26,9 @@ namespace TEEmployee.Models
             int year = now.Year;
             int month = now.Month;
             string season = string.Empty;
-            if (month == 5 || month == 11)
+            if (month == 4 || month == 11)
             {
-                if (month == 5) season = year + "H1";
+                if (month == 4) season = year + "H1";
                 else if(month == 11) season = year + "H2";
 
                 // 檢查資料庫中, userNotify是否為當季資料, 不是的話則新建
@@ -36,6 +37,10 @@ namespace TEEmployee.Models
                 users = users.Where(x => x.group != null && x.group_one != null && x.group_two != null && x.group_three != null).ToList(); // 移除沒有群組的使用者
                 ret = _notifyRepository.GetNotify(season, users, date, empno);
             }
+            //else if(month == 4)
+            //{
+            //    PersonalPlan(empno); // 年度個人規劃
+            //}
 
             return ret;
         }
@@ -91,25 +96,14 @@ namespace TEEmployee.Models
         {
             bool ret = false;
 
-            // 先確認當月為5、11月
-            DateTime now = DateTime.Now;
-            int year = now.Year;
-            int month = now.Month;
-            if (month == 5 || month == 11)
-            {
-                string season = string.Empty;
-                if (month == 5)
-                    season = year + "H1";
-                else
-                    season = year + "H2";
+            // 當前民國年
+            CultureInfo culture = new CultureInfo("zh-TW");
+            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+            string thisYear = DateTime.Now.ToString("yyy", culture);
 
-                string _appData = HttpContext.Current.Server.MapPath("~/App_Data");
-                string path = Path.Combine(_appData, "GSchedule", season);
-                // 是否已填寫給予主管建議評估表, 必填協理+group_manager2位
-                List<User> userManagers = UserManagers(empno, "");
-                List<string> managers = userManagers.Select(x => x.empno).ToList();
-                ret = _notifyRepository.ManagerSuggest(path, managers, empno);
-            }
+            string _appData = HttpContext.Current.Server.MapPath("~/App_Data");
+            string path = Path.Combine(_appData, "GSchedule", "PersonalPlan", thisYear);
+            ret = _notifyRepository.PersonalPlan(path, empno);
 
             return ret;
         }

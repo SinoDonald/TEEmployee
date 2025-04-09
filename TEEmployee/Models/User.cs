@@ -52,10 +52,12 @@ namespace TEEmployee.Models
     {
         public string empno { get; set; }
         public string date { get; set; }
-        public int self { get; set; }
-        public int manager_suggest { get; set; }
-        public int freeback { get; set; }
-        public int future { get; set; }
+        public int self { get; set; } // 自我評估表
+        public int manager_suggest { get; set; } // 給予主管建議評估表
+        public int freeback { get; set; } // 回饋
+        public int future { get; set; } // 未來3年數位轉型規劃
+        public int personPlan { get; set; } // 個人規劃
+        public int planFreeback { get; set; } // 個人規劃回饋
     }
     // 人才培訓資料庫 <-- 培文
     public class CV
