@@ -27,17 +27,17 @@ namespace TEEmployee.Models.GSchedule
         /// <returns></returns>
         List<string> GetYears(string view);
         /// <summary>
-        /// 上傳PDF
+        /// 上傳群組與個人規劃PDF
         /// </summary>
         /// <param name="view"></param>
         /// <returns></returns>
         string UploadPDFFile(HttpPostedFileBase file, string view, string year, string empno);
-        /// <summary>
-        /// 上傳個人規劃PDF
-        /// </summary>
-        /// <param name="view"></param>
-        /// <returns></returns>
-        string ImportPDFFile(HttpPostedFileBase file, string empno);
+        ///// <summary>
+        ///// 上傳個人規劃PDF
+        ///// </summary>
+        ///// <param name="view"></param>
+        ///// <returns></returns>
+        //string ImportPDFFile(HttpPostedFileBase file, string empno);
         /// <summary>
         /// 取得PDF
         /// </summary>

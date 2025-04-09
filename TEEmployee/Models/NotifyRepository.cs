@@ -134,22 +134,22 @@ namespace TEEmployee.Models
                         _conn.Execute(sql);
 
                         sql = @"INSERT INTO userNotify (empno, date, self, manager_suggest, freeback, future, personPlan, planFreeback)
-                            VALUES(@empno, @date, @self, @manager_suggest, @freeback, @future, @personPlan, @planFreeback)";
+                                VALUES(@empno, @date, @self, @manager_suggest, @freeback, @future, @personPlan, @planFreeback)";
                         _conn.Execute(sql, userNotifyList);
 
                         tran.Commit();
                     }
                 }
-                // 建立log檔
-                using (FileStream fs = File.Create(filePath))
-                {
+                //// 建立log檔
+                //using (FileStream fs = File.Create(filePath))
+                //{
 
-                }
-                using (StreamWriter sw = new StreamWriter(filePath))
-                {
-                    DateTime dateTime = DateTime.Now;
-                    sw.WriteLine(dateTime + " 建檔成功。");
-                }
+                //}
+                //using (StreamWriter sw = new StreamWriter(filePath))
+                //{
+                //    DateTime dateTime = DateTime.Now;
+                //    sw.WriteLine(dateTime + " 建檔成功。");
+                //}
             }
             _conn.Close();
 
@@ -168,27 +168,15 @@ namespace TEEmployee.Models
             // 是否已填寫自我評估表
             string path = Path.Combine(_appData, "Response", season);
             string filePath = Path.Combine(path, empno + ".txt");
-            if (!File.Exists(filePath))
-            {
-                ret = true;
-            }
+            if (!File.Exists(filePath)) { ret = true; }
             else if (File.Exists(filePath))
             {
                 string state = File.ReadAllLines(filePath)[0].Split(';')[0];
                 string isRead = File.ReadAllLines(filePath)[0].Split(';')[2];
                 // 未寄出需提醒
-                if (!state.Equals("submit"))
-                {
-                    ret = true;
-                }
+                if (!state.Equals("submit")) { ret = true; }
                 // 已寄出看是否有新回饋
-                else
-                {
-                    if (isRead.Equals("unread"))
-                    {
-                        ret = true;
-                    }
-                }
+                else { if (isRead.Equals("unread")) { ret = true; } }
             }
             bools.Add(ret);
 
@@ -220,10 +208,7 @@ namespace TEEmployee.Models
 
                     // 找到同group的user
                     List<User> sameGroupUsers = new List<User>();
-                    if (user.department_manager.Equals(true))
-                    {
-                        sameGroupUsers = users;
-                    }
+                    if (user.department_manager.Equals(true)) { sameGroupUsers = users; }
                     else
                     {
                         foreach (string groupManager in groupManagers)
@@ -244,13 +229,7 @@ namespace TEEmployee.Models
                         {
                             string state = File.ReadAllLines(filePath)[0].Split(';')[0];
                             // user已寄出需提醒
-                            if (state.Equals("submit"))
-                            {
-                                if (!sameGroupUser.empno.Equals(empno))
-                                {
-                                    sentEmpnos.Add(sameGroupUser.empno);
-                                }
-                            }
+                            if (state.Equals("submit")) { if (!sameGroupUser.empno.Equals(empno)) { sentEmpnos.Add(sameGroupUser.empno); } }
                         }
                     }
 
@@ -278,16 +257,10 @@ namespace TEEmployee.Models
                                             }
                                         }
                                     }
-                                    catch (Exception)
-                                    {
-
-                                    }
+                                    catch (Exception) { }
                                 }
                             }
-                            if (ret.Equals(true))
-                            {
-                                break;
-                            }
+                            if (ret.Equals(true)) { break; }
                         }
                     }
                 }
@@ -305,23 +278,23 @@ namespace TEEmployee.Models
                 if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }
                 if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
                 // 主管才會收到通知
-                if (groupManagers.Count() > 0 || user.department_manager.Equals(true) || user.project_manager.Equals(true))
-                {
-                    ret = true;
-                }
+                if (groupManagers.Count() > 0 || user.department_manager.Equals(true) || user.project_manager.Equals(true)) { ret = true; }
             }
             bools.Add(ret);
 
-            // 年度個人規劃
+            // 年度個人規劃(協理、計畫主管不用上傳)
             ret = false;
-            CultureInfo culture = new CultureInfo("zh-TW");
-            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-            string thisYear = DateTime.Now.ToString("yyy", culture);
-            path = Path.Combine(_appData, "GSchedule", "PersonalPlan", thisYear);
-            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
-            filePath = Path.Combine(path, empno + ".pdf");
-            if (File.Exists(filePath)) { ret = false; }
-            else { ret = true; }
+            if (user.department_manager.Equals(false) && user.group_manager.Equals(false))
+            {
+                CultureInfo culture = new CultureInfo("zh-TW");
+                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                string thisYear = DateTime.Now.ToString("yyy", culture);
+                path = Path.Combine(_appData, "GSchedule", "PersonalPlan", thisYear);
+                if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+                filePath = Path.Combine(path, empno + ".pdf");
+                if (File.Exists(filePath)) { ret = false; }
+                else { ret = true; }
+            }
             bools.Add(ret);
 
             // 個人規劃回饋

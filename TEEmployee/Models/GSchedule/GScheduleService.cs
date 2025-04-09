@@ -643,7 +643,7 @@ namespace TEEmployee.Models.GSchedule
             return ret;
         }
         /// <summary>
-        /// 上傳群組規劃PDF
+        /// 上傳群組與個人規劃PDF
         /// </summary>
         /// <param name="view"></param>
         /// <param name="empno"></param>
@@ -653,17 +653,17 @@ namespace TEEmployee.Models.GSchedule
             string ret = _scheduleRepository.UploadPDFFile(file, view, year, empno);
             return ret;
         }
-        /// <summary>
-        /// 上傳個人規劃PDF
-        /// </summary>
-        /// <param name="view"></param>
-        /// <param name="empno"></param>
-        /// <returns></returns>
-        public string ImportPDFFile(HttpPostedFileBase file, string empno)
-        {
-            string ret = _scheduleRepository.ImportPDFFile(file, empno);
-            return ret;
-        }
+        ///// <summary>
+        ///// 上傳個人規劃PDF
+        ///// </summary>
+        ///// <param name="view"></param>
+        ///// <param name="empno"></param>
+        ///// <returns></returns>
+        //public string ImportPDFFile(HttpPostedFileBase file, string empno)
+        //{
+        //    string ret = _scheduleRepository.ImportPDFFile(file, empno);
+        //    return ret;
+        //}
         /// <summary>
         /// 取得PDF
         /// </summary>

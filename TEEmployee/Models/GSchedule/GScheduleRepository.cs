@@ -69,7 +69,6 @@ namespace TEEmployee.Models.GSchedule
             return resultList.ToList();
         }
 
-
         public Schedule Update(Schedule schedule)
         {
             if (_conn.State == 0)
@@ -383,34 +382,34 @@ namespace TEEmployee.Models.GSchedule
 
             return path;
         }
-        /// <summary>
-        /// 上傳PDF
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public string ImportPDFFile(HttpPostedFileBase file, string empno)
-        {
-            string ret = "";
-            try
-            {
-                if (Path.GetExtension(file.FileName) != ".pdf") throw new ApplicationException("請使用PDF(.pdf)格式");
+        ///// <summary>
+        ///// 上傳PDF
+        ///// </summary>
+        ///// <param name="id"></param>
+        ///// <returns></returns>
+        //public string ImportPDFFile(HttpPostedFileBase file, string empno)
+        //{
+        //    string ret = "";
+        //    try
+        //    {
+        //        if (Path.GetExtension(file.FileName) != ".pdf") throw new ApplicationException("請使用PDF(.pdf)格式");
 
-                //string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"));
-                string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data"), "GSchedule", "PersonalPlan", "113");
-                // 檢查資料夾是否存在
-                if (!Directory.Exists(folderPath)) { Directory.CreateDirectory(folderPath); }
+        //        //string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Files"));
+        //        string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data"), "GSchedule", "PersonalPlan", "113");
+        //        // 檢查資料夾是否存在
+        //        if (!Directory.Exists(folderPath)) { Directory.CreateDirectory(folderPath); }
 
-                string extension = Path.GetExtension(file.FileName);
-                var path = Path.Combine(folderPath, empno + Path.GetExtension(file.FileName));
-                file.SaveAs(path); // 將檔案存到Server
-            }
-            catch (Exception ex)
-            {
-                ret = "Error：" + ex.Message + "\n" + ex.ToString();
-            }
+        //        string extension = Path.GetExtension(file.FileName);
+        //        var path = Path.Combine(folderPath, empno + Path.GetExtension(file.FileName));
+        //        file.SaveAs(path); // 將檔案存到Server
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ret = "Error：" + ex.Message + "\n" + ex.ToString();
+        //    }
 
-            return ret;
-        }
+        //    return ret;
+        //}
         /// <summary>
         /// 取得PDF
         /// </summary>

@@ -511,7 +511,10 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
                     //$scope.GetPDF = ret.data;
                 }
                 else {
-                    if (show === true) {
+                    if ($scope.user.department_manager === true || $scope.user.group_manager === true) {
+
+                    }
+                    else if (show === true) {
                         alert("簡報尚未上傳");
                     }
                     else {

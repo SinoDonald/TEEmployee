@@ -188,7 +188,7 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
         /// <summary>
-        /// 上傳群組規劃PDF
+        /// 上傳群組與個人規劃PDF
         /// </summary>
         /// <param name="selectedGroup"></param>
         /// <returns></returns>
@@ -197,20 +197,25 @@ namespace TEEmployee.Controllers
         {
             if (file == null) return Json(new { Status = 0, Message = "No File Selected" });
             string ret = _service.UploadPDFFile(file, view, year, Session["empno"].ToString());
+            NotifyService notifyService = new NotifyService();
+            notifyService.UpdateDatabase(Session["empno"].ToString(), 5, "0"); // 使用者寄送後取消個人規劃通知
+            // 找到使用者各群組的主管們, 通知他們回饋個人規劃
+            List<User> userManagers = notifyService.UserManagers(Session["empno"].ToString(), "freeback");
+            foreach (User userManager in userManagers) { notifyService.UpdateDatabase(userManager.empno, 6, "1"); }
             return Json(ret);
         }
-        /// <summary>
-        /// 上傳個人規劃PDF
-        /// </summary>
-        /// <param name="selectedGroup"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public ActionResult ImportPDFFile(HttpPostedFileBase file)
-        {
-            if (file == null) return Json(new { Status = 0, Message = "No File Selected" });
-            var ret = _service.ImportPDFFile(file, Session["empno"].ToString());
-            return Json(ret);
-        }
+        ///// <summary>
+        ///// 上傳個人規劃PDF
+        ///// </summary>
+        ///// <param name="selectedGroup"></param>
+        ///// <returns></returns>
+        //[HttpPost]
+        //public ActionResult ImportPDFFile(HttpPostedFileBase file)
+        //{
+        //    if (file == null) return Json(new { Status = 0, Message = "No File Selected" });
+        //    var ret = _service.ImportPDFFile(file, Session["empno"].ToString());
+        //    return Json(ret);
+        //}
         /// <summary>
         /// 取得PDF
         /// </summary>
