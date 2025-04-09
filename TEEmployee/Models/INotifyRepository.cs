@@ -14,7 +14,6 @@ namespace TEEmployee.Models
         bool UpdateDatabase(string empno, int count, string notification);
         List<User> UserManagers(string empno, string state);
         bool ManagerSuggest(string path, List<string> managers, string empno);
-        bool PersonalPlan(string path, string empno);
         void Dispose();
     }
 }

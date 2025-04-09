@@ -6,6 +6,7 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -58,8 +59,36 @@ namespace TEEmployee.Models
                 bool tableExist = false;
                 foreach (DataRow dataRow in dataTable.Rows)
                 {
-                    if (dataRow[2].ToString().Equals("userNotify")) { tableExist = true; break; }
+                    if (dataRow[2].ToString().Equals("userNotify"))
+                    {
+                        // 檢查userNotify的Columns中是否有personPlan跟planFreeback
+                        string sql = @"SELECT * FROM userNotify";
+                        using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(sql, conn))
+                        {
+                            DataTable table = new DataTable();
+                            adapter.Fill(table);
+                            using (var tran = _conn.BeginTransaction())
+                            {
+                                SQLiteCommand sqliteCmd = (SQLiteCommand)_conn.CreateCommand();
+                                if (!table.Columns.Contains("personPlan"))
+                                {
+                                    sqliteCmd.CommandText = "ALTER TABLE userNotify ADD COLUMN personPlan INTEGER";
+                                    sqliteCmd.ExecuteNonQuery();
+                                }
+                                if (!table.Columns.Contains("planFreeback"))
+                                {
+                                    sqliteCmd.CommandText = "ALTER TABLE userNotify ADD COLUMN planFreeback INTEGER";
+                                    sqliteCmd.ExecuteNonQuery();
+                                }
+                                tran.Commit();
+                            }
+                        }
+                        tableExist = true; break; 
+                    }
                 }
+
+                users = users.OrderBy(x => x.empno).ToList();
+                List<UserNotify> userNotifyList = new List<UserNotify>();
                 if (tableExist == false)
                 {
                     using (var tran = _conn.BeginTransaction())
@@ -70,14 +99,6 @@ namespace TEEmployee.Models
                         tran.Commit();
                     }
                 }
-                // 如果已經有Table, 檢查是不是有PersonPlan
-                if(tableExist == true)
-                {
-
-                }
-
-                users = users.OrderBy(x => x.empno).ToList();
-                List<UserNotify> userNotifyList = new List<UserNotify>();
 
                 // 先確認資料庫中是否已更新當季的資料
                 using (var tran = _conn.BeginTransaction())
@@ -112,8 +133,8 @@ namespace TEEmployee.Models
                         string sql = @"DELETE FROM userNotify";
                         _conn.Execute(sql);
 
-                        sql = @"INSERT INTO userNotify (empno, date, self, manager_suggest, freeback, future)
-                            VALUES(@empno, @date, @self, @manager_suggest, @freeback, @future)";
+                        sql = @"INSERT INTO userNotify (empno, date, self, manager_suggest, freeback, future, personPlan, planFreeback)
+                            VALUES(@empno, @date, @self, @manager_suggest, @freeback, @future, @personPlan, @planFreeback)";
                         _conn.Execute(sql, userNotifyList);
 
                         tran.Commit();
@@ -291,6 +312,22 @@ namespace TEEmployee.Models
             }
             bools.Add(ret);
 
+            // 年度個人規劃
+            ret = false;
+            CultureInfo culture = new CultureInfo("zh-TW");
+            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+            string thisYear = DateTime.Now.ToString("yyy", culture);
+            path = Path.Combine(_appData, "GSchedule", "PersonalPlan", thisYear);
+            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+            filePath = Path.Combine(path, empno + ".pdf");
+            if (File.Exists(filePath)) { ret = false; }
+            else { ret = true; }
+            bools.Add(ret);
+
+            // 個人規劃回饋
+            ret = false;
+            bools.Add(ret);
+
             return bools;
         }
         // 從資料庫抓取使用者需通知的項目
@@ -309,6 +346,8 @@ namespace TEEmployee.Models
                     if (userNotify.manager_suggest == 1) ret.Add(true); else ret.Add(false); // 給予主管建議表
                     if (userNotify.freeback == 1) ret.Add(true); else ret.Add(false); // 主管給予員工建議
                     if (userNotify.future == 1) ret.Add(true); else ret.Add(false); // 未來3年數位轉型規劃
+                    if (userNotify.personPlan == 1) ret.Add(true); else ret.Add(false); // 個人規劃
+                    if (userNotify.planFreeback == 1) ret.Add(true); else ret.Add(false); // 個人規劃回饋
                 }
 
                 tran.Commit();
@@ -395,18 +434,6 @@ namespace TEEmployee.Models
 
             return ret;
         }
-        // 年度個人規劃
-        public bool PersonalPlan(string path, string empno)
-        {
-            bool ret = false;
-
-            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
-            string filePath = Path.Combine(path, empno + ".pdf");
-            if (File.Exists(filePath)) { ret = false; }
-            else { ret = true; }
-
-            return ret;
-        }
         // 更新資料庫
         public bool UpdateDatabase(string empno, int count, string notification)
         {
@@ -425,6 +452,8 @@ namespace TEEmployee.Models
                     else if (count.Equals(2)) sql = @"UPDATE userNotify SET manager_suggest=0 WHERE empno=@empno"; // 給予主管建議表
                     else if (count.Equals(3)) sql = @"UPDATE userNotify SET freeback=0 WHERE empno=@empno"; // 主管給予員工建議
                     else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=0 WHERE empno=@empno"; // 未來3年數位轉型規劃
+                    else if (count.Equals(5)) sql = @"UPDATE userNotify SET personPlan=0 WHERE empno=@empno"; // 個人規劃
+                    else if (count.Equals(6)) sql = @"UPDATE userNotify SET planFreeback=0 WHERE empno=@empno"; // 個人規劃回饋
                 }
                 else
                 {
@@ -432,6 +461,8 @@ namespace TEEmployee.Models
                     else if (count.Equals(2)) sql = @"UPDATE userNotify SET manager_suggest=1 WHERE empno=@empno"; // 給予主管建議表
                     else if (count.Equals(3)) sql = @"UPDATE userNotify SET freeback=1 WHERE empno=@empno"; // 主管給予員工建議
                     else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=1 WHERE empno=@empno"; // 未來3年數位轉型規劃
+                    else if (count.Equals(5)) sql = @"UPDATE userNotify SET personPlan=1 WHERE empno=@empno"; // 個人規劃
+                    else if (count.Equals(6)) sql = @"UPDATE userNotify SET planFreeback=1 WHERE empno=@empno"; // 個人規劃回饋
                 }
 
                 _conn.Execute(sql, userNotify, tran);
