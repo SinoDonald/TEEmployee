@@ -523,7 +523,7 @@ namespace TEEmployee.Models.GSchedule
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public List<Planning> GetUserPlanning(string view, string year, string group, string empno, string name)
+        public List<Planning> GetUserPlanning(string view, string year, string name)
         {
             List<Planning> ret = new List<Planning>();
 

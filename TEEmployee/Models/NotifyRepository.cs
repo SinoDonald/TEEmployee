@@ -150,16 +150,13 @@ namespace TEEmployee.Models
                         tran.Commit();
                     }
                 }
-                //// 建立log檔
-                //using (FileStream fs = File.Create(filePath))
-                //{
-
-                //}
-                //using (StreamWriter sw = new StreamWriter(filePath))
-                //{
-                //    DateTime dateTime = DateTime.Now;
-                //    sw.WriteLine(dateTime + " 建檔成功。");
-                //}
+                // 建立log檔
+                using (FileStream fs = File.Create(filePath)) { }
+                using (StreamWriter sw = new StreamWriter(filePath))
+                {
+                    DateTime dateTime = DateTime.Now;
+                    sw.WriteLine(dateTime + " 建檔成功。");
+                }
             }
             _conn.Close();
 
@@ -187,7 +184,6 @@ namespace TEEmployee.Models
                     bools.Add(false); // 主管給予員工建議
                     bools.Add(false); // 未來3年數位轉型規劃
 
-
                     // 年度個人規劃(協理、計畫主管不用上傳)
                     ret = false;
                     if (user.department_manager.Equals(false) && user.group_manager.Equals(false))
@@ -212,17 +208,19 @@ namespace TEEmployee.Models
                         if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
                         foreach (string groupManager in groupManagers)
                         {
+                            // 該組長相同群組的同仁
                             List<User> list = sameGroupUsers.Where(x => x.group.Equals(groupManager) || x.group_one.Equals(groupManager) ||
                                                                    x.group_two.Equals(groupManager) || x.group_three.Equals(groupManager)).ToList();
-                            // 該年度有上傳簡報的同仁
+                            // 該年度有上傳簡報
+                            list = list.Where(x => uploadUsers.Where(y => y.Equals(x.empno)).Count() > 0).ToList();
+                            // 查詢主管是否已經回饋
                             foreach (User sameGroupUser in list)
                             {
-                                List<Planning> responses = new GScheduleRepository().GetUserPlanning("PersonalPlan", year.ToString(), groupManager, empno, sameGroupUser.name).ToList();
-                                if(responses.Count > 0)
+                                List<Planning> responses = new GScheduleRepository().GetUserPlanning("PersonalPlan", year.ToString(), sameGroupUser.name).ToList();
+                                if (responses.Count.Equals(0)) { ret = true; break; }
+                                else
                                 {
-                                    responses.Where(x => x.manager_id.ToString().Equals(user.empno)).ToList();
-                                    ret = true;
-                                    break;
+                                    if(responses.Where(x => x.manager_id.ToString().Equals(user.empno)).Count().Equals(0)) { ret = true; break; }
                                 }
                             }
                         }
@@ -360,73 +358,6 @@ namespace TEEmployee.Models
             }
             return sameGroupUsers;
         }
-        /// <summary>
-        /// 取得主管回饋
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public List<Planning> GetResponse(string view, string year, string group, string empno, string name)
-        {
-            List<Planning> ret = new List<Planning>();
-
-            if (String.IsNullOrEmpty(year))
-            {
-                // 當前民國年
-                CultureInfo culture = new CultureInfo("zh-TW");
-                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-                year = DateTime.Now.ToString("yyy", culture);
-            }
-
-            // 確認是否有Planning資料表, 沒有則CREATE
-            if (view.Equals("PersonalPlan"))
-            {
-                User user = new UserRepository().GetAll().Where(x => x.name.Equals(name)).FirstOrDefault();
-                string userEmpno = user.empno;
-                List<Planning> plannings = new List<Planning>();
-
-                _conn.Open();
-                SQLiteConnection conn = (SQLiteConnection)_conn;
-                DataTable dataTable = conn.GetSchema("Tables");
-                bool tableExist = false;
-                foreach (DataRow dataRow in dataTable.Rows)
-                {
-                    if (dataRow[2].ToString().Equals("Planning")) { tableExist = true; break; }
-                }
-                if (tableExist == false)
-                {
-                    using (var tran = _conn.BeginTransaction())
-                    {
-                        SQLiteCommand sqliteCmd = (SQLiteCommand)_conn.CreateCommand();
-                        sqliteCmd.CommandText = "CREATE TABLE IF NOT EXISTS Planning (view TEXT, year TEXT, 'group' TEXT, empno INTEGER, user_name TEXT, manager_id INTEGER, manager_name TEXT, response TEXT)";
-                        sqliteCmd.ExecuteNonQuery();
-                        tran.Commit();
-                    }
-                }
-                using (var tran = _conn.BeginTransaction())
-                {
-                    string sql = @"SELECT * FROM Planning WHERE empno=@userEmpno";
-                    plannings = _conn.Query<Planning>(sql, new { userEmpno }).Where(x => x.year.Equals(year)).ToList();
-                    if (plannings.Where(x => x.manager_id.ToString().Equals(empno)).Count().Equals(0) && !userEmpno.Equals(empno))
-                    {
-                        Planning planning = new Planning();
-                        planning.view = view;
-                        planning.year = year;
-                        planning.group = group;
-                        planning.empno = Convert.ToInt32(userEmpno);
-                        planning.user_name = name;
-                        planning.manager_id = Convert.ToInt32(empno);
-                        planning.manager_name = new UserRepository().GetAll().Where(x => x.empno.Equals(empno)).Select(x => x.name).FirstOrDefault();
-                        planning.response = "";
-                        plannings.Add(planning);
-                    }
-                    tran.Commit();
-                }
-
-                ret = plannings;
-            }
-
-            return ret;
-        }
         // 從資料庫抓取使用者需通知的項目
         public List<bool> UserNotifyState(string empno)
         {
@@ -474,10 +405,7 @@ namespace TEEmployee.Models
                 foreach(User manager in managers)
                 {
                     bool isExist = userManagers.Where(x => x.empno.Equals(manager.empno)).Any();
-                    if(isExist == false)
-                    {
-                        userManagers.Add(manager);
-                    }
+                    if(isExist == false) { userManagers.Add(manager); }
                 }
             }
             userManagers = userManagers.OrderBy(x => x.empno).ToList();
@@ -489,10 +417,7 @@ namespace TEEmployee.Models
         {
             bool ret = false;
 
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
+            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
             foreach (string manager in managers)
             {
                 string filePath = Path.Combine(path, manager, empno + ".txt");
@@ -500,17 +425,9 @@ namespace TEEmployee.Models
                 {
                     string state = File.ReadAllLines(filePath)[0].Split(';')[0];
                     // user尚未寄出需提醒
-                    if (!state.Equals("sent"))
-                    {
-                        ret = true;
-                        break;
-                    }
+                    if (!state.Equals("sent")) { ret = true; break; }
                 }
-                else
-                {
-                    ret = true;
-                    break;
-                }
+                else { ret = true; break; }
             }
             ////只要填寫一位主管問卷即可, ret預設值修改為true
             //string[] directories = Directory.GetDirectories(path);
@@ -566,7 +483,6 @@ namespace TEEmployee.Models
                 tran.Commit();
                 ret = true; // 更新成功
             }
-
             _conn.Close();
 
             return ret;

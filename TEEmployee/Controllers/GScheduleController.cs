@@ -259,6 +259,13 @@ namespace TEEmployee.Controllers
         public JsonResult SaveResponse(string view, string year, string group, string name, List<Planning> response)
         {
             bool ret = _service.SaveResponse(view, year, group, Session["empno"].ToString(), name, response);
+            User user = new NotifyRepository().GetAll().Where(x => x.name.Equals(name)).FirstOrDefault();
+            if(user != null)
+            {
+                NotifyService notifyService = new NotifyService();
+                notifyService.UpdateDatabase(Session["empno"].ToString(), 6, "0"); // 主管回饋後取消個人規劃回饋通知
+                notifyService.UpdateDatabase(user.empno, 6, "1"); // 通知使用者主管已回饋
+            }
             return Json(ret);
         }
         /// <summary>
