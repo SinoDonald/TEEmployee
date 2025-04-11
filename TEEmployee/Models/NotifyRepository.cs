@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
+using TEEmployee.Models.GSchedule;
 
 namespace TEEmployee.Models
 {
@@ -109,9 +110,22 @@ namespace TEEmployee.Models
                 {
                     userNotifyList = new List<UserNotify>();
 
+                    // 儲存所有已上傳年度個人規劃簡報的名單
+                    List<string> uploadUsers = new List<string>();
+                    CultureInfo culture = new CultureInfo("zh-TW");
+                    culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                    string thisYear = DateTime.Now.ToString("yyy", culture);
+                    string path = Path.Combine(_appData, "GSchedule", "PersonalPlan", thisYear);
+                    if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+                    foreach (string userId in users.Select(x => x.empno).ToList())
+                    {
+                        string personPlanFilePath = Path.Combine(path, userId + ".pdf");
+                        if (File.Exists(personPlanFilePath)) { uploadUsers.Add(userId); }
+                    }
+
                     foreach (User user in users)
                     {
-                        List<bool> bools = NotifyUpdate(season, user.empno, users); // 目前各項通知回覆狀況
+                        List<bool> bools = NotifyUpdate(season, user.empno, uploadUsers, users); // 目前各項通知回覆狀況
                         UserNotify userNotify = new UserNotify();
                         userNotify.empno = user.empno;
                         userNotify.date = date;
@@ -155,7 +169,7 @@ namespace TEEmployee.Models
             return ret;
         }
         // 目前各項通知回覆狀況
-        public List<bool> NotifyUpdate(string season, string empno, List<User> users)
+        public List<bool> NotifyUpdate(string season, string empno, List<string> uploadUsers, List<User> users)
         {
             string _appData = HttpContext.Current.Server.MapPath("~/App_Data");
             List<bool> bools = new List<bool>();
@@ -173,27 +187,46 @@ namespace TEEmployee.Models
                     bools.Add(false); // 主管給予員工建議
                     bools.Add(false); // 未來3年數位轉型規劃
 
+
                     // 年度個人規劃(協理、計畫主管不用上傳)
                     ret = false;
                     if (user.department_manager.Equals(false) && user.group_manager.Equals(false))
                     {
-                        CultureInfo culture = new CultureInfo("zh-TW");
-                        culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-                        string thisYear = DateTime.Now.ToString("yyy", culture);
-                        string path = Path.Combine(_appData, "GSchedule", "PersonalPlan", thisYear);
-                        if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
-                        string filePath = Path.Combine(path, empno + ".pdf");
-                        if (File.Exists(filePath)) { ret = false; }
-                        else { ret = true; }
+                        if(uploadUsers.Where(x => x.Equals(empno)).Count() == 0) { ret = true; }
                     }
                     bools.Add(ret);
 
                     // 個人規劃回饋(主管才會收到通知)
+                    int year = Convert.ToInt32(season.Substring(0, 4)) - 1911;
                     if (user.department_manager.Equals(true) || user.group_manager.Equals(true) || user.group_one_manager.Equals(true) ||
                         user.group_two_manager.Equals(true) || user.group_three_manager.Equals(true))
                     {
                         ret = false;
-
+                        // 找到同group的user
+                        List<User> sameGroupUsers = SameGroupUsers(user, users);
+                        // 檢驗有哪些group為manager
+                        List<string> groupManagers = new List<string>();
+                        if (user.group_manager.Equals(true)) { groupManagers.Add(user.group); }
+                        if (user.group_one_manager.Equals(true)) { groupManagers.Add(user.group_one); }
+                        if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }
+                        if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
+                        foreach (string groupManager in groupManagers)
+                        {
+                            List<User> list = sameGroupUsers.Where(x => x.group.Equals(groupManager) || x.group_one.Equals(groupManager) ||
+                                                                   x.group_two.Equals(groupManager) || x.group_three.Equals(groupManager)).ToList();
+                            // 該年度有上傳簡報的同仁
+                            foreach (User sameGroupUser in list)
+                            {
+                                List<Planning> responses = new GScheduleRepository().GetUserPlanning("PersonalPlan", year.ToString(), groupManager, empno, sameGroupUser.name).ToList();
+                                if(responses.Count > 0)
+                                {
+                                    responses.Where(x => x.manager_id.ToString().Equals(user.empno)).ToList();
+                                    ret = true;
+                                    break;
+                                }
+                            }
+                        }
+                        bools.Add(ret);
                     }
                     else { bools.Add(false); }
                 }
@@ -228,34 +261,15 @@ namespace TEEmployee.Models
                 User user = _notifyRepository.Get(empno);
                 if (user != null)
                 {
-                    // 檢驗有哪些group為manager
-                    List<string> groupManagers = new List<string>();
-                    if (user.group_manager.Equals(true)) { groupManagers.Add(user.group); }
-                    if (user.group_one_manager.Equals(true)) { groupManagers.Add(user.group_one); }
-                    if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }
-                    if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
                     // 主管才會收到通知
                     if (user.department_manager.Equals(true) || user.group_manager.Equals(true) || user.group_one_manager.Equals(true) ||
                         user.group_two_manager.Equals(true) || user.group_three_manager.Equals(true))
                     {
+                        // 找到同group的user                        
+                        List<User> sameGroupUsers = SameGroupUsers(user, users);
+
                         // 檢查有sent自評表的user
                         List<string> sentEmpnos = new List<string>();
-
-                        // 找到同group的user
-                        List<User> sameGroupUsers = new List<User>();
-                        if (user.department_manager.Equals(true)) { sameGroupUsers = users; }
-                        else
-                        {
-                            foreach (string groupManager in groupManagers)
-                            {
-                                foreach (User sameGroupUser in users.Where(x => x.group.Equals(groupManager) || x.group_one.Equals(groupManager) || x.group_two.Equals(groupManager) || x.group_three.Equals(groupManager)).ToList())
-                                {
-                                    sameGroupUsers.Add(sameGroupUser);
-                                }
-                            }
-                            sameGroupUsers = sameGroupUsers.Distinct().ToList();
-                        }
-
                         foreach (User sameGroupUser in sameGroupUsers)
                         {
                             path = Path.Combine(_appData, "Response", season);
@@ -267,7 +281,6 @@ namespace TEEmployee.Models
                                 if (state.Equals("submit")) { if (!sameGroupUser.empno.Equals(empno)) { sentEmpnos.Add(sameGroupUser.empno); } }
                             }
                         }
-
                         if (sentEmpnos.Count > 0)
                         {
                             // 檢查主管是否已回饋
@@ -322,6 +335,97 @@ namespace TEEmployee.Models
             }
 
             return bools;
+        }
+        // 找到同group的user
+        public List<User> SameGroupUsers(User user, List<User> users)
+        {
+            List<User> sameGroupUsers = new List<User>();
+            if (user.department_manager.Equals(true)) { sameGroupUsers = users; }
+            else
+            {
+                // 檢驗有哪些group為manager
+                List<string> groupManagers = new List<string>();
+                if (user.group_manager.Equals(true)) { groupManagers.Add(user.group); }
+                if (user.group_one_manager.Equals(true)) { groupManagers.Add(user.group_one); }
+                if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }
+                if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
+                foreach (string groupManager in groupManagers)
+                {
+                    foreach (User sameGroupUser in users.Where(x => x.group.Equals(groupManager) || x.group_one.Equals(groupManager) || x.group_two.Equals(groupManager) || x.group_three.Equals(groupManager)).ToList())
+                    {
+                        sameGroupUsers.Add(sameGroupUser);
+                    }
+                }
+                sameGroupUsers = sameGroupUsers.Distinct().ToList();
+            }
+            return sameGroupUsers;
+        }
+        /// <summary>
+        /// 取得主管回饋
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public List<Planning> GetResponse(string view, string year, string group, string empno, string name)
+        {
+            List<Planning> ret = new List<Planning>();
+
+            if (String.IsNullOrEmpty(year))
+            {
+                // 當前民國年
+                CultureInfo culture = new CultureInfo("zh-TW");
+                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                year = DateTime.Now.ToString("yyy", culture);
+            }
+
+            // 確認是否有Planning資料表, 沒有則CREATE
+            if (view.Equals("PersonalPlan"))
+            {
+                User user = new UserRepository().GetAll().Where(x => x.name.Equals(name)).FirstOrDefault();
+                string userEmpno = user.empno;
+                List<Planning> plannings = new List<Planning>();
+
+                _conn.Open();
+                SQLiteConnection conn = (SQLiteConnection)_conn;
+                DataTable dataTable = conn.GetSchema("Tables");
+                bool tableExist = false;
+                foreach (DataRow dataRow in dataTable.Rows)
+                {
+                    if (dataRow[2].ToString().Equals("Planning")) { tableExist = true; break; }
+                }
+                if (tableExist == false)
+                {
+                    using (var tran = _conn.BeginTransaction())
+                    {
+                        SQLiteCommand sqliteCmd = (SQLiteCommand)_conn.CreateCommand();
+                        sqliteCmd.CommandText = "CREATE TABLE IF NOT EXISTS Planning (view TEXT, year TEXT, 'group' TEXT, empno INTEGER, user_name TEXT, manager_id INTEGER, manager_name TEXT, response TEXT)";
+                        sqliteCmd.ExecuteNonQuery();
+                        tran.Commit();
+                    }
+                }
+                using (var tran = _conn.BeginTransaction())
+                {
+                    string sql = @"SELECT * FROM Planning WHERE empno=@userEmpno";
+                    plannings = _conn.Query<Planning>(sql, new { userEmpno }).Where(x => x.year.Equals(year)).ToList();
+                    if (plannings.Where(x => x.manager_id.ToString().Equals(empno)).Count().Equals(0) && !userEmpno.Equals(empno))
+                    {
+                        Planning planning = new Planning();
+                        planning.view = view;
+                        planning.year = year;
+                        planning.group = group;
+                        planning.empno = Convert.ToInt32(userEmpno);
+                        planning.user_name = name;
+                        planning.manager_id = Convert.ToInt32(empno);
+                        planning.manager_name = new UserRepository().GetAll().Where(x => x.empno.Equals(empno)).Select(x => x.name).FirstOrDefault();
+                        planning.response = "";
+                        plannings.Add(planning);
+                    }
+                    tran.Commit();
+                }
+
+                ret = plannings;
+            }
+
+            return ret;
         }
         // 從資料庫抓取使用者需通知的項目
         public List<bool> UserNotifyState(string empno)

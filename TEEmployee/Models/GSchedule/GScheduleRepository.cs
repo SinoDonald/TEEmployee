@@ -519,6 +519,60 @@ namespace TEEmployee.Models.GSchedule
             return ret;
         }
         /// <summary>
+        /// 取得主管回饋
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public List<Planning> GetUserPlanning(string view, string year, string group, string empno, string name)
+        {
+            List<Planning> ret = new List<Planning>();
+
+            if (String.IsNullOrEmpty(year))
+            {
+                // 當前民國年
+                CultureInfo culture = new CultureInfo("zh-TW");
+                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                year = DateTime.Now.ToString("yyy", culture);
+            }
+
+            // 確認是否有Planning資料表, 沒有則CREATE
+            if (view.Equals("PersonalPlan"))
+            {
+                User user = new UserRepository().GetAll().Where(x => x.name.Equals(name)).FirstOrDefault();
+                string userEmpno = user.empno;
+                List<Planning> plannings = new List<Planning>();
+
+                _conn.Open();
+                SQLiteConnection conn = (SQLiteConnection)_conn;
+                DataTable dataTable = conn.GetSchema("Tables");
+                bool tableExist = false;
+                foreach (DataRow dataRow in dataTable.Rows)
+                {
+                    if (dataRow[2].ToString().Equals("Planning")) { tableExist = true; break; }
+                }
+                if (tableExist == false)
+                {
+                    using (var tran = _conn.BeginTransaction())
+                    {
+                        SQLiteCommand sqliteCmd = (SQLiteCommand)_conn.CreateCommand();
+                        sqliteCmd.CommandText = "CREATE TABLE IF NOT EXISTS Planning (view TEXT, year TEXT, 'group' TEXT, empno INTEGER, user_name TEXT, manager_id INTEGER, manager_name TEXT, response TEXT)";
+                        sqliteCmd.ExecuteNonQuery();
+                        tran.Commit();
+                    }
+                }
+                using (var tran = _conn.BeginTransaction())
+                {
+                    string sql = @"SELECT * FROM Planning WHERE empno=@userEmpno";
+                    plannings = _conn.Query<Planning>(sql, new { userEmpno }).Where(x => x.year.Equals(year)).ToList();
+                    tran.Commit();
+                }
+
+                ret = plannings;
+            }
+
+            return ret;
+        }
+        /// <summary>
         /// 儲存回覆
         /// </summary>
         /// <param name="id"></param>
