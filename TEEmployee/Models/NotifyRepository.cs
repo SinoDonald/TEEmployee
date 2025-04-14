@@ -111,18 +111,7 @@ namespace TEEmployee.Models
                     userNotifyList = new List<UserNotify>();
 
                     // 儲存所有已上傳年度個人規劃簡報的名單
-                    List<string> uploadUsers = new List<string>();
-                    CultureInfo culture = new CultureInfo("zh-TW");
-                    culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-                    string thisYear = DateTime.Now.ToString("yyy", culture);
-                    string path = Path.Combine(_appData, "GSchedule", "PersonalPlan", thisYear);
-                    if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
-                    foreach (string userId in users.Select(x => x.empno).ToList())
-                    {
-                        string personPlanFilePath = Path.Combine(path, userId + ".pdf");
-                        if (File.Exists(personPlanFilePath)) { uploadUsers.Add(userId); }
-                    }
-
+                    List<string> uploadUsers = GetUploadUsers(users);
                     foreach (User user in users)
                     {
                         List<bool> bools = NotifyUpdate(season, user.empno, uploadUsers, users); // 目前各項通知回覆狀況
@@ -164,6 +153,23 @@ namespace TEEmployee.Models
             List<bool> ret = UserNotifyState(empno);
 
             return ret;
+        }
+        // 儲存所有已上傳年度個人規劃簡報的名單
+        public List<string> GetUploadUsers(List<User> users)
+        {
+            List<string> uploadUsers = new List<string>();
+            CultureInfo culture = new CultureInfo("zh-TW");
+            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+            string thisYear = DateTime.Now.ToString("yyy", culture);
+            string _appData = HttpContext.Current.Server.MapPath("~/App_Data");
+            string path = Path.Combine(_appData, "GSchedule", "PersonalPlan", thisYear);
+            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+            foreach (string userId in users.Select(x => x.empno).ToList())
+            {
+                string personPlanFilePath = Path.Combine(path, userId + ".pdf");
+                if (File.Exists(personPlanFilePath)) { uploadUsers.Add(userId); }
+            }
+            return uploadUsers;
         }
         // 目前各項通知回覆狀況
         public List<bool> NotifyUpdate(string season, string empno, List<string> uploadUsers, List<User> users)

@@ -55,6 +55,9 @@ app.service('appService', ['$http', function ($http) {
     this.GetPDF = (o) => {
         return $http.post('GSchedule/GetPDF', o, blobConfig);
     };
+    this.UpdatePersonPlanFeedback = function (o) {
+        return $http.post('GSchedule/UpdatePersonPlanFeedback', o);
+    };
     this.GetResponse = (o) => {
         return $http.post('GSchedule/GetResponse', o);
     };
@@ -509,6 +512,9 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
                     var pdfData = new Blob([ret.data], { type: 'application/pdf' });
                     framePDF.src = URL.createObjectURL(pdfData);
                     //$scope.GetPDF = ret.data;
+
+                    // 取消個人規劃回饋通知
+                    appService.UpdatePersonPlanFeedback({ empno: $scope.user.empno });
                 }
                 else {
                     if ($scope.user.department_manager === true || $scope.user.group_manager === true) {
