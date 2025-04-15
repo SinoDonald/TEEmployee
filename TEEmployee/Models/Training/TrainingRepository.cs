@@ -165,6 +165,170 @@ namespace TEEmployee.Models.Training
             return records;
         }
 
+        public List<ExternalTraining> GetExternalTrainingsByGroup(string group_name)
+        {
+            string sql = @"SELECT * FROM ExternalTraining WHERE group_name=@group_name";
+            var ret = _conn.Query<ExternalTraining>(sql, new { group_name }).ToList();
+
+            return ret;
+        }
+
+        public List<Record> GetExternalRecordsByUser(string empno)
+        {
+            List<Record> records = new List<Record>();
+
+            string sql = @"SELECT * FROM ExternalTraining WHERE members LIKE @Pattern";
+            var ret = _conn.Query<ExternalTraining>(sql, new { Pattern = $"%{empno}%" }).ToList();
+
+            // get and join externalRecordExtra with c#
+            string sqlExtra = @"SELECT * FROM ExternalRecordExtra WHERE empno=@empno";
+            var retExtra = _conn.Query<Record>(sqlExtra, new { empno }).ToList().ToDictionary(
+                d => d.training_id,
+                d => d.customType
+            );
+
+            foreach (var item in ret)
+            {
+                Record record = Record.FromExternalTraining(item);
+                record.empno = empno;
+
+                if (retExtra.ContainsKey(item.id.ToString()))
+                {
+                    record.customType = retExtra[item.id.ToString()];                    
+                }
+
+                records.Add(record);
+            }
+
+            return records;
+
+        }
+
+        public bool UpsertExternalRecords(List<Record> records)
+        {
+            if (_conn.State == 0)
+                _conn.Open();
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                string sql = @"
+                    INSERT INTO ExternalRecordExtra (empno, training_id, customType) 
+                    VALUES(@empno, @training_id, @customType) 
+                    ON CONFLICT(empno, training_id) 
+                    DO UPDATE SET customType=@customType";
+                try
+                {
+                    var ret = _conn.Execute(sql, records);
+                    tran.Commit();
+                    return ret > 0;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+
+            }
+
+        }
+
+        public bool InsertExternalTraining(ExternalTraining training)
+        {
+            int ret = 0;
+
+            string sql = @"
+                INSERT INTO ExternalTraining (group_name, roc_year, training_type, title, organization, start_date, end_date, duration, members, filepath) 
+                VALUES(@group_name, @roc_year, @training_type, @title, @organization, @start_date, @end_date, @duration, @members, @filepath)"
+            ;
+
+            ret = _conn.Execute(sql, training);
+            return ret > 0;
+        }
+
+        public bool UpdateExternalTraining(ExternalTraining training)
+        {
+            int ret = 0;
+
+            string sql = @"
+                UPDATE ExternalTraining
+                SET roc_year=@roc_year, training_type=@training_type, title=@title, organization=@organization, start_date=@start_date, end_date=@end_date, duration=@duration, members=@members, filepath=@filepath
+                WHERE id=@id;
+            ";
+
+            ret = _conn.Execute(sql, training);
+            return ret > 0;
+        }
+
+
+        public bool DeleteExternalTraining(ExternalTraining training)
+        {
+            _conn.Open();
+
+            bool ret = true;
+            string deleteTrainingSql = @"DELETE FROM ExternalTraining WHERE id=@id;";
+            string deleteRecordSql = @"DELETE FROM ExternalRecordExtra WHERE training_id=@id;";
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                try
+                {
+                    _conn.Execute(deleteTrainingSql, training);
+                    _conn.Execute(deleteRecordSql, training);
+
+                    tran.Commit();
+                }
+                catch (Exception)
+                {
+                    ret = false;
+                }
+
+            }
+
+            return ret;
+        }
+
+
+        public bool EnsureTablesExist()
+        {
+            try
+            {
+                
+                var createExternalRecordExtraTableSql = @"
+                CREATE TABLE IF NOT EXISTS ExternalRecordExtra (
+                    empno TEXT,
+                    training_id TEXT,
+                    customType INTEGER,
+                    UNIQUE(empno, training_id)
+                );
+                ";
+
+                var createExternalTrainingTableSql = @"
+                CREATE TABLE IF NOT EXISTS ExternalTraining (
+                    id INTEGER PRIMARY KEY,
+                    group_name VARCHAR(10),
+                    roc_year INTEGER,
+                    training_type VARCHAR(10),
+                    title VARCHAR(100),
+                    organization VARCHAR(100),
+                    start_date VARCHAR(50),
+                    end_date VARCHAR(50),
+                    duration INTEGER,
+                    members VARCHAR(500),
+                    filepath TEXT
+                );
+                ";
+
+                _conn.Execute(createExternalRecordExtraTableSql);
+                _conn.Execute(createExternalTrainingTableSql);
+
+                return true;
+                
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
 
         public void Dispose()
         {
@@ -172,6 +336,6 @@ namespace TEEmployee.Models.Training
             _conn.Dispose();
         }
 
-
+        
     }
 }

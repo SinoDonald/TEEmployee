@@ -50,5 +50,22 @@ namespace TEEmployee.Models.Training
         public float duration { get; set; }
         public int customType { get; set; }
         public bool emailSent { get; set; }
+        public bool isExternal { get; set; } = false;
+
+        // Factory Method to create Record
+        public static Record FromExternalTraining(ExternalTraining training)
+        {
+            return new Record
+            {
+                roc_year = training.roc_year,
+                training_id = training.id.ToString(),
+                training_type = training.training_type,
+                title = training.title,
+                organization = training.organization,
+                start_date = training.start_date,
+                end_date = training.end_date,
+                isExternal = true,
+            };
+        }
     }
 }

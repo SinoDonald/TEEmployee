@@ -27,13 +27,18 @@
                 flex: 1;
                 margin: 0 20px;
             }
+
+        .stickyheader {
+            position: sticky;
+            top: 80px;
+        }
     </style>
 }
 
 
 <div ng-controller="GroupCtrl" class="container-fluid">
 
-    <nav class="navbar navbar-expand-lg navbar-dark" id="childNav" style="background-color: #4CAF50">
+    <nav class="navbar navbar-expand-lg navbar-dark stickyheader" id="childNav" style="background-color: #4CAF50">
         <a class="navbar-brand" href="#">培訓紀錄與規劃</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -47,12 +52,15 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="@Url.Action("Group", "Training")">群組培訓紀錄</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("External", "Training")">其他培訓指派</a>
+                </li>
                 @*<li class="nav-item">
-                        <a class="nav-link" href="#">個人課程規劃</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">E-learning</a>
-                    </li>*@
+            <a class="nav-link" href="#">個人課程規劃</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">E-learning</a>
+        </li>*@
             </ul>
         </div>
     </nav>

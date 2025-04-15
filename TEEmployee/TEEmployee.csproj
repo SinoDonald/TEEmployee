@@ -69,8 +69,13 @@
     <Reference Include="IFilterTextReader, Version=1.7.10.0, Culture=neutral, PublicKeyToken=d9137dea244ecc2a, processorArchitecture=MSIL">
       <HintPath>..\packages\IFilterTextReader.1.7.10\lib\net47\IFilterTextReader.dll</HintPath>
     </Reference>
+<<<<<<< HEAD
     <Reference Include="MailKit, Version=4.11.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
       <HintPath>..\packages\MailKit.4.11.0\lib\net47\MailKit.dll</HintPath>
+=======
+    <Reference Include="MailKit, Version=4.0.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
+      <HintPath>..\packages\MailKit.4.0.0\lib\net47\MailKit.dll</HintPath>
+>>>>>>> Bonobo/master
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=3.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
@@ -98,9 +103,12 @@
       <HintPath>..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.118.0\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+<<<<<<< HEAD
     <Reference Include="System.Formats.Asn1, Version=8.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Formats.Asn1.8.0.1\lib\net462\System.Formats.Asn1.dll</HintPath>
     </Reference>
+=======
+>>>>>>> Bonobo/master
     <Reference Include="System.Memory, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.6.0\lib\net462\System.Memory.dll</HintPath>
     </Reference>
@@ -116,11 +124,16 @@
       <HintPath>..\packages\System.Text.Encodings.Web.4.5.0\lib\netstandard2.0\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks" />
+<<<<<<< HEAD
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.6.0\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+=======
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+>>>>>>> Bonobo/master
     </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -305,6 +318,7 @@
     <Compile Include="Models\TaskLog\ProjectTaskRepository.cs" />
     <Compile Include="Models\TaskLog\SqliteTypeHandler.cs" />
     <Compile Include="Models\TaskLog\TasklogService.cs" />
+    <Compile Include="Models\Training\ExternalTraining.cs" />
     <Compile Include="Models\Training\ITrainingRepository.cs" />
     <Compile Include="Models\Training\Record.cs" />
     <Compile Include="Models\Training\TrainingRepository.cs" />
@@ -447,6 +461,7 @@
       <DependentUpon>ScheduleCtrl.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Webapp\Test\TestCtrl.js" />
+    <Content Include="Scripts\Webapp\Training\ExternalCtrl.js" />
     <Content Include="Scripts\Webapp\Training\TrainingCtrl.js" />
     <Content Include="Scripts\Webapp\Vincent\Happy.js" />
     <Content Include="Scripts\Webapp\Talent\TalentCtrl.js" />
@@ -559,6 +574,7 @@
     <Content Include="Views\Education\Record.cshtml" />
     <Content Include="Views\Issue\Index.cshtml" />
     <Content Include="Views\Issue\List.cshtml" />
+    <Content Include="Views\Training\External.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Promotion\" />

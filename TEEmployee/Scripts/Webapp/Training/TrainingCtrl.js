@@ -23,6 +23,7 @@ app.service('appService', ['$http', function ($http) {
     this.UpdateUserRecords = (o) => {
         return $http.post('Training/UpdateUserRecords', o);
     };
+    
 }]);
 
 app.controller('TrainingCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
@@ -185,4 +186,5 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
 
 }]);
+
 
