@@ -641,18 +641,21 @@ namespace TEEmployee.Models.Training
                     </body>
                     </html>";
 
-                string _uploadFolder = HttpContext.Current.Server.MapPath("~/App_Data/Training");
+                if (!string.IsNullOrEmpty(training.filepath))
+                {
+                    string _uploadFolder = HttpContext.Current.Server.MapPath("~/App_Data/Training");
 
-                //builder.Attachments.Add(Path.Combine(_uploadFolder, training.filepath));
+                    //builder.Attachments.Add(Path.Combine(_uploadFolder, training.filepath));
 
-                var attachment = builder.Attachments.Add(Path.Combine(_uploadFolder, training.filepath));
-                attachment.ContentDisposition.FileName = training.filepath;
-                attachment.ContentType.Name = training.filepath;
-                foreach (var param in attachment.ContentDisposition.Parameters)
-                    param.EncodingMethod = ParameterEncodingMethod.Rfc2047;
-                foreach (var param in attachment.ContentType.Parameters)
-                    param.EncodingMethod = ParameterEncodingMethod.Rfc2047;
-
+                    var attachment = builder.Attachments.Add(Path.Combine(_uploadFolder, training.filepath));
+                    attachment.ContentDisposition.FileName = training.filepath;
+                    attachment.ContentType.Name = training.filepath;
+                    foreach (var param in attachment.ContentDisposition.Parameters)
+                        param.EncodingMethod = ParameterEncodingMethod.Rfc2047;
+                    foreach (var param in attachment.ContentType.Parameters)
+                        param.EncodingMethod = ParameterEncodingMethod.Rfc2047;
+                }
+                
 
                 message.Body = builder.ToMessageBody();
 
@@ -697,6 +700,11 @@ namespace TEEmployee.Models.Training
             return ret;
         }
 
+        public bool EnsureTablesExist()
+        {
+            var ret = (_trainingRepository as TrainingRepository).EnsureTablesExist();
+            return ret;
+        }
 
         public void Dispose()
         {

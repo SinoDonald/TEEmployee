@@ -167,6 +167,13 @@ namespace TEEmployee.Controllers
             return File(fileBytes, contentType, training.filepath);
         }
 
+        [HttpPost]
+        public JsonResult EnsureTablesExist()
+        {
+            var ret = _service.EnsureTablesExist();
+            return Json(ret);
+        }
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

@@ -287,6 +287,49 @@ namespace TEEmployee.Models.Training
         }
 
 
+        public bool EnsureTablesExist()
+        {
+            try
+            {
+                
+                var createExternalRecordExtraTableSql = @"
+                CREATE TABLE IF NOT EXISTS ExternalRecordExtra (
+                    empno TEXT,
+                    training_id TEXT,
+                    customType INTEGER,
+                    UNIQUE(empno, training_id)
+                );
+                ";
+
+                var createExternalTrainingTableSql = @"
+                CREATE TABLE IF NOT EXISTS ExternalTraining (
+                    id INTEGER PRIMARY KEY,
+                    group_name VARCHAR(10),
+                    roc_year INTEGER,
+                    training_type VARCHAR(10),
+                    title VARCHAR(100),
+                    organization VARCHAR(100),
+                    start_date VARCHAR(50),
+                    end_date VARCHAR(50),
+                    duration INTEGER,
+                    members VARCHAR(500),
+                    filepath TEXT
+                );
+                ";
+
+                _conn.Execute(createExternalRecordExtraTableSql);
+                _conn.Execute(createExternalTrainingTableSql);
+
+                return true;
+                
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
         public void Dispose()
         {
             _conn.Close();

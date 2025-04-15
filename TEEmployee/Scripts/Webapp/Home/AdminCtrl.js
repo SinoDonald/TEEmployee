@@ -107,6 +107,9 @@ app.service('appService', ['$http', function ($http) {
     //this.TalentUpdate = function (o) {
     //    return $http.post('Home/TalentUpdate', o);
     //};
+    this.OneTimeSQL = (o) => {
+        return $http.post('Training/EnsureTablesExist', o);
+    };
 
 }]);
 
@@ -516,4 +519,16 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
                 alert('Error');
             });
     }
+
+    $scope.OneTimeSQL = (year) => {
+
+        appService.OneTimeSQL({ year: year })
+            .then((ret) => {
+                console.log("succeed");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+
 }]);
