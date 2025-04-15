@@ -24,7 +24,7 @@
         }
         .stickythead {
             position: sticky;
-            top: 135.9px;
+            top: 135px;
         }
     </style>
 }
@@ -47,6 +47,9 @@
                 {
                     <li class="nav-item">
                         <a class="nav-link" href="@Url.Action("Group", "Training")">群組培訓紀錄</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("External", "Training")">其他培訓指派</a>
                     </li>
                 }
                 <li class="d-flex align-content-center">
@@ -114,9 +117,6 @@
         </tbody>
 
     </table>
-
-
-
 
 
     @*<div ui-view></div>*@
