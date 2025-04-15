@@ -55,6 +55,9 @@ app.service('appService', ['$http', function ($http) {
     this.GetPDF = (o) => {
         return $http.post('GSchedule/GetPDF', o, blobConfig);
     };
+    this.NotUploadUsers = (o) => {
+        return $http.post('GSchedule/NotUploadUsers', o);
+    };
     this.UpdatePersonPlanFeedback = function (o) {
         return $http.post('GSchedule/UpdatePersonPlanFeedback', o);
     };
@@ -563,6 +566,15 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
             }
         });
     });
+
+    // 尚未上傳簡報名單
+    $scope.NotUploadUsers = () => {
+        appService.NotUploadUsers({})
+            .then((ret) => {
+                $scope.notUploadUsers = ret.data;
+            })
+            .catch((ret) => alert('Error'));
+    }
 
     // 儲存
     $scope.SaveResponse = function (data) {

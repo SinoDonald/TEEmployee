@@ -240,6 +240,16 @@ namespace TEEmployee.Controllers
             return result;
         }
         /// <summary>
+        /// 尚未上傳簡報名單
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult NotUploadUsers()
+        {
+            var ret = new NotifyService().NotUploadUsers(Session["empno"].ToString());
+            return Json(ret);
+        }
+        /// <summary>
         ///  更新年度個人規劃回饋
         /// </summary>
         /// <param name="empno"></param>
@@ -248,7 +258,7 @@ namespace TEEmployee.Controllers
         public ActionResult UpdatePersonPlanFeedback(string empno)
         {
             bool ret = false;
-            new NotifyService().UpdatePersonPlanFeedback(Session["empno"].ToString(), Session["empno"].ToString()); // 更新年度個人規劃回饋
+            new NotifyService().UpdatePersonPlanFeedback(Session["empno"].ToString(), ""); // 更新年度個人規劃回饋
             return Json(ret);
         }
         /// <summary>

@@ -42,6 +42,54 @@ namespace TEEmployee.Models
             return ret;
         }
         /// <summary>
+        /// 尚未上傳簡報名單
+        /// </summary>
+        /// <param name="empno"></param>
+        /// <returns></returns>
+        public List<string> NotUploadUsers(string empno)
+        {
+            List<string> notUploadUsers = new List<string>();
+
+            // 先確認當月為1月
+            DateTime now = DateTime.Now;
+            CultureInfo culture = new CultureInfo("zh-TW");
+            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+            string year = DateTime.Now.ToString("yyy", culture);
+            int month = now.Month;
+            if (month == 4)
+            {
+                NotifyRepository notifyRepository = new NotifyRepository();
+                List<User> users = notifyRepository.GetAll();
+                users = users.Where(x => x.group != null && x.group_one != null && x.group_two != null && x.group_three != null).ToList(); // 移除沒有群組的使用者
+                List<string> uploadUsers = notifyRepository.GetUploadUsers(users);
+
+                User user = _notifyRepository.Get(empno);
+                if (user.department_manager.Equals(true) || user.group_manager.Equals(true) || user.group_one_manager.Equals(true) ||
+                    user.group_two_manager.Equals(true) || user.group_three_manager.Equals(true))
+                {
+                    // 找到同group的user
+                    List<User> sameGroupUsers = notifyRepository.SameGroupUsers(user, users);
+                    // 檢驗有哪些group為manager
+                    List<string> groupManagers = new List<string>();
+                    if (user.group_manager.Equals(true)) { groupManagers.Add(user.group); }
+                    if (user.group_one_manager.Equals(true)) { groupManagers.Add(user.group_one); }
+                    if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }
+                    if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
+                    foreach (string groupManager in groupManagers)
+                    {
+                        // 該組長相同群組的同仁
+                        List<User> list = sameGroupUsers.Where(x => x.group.Equals(groupManager) || x.group_one.Equals(groupManager) ||
+                                                               x.group_two.Equals(groupManager) || x.group_three.Equals(groupManager)).ToList();
+                        // 該年度沒有上傳簡報的名單
+                        list = list.Where(x => uploadUsers.Where(y => y.Equals(x.empno)).Count().Equals(0)).ToList();
+                        notUploadUsers = list.Where(x => x.department_manager.Equals(false)).Where(x => x.group_manager.Equals(false)).Select(x => x.name).OrderBy(x => x).ToList();
+                    }
+                }
+            }
+
+            return notUploadUsers;
+        }
+        /// <summary>
         /// 更新年度個人規劃回饋
         /// </summary>
         /// <param name="empno"></param>
