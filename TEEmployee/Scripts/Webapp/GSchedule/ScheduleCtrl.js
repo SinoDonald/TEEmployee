@@ -572,6 +572,7 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
         appService.NotUploadUsers({})
             .then((ret) => {
                 $scope.notUploadUsers = ret.data;
+                $scope.notUploadCount = ret.data.length;
             })
             .catch((ret) => alert('Error'));
     }
