@@ -106,6 +106,8 @@
                     <button ng-show="editFilter" ng-click="cloneDeepToModal(groupSchedule.Group, $index); passChosen()" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalLong">
                         編輯
                     </button>
+                    <button class="btn btn-primary schedule-toggle-btn btn-sm" ng-click="groupSchedule.isExpanded = !groupSchedule.isExpanded" ng-class="{'expanded': groupSchedule.isExpanded}"></button>
+
                 </td>
                 <td ng-bind="groupSchedule.Group.projno"></td>
                 <td><p ng-bind="groupSchedule.Group.content"></p></td>
@@ -123,7 +125,7 @@
                 <td ng-bind="groupSchedule.Group.monthlyHours"></td>
                 <td ng-bind="groupSchedule.Group.totalHours"></td>
             </tr>
-            <tr ng-show="scheduleFilter(groupSchedule.Group)">
+            <tr ng-show="scheduleFilter(groupSchedule.Group) && collapseFilter(groupSchedule)">
                 <td colspan="9" style="padding: 0; border:none">
                     <table class="table mb-0">
                         <tbody ng-repeat="detailSchedule in groupSchedule.Details">

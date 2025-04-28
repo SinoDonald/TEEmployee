@@ -1096,6 +1096,10 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
     $scope.scheduleFilter = function (schedule) {
 
+        //// new! collapse
+        //if (!schedule.isExpanded)
+        //    return false;
+
         if (schedule.role !== $scope.selectedGroup)
             return false;
 
@@ -1130,6 +1134,10 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         }
 
         return true;
+    }
+
+    $scope.collapseFilter = (groupSchedule) => {
+        return groupSchedule.isExpanded;
     }
 
 
