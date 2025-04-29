@@ -777,6 +777,21 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
                 }
             })
 
+        // special option for group manager, group 'ALL'
+        if ($scope.selectedGroup === 'ALL') {
+            groupProjectNames = $scope.data
+                .filter(x => !(
+                    new Date(x.Group.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate() ||
+                    new Date(x.Group.end_date) < moment($scope.ganttStartMonth).toDate()))
+                .map(x => {
+                    count++;
+                    return {
+                        id: count,
+                        label: x.Group.projno
+                    }
+                });
+        }
+
         if (!$scope.selection_filtered_projects) {
             $scope.selection_filtered_projects = [];
             for (let name of groupProjectNames) {
@@ -1095,9 +1110,13 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     }
 
     $scope.scheduleFilter = function (schedule) {
-
-        if (schedule.role !== $scope.selectedGroup)
+                
+        // new group 'all' for group manager
+        if (schedule.role !== $scope.selectedGroup && $scope.selectedGroup !== 'ALL')
             return false;
+
+        //if (schedule.role !== $scope.selectedGroup)
+        //    return false;
 
         // if the start/end date is not set, show it
         if (!schedule.start_date || !schedule.end_date)
@@ -1130,6 +1149,10 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         }
 
         return true;
+    }
+
+    $scope.collapseFilter = (groupSchedule) => {
+        return groupSchedule.isExpanded;
     }
 
 

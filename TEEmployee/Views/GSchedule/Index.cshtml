@@ -186,6 +186,14 @@
             background-color: #f4623a;
             color: white;
         }
+
+        .schedule-toggle-btn::after {
+            content: "▼"; /* collapsed by default */
+        }
+
+        .schedule-toggle-btn.expanded::after {
+            content: "▲"; /* expanded */
+        }
     </style>
 }
 

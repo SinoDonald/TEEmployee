@@ -314,6 +314,10 @@ namespace TEEmployee.Models.GSchedule
 
             //AddCustomAgent(authorization);
 
+            // specials for group manager
+            if (authorization.User.group_manager)
+                authorization.GroupAuthorities.Add(new GroupAuthority { GroupName = "ALL", Editable = false, Members = new List<string>() });
+
             return authorization;
         }
 
