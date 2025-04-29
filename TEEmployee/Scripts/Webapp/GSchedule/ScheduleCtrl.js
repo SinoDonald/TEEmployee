@@ -205,7 +205,7 @@ app.controller('ScheduleCtrl', ['$scope', '$location', 'appService', '$rootScope
 
 
 
-    $location.path('/Group');
+    //$location.path('/Group');
 
     //let promiseA = appService.GetAllSchedules({}).then((ret) => {
     //    dataservice.set(ret.data);
