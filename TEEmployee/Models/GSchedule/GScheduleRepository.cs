@@ -382,6 +382,65 @@ namespace TEEmployee.Models.GSchedule
 
             return path;
         }
+        /// <summary>
+        /// 更新個人規劃簡報, 搬移簡報到最近的資料夾內, 並移除錯誤的資料夾(undefined)
+        /// </summary>
+        /// <returns></returns>
+        public string UpdatePersonalPlan()
+        {
+            int count = 0;
+            string ret = "搬移的檔案數量：";
+            string folder = "App_Data";
+
+            // 當前民國年
+            CultureInfo culture = new CultureInfo("zh-TW");
+            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+            string thisYear = DateTime.Now.ToString("yyy", culture);
+
+            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/" + folder), "GSchedule", "PersonalPlan");
+            string toFolderPath = Path.Combine(folderPath, thisYear);
+            List<int> everyYears = new List<int>();
+            List<string> errorFolderPaths = new List<string>();
+            // 檢查資料夾是否存在
+            if (Directory.Exists(folderPath))
+            {
+                // 搜尋所有的子資料夾
+                List<string> dirs = Directory.GetDirectories(folderPath).ToList();
+                if(dirs.Count() > 0)
+                {
+                    foreach (string dir in dirs)
+                    {
+                        string dirName = Path.GetFileName(dir);
+                        try
+                        {
+                            int year = Convert.ToInt32(dirName);
+                            everyYears.Add(year);
+                        }
+                        catch (Exception)
+                        {
+                            errorFolderPaths.Add(dir); // 儲存錯誤的資料夾, 並搬移裡面的檔案至最近一年的資料夾
+                        }
+                    }
+                    // 找到最大年度的資料夾
+                    int maxYear = everyYears.Max();
+                    toFolderPath = Path.Combine(folderPath, maxYear.ToString());
+                    // 把錯誤資料夾內的檔案都搬移過去, 獲取目錄下所有檔案
+                    foreach(string errorFolderPath in errorFolderPaths)
+                    {
+                        List<string> files = new List<string>(Directory.GetFiles(errorFolderPath));
+                        if (!Directory.Exists(toFolderPath)) { Directory.CreateDirectory(toFolderPath); }
+                        foreach (string file in files)
+                        {
+                            string destFile = Path.Combine(new string[] { toFolderPath, Path.GetFileName(file) });                            
+                            File.Move(file, destFile); //移動檔案
+                            count++;
+                        }                        
+                        Directory.Delete(errorFolderPath); // 刪除資料夾
+                    }
+                }
+            }
+            return ret + count;
+        }
         ///// <summary>
         ///// 上傳PDF
         ///// </summary>

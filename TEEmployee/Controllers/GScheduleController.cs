@@ -204,6 +204,17 @@ namespace TEEmployee.Controllers
             foreach (User userManager in userManagers) { notifyService.UpdateDatabase(userManager.empno, 6, "1"); }
             return Json(ret);
         }
+        /// <summary>
+        /// 更新個人規劃簡報, 搬移簡報到最近的資料夾內, 並移除錯誤的資料夾(undefined)
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult UpdatePersonalPlan()
+        {
+            var ret = _service.UpdatePersonalPlan();
+            return Json(ret);
+        }
+
         ///// <summary>
         ///// 上傳個人規劃PDF
         ///// </summary>

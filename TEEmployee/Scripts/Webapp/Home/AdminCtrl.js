@@ -91,6 +91,11 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Talent/DeleteTalent', o);
     };
 
+    // 更新個人規劃簡報
+    this.UpdatePersonalPlan = function (o) {
+        return $http.post('GSchedule/UpdatePersonalPlan', o);
+    };
+
     // 通知測試
     this.NotifyUpdate = function (o) {
         return $http.post('Home/NotifyUpdate', o);
@@ -268,6 +273,15 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
                 console.log("succeed");
             }
 
+        });
+    }
+
+    // 更新個人規劃簡報, 搬移簡報到最近的資料夾內, 並移除錯誤的資料夾(undefined)
+    $scope.UpdatePersonalPlan = () => {
+        appService.UpdatePersonalPlan({}).then((ret) => {
+            if (ret.data) {
+                console.log(ret.data);
+            }
         });
     }
 

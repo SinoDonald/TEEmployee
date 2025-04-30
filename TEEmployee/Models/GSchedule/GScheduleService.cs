@@ -657,6 +657,15 @@ namespace TEEmployee.Models.GSchedule
             string ret = _scheduleRepository.UploadPDFFile(file, view, year, empno);
             return ret;
         }
+        /// <summary>
+        /// 更新個人規劃簡報, 搬移簡報到最近的資料夾內, 並移除錯誤的資料夾(undefined)
+        /// </summary>
+        /// <returns></returns>
+        public string UpdatePersonalPlan()
+        {
+            string ret = _scheduleRepository.UpdatePersonalPlan();
+            return ret;
+        }
         ///// <summary>
         ///// 上傳個人規劃PDF
         ///// </summary>
