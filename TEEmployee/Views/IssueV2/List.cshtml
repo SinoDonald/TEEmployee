@@ -22,15 +22,15 @@
         }
 
         .outer-table col:nth-child(3) {
-            width: 30%;
-        }
-
-        .outer-table col:nth-child(4) {
             width: 20%;
         }
 
+        .outer-table col:nth-child(4) {
+            width: 15%;
+        }
+
         .outer-table col:nth-child(5) {
-            width: 10%;
+            width: 15%;
         }
 
         .outer-table col:nth-child(6) {
@@ -41,28 +41,36 @@
             width: 10%;
         }
 
+        .outer-table col:nth-child(8) {
+            width: 10%;
+        }
+
         .inner-table col:nth-child(1) {
-            width: calc(100% / 9);
+            width: calc(100% / 10);
         }
 
         .inner-table col:nth-child(2) {
-            width: calc(100% / 9 * 3);
+            width: calc(100% / 10 * 2);
         }
 
         .inner-table col:nth-child(3) {
-            width: calc(100% / 9 * 2);
+            width: calc(100% / 10 * 1.5);
         }
 
         .inner-table col:nth-child(4) {
-            width: calc(100% / 9);
+            width: calc(100% / 10 * 1.5);
         }
 
         .inner-table col:nth-child(5) {
-            width: calc(100% / 9);
+            width: calc(100% / 10);
         }
 
         .inner-table col:nth-child(6) {
-            width: calc(100% / 9);
+            width: calc(100% / 10);
+        }
+
+        .inner-table col:nth-child(7) {
+            width: calc(100% / 10);
         }
 
         .issue-row {
@@ -154,22 +162,28 @@
 
 }
 
+
 <div style="height: 100px"></div>
 
 <div ng-controller="IssueCtrl" class="container-fluid">
 
 
-    <div class="row justify-content-center mb-3">
-        <div class="col-2">            
-            <select class="form-select" id="selectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
-                <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
-            </select>
-        </div>
-        <div class="col-2">
+    <div class="row justify-content-center mb-3 align-items-center">
+
+        <div class="col-2 text-center">
             <button type="button" class="btn btn-secondary d-inline-flex" data-toggle="modal" data-target="#calendarModal">
                 <span class="material-icons">calendar_month</span>
                 <span>追蹤行事曆</span>
             </button>
+        </div>
+        <div class="col-2">
+            <select class="form-select" id="selectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="selectGroup()" aria-label="Select the Manager">
+                <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
+            </select>
+        </div>
+        <div class="col-2 form-group form-check text-center">
+            <input type="checkbox" class="form-check-input" ng-model="showClosedIssue" id="showClosedIssueCheck">
+            <label class="form-check-label" for="showClosedIssueCheck">顯示已結案議題</label>
         </div>
     </div>
 
@@ -183,21 +197,30 @@
                 <col>
                 <col>
                 <col>
+                <col>
             </colgroup>
             <thead>
                 <tr>
                     <th>計畫名稱</th>
-                    <th>項次分類</th>
+                    <th>
+                        <div class="d-flex align-items-end">
+                            <div>分類</div>
+                            <button type="button" ng-click="createProjectModal($index)" class="btn btn-sm d-inline-flex py-0" data-toggle="modal" data-target="#categoryModal">
+                                <span class="material-icons">settings</span>
+                            </button>
+                        </div>
+                    </th>
                     <th>議題</th>
                     <th>負責人</th>
                     <th>辦理情形</th>
                     <th>狀態</th>
+                    <th>預計完成時間</th>
                     <th>登錄時間</th>
                 </tr>
             </thead>
             <tbody ng-repeat="projectType in projectTypes" style="border: none;">
                 <tr ng-style="{'background-color': hdColors[$index]}" style="color: white">
-                    <td colspan="7">
+                    <td colspan="8">
                         <div class="d-flex align-items-center">
                             <div ng-bind="projectType"></div>
                             <button type="button" ng-click="createProjectModal($index)" class="btn btn-sm d-inline-flex" data-toggle="modal" data-target="#projectModal">
@@ -218,7 +241,7 @@
                             </button>
                         </div>
                     </td>
-                    <td class="p-0" colspan="6">
+                    <td class="p-0" colspan="7">
                         <table class="table table-bordered inner-table m-0">
                             <colgroup>
                                 <col>
@@ -227,10 +250,11 @@
                                 <col>
                                 <col>
                                 <col>
+                                <col>
                             </colgroup>
                             <tbody style="border: none;">
-                                <tr ng-repeat="issue in project.issues | orderBy:['category', 'custom_order']" ng-click="updateIssueModal(issue)" class="issue-row" data-toggle="modal" data-target="#issueModal">
-                                    <td ng-bind="issue.category + issue.custom_order"></td>
+                                <tr ng-repeat="issue in project.issues | filter:excludeClosedIssue | orderBy:['-importance', 'category']" ng-click="updateIssueModal(issue)" class="issue-row" data-toggle="modal" data-target="#issueModal">
+                                    <td ng-bind="issue.category"></td>
                                     <td ng-bind="issue.content"></td>
                                     <td>
                                         <div>
@@ -239,6 +263,7 @@
                                     </td>
                                     <td ng-bind="issue.progress"></td>
                                     <td ng-bind="issue.status"></td>
+                                    <td ng-bind="issue.finished_date"></td>
                                     <td ng-bind="issue.registered_date"></td>
                                 </tr>
                             </tbody>
@@ -261,13 +286,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    @*<div class="form-group">
-                            <label for="projectTypeSelect">計畫分類</label>
-                            <select id="projectTypeSelect" ng-model="projectModal.project_type" class="form-select">
-                                <option value="" selected disabled>請選擇...</option>
-                                <option ng-repeat="projectType in projectTypes" value="{{$index}}">{{projectType}}</option>
-                            </select>
-                        </div>*@
+
                     <div class="form-group">
                         <label for="projectNameInput">計畫名稱</label>
                         <input type="text" ng-model="projectModal.name" class="form-control" id="projectNameInput" placeholder="請輸入...">
@@ -282,9 +301,9 @@
     </div>
 
     <!-- Issue Modal -->
-    <div class="modal fade" id="issueModal" tabindex="-1" role="dialog" aria-labelledby="issueModalLabel" aria-hidden="true">
+    <div class="modal fade" id="issueModal" tabindex="-1" style="z-index: 1070;" role="dialog" aria-labelledby="issueModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
+            <div class="modal-content" style="border-width:0.5rem">
                 <div class="modal-header">
                     <h5 class="modal-title" id="issueModalLabel" ng-bind="isEditIssueModal ? '編輯議題' : '新增議題'"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -299,12 +318,25 @@
 
                     <div class="form-row">
                         <div class="form-group col-6">
-                            <label for="categoryInput">分類</label>
-                            <input type="text" ng-model="issueModal.category" class="form-control" id="categoryInput" placeholder="請輸入...">
+                            <label for="categorySelect">分類</label>
+                            <select id="categorySelect" ng-model="issueModal.category" class="form-select">
+                                <option value="" selected disabled>請選擇...</option>
+                                <option ng-repeat="category in groupCategories" value="{{category.name}}">{{category.name}}</option>
+                            </select>
                         </div>
                         <div class="form-group col-6">
-                            <label for="customOrderInput">項次</label>
-                            <input type="text" ng-model="issueModal.custom_order" class="form-control" id="customOrderInput" placeholder="請輸入...">
+                            <label for="importanceSelect">重要性 (5為最重要)</label>
+                            <select id="importanceSelect" ng-model="issueModal.importanceStr" class="form-select">
+                                <option value="" selected disabled>請選擇...</option>
+                                <option ng-repeat="importance in importanceOptions" value="{{importance}}">{{importance}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>負責人</label>
+                        <div class="d-flex">
+                            <button ng-repeat="member in issueModal.groupMembers" type="button" ng-click="member.selected = !member.selected" class="member-toggle" ng-bind="member.name" ng-class="{'member-toggle-active': member.selected }"></button>
                         </div>
                     </div>
 
@@ -312,14 +344,21 @@
                         <label for="progressInput">辦理情形</label>
                         <input type="text" ng-model="issueModal.progress" class="form-control" id="progressInput" placeholder="請輸入...">
                     </div>
-                    <div class="form-group">
-                        <label for="statusInput">狀態</label>
-                        <input type="text" ng-model="issueModal.status" class="form-control" id="statusInput" placeholder="請輸入...">
-                    </div>
-                    <div class="form-group">
-                        <label>負責人</label>
-                        <div class="d-flex">
-                            <button ng-repeat="member in issueModal.groupMembers" type="button" ng-click="member.selected = !member.selected" class="member-toggle" ng-bind="member.name" ng-class="{'member-toggle-active': member.selected }"></button>
+
+                    <div class="form-row mb-5">
+                        <div class="form-group col-6">
+                            <label for="statusSelect">狀態</label>
+                            <select id="statusSelect" ng-model="issueModal.status" class="form-select">
+                                <option value="" selected disabled>請選擇...</option>
+                                <option ng-repeat="status in statusOptions" value="{{status}}">{{status}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="start">預計完成日期</label>
+                            <input type="date" ng-model="issueModal.dateObj"
+                                   class="form-control"
+                                   id="start"
+                                   name="trip-start" />
                         </div>
                     </div>
 
@@ -331,54 +370,8 @@
                         </button>
                     </div>
                     <div>
-                        <button type="button" ng-click="createItemModal()" ng-show="isEditIssueModal" class="btn btn-secondary">新增管控事項</button>
                         @*<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>*@
                         <button type="button" ng-click="upsertIssue()" data-dismiss="modal" class="btn btn-primary">儲存</button>
-                    </div>                    
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ControlledItem Modal -->
-    <div class="modal fade" id="itemModal" tabindex="-1" style="z-index: 1070;" role="dialog" aria-labelledby="itemModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content" style="border-width:0.5rem">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="itemModalLabel" ng-bind="isEditItemModal ? '編輯管控事項' : '新增管控事項'"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="todoInput">待辦事項</label>
-                        <input type="text" ng-model="itemModal.todo" class="form-control" id="todoInput" placeholder="請輸入...">
-                    </div>
-                    <div class="form-group" ng-hide="isEditItemModal">
-                        <label for="start">日期</label>
-                        <input type="date" ng-model="itemModal.dateObj"
-                               class="form-control"
-                               id="start"
-                               name="trip-start" />
-                    </div>
-                    <div class="form-group">
-                        <label>負責人</label>
-                        <div class="d-flex">
-                            <button ng-repeat="member in itemModal.memberOptions" type="button" ng-click="member.selected = !member.selected" class="member-toggle" ng-bind="member.name" ng-class="{'member-toggle-active': member.selected }"></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <div>
-                        <button type="button" class="btn btn-sm d-flex" ng-click="confirmDeleteItem()" ng-show="isEditItemModal">
-                            <span class="material-icons" style="color: slategrey">delete</span>
-                        </button>
-                    </div>
-                    <div>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                        <button type="button" ng-click="upsertItem()" data-dismiss="modal" class="btn btn-primary">儲存</button>
                     </div>
                 </div>
             </div>
@@ -403,12 +396,49 @@
         </div>
     </div>
 
+    
+    <!-- Category Modal -->
+    <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="categoryModalLabel">編輯分類</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body d-flex justify-content-center">
+                    <div class="d-flex flex-wrap" style="width: calc(14rem * 4 + 1rem * 4);">
+                        <div ng-repeat="item in groupCategories" class="card mb-3 text-center mx-2 position-relative" style="width: 14rem;">
+                            <button type="button" ng-click="confirmDeleteCategory(item)" ng-hide="item.isFromProfession" class="btn btn-danger btn-sm rounded-circle position-absolute"
+                                    style="top: 0.25rem; right: 0.25rem; width: 1.75rem; height: 1.75rem; padding: 0;">
+                                &times;
+                            </button>
+                            <div class="card-body">
+                                <p class="card-text" ng-bind="item.name"></p>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="modal-footer">
+                    <div class="col-3 input-group mb-3">
+                        <input type="text" ng-model="newCategoryName" class="form-control"  placeholder="請輸入..." aria-label="new category" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button ng-click="createCategory()" class="btn btn-primary" type="button">新增</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 </div>
 
 
 @section Scripts {
-    <script src="~/Scripts/WebApp/Issue/IssueCtrl.js"></script>
+    <script src="~/Scripts/WebApp/IssueV2/IssueCtrl.js"></script>
     <script src="~/Scripts/moment-with-locales.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
-    @*<script src="~/Scripts/WebApp/Issue/Calendar.js"></script>*@
 }
