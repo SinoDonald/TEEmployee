@@ -591,7 +591,7 @@ app.controller('PersonalPlanCtrl', ['$scope', '$location', 'appService', '$rootS
 
 }]);
 
-app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$timeout', function ($scope, $location, appService, $rootScope, $q, dataservice, $timeout) {
+app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', '$q', 'dataservice', '$timeout', '$window', function ($scope, $location, appService, $rootScope, $q, dataservice, $timeout, $window) {
 
 
     //$scope.niceNoah = () => {
@@ -625,6 +625,16 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         if (namestr)
             return namestr.replace(/,/g, '\n');
         return ''
+    }
+
+    $scope.isAllExpanded = true;
+
+    $scope.expandAll = () => {
+
+        $scope.isAllExpanded = !$scope.isAllExpanded;
+
+        $scope.data.forEach(x => x.isExpanded = $scope.isAllExpanded);
+
     }
 
     //$scope.data = dataservice.get();
@@ -872,6 +882,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         $scope.modal.origin = schedule;
         $scope.modal.originidx = idx;
         $scope.modal.createMode = false;
+        $scope.modal.previousOrder = $scope.modal.custom_order;
         //$scope.modal.history = JSON.stringify(sData);
 
 
@@ -909,6 +920,13 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
             if (ret.data) {
 
+                // if custom order get update, recollect from backend
+                if ($scope.modal.previousOrder !== $scope.modal.custom_order) {
+                    $window.location.reload();
+                }
+                   
+                // else just update frontend
+                
                 ret.data.milestones = ret.data.milestones ?? [];
 
                 // pass modal value back to origin
@@ -1315,6 +1333,8 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
         $scope.data = ret[0].data;
         $scope.auth = ret[1];
+
+        $scope.data.forEach(x => x.isExpanded = true);
 
         $scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;
         $scope.filteredMembers = $scope.auth.GroupAuthorities[0].Members

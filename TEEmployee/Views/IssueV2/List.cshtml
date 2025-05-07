@@ -253,7 +253,7 @@
                                 <col>
                             </colgroup>
                             <tbody style="border: none;">
-                                <tr ng-repeat="issue in project.issues | filter:excludeClosedIssue | orderBy:['-importance', 'category']" ng-click="updateIssueModal(issue)" class="issue-row" data-toggle="modal" data-target="#issueModal">
+                                <tr ng-repeat="issue in project.issues | filter:excludeClosedIssue | orderBy:['category', '-importance']" ng-click="updateIssueModal(issue)" class="issue-row" data-toggle="modal" data-target="#issueModal">
                                     <td ng-bind="issue.category"></td>
                                     <td ng-bind="issue.content"></td>
                                     <td>

@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using TEEmployee.Models.AgentModel;
+using TEEmployee.Models.Schedule;
 using TEEmployee.Models.TaskLog;
+using TEEmployee.Models.Training;
 
 namespace TEEmployee.Models.GSchedule
 {
@@ -93,8 +95,14 @@ namespace TEEmployee.Models.GSchedule
                 {
                     groupSchedule.Details = detailSchedules
                         .Where(x => x.parent_id == groupSchedule.Group.id)
+                        .OrderByDescending(x => x.custom_order)
                         .Select(x => new DetailSchedule() { Detail = x })
                         .ToList();
+
+                    //groupSchedule.Details = detailSchedules
+                    //    .Where(x => x.parent_id == groupSchedule.Group.id)
+                    //    .Select(x => new DetailSchedule() { Detail = x })
+                    //    .ToList();
 
 
                     foreach (var detailSchedule in groupSchedule.Details)
@@ -141,7 +149,8 @@ namespace TEEmployee.Models.GSchedule
             List<string> engOrder = new List<string> { "D", "C", "E", "B", "Z", "N" };
 
             allGroupSchedules = allGroupSchedules
-                .OrderByDescending(x =>
+                .OrderByDescending(x => x.Group.custom_order)
+                .ThenByDescending(x =>
                 {
 
                     int engIdx = 0;
@@ -163,9 +172,37 @@ namespace TEEmployee.Models.GSchedule
                     }
 
                     return num;
-                    
-                    })
+
+                })
                 .ToList();
+
+
+            //allGroupSchedules = allGroupSchedules
+            //    .OrderByDescending(x =>
+            //    {
+
+            //        int engIdx = 0;
+
+            //        if (x.Group.projno?.Length == 5)
+            //        {
+            //            engIdx = engOrder.IndexOf(x.Group.projno?.Substring(4));
+            //        }
+
+            //        return engIdx;
+            //    })
+            //    .ThenByDescending(x =>
+            //    {
+            //        string num = "";
+
+            //        if (x.Group.projno?.Length == 5)
+            //        {
+            //            num = x.Group.projno?.Substring(0, 4);
+            //        }
+
+            //        return num;
+                    
+            //        })
+            //    .ToList();
 
 
             return allGroupSchedules;
@@ -781,6 +818,12 @@ namespace TEEmployee.Models.GSchedule
             agent.manno = manno;
             agent.empno = _userRepository.GetAll().Find(x => x.name == agent.name).empno;
             var ret = _agentRepository.DeleteAgent(agent);
+            return ret;
+        }
+
+        public bool AddCustomOrderColumn()
+        {
+            var ret = (_scheduleRepository as GScheduleRepository).AddCustomOrderColumn();
             return ret;
         }
 

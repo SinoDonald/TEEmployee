@@ -355,6 +355,13 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        [HttpPost]
+        public JsonResult AddCustomOrderColumn()
+        {
+            var ret = _service.AddCustomOrderColumn();
+            return Json(ret);
+        }
+
         protected override void Dispose(bool disposing)
         {
             _service.Dispose();

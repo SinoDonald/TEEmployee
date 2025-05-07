@@ -78,7 +78,7 @@ namespace TEEmployee.Models.GSchedule
 
             using (var tran = _conn.BeginTransaction())
             {
-                string sql = @"UPDATE Schedule SET member=@member, content=@content, start_date=@start_date, end_date=@end_date, percent_complete=@percent_complete, last_percent_complete=@last_percent_complete, history=@history, projno=@projno WHERE id=@id";
+                string sql = @"UPDATE Schedule SET member=@member, content=@content, start_date=@start_date, end_date=@end_date, percent_complete=@percent_complete, last_percent_complete=@last_percent_complete, history=@history, projno=@projno, custom_order=@custom_order WHERE id=@id";
 
                 try
                 {
@@ -132,8 +132,8 @@ namespace TEEmployee.Models.GSchedule
 
             using (var tran = _conn.BeginTransaction())
             {
-                string sql = @"INSERT INTO Schedule (empno, member, type, content, start_date, end_date, percent_complete, last_percent_complete, parent_id, history, projno, role) 
-                        VALUES(@empno, @member, @type, @content, @start_date, @end_date, @percent_complete, @last_percent_complete, @parent_id, @history, @projno, @role) 
+                string sql = @"INSERT INTO Schedule (empno, member, type, content, start_date, end_date, percent_complete, last_percent_complete, parent_id, history, projno, role, custom_order) 
+                        VALUES(@empno, @member, @type, @content, @start_date, @end_date, @percent_complete, @last_percent_complete, @parent_id, @history, @projno, @role, @custom_order) 
                         RETURNING id";
                 try
                 {
@@ -759,6 +759,27 @@ namespace TEEmployee.Models.GSchedule
             }
 
         }
+
+        public bool AddCustomOrderColumn()
+        {
+            try
+            {
+                string createColumnsql = "ALTER TABLE Schedule ADD COLUMN custom_order INTEGER;";
+                _conn.Execute(createColumnsql);
+                
+                // Step 2: Set default value 0 for existing rows
+                string updateSql = "UPDATE Schedule SET custom_order = 0 WHERE custom_order IS NULL;";
+                _conn.Execute(updateSql);
+
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
 
         public void Dispose()
         {

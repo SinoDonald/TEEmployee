@@ -66,6 +66,7 @@ namespace TEEmployee.Models.GSchedule
         /// 行事曆項目里程碑列舉
         /// </summary>
         public List<Milestone> milestones { get; set; }
+        public int custom_order { get; set; } = 0;
 
         public int CompareTo(Schedule other)
         {
