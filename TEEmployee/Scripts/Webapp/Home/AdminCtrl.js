@@ -95,10 +95,13 @@ app.service('appService', ['$http', function ($http) {
     this.UpdatePersonalPlan = function (o) {
         return $http.post('GSchedule/UpdatePersonalPlan', o);
     };
-
-    // 通知測試
-    this.NotifyUpdate = function (o) {
-        return $http.post('Home/NotifyUpdate', o);
+    // 更新通知
+    this.UpdateNotify = function (o) {
+        return $http.post('Home/UpdateNotify', o);
+    };
+    // 刪除通知Log檔
+    this.DeleteNotifyLog = function (o) {
+        return $http.post('Home/DeleteNotifyLog', o);
     };
     // 檢視user.db
     this.ReviewUserDB = (o) => {
@@ -318,15 +321,22 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
             });
     }
 
-    // 通知測試 <-- 培文
-    $scope.NotifyUpdate = () => {
-
-        appService.NotifyUpdate({}).then((ret) => {
+    // 更新通知 <-- 培文
+    $scope.UpdateNotify = () => {
+        appService.UpdateNotify({}).then((ret) => {
             if (ret.data) {
-                console.log("succeed");
+                console.log(ret.data);
             }
         });
+    }
 
+    // 刪除通知Log檔 <-- 培文
+    $scope.DeleteNotifyLog = () => {
+        appService.DeleteNotifyLog({}).then((ret) => {
+            if (ret.data) {
+                console.log(ret.data);
+            }
+        });
     }
 
     // 檢視user.db

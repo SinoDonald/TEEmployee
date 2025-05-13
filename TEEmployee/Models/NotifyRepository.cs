@@ -140,11 +140,14 @@ namespace TEEmployee.Models
                     }
                 //}
                 // 建立log檔
-                using (FileStream fs = File.Create(filePath)) { }
-                using (StreamWriter sw = new StreamWriter(filePath))
+                if (!filePath.Contains("Update"))
                 {
-                    DateTime dateTime = DateTime.Now;
-                    sw.WriteLine(dateTime + " 建檔成功。");
+                    using (FileStream fs = File.Create(filePath)) { }
+                    using (StreamWriter sw = new StreamWriter(filePath))
+                    {
+                        DateTime dateTime = DateTime.Now;
+                        sw.WriteLine(dateTime + " 建檔成功。");
+                    }
                 }
             }
             _conn.Close();
@@ -177,6 +180,7 @@ namespace TEEmployee.Models
             string _appData = HttpContext.Current.Server.MapPath("~/App_Data");
             List<bool> bools = new List<bool>();
             bool ret = false;
+            if (season.Contains("_Update")) { season = season.Replace("_Update", ""); }
 
             if (season.Contains("H0")) // 1月(H0)要檢查的項目：年度個人規劃、個人規劃回饋
             {
@@ -543,6 +547,33 @@ namespace TEEmployee.Models
             }
             _conn.Close();
 
+            return ret;
+        }
+        /// <summary>
+        /// 刪除通知Log檔
+        /// </summary>
+        public string DeleteNotifyLog()
+        {
+            int count = 0;
+            string ret = "log檔案數量：";
+            string folder = "App_Data";
+            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/" + folder));
+            // 找到APP_Data內的所有.log檔
+            if (Directory.Exists(folderPath))
+            {
+                try
+                {
+                    List<string> files = Directory.GetFiles(folderPath).Where(x => Path.GetExtension(x).Equals(".log")).ToList();
+                    foreach (string file in files)
+                    {
+                        try { File.Delete(file); count++; }
+                        catch (Exception ex) { string error = ex.Message + "\n" + ex.ToString(); }
+                    }
+                    ret = "log檔案數量：" + files.Count + "個, 刪除的數量：" + count + "個";
+                }
+                catch(Exception ex) { ret = ex.Message + "\n" + ex.ToString(); }
+            }
+            else { ret = "無 " + folderPath + " 此路徑"; }
             return ret;
         }
         public void Dispose()

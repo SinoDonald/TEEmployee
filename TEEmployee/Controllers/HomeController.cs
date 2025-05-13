@@ -134,6 +134,24 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
         /// <summary>
+        /// 更新通知
+        /// </summary>
+        [HttpPost]
+        public JsonResult UpdateNotify()
+        {
+            var ret = new NotifyService().UpdateNotify(Session["empno"].ToString());
+            return Json(ret);
+        }
+        /// <summary>
+        /// 刪除通知Log檔
+        /// </summary>
+        [HttpPost]
+        public JsonResult DeleteNotifyLog()
+        {
+            var ret = new NotifyService().DeleteNotifyLog();
+            return Json(ret);
+        }
+        /// <summary>
         /// 檢視user.db
         /// </summary>
         /// <returns></returns>

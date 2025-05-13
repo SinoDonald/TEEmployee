@@ -42,6 +42,36 @@ namespace TEEmployee.Models
             return ret;
         }
         /// <summary>
+        /// 更新通知
+        /// </summary>
+        public List<bool> UpdateNotify(string empno)
+        {
+            List<bool> ret = new List<bool>();
+
+            DateTime now = DateTime.Now;
+            int year = now.Year;
+            int month = now.Month;
+            string season = string.Empty; 
+            if (month == 5) season = year + "H1_Update";
+            else if (month == 11) season = year + "H2_Update";
+
+            // 檢查資料庫中, userNotify是否為當季資料, 不是的話則新建
+            string date = year.ToString() + month.ToString("00");
+            List<User> users = _notifyRepository.GetAll();
+            users = users.Where(x => x.group != null && x.group_one != null && x.group_two != null && x.group_three != null).ToList(); // 移除沒有群組的使用者
+            ret = _notifyRepository.GetNotify(season, users, date, empno);
+
+            return ret;
+        }
+        /// <summary>
+        /// 刪除通知Log檔
+        /// </summary>
+        public string DeleteNotifyLog()
+        {
+            string ret = _notifyRepository.DeleteNotifyLog();
+            return ret;
+        }
+        /// <summary>
         /// 尚未上傳簡報名單
         /// </summary>
         /// <param name="empno"></param>
