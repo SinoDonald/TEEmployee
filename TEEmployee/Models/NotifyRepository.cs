@@ -77,6 +77,11 @@ namespace TEEmployee.Models
                                     sqliteCmd.CommandText = "ALTER TABLE userNotify ADD COLUMN planFreeback INTEGER";
                                     sqliteCmd.ExecuteNonQuery();
                                 }
+                                if (!table.Columns.Contains("kpi"))
+                                {
+                                    sqliteCmd.CommandText = "ALTER TABLE userNotify ADD COLUMN kpi INTEGER";
+                                    sqliteCmd.ExecuteNonQuery();
+                                }
                                 if (!table.Columns.Contains("hug"))
                                 {
                                     sqliteCmd.CommandText = "ALTER TABLE userNotify ADD COLUMN hug INTEGER";
@@ -96,7 +101,7 @@ namespace TEEmployee.Models
                     using (var tran = _conn.BeginTransaction())
                     {
                         SQLiteCommand sqliteCmd = (SQLiteCommand)_conn.CreateCommand();
-                        sqliteCmd.CommandText = "CREATE TABLE IF NOT EXISTS userNotify (empno TEXT, date TEXT, self INTEGER, manager_suggest INTEGER, freeback INTEGER, future INTEGER, personPlan INTEGER, planFreeback INTEGER, hug INTEGER)";
+                        sqliteCmd.CommandText = "CREATE TABLE IF NOT EXISTS userNotify (empno TEXT, date TEXT, self INTEGER, manager_suggest INTEGER, freeback INTEGER, future INTEGER, personPlan INTEGER, planFreeback INTEGER, kpi INTEGER, hug INTEGER)";
                         sqliteCmd.ExecuteNonQuery();
                         tran.Commit();
                     }
@@ -129,9 +134,10 @@ namespace TEEmployee.Models
                         if (bools[3] == true) userNotify.future = 1; else userNotify.future = 0; // 未來3年數位轉型規劃
                         if (bools[4] == true) userNotify.personPlan = 1; else userNotify.personPlan = 0; // 個人規劃
                         if (bools[5] == true) userNotify.planFreeback = 1; else userNotify.planFreeback = 0; // 個人規劃回饋
-                        if (bools[6] == true) userNotify.hug = 1; else userNotify.hug = 0; // 我要抱抱
+                        if (bools[6] == true) userNotify.kpi = 1; else userNotify.kpi = 0; // 填KPI
+                        if (bools[7] == true) userNotify.hug = 1; else userNotify.hug = 0; // 我要抱抱
 
-                    userNotifyList.Add(userNotify);
+                        userNotifyList.Add(userNotify);
                     }
                     using (var tran = _conn.BeginTransaction())
                     {
@@ -244,6 +250,8 @@ namespace TEEmployee.Models
                         bools.Add(ret);
                     }
                     else { bools.Add(false); }
+
+                    bools.Add(false); // 填KPI
                 }
             }
             else // 5月、11月(H1、H2)要檢查的項目：自我評估表、給予主管建議表、主管給予員工建議、未來3年數位轉型規劃
@@ -346,15 +354,15 @@ namespace TEEmployee.Models
                 // 僅1月要通知
                 bools.Add(false); // 年度個人規劃(協理、計畫主管不用上傳)
                 bools.Add(false); // 個人規劃回饋
-                //if (user != null) // 測試5月要通知才加入此判斷, 僅1月要通知的話則刪除這段code
-                //{
-                //    // 年度個人規劃(協理、計畫主管不用上傳)
-                //    ret = false;
-                //    if (user.department_manager.Equals(false) && user.group_manager.Equals(false))
-                //    {
-                //        if (uploadUsers.Where(x => x.Equals(empno)).Count() == 0) { ret = true; }
-                //    }
-                //    bools.Add(ret);
+                                  //if (user != null) // 測試5月要通知才加入此判斷, 僅1月要通知的話則刪除這段code
+                                  //{
+                                  //    // 年度個人規劃(協理、計畫主管不用上傳)
+                                  //    ret = false;
+                                  //    if (user.department_manager.Equals(false) && user.group_manager.Equals(false))
+                                  //    {
+                                  //        if (uploadUsers.Where(x => x.Equals(empno)).Count() == 0) { ret = true; }
+                                  //    }
+                                  //    bools.Add(ret);
 
                 //    // 個人規劃回饋(主管才會收到通知)
                 //    int year = Convert.ToInt32(season.Substring(0, 4)) - 1911;
@@ -397,10 +405,17 @@ namespace TEEmployee.Models
                 //    bools.Add(false); // 年度個人規劃(協理、計畫主管不用上傳)
                 //    bools.Add(false); // 個人規劃回饋
                 //}
-            }
 
-            // 我要抱抱通知
-            bools.Add(true);
+                // 填KPI
+                ret = false;
+                if (user != null)
+                {
+
+                }
+                bools.Add(ret);
+            }
+                        
+            bools.Add(true); // 我要抱抱通知
 
             return bools;
         }
@@ -538,7 +553,8 @@ namespace TEEmployee.Models
                     else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=0 WHERE empno=@empno"; // 未來3年數位轉型規劃
                     else if (count.Equals(5)) sql = @"UPDATE userNotify SET personPlan=0 WHERE empno=@empno"; // 年度個人規劃
                     else if (count.Equals(6)) sql = @"UPDATE userNotify SET planFreeback=0 WHERE empno=@empno"; // 個人規劃回饋
-                    else if (count.Equals(7)) sql = @"UPDATE userNotify SET hug=0 WHERE empno=@empno"; // 我要抱抱
+                    else if (count.Equals(7)) sql = @"UPDATE userNotify SET kpi=0 WHERE empno=@empno"; // 填KPI
+                    else if (count.Equals(8)) sql = @"UPDATE userNotify SET hug=0 WHERE empno=@empno"; // 我要抱抱
                 }
                 else
                 {
@@ -548,7 +564,8 @@ namespace TEEmployee.Models
                     else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=1 WHERE empno=@empno"; // 未來3年數位轉型規劃
                     else if (count.Equals(5)) sql = @"UPDATE userNotify SET personPlan=1 WHERE empno=@empno"; // 年度個人規劃
                     else if (count.Equals(6)) sql = @"UPDATE userNotify SET planFreeback=1 WHERE empno=@empno"; // 個人規劃回饋
-                    else if (count.Equals(7)) sql = @"UPDATE userNotify SET hug=1 WHERE empno=@empno"; // 我要抱抱
+                    else if (count.Equals(7)) sql = @"UPDATE userNotify SET kpi=1 WHERE empno=@empno"; // 填KPI
+                    else if (count.Equals(8)) sql = @"UPDATE userNotify SET hug=1 WHERE empno=@empno"; // 我要抱抱
                 }
 
                 _conn.Execute(sql, userNotify, tran);
