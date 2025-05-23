@@ -58,6 +58,7 @@ namespace TEEmployee.Models
         public int future { get; set; } // 未來3年數位轉型規劃
         public int personPlan { get; set; } // 年度個人規劃
         public int planFreeback { get; set; } // 個人規劃回饋
+        public int hug { get; set; } // 我要抱抱
     }
     // 人才培訓資料庫 <-- 培文
     public class CV

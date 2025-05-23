@@ -77,6 +77,11 @@ namespace TEEmployee.Models
                                     sqliteCmd.CommandText = "ALTER TABLE userNotify ADD COLUMN planFreeback INTEGER";
                                     sqliteCmd.ExecuteNonQuery();
                                 }
+                                if (!table.Columns.Contains("hug"))
+                                {
+                                    sqliteCmd.CommandText = "ALTER TABLE userNotify ADD COLUMN hug INTEGER";
+                                    sqliteCmd.ExecuteNonQuery();
+                                }
                                 tran.Commit();
                             }
                         }
@@ -91,7 +96,7 @@ namespace TEEmployee.Models
                     using (var tran = _conn.BeginTransaction())
                     {
                         SQLiteCommand sqliteCmd = (SQLiteCommand)_conn.CreateCommand();
-                        sqliteCmd.CommandText = "CREATE TABLE IF NOT EXISTS userNotify (empno TEXT, date TEXT, self INTEGER, manager_suggest INTEGER, freeback INTEGER, future INTEGER, personPlan INTEGER, planFreeback INTEGER)";
+                        sqliteCmd.CommandText = "CREATE TABLE IF NOT EXISTS userNotify (empno TEXT, date TEXT, self INTEGER, manager_suggest INTEGER, freeback INTEGER, future INTEGER, personPlan INTEGER, planFreeback INTEGER, hug INTEGER)";
                         sqliteCmd.ExecuteNonQuery();
                         tran.Commit();
                     }
@@ -124,8 +129,9 @@ namespace TEEmployee.Models
                         if (bools[3] == true) userNotify.future = 1; else userNotify.future = 0; // 未來3年數位轉型規劃
                         if (bools[4] == true) userNotify.personPlan = 1; else userNotify.personPlan = 0; // 個人規劃
                         if (bools[5] == true) userNotify.planFreeback = 1; else userNotify.planFreeback = 0; // 個人規劃回饋
+                        if (bools[6] == true) userNotify.hug = 1; else userNotify.hug = 0; // 我要抱抱
 
-                        userNotifyList.Add(userNotify);
+                    userNotifyList.Add(userNotify);
                     }
                     using (var tran = _conn.BeginTransaction())
                     {
@@ -182,11 +188,12 @@ namespace TEEmployee.Models
             bool ret = false;
             if (season.Contains("_Update")) { season = season.Replace("_Update", ""); }
 
+            INotifyRepository _notifyRepository = new NotifyRepository();
+            User user = _notifyRepository.Get(empno);
+
             if (season.Contains("H0")) // 1月(H0)要檢查的項目：年度個人規劃、個人規劃回饋
             {
                 ret = false;
-                INotifyRepository _notifyRepository = new NotifyRepository();
-                User user = _notifyRepository.Get(empno);
                 if (user != null)
                 {
                     bools.Add(false); // 是否已填寫自我評估表
@@ -265,8 +272,6 @@ namespace TEEmployee.Models
 
                 // 主管給予員工建議
                 ret = false;
-                INotifyRepository _notifyRepository = new NotifyRepository();
-                User user = _notifyRepository.Get(empno);
                 if (user != null)
                 {
                     // 主管才會收到通知
@@ -338,61 +343,64 @@ namespace TEEmployee.Models
                 }
                 bools.Add(ret);
 
-                //// 僅1月要通知
-                //bools.Add(false); // 年度個人規劃(協理、計畫主管不用上傳)
-                //bools.Add(false); // 個人規劃回饋
-                if (user != null) // 測試5月要通知才加入此判斷, 僅1月要通知的話則刪除這段code
-                {
-                    // 年度個人規劃(協理、計畫主管不用上傳)
-                    ret = false;
-                    if (user.department_manager.Equals(false) && user.group_manager.Equals(false))
-                    {
-                        if (uploadUsers.Where(x => x.Equals(empno)).Count() == 0) { ret = true; }
-                    }
-                    bools.Add(ret);
+                // 僅1月要通知
+                bools.Add(false); // 年度個人規劃(協理、計畫主管不用上傳)
+                bools.Add(false); // 個人規劃回饋
+                //if (user != null) // 測試5月要通知才加入此判斷, 僅1月要通知的話則刪除這段code
+                //{
+                //    // 年度個人規劃(協理、計畫主管不用上傳)
+                //    ret = false;
+                //    if (user.department_manager.Equals(false) && user.group_manager.Equals(false))
+                //    {
+                //        if (uploadUsers.Where(x => x.Equals(empno)).Count() == 0) { ret = true; }
+                //    }
+                //    bools.Add(ret);
 
-                    // 個人規劃回饋(主管才會收到通知)
-                    int year = Convert.ToInt32(season.Substring(0, 4)) - 1911;
-                    if (user.department_manager.Equals(true) || user.group_manager.Equals(true) || user.group_one_manager.Equals(true) ||
-                        user.group_two_manager.Equals(true) || user.group_three_manager.Equals(true))
-                    {
-                        ret = false;
-                        // 找到同group的user
-                        List<User> sameGroupUsers = SameGroupUsers(user, users);
-                        // 檢驗有哪些group為manager
-                        List<string> groupManagers = new List<string>();
-                        if (user.group_manager.Equals(true)) { groupManagers.Add(user.group); }
-                        if (user.group_one_manager.Equals(true)) { groupManagers.Add(user.group_one); }
-                        if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }
-                        if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
-                        foreach (string groupManager in groupManagers)
-                        {
-                            // 該組長相同群組的同仁
-                            List<User> list = sameGroupUsers.Where(x => x.group.Equals(groupManager) || x.group_one.Equals(groupManager) ||
-                                                                   x.group_two.Equals(groupManager) || x.group_three.Equals(groupManager)).ToList();
-                            // 該年度有上傳簡報
-                            list = list.Where(x => uploadUsers.Where(y => y.Equals(x.empno)).Count() > 0).ToList();
-                            // 查詢主管是否已經回饋
-                            foreach (User sameGroupUser in list)
-                            {
-                                List<Planning> responses = new GScheduleRepository().GetUserPlanning("PersonalPlan", year.ToString(), sameGroupUser.name).ToList();
-                                if (responses.Count.Equals(0)) { ret = true; break; }
-                                else
-                                {
-                                    if (responses.Where(x => x.manager_id.ToString().Equals(user.empno)).Count().Equals(0)) { ret = true; break; }
-                                }
-                            }
-                        }
-                        bools.Add(ret);
-                    }
-                    else { bools.Add(false); }
-                }
-                else
-                {
-                    bools.Add(false); // 年度個人規劃(協理、計畫主管不用上傳)
-                    bools.Add(false); // 個人規劃回饋
-                }
+                //    // 個人規劃回饋(主管才會收到通知)
+                //    int year = Convert.ToInt32(season.Substring(0, 4)) - 1911;
+                //    if (user.department_manager.Equals(true) || user.group_manager.Equals(true) || user.group_one_manager.Equals(true) ||
+                //        user.group_two_manager.Equals(true) || user.group_three_manager.Equals(true))
+                //    {
+                //        ret = false;
+                //        // 找到同group的user
+                //        List<User> sameGroupUsers = SameGroupUsers(user, users);
+                //        // 檢驗有哪些group為manager
+                //        List<string> groupManagers = new List<string>();
+                //        if (user.group_manager.Equals(true)) { groupManagers.Add(user.group); }
+                //        if (user.group_one_manager.Equals(true)) { groupManagers.Add(user.group_one); }
+                //        if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }
+                //        if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
+                //        foreach (string groupManager in groupManagers)
+                //        {
+                //            // 該組長相同群組的同仁
+                //            List<User> list = sameGroupUsers.Where(x => x.group.Equals(groupManager) || x.group_one.Equals(groupManager) ||
+                //                                                   x.group_two.Equals(groupManager) || x.group_three.Equals(groupManager)).ToList();
+                //            // 該年度有上傳簡報
+                //            list = list.Where(x => uploadUsers.Where(y => y.Equals(x.empno)).Count() > 0).ToList();
+                //            // 查詢主管是否已經回饋
+                //            foreach (User sameGroupUser in list)
+                //            {
+                //                List<Planning> responses = new GScheduleRepository().GetUserPlanning("PersonalPlan", year.ToString(), sameGroupUser.name).ToList();
+                //                if (responses.Count.Equals(0)) { ret = true; break; }
+                //                else
+                //                {
+                //                    if (responses.Where(x => x.manager_id.ToString().Equals(user.empno)).Count().Equals(0)) { ret = true; break; }
+                //                }
+                //            }
+                //        }
+                //        bools.Add(ret);
+                //    }
+                //    else { bools.Add(false); }
+                //}
+                //else
+                //{
+                //    bools.Add(false); // 年度個人規劃(協理、計畫主管不用上傳)
+                //    bools.Add(false); // 個人規劃回饋
+                //}
             }
+
+            // 我要抱抱通知
+            bools.Add(true);
 
             return bools;
         }
@@ -530,6 +538,7 @@ namespace TEEmployee.Models
                     else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=0 WHERE empno=@empno"; // 未來3年數位轉型規劃
                     else if (count.Equals(5)) sql = @"UPDATE userNotify SET personPlan=0 WHERE empno=@empno"; // 年度個人規劃
                     else if (count.Equals(6)) sql = @"UPDATE userNotify SET planFreeback=0 WHERE empno=@empno"; // 個人規劃回饋
+                    else if (count.Equals(7)) sql = @"UPDATE userNotify SET hug=0 WHERE empno=@empno"; // 我要抱抱
                 }
                 else
                 {
@@ -539,6 +548,7 @@ namespace TEEmployee.Models
                     else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=1 WHERE empno=@empno"; // 未來3年數位轉型規劃
                     else if (count.Equals(5)) sql = @"UPDATE userNotify SET personPlan=1 WHERE empno=@empno"; // 年度個人規劃
                     else if (count.Equals(6)) sql = @"UPDATE userNotify SET planFreeback=1 WHERE empno=@empno"; // 個人規劃回饋
+                    else if (count.Equals(7)) sql = @"UPDATE userNotify SET hug=1 WHERE empno=@empno"; // 我要抱抱
                 }
 
                 _conn.Execute(sql, userNotify, tran);

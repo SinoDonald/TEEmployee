@@ -26,9 +26,9 @@ namespace TEEmployee.Models
             int year = now.Year;
             int month = now.Month;
             string season = string.Empty;
-            if (month == 4 || month == 5 || month == 11)
+            if (month == 1 || month == 5 || month == 11)
             {
-                if (month == 4) season = year + "H0"; // 個人規劃是否上傳與回饋
+                if (month == 1) season = year + "H0"; // 個人規劃是否上傳與回饋
                 else if (month == 5) season = year + "H1";
                 else if(month == 11) season = year + "H2";
 
@@ -86,7 +86,7 @@ namespace TEEmployee.Models
             culture.DateTimeFormat.Calendar = new TaiwanCalendar();
             string year = DateTime.Now.ToString("yyy", culture);
             int month = now.Month;
-            if (month == 4)
+            if (month == 1)
             {
                 NotifyRepository notifyRepository = new NotifyRepository();
                 List<User> users = notifyRepository.GetAll();
@@ -135,7 +135,7 @@ namespace TEEmployee.Models
             culture.DateTimeFormat.Calendar = new TaiwanCalendar();
             string year = DateTime.Now.ToString("yyy", culture);
             int month = now.Month;
-            if (month == 4)
+            if (month == 1)
             {
                 NotifyRepository notifyRepository = new NotifyRepository();
                 List<User> users = notifyRepository.GetAll();
@@ -202,7 +202,7 @@ namespace TEEmployee.Models
 
             // 先確認當月為1、5、11月才會進行資料庫更新
             int month = DateTime.Now.Month;
-            if (month == 4 || month == 5 || month == 11)
+            if (month == 1 || month == 5 || month == 11)
             {
                 ret = _notifyRepository.UpdateDatabase(empno, count, notification);
             }
