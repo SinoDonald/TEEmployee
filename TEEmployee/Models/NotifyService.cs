@@ -206,6 +206,10 @@ namespace TEEmployee.Models
             {
                 ret = _notifyRepository.UpdateDatabase(empno, count, notification);
             }
+            else if(count == 8) // 我要抱抱
+            {
+                ret = _notifyRepository.UpdateDatabase(empno, count, notification); 
+            }
 
             return ret;
         }

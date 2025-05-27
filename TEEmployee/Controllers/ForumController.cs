@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TEEmployee.Models;
 using TEEmployee.Models.Forum;
 
 namespace TEEmployee.Controllers
@@ -58,6 +59,26 @@ namespace TEEmployee.Controllers
         public JsonResult InsertReply(Reply reply)
         {
             var ret = _service.InsertReply(reply, Session["empno"].ToString());
+            return Json(ret);
+        }
+
+        /// <summary>
+        /// 我要抱抱通知
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult UpdateDatabase(string notification)
+        {
+            bool ret = false;
+
+            NotifyRepository _notifyRepository = new NotifyRepository();
+            if (notification.Equals("0")) { ret = _notifyRepository.UpdateDatabase(Session["empno"].ToString(), 8, notification); }
+            else
+            {
+                List<User> users = _notifyRepository.GetAll();
+                foreach(User user in users) { ret = _notifyRepository.UpdateDatabase(Session["empno"].ToString(), 8, notification); }
+            }
+            
             return Json(ret);
         }
 

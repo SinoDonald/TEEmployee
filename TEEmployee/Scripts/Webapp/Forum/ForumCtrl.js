@@ -20,6 +20,11 @@ app.service('appService', ['$http', function ($http) {
         return $http.post('Forum/InsertReply', o);
     };
 
+    // 培文 --> 我要抱抱取消通知
+    this.UpdateDatabase = (o) => {
+        return $http.post('Forum/UpdateDatabase', o);
+    };
+
 }]);
 
 app.controller('IndexCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
@@ -63,6 +68,13 @@ app.controller('IndexCtrl', ['$scope', '$window', 'appService', '$rootScope', '$
                 $window.location.reload();
         })
 
+        // 我要抱抱通知大家 <-- 培文
+        appService.UpdateDatabase({ notification: '1' }).then((ret) => {
+            if (ret.data) {
+                console.log(ret.data);
+            }
+        });
+
     };
 
     $scope.filterPage = function (page) {
@@ -77,6 +89,14 @@ app.controller('IndexCtrl', ['$scope', '$window', 'appService', '$rootScope', '$
         if ($scope.currentPage + count < 1) return;
             $scope.currentPage += count;
     };
+
+
+    // 我要抱抱取消通知 <-- 培文
+    appService.UpdateDatabase({ notification: '0' }).then((ret) => {
+        if (ret.data) {
+            console.log(ret.data);
+        }
+    });
 
 }]);
 
@@ -127,5 +147,12 @@ app.controller('PostCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
     $scope.back = () => {
         $window.history.back();
     }
+
+    // 我要抱抱通知大家 <-- 培文
+    appService.UpdateDatabase({ notification: '1' }).then((ret) => {
+        if (ret.data) {
+            console.log(ret.data);
+        }
+    });
 
 }]);

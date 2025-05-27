@@ -144,8 +144,8 @@ namespace TEEmployee.Models
                         string sql = @"DELETE FROM userNotify";
                         _conn.Execute(sql);
 
-                        sql = @"INSERT INTO userNotify (empno, date, self, manager_suggest, freeback, future, personPlan, planFreeback)
-                                VALUES(@empno, @date, @self, @manager_suggest, @freeback, @future, @personPlan, @planFreeback)";
+                        sql = @"INSERT INTO userNotify (empno, date, self, manager_suggest, freeback, future, personPlan, planFreeback, kpi, hug)
+                                VALUES(@empno, @date, @self, @manager_suggest, @freeback, @future, @personPlan, @planFreeback, @kpi, @hug)";
                         _conn.Execute(sql, userNotifyList);
 
                         tran.Commit();
@@ -405,14 +405,8 @@ namespace TEEmployee.Models
                 //    bools.Add(false); // 年度個人規劃(協理、計畫主管不用上傳)
                 //    bools.Add(false); // 個人規劃回饋
                 //}
-
-                // 填KPI
-                ret = false;
-                if (user != null)
-                {
-
-                }
-                bools.Add(ret);
+                
+                bools.Add(true); // 填KPI
             }
                         
             bools.Add(true); // 我要抱抱通知
@@ -461,6 +455,8 @@ namespace TEEmployee.Models
                     if (userNotify.future == 1) ret.Add(true); else ret.Add(false); // 未來3年數位轉型規劃
                     if (userNotify.personPlan == 1) ret.Add(true); else ret.Add(false); // 個人規劃
                     if (userNotify.planFreeback == 1) ret.Add(true); else ret.Add(false); // 個人規劃回饋
+                    if (userNotify.kpi == 1) ret.Add(true); else ret.Add(false); // 填KPI
+                    if (userNotify.hug == 1) ret.Add(true); else ret.Add(false); // 我要抱抱
                 }
 
                 tran.Commit();

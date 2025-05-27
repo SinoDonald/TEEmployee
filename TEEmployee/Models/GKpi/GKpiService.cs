@@ -73,6 +73,8 @@ namespace TEEmployee.Models.GKpi
             if (items != null)
                 ret = _kpiRepository.UpsertKpiItems(items);
 
+            new NotifyService().UpdateDatabase(empno, 7, "0"); // 取消KPI通知
+
             return ret;
         }
 

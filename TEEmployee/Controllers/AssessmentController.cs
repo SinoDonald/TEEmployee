@@ -140,6 +140,20 @@ namespace TEEmployee.Controllers
         //}
 
         /// <summary>
+        /// 要填寫的主管名單
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="manager"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult UserManagers()
+        {
+            // 找到使用者各群組的主管們
+            List<User> ret = new NotifyRepository().UserManagers(Session["empno"].ToString(), "");
+            return Json(ret);
+        }
+
+        /// <summary>
         /// 建立回覆
         /// </summary>
         /// <param name="assessments"></param>

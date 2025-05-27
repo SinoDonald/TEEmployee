@@ -25,6 +25,11 @@ app.run(['$http', '$window', function ($http, $window) {
 
 app.service('appService', ['$http', function ($http) {
 
+    // 要填寫的主管名單
+    this.UserManagers = function (o) {
+        return $http.post('Assessment/UserManagers', o);
+    };
+
     // 取得所有要評核的主管
     this.GetScorePeople = function (o) {
         return $http.post('Assessment/GetScorePeople', o);
@@ -93,7 +98,16 @@ app.controller('ManageCtrl', ['$scope', '$location', 'appService', '$rootScope',
 }]);
 
 app.controller('ManagerOptionCtrl', ['$scope', '$location', 'appService', '$rootScope', 'myFactory', '$window', function ($scope, $location, appService, $rootScope, myFactory, $window) {
-        
+
+    // 要填寫的主管名單
+    appService.UserManagers({})
+        .then(function (ret) {
+            $scope.UserManagers = ret.data;
+        })
+        .catch(function (ret) {
+            alert('Error');
+        });
+
     // 取得所有要評核的主管
     appService.GetScorePeople({})
         .then(function (ret) {
