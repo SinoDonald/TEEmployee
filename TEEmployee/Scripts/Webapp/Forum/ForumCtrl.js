@@ -46,6 +46,8 @@ app.controller('IndexCtrl', ['$scope', '$window', 'appService', '$rootScope', '$
 
         $scope.posts = ret.data;
         $scope.pageMax = Math.floor(ret.data.length / $scope.pageSize) + 1;
+
+        //$scope.posts.forEach(x => x.dateStr = moment(x.postDate, "M/D/YYYY, HH:mm:ss").format("YYYY-MM-DD HH:mm:ss"));
     })
 
     $scope.createModal = () => {

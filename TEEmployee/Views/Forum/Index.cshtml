@@ -79,7 +79,7 @@
             list-style: none;
             /*margin: 80px 40px 0;*/
             margin: 0 40px 0;
-            padding: 35px 0 0;
+            /*            padding: 35px 0 0;*/
         }
 
         .post-stub {
@@ -118,7 +118,7 @@
             display: inline-block;
         }
 
-           /* .post-stub-date:before {
+        /* .post-stub-date:before {
                 content: "/ ";
             }*/
 
@@ -132,8 +132,8 @@
             margin-top: 120px;
         }
 
-        .show-content{
-            margin:0;
+        .show-content {
+            margin: 0;
         }
 
         .post-name {
@@ -160,6 +160,14 @@
             </button>
         </div>
 
+        @*<div style="display: flex;">
+            <div style="width: 65%;">
+            </div>
+            <div>
+                最新回覆
+            </div>
+        </div>*@
+
         <ol class="post-list">
 
             <li class="post-stub" ng-repeat="item in posts | filter:filterPage(currentPage) | limitTo: pageSize">
@@ -174,21 +182,21 @@
 
 
             @*<li class="post-stub" ng-repeat="item in posts">
-                <a ng-href="~/Forum/Post/{{item.id}}">
-                    <h4 class="post-stub-title" ng-bind="item.title"></h4>
+                    <a ng-href="~/Forum/Post/{{item.id}}">
+                        <h4 class="post-stub-title" ng-bind="item.title"></h4>
 
-                    <time class="post-stub-date" ng-bind="item.name"></time>
+                        <time class="post-stub-date" ng-bind="item.name"></time>
 
-                </a>
-            </li>*@
+                    </a>
+                </li>*@
 
             @*<li class="post-stub">
-                <a class="js-ajax-link" href="#">
-                    <h4 class="post-stub-title">Introducing Ghostwriter</h4>
+                    <a class="js-ajax-link" href="#">
+                        <h4 class="post-stub-title">Introducing Ghostwriter</h4>
 
-                    <time class="post-stub-date" datetime="Thu Sep 19 2013 11:58:31 GMT+0000 (UTC)">Published September 19th 2013</time>
-                </a>
-            </li>*@
+                        <time class="post-stub-date" datetime="Thu Sep 19 2013 11:58:31 GMT+0000 (UTC)">Published September 19th 2013</time>
+                    </a>
+                </li>*@
 
         </ol>
 
@@ -201,7 +209,7 @@
                     </a>
                 </li>
                 <li ng-repeat="count in [-1,0,1]" class="page-item" ng-class="{'active':count === 0}"><a class="page-link" ng-hide="count + currentPage < 1 || count + currentPage > pageMax" ng-bind="count + currentPage" ng-click="switchPage(count)"></a></li>
-                
+
                 <li class="page-item">
                     <a class="page-link" aria-label="Next" ng-click="switchPage(1)">
                         <span aria-hidden="true">&raquo;</span>
@@ -214,24 +222,24 @@
 
 
         @*<nav aria-label="Page navigation example">
-            <ul class="pagination">
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>*@
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>*@
 
     </div>
 
@@ -262,7 +270,7 @@
                             </label>
                         </div>
                     </form>
-                    
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
@@ -277,4 +285,5 @@
 
 @section Scripts {
     <script src="~/Scripts/WebApp/Forum/ForumCtrl.js"></script>
+    <script src="~/Scripts/moment-with-locales.js"></script>
 }

@@ -22,7 +22,8 @@ namespace TEEmployee.Models.Forum
         /// <returns>包含所有貼文的列舉。</returns>
         public List<Post> GetAllPosts()
         {
-            var ret = _forumRepository.GetAllPosts().OrderByDescending(x => x.postDate).ToList();
+            //var ret = _forumRepository.GetAllPosts().OrderByDescending(x => x.postDate).ToList();
+            var ret = _forumRepository.GetAllPosts();
 
             var users = _userRepository.GetAll();
             ret.ForEach(x => x.name = users.Find(y => y.empno == x.empno).name);
