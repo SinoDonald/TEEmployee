@@ -62,23 +62,23 @@ namespace TEEmployee.Models.TaskLog
         {
             int ret;
 
-            string sql = @"INSERT INTO ProjectTask (empno, yymm, projno, content, endDate, note, realHour, projectType) 
-                        VALUES(@empno, @yymm, @projno, @content, @endDate, @note, @realHour, @projectType)";
+            string sql = @"INSERT INTO ProjectTask (empno, yymm, projno, content, endDate, note, realHour, projectType, custom_order) 
+                        VALUES(@empno, @yymm, @projno, @content, @endDate, @note, @realHour, @projectType, @custom_order)";
 
             ret = _conn.Execute(sql, projectTask);
 
-            return ret > 0 ? true : false;
+            return ret > 0;
         }
 
         public bool Update(ProjectTask projectTask)
         {
             int ret;
 
-            string sql = @"UPDATE ProjectTask SET projno=@projno, content=@content, endDate=@endDate, note=@note, realHour=@realHour, projectType=@projectType WHERE id=@id";
+            string sql = @"UPDATE ProjectTask SET projno=@projno, content=@content, endDate=@endDate, note=@note, realHour=@realHour, projectType=@projectType, custom_order=@custom_order WHERE id=@id";
 
             ret = _conn.Execute(sql, projectTask);
 
-            return ret > 0 ? true : false;
+            return ret > 0;
         }
 
         public bool Upsert(ProjectTask projectTask)
@@ -97,6 +97,21 @@ namespace TEEmployee.Models.TaskLog
                 tran.Commit();
             }
 
+        }
+
+        public bool AddCustomOrderColumn()
+        {
+            string sql = "ALTER TABLE ProjectTask ADD COLUMN custom_order INTEGER;";
+
+            try
+            {                
+                _conn.Execute(sql);
+                return true;
+            }
+            catch (Exception e)
+            {                
+                return false;
+            }
         }
 
         public bool DeleteAll()

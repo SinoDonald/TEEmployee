@@ -43,5 +43,6 @@ namespace TEEmployee.Models.TaskLog
         /// </summary>
         public int realHour { get; set; }
         public int projectType { get; set; }
+        public int custom_order { get; set; }
     }
 }

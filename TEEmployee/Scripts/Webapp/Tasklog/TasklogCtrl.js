@@ -553,6 +553,26 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
         }
 
     };
+
+    $scope.moveUpLogRow = (projectidx, idx) => {
+
+        let logs = $scope.projects[projectidx].logs;
+
+        if (logs.length >= 1 && idx > 0) {
+            [logs[idx - 1], logs[idx]] = [logs[idx], logs[idx - 1]];
+        }        
+    };
+
+    $scope.moveDownLogRow = (projectidx, idx) => {
+
+        let logs = $scope.projects[projectidx].logs;
+
+        if (logs.length >= 1 && idx < logs.length - 1) {
+            [logs[idx + 1], logs[idx]] = [logs[idx], logs[idx + 1]];
+        }
+    };
+
+
     $scope.addProjRow = () => {
         $scope.projects.push({ logs: [{}] });
     };
@@ -566,6 +586,8 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
         let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`;
 
         for (var project of $scope.projects) {
+
+            let customOrder = 0;
 
             for (let log of project.logs) {
 
@@ -587,6 +609,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 projectTasks.push({
                     id: log.id, yymm: yymm, projno: project.projno, realHour: project.realHour,
                     content: log.content, endDate: log.endDate, note: log.note, projectType: Number(log.projectType),
+                    custom_order: customOrder++
                 });
 
             }

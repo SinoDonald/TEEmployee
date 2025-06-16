@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using TEEmployee.Models.GSchedule;
 
 namespace TEEmployee.Models.TaskLog
 {
@@ -309,8 +310,10 @@ namespace TEEmployee.Models.TaskLog
             List<ProjectTask> projectTasks = new List<ProjectTask>();
 
             var ret2 = _projectTaskRepository.GetAll();
+            //projectTasks = ret2.Where(x => x.empno == empno && x.yymm == yymm)
+            //                .OrderBy(x => x.projno).ThenBy(x => x.id).ToList();
             projectTasks = ret2.Where(x => x.empno == empno && x.yymm == yymm)
-                            .OrderBy(x => x.projno).ThenBy(x => x.id).ToList();
+                            .OrderBy(x => x.projno).ThenBy(x => x.custom_order).ToList();
 
             return new TasklogData() { ProjectItems = projectItems, ProjectTasks = projectTasks };
 
@@ -586,6 +589,12 @@ namespace TEEmployee.Models.TaskLog
             var ret2 = _monthlyRecordRepository.DeleteAll();
 
             return ret1 && ret2;
+        }
+
+        public bool AddCustomOrderColumn()
+        {
+            var ret = (_projectTaskRepository as ProjectTaskRepository).AddCustomOrderColumn();
+            return ret;
         }
 
 

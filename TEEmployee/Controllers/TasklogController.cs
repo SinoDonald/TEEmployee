@@ -341,6 +341,14 @@ namespace TEEmployee.Controllers
         }
 
 
+        [HttpPost]
+        public JsonResult AddCustomOrderColumn()
+        {
+            var ret = _service.AddCustomOrderColumn();
+            return Json(ret);
+        }
+
+
         //=============================
         // Database reset
         //=============================

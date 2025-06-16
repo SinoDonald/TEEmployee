@@ -116,7 +116,7 @@ app.service('appService', ['$http', function ($http) {
     //    return $http.post('Home/TalentUpdate', o);
     //};
     this.OneTimeSQL = (o) => {
-        return $http.post('GSchedule/AddCustomOrderColumn', o);
+        return $http.post('Tasklog/AddCustomOrderColumn', o);
     };
 
 }]);

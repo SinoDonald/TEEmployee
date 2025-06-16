@@ -35,6 +35,14 @@
         .ninja {
             display: none;
         }
+
+        .dropdown-toggle::after {
+            display: none !important;
+        }
+
+        .dropdown-menu {
+            min-width: 6rem;
+        }
     </style>
 }
 
@@ -94,11 +102,12 @@
                 <th style="width: 10%">填報時數</th>
                 <th style="width: 8%">實際時數</th>
                 <th>新增</th>
+                <th></th>
                 <th>詳細工作內容</th>
                 <th style="width: 10%">預計完成日期</th>
                 <th style="width: 10%">類型</th>
                 <th>備註</th>
-                <th>刪除</th>
+                <th>其他</th>
             </tr>
         </thead>
 
@@ -124,19 +133,22 @@
                     </button>
                 </td>
                 @*<td>
-                        <input type="button" value="+" name="addRow" ng-click="addLogRow($parent.$index, $index)">
-                        <input type="button" value="-" name="removeRow" ng-click="removeLogRow($parent.$index, $index)">
-                    </td>*@
+            <input type="button" value="+" name="addRow" ng-click="addLogRow($parent.$index, $index)">
+            <input type="button" value="-" name="removeRow" ng-click="removeLogRow($parent.$index, $index)">
+        </td>*@
 
 
                 @*<td><input type="text" ng-model="log.content"></td>*@
+                <td>
+                    <span class="badge badge-success badge-pill">{{ $index + 1 }}</span>
+                </td>
                 <td>
                     <textarea class="form-control autoExpand" ng-model="log.content" id="exampleFormControlTextarea1" cols="50" rows="1"></textarea>
                 </td>
                 <td><input class="form-control" type="text" size="10" ng-model="log.endDate"></td>
                 @*<td><input class="form-control" type="text" size="10" ng-model="log.note"></td>*@
                 <td>
-                    <div>                        
+                    <div>
                         <select class="form-select" id="SelectType" name="SelectType" ng-model="log.projectType" aria-label="Select the Type">
                             <option value="" disabled>請選擇...</option>
                             <option ng-repeat="option in projectTypes" value="{{option.value}}">{{option.name}}</option>
@@ -148,11 +160,23 @@
                     <textarea class="form-control autoExpand" ng-model="log.note" id="exampleFormControlTextarea1" cols="50" rows="1"></textarea>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-outline-danger" name="removeRow" ng-click="removeLogRow($parent.$index, $index)">
-                        <span class="material-icons">delete</span>
-                    </button>
+                    @*<button type="button" class="btn btn-outline-danger" name="removeRow" ng-click="removeLogRow($parent.$index, $index)">
+                <span class="material-icons">delete</span>
+            </button>*@
+                    <div class="dropdown dropright">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                            <span class="material-icons">
+                                more_horiz
+                            </span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <button ng-click="moveUpLogRow($parent.$index, $index)" class="dropdown-item d-inline-flex align-items-md-center" type="button"><span class="material-icons">arrow_circle_up</span>&nbsp;上移</button>
+                            <button ng-click="moveDownLogRow($parent.$index, $index)" class="dropdown-item d-inline-flex align-items-md-center" type="button"><span class="material-icons">arrow_circle_down</span>&nbsp;下移</button>
+                            <button ng-click="removeLogRow($parent.$index, $index)" class="dropdown-item d-inline-flex align-items-md-center" type="button"><span class="material-icons">delete</span>&nbsp;刪除</button>
+                        </div>
+                    </div>
                 </td>
-        </tbody>
+</tbody>
     </table>
 
 
