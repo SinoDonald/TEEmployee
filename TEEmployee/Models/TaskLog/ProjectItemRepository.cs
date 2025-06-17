@@ -179,5 +179,13 @@ namespace TEEmployee.Models.TaskLog
             return ret > 0;
         }
 
+        public List<ProjectItem> GetProjectItemsByEmpnoAndYYMM(string empno, string yymm)
+        {
+            string sql = @"SELECT * FROM ProjectItem WHERE empno=@empno AND yymm=@yymm";
+            var ret = _conn.Query<ProjectItem>(sql, new { empno, yymm }).ToList();
+
+            return ret;
+        }
+
     }
 }

@@ -609,7 +609,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                 projectTasks.push({
                     id: log.id, yymm: yymm, projno: project.projno, realHour: project.realHour,
                     content: log.content, endDate: log.endDate, note: log.note, projectType: Number(log.projectType),
-                    custom_order: customOrder++
+                    custom_order: customOrder++, generate_schedule: log.generate_schedule,
                 });
 
             }
@@ -713,7 +713,11 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                     projidx = $scope.projects.length - 1;
                 }
 
-                $scope.projects[projidx].logs.push({ id: task.id, content: task.content, endDate: task.endDate, note: task.note, projectType: (task.projectType) > 0 ? task.projectType.toString() : '' });
+                $scope.projects[projidx].logs.push({
+                    id: task.id, content: task.content, endDate: task.endDate,
+                    note: task.note, projectType: (task.projectType) > 0 ? task.projectType.toString() : '',
+                    generate_schedule: task.generate_schedule,
+                });
 
             }
 

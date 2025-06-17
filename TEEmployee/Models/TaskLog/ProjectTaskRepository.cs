@@ -62,8 +62,8 @@ namespace TEEmployee.Models.TaskLog
         {
             int ret;
 
-            string sql = @"INSERT INTO ProjectTask (empno, yymm, projno, content, endDate, note, realHour, projectType, custom_order) 
-                        VALUES(@empno, @yymm, @projno, @content, @endDate, @note, @realHour, @projectType, @custom_order)";
+            string sql = @"INSERT INTO ProjectTask (empno, yymm, projno, content, endDate, note, realHour, projectType, custom_order, generate_schedule) 
+                        VALUES(@empno, @yymm, @projno, @content, @endDate, @note, @realHour, @projectType, @custom_order, @generate_schedule)";
 
             ret = _conn.Execute(sql, projectTask);
 
@@ -74,7 +74,7 @@ namespace TEEmployee.Models.TaskLog
         {
             int ret;
 
-            string sql = @"UPDATE ProjectTask SET projno=@projno, content=@content, endDate=@endDate, note=@note, realHour=@realHour, projectType=@projectType, custom_order=@custom_order WHERE id=@id";
+            string sql = @"UPDATE ProjectTask SET projno=@projno, content=@content, endDate=@endDate, note=@note, realHour=@realHour, projectType=@projectType, custom_order=@custom_order, generate_schedule=@generate_schedule WHERE id=@id";
 
             ret = _conn.Execute(sql, projectTask);
 
@@ -114,6 +114,21 @@ namespace TEEmployee.Models.TaskLog
             }
         }
 
+        public bool AddGenerateScheduleColumn()
+        {
+            string sql = "ALTER TABLE ProjectTask ADD COLUMN generate_schedule INTEGER;";
+
+            try
+            {
+                _conn.Execute(sql);
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
         public bool DeleteAll()
         {
             if (_conn.State == 0)
@@ -136,5 +151,12 @@ namespace TEEmployee.Models.TaskLog
 
         }
 
+        public List<ProjectTask> GetProjectTasksByEmpnoAndYYMM(string empno, string yymm)
+        {
+            string sql = @"SELECT * FROM ProjectTask WHERE empno=@empno AND yymm=@yymm";
+            var ret = _conn.Query<ProjectTask>(sql, new { empno, yymm }).ToList();
+
+            return ret;
+        }
     }
 }

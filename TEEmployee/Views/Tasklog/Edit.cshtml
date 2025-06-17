@@ -107,6 +107,7 @@
                 <th style="width: 10%">預計完成日期</th>
                 <th style="width: 10%">類型</th>
                 <th>備註</th>
+                <th>連動</th>
                 <th>其他</th>
             </tr>
         </thead>
@@ -158,6 +159,11 @@
 
                 <td>
                     <textarea class="form-control autoExpand" ng-model="log.note" id="exampleFormControlTextarea1" cols="50" rows="1"></textarea>
+                </td>
+                <td>
+                    <div class="form-check">
+                        <input ng-model="log.generate_schedule" type="checkbox" class="form-check-input">
+                    </div>
                 </td>
                 <td>
                     @*<button type="button" class="btn btn-outline-danger" name="removeRow" ng-click="removeLogRow($parent.$index, $index)">

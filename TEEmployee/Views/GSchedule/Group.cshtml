@@ -87,10 +87,10 @@
                 <th style="width: 8%" scope="col">
                     <div>
                         <button type="button" ng-show="isAllExpanded" class="btn btn-primary btn-sm" ng-click="expandAll()">
-                            <span class="material-icons" style="font-size: 1rem">keyboard_double_arrow_up</span>
+                            <span class="material-icons" style="font-size: 1rem">keyboard_double_arrow_down</span>
                         </button>
                         <button type="button" ng-hide="isAllExpanded" class="btn btn-primary btn-sm" ng-click="expandAll()">
-                            <span class="material-icons" style="font-size: 1rem">keyboard_double_arrow_down</span>
+                            <span class="material-icons" style="font-size: 1rem">keyboard_double_arrow_up</span>
                         </button>
                     </div>
                 </th>
@@ -144,7 +144,7 @@
                                             展開
                                         </button>*@
 
-                                    <button ng-show="editFilter" ng-click="cloneDeepToModal(detailSchedule.Detail, $index, groupSchedule.Group); passChosen()" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalLong">
+                                    <button ng-show="editFilter && !detailSchedule.Detail.from_tasklog" ng-click="cloneDeepToModal(detailSchedule.Detail, $index, groupSchedule.Group); passChosen()" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalLong">
                                         編輯
                                     </button>
                                 </td>

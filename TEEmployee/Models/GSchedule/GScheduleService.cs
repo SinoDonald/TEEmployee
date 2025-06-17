@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace TEEmployee.Models.GSchedule
         private IUserRepository _userRepository;
         private IProjectItemRepository _projectItemRepository;
         private IAgentRepository _agentRepository;
+        private IProjectTaskRepository _projectTaskRepository;
 
         public GScheduleService()
         {
@@ -23,6 +25,7 @@ namespace TEEmployee.Models.GSchedule
             _userRepository = new UserRepository();
             _projectItemRepository = new ProjectItemRepository();
             _agentRepository = new AgentRepository();
+            _projectTaskRepository = new ProjectTaskRepository();
         }
 
         /// <summary>
@@ -139,6 +142,75 @@ namespace TEEmployee.Models.GSchedule
                     // authority
 
                 }
+
+
+                // create temporary tasklog detail schedule
+
+                string targetMonth = Utilities.yymmStr(-1);
+
+                foreach (var member in groupMembers)
+                {
+                    if (member.group_one != group) continue;
+
+                    var items = _projectItemRepository.GetProjectItemsByEmpnoAndYYMM(member.empno, targetMonth);
+                    var tasks = _projectTaskRepository.GetProjectTasksByEmpnoAndYYMM(member.empno, targetMonth);
+
+                    foreach (var item in items)
+                    {
+                        var match = groupSchedules.Find(x => x.Group.projno == item.projno);
+                        
+                        if (match != null)
+                        {
+                            var tasklogMilestones = tasks.Where(x => x.projno == item.projno && x.generate_schedule).ToList();
+
+                            if (tasklogMilestones.Count == 0) continue;
+
+                            List<Milestone> tempMilestones = new List<Milestone>();
+
+                            var tempDetailSchedule = new Schedule() { 
+                                content = "工作紀錄管控表", 
+                                type = 2, 
+                                start_date = DateTime.Today.AddMonths(-6).ToString("yyyy-MM-dd"),
+                                end_date = DateTime.Today.AddMonths(6).ToString("yyyy-MM-dd"),
+                                custom_order = 0,
+                                parent_id = match.Group.id,
+                                role = group,
+                                projno = item.projno,
+                                member = member.name,
+                                from_tasklog = true,
+                            };
+
+                            foreach (var task in tasklogMilestones)
+                            {
+                                bool isValid = DateTime.TryParseExact(
+                                    task.endDate,
+                                    "yyyy-MM-dd",
+                                    System.Globalization.CultureInfo.InvariantCulture,
+                                    System.Globalization.DateTimeStyles.None,
+                                    out DateTime result
+                                );
+
+                                if (!isValid) continue;
+
+                                var tempMilestone = new Milestone()
+                                {
+                                    content = task.content,
+                                    date = task.endDate,
+                                };
+
+                                tempMilestones.Add(tempMilestone);                                
+                            }
+
+                            tempDetailSchedule.milestones = tempMilestones;
+                            match.Details.Add(new DetailSchedule() { Detail = tempDetailSchedule });
+
+                        }
+
+                    }
+                    
+                }
+                
+
 
 
                 allGroupSchedules.AddRange(groupSchedules);

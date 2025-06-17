@@ -15,6 +15,7 @@ namespace TEEmployee.Models.TaskLog
         bool Update(ProjectTask projectTask);
         bool Delete(int id, string empno);
         bool DeleteAll();
+        List<ProjectTask> GetProjectTasksByEmpnoAndYYMM(string empno, string yymm);
         void Dispose();
     }
 }

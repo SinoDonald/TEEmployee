@@ -67,6 +67,7 @@ namespace TEEmployee.Models.GSchedule
         /// </summary>
         public List<Milestone> milestones { get; set; }
         public int custom_order { get; set; } = 0;
+        public bool from_tasklog { get; set; } = false;
 
         public int CompareTo(Schedule other)
         {

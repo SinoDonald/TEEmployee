@@ -349,6 +349,13 @@ namespace TEEmployee.Controllers
         }
 
 
+        [HttpPost]
+        public JsonResult AddGenerateScheduleColumn()
+        {
+            var ret = _service.AddGenerateScheduleColumn();
+            return Json(ret);
+        }
+
         //=============================
         // Database reset
         //=============================

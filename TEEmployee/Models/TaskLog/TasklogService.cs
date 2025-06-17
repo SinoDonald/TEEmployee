@@ -597,6 +597,12 @@ namespace TEEmployee.Models.TaskLog
             return ret;
         }
 
+        public bool AddGenerateScheduleColumn()
+        {
+            var ret = (_projectTaskRepository as ProjectTaskRepository).AddGenerateScheduleColumn();
+            return ret;
+        }
+
 
         //--------------------------------------------------------------------------
 

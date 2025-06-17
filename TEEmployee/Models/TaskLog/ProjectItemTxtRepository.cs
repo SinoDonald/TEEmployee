@@ -148,5 +148,10 @@ namespace TEEmployee.Models.TaskLog
         {
             throw new NotImplementedException();
         }
+
+        public List<ProjectItem> GetProjectItemsByEmpnoAndYYMM(string empno, string yymm)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
