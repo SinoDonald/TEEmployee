@@ -39,5 +39,8 @@ namespace TEEmployee.Models.Forum
         /// </summary>
         public int count { get; set; }
         public bool anonymous { get; set; }
+        public List<Reply> replies { get; set; }
+        public string latestName { get; set; }
+        public string latestDate { get; set; }
     }
 }

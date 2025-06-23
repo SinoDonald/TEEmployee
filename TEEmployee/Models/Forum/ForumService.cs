@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 
@@ -37,6 +38,34 @@ namespace TEEmployee.Models.Forum
                 }
                 
             }
+
+            // count, latest name and date, then sort by latest date
+            foreach (var item in ret)
+            {
+                item.count = item.replies.Count;
+
+                if (item.count > 0)
+                {
+                    var replies = item.replies.Select(x => new
+                    {
+                        Parsed = DateTime.ParseExact(x.replyDate, "M/d/yyyy, HH:mm:ss", CultureInfo.InvariantCulture).ToString("yyyy-MM-ddTHH:mm:ss"),
+                        Empno = x.empno,
+                        Anonymous = x.anonymous,
+                    }).ToList();
+
+                    var latest = replies.OrderByDescending(x => x.Parsed).First();                    
+                    item.latestName = latest.Anonymous ? "匿名" : users.Find(x => x.empno == latest.Empno).name;
+                    item.latestDate = latest.Parsed;
+                }
+                else
+                {
+                    item.latestName = item.name;
+                    item.latestDate = DateTime.ParseExact(item.postDate, "M/d/yyyy, HH:mm:ss", CultureInfo.InvariantCulture).ToString("yyyy-MM-ddTHH:mm:ss");
+                }
+
+            }
+
+            ret = ret.OrderByDescending(x => x.latestDate).ToList();
 
             return ret;
         }

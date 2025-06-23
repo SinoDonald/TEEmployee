@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Web;
+using TEEmployee.Models.Profession;
 
 namespace TEEmployee.Models.Forum
 {
@@ -27,24 +28,51 @@ namespace TEEmployee.Models.Forum
         //    return ret;
         //}
 
+        //public List<Post> GetAllPosts()
+        //{            
+        //    _conn.Open();
+
+        //    using (var tran = _conn.BeginTransaction())
+        //    {
+        //        string sql = @"SELECT * FROM Post";
+
+        //        var ret = _conn.Query<Post>(sql).ToList();
+
+        //        ret.ForEach(x => x.count = CountReplies(x.id));
+
+        //        tran.Commit();
+
+        //        return ret;
+        //    }
+
+        //}
+
         public List<Post> GetAllPosts()
-        {            
-            _conn.Open();
+        {
+           
+            var lookup = new Dictionary<int, Post>();
+            _conn.Query<Post, Reply, Post>(@"
+                SELECT p.*, r.*
+                FROM Post AS p
+                LEFT JOIN Reply AS r ON p.id = r.postId",
+                (p, r) =>
+                {
+                    Post post;
 
-            using (var tran = _conn.BeginTransaction())
-            {
-                string sql = @"SELECT * FROM Post";
+                    if (!lookup.TryGetValue(p.id, out post))
+                        lookup.Add(p.id, post = p);
+                    if (post.replies == null)
+                        post.replies = new List<Reply>();
+                    if (r != null)
+                        post.replies.Add(r);
+                    return post;
+                }).AsQueryable();
+            var resultList = lookup.Values;
 
-                var ret = _conn.Query<Post>(sql).ToList();
-
-                ret.ForEach(x => x.count = CountReplies(x.id));
-
-                tran.Commit();
-
-                return ret;
-            }
+            return resultList.ToList();
 
         }
+
         public Post GetPost(int id)
         {
             string sql = @"SELECT * FROM Post WHERE id=@id";

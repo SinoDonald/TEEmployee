@@ -29,6 +29,8 @@ app.service('appService', ['$http', function ($http) {
 
 app.controller('IndexCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
 
+    moment.locale('zh-tw');
+
     let options = {
         timeZone: 'Asia/Taipei',
         hour12: false, // If you want 24-hour format
@@ -47,7 +49,37 @@ app.controller('IndexCtrl', ['$scope', '$window', 'appService', '$rootScope', '$
         $scope.posts = ret.data;
         $scope.pageMax = Math.floor(ret.data.length / $scope.pageSize) + 1;
 
+        let now = moment();
+
         //$scope.posts.forEach(x => x.dateStr = moment(x.postDate, "M/D/YYYY, HH:mm:ss").format("YYYY-MM-DD HH:mm:ss"));
+
+        // post date
+        $scope.posts.forEach(x => {
+
+            let date = moment(x.postDate, "M/D/YYYY, HH:mm:ss");
+            let diffDays = now.diff(date, 'days');
+
+            if (diffDays > 30) {
+                x.dateStr = date.format('MM-DD  HH:mm');  // fallback to standard format
+            } else {
+                x.dateStr = date.fromNow();  // e.g., "3 hours ago"
+            }
+        });
+
+        // latest reply date
+        $scope.posts.forEach(x => {
+
+            let date = moment(x.latestDate);
+            let diffDays = now.diff(date, 'days');
+
+            if (diffDays > 30) {
+                x.latestDateStr = date.format('MM-DD  HH:mm');
+            } else {
+                x.latestDateStr = date.fromNow();
+            }
+        });
+
+
     })
 
     $scope.createModal = () => {
@@ -104,12 +136,27 @@ app.controller('IndexCtrl', ['$scope', '$window', 'appService', '$rootScope', '$
 
 app.controller('PostCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q', function ($scope, $window, appService, $rootScope, $q) {
 
+    moment.locale('zh-tw');
+
     let options = {
         timeZone: 'Asia/Taipei',
         hour12: false, // If you want 24-hour format
     };
 
     let picMap = new Map();
+
+    let now = moment();
+
+    const getLocaleDateStr = (itemDate) => {
+        let date = moment(itemDate, "M/D/YYYY, HH:mm:ss");
+        let diffDays = now.diff(date, 'days');
+
+        if (diffDays > 30) {
+            return date.format('YYYY/MM/DD  HH:mm');
+        } else {
+            return date.fromNow();
+        }
+    }
 
     appService.GetPost({ id: $window.postId }).then((ret) => {
 
@@ -122,6 +169,11 @@ app.controller('PostCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
         // get map
         $scope.post.pic = picMap.get($scope.post.empno);
         $scope.replies.forEach(x => x.pic = picMap.get(x.empno));
+
+        // date moment js
+        $scope.post.dateStr = getLocaleDateStr($scope.post.postDate);
+        $scope.replies.forEach(x => x.dateStr = getLocaleDateStr(x.replyDate));
+
     })
 
     $scope.createModal = () => {

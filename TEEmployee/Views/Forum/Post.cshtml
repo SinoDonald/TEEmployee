@@ -157,18 +157,20 @@
             opacity: 0.8;
             margin-bottom: 20px;
         }
-
     </style>
 }
 
 <div ng-controller="PostCtrl" class="container">
 
     <div class="btnSet">
-        <button type="button" ng-click="back()" class="btn btn-outline-secondary" data-toggle="modal" data-target="#exampleModal">
-
+        @*<button type="button" ng-click="back()" class="btn btn-outline-secondary" data-toggle="modal" data-target="#exampleModal">
             <span class="material-icons" style="font-size:1rem">arrow_back</span>
             上一頁
-        </button>
+        </button>*@
+        <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Forum")">
+            <span class="material-icons" style="font-size:1rem">arrow_back</span>
+            上一頁
+        </a>
         <button type="button" ng-click="createModal()" class="btn btn-outline-secondary" data-toggle="modal" data-target="#exampleModal">
 
             <span class="material-icons" style="font-size:1rem">send</span>
@@ -178,13 +180,14 @@
 
     <section id="app" class="comments mt-5">
 
-        
+
         <h2 ng-bind="post.title"></h2><br />
 
         <article>
             <img id="profile-photo" ng-src="~/Content/assets/img/forum/f{{post.pic}}.png" />
             <h4 ng-bind="post.name"></h4>
-            <time ng-bind="post.postDate"></time>
+            @*<time ng-bind="post.postDate"></time>*@
+            <time ng-bind="post.dateStr"></time>
             <like></like>
             <p ng-bind="post.content"></p>
         </article>
@@ -192,72 +195,73 @@
         <article ng-repeat="item in replies">
             <img id="profile-photo" ng-src="~/Content/assets/img/forum/f{{item.pic}}.png" />
             <h4 ng-bind="item.name"></h4>
-            <time ng-bind="item.replyDate"></time>
+            @*<time ng-bind="item.replyDate"></time>*@
+            <time ng-bind="item.dateStr"></time>
             <like></like>
             <p ng-bind="item.replyContent">
             </p>
         </article>
 
         @*<article>
-            <img id="profile-photo" src="https://en.gravatar.com/userimage/18343163/3fd908393aedf6423ec12cacec9a1f50.jpg?size=200" />
-            <h4><a href="#">chrisburton</a></h4>
-            <time>5 months ago</time>
-            <like></like>
-            <p>
-                Thank you for visiting all the way from New York. This is just a test to determine if the Twitter API is working as it should. You should see your profile image and your username at the very top that links to your account. You should also see that
-                I wrote in a thank you introduction with your location.
-            </p>
-        </article>
+                <img id="profile-photo" src="https://en.gravatar.com/userimage/18343163/3fd908393aedf6423ec12cacec9a1f50.jpg?size=200" />
+                <h4><a href="#">chrisburton</a></h4>
+                <time>5 months ago</time>
+                <like></like>
+                <p>
+                    Thank you for visiting all the way from New York. This is just a test to determine if the Twitter API is working as it should. You should see your profile image and your username at the very top that links to your account. You should also see that
+                    I wrote in a thank you introduction with your location.
+                </p>
+            </article>
 
-        <article>
-            <img id="profile-photo" src="https://d17oy1vhnax1f7.cloudfront.net/items/0W2c1j2B0S0v3X0Z4407/Screen%20Shot%202017-01-28%20at%201.01.44%20AM.png" />
-            <h4><a href="#">AnnaWintour</a></h4>     <time>1 month ago</time>
-            <like></like>
-            <p>
-                <span class="reply">chrisburton</span> +1. Really interesting reply.
-            </p>
-        </article>
+            <article>
+                <img id="profile-photo" src="https://d17oy1vhnax1f7.cloudfront.net/items/0W2c1j2B0S0v3X0Z4407/Screen%20Shot%202017-01-28%20at%201.01.44%20AM.png" />
+                <h4><a href="#">AnnaWintour</a></h4>     <time>1 month ago</time>
+                <like></like>
+                <p>
+                    <span class="reply">chrisburton</span> +1. Really interesting reply.
+                </p>
+            </article>
 
-        <article>
-            <img id="profile-photo" src="https://25.media.tumblr.com/avatar_c5eeb4b2e95b_128.png" />
-            <h4><a href="#">wooster</a></h4>
-            <time>2 weeks ago</time>
-            <like></like>
-            <p>
-                Thank you for visiting all the way from an unknown location. This is just a test to determine if the Twitter API is working as it should. You should see your profile image and your username at the very top that links to your account. You should also
-                see that I wrote in a thank you introduction with your location.
-            </p>
-        </article>
+            <article>
+                <img id="profile-photo" src="https://25.media.tumblr.com/avatar_c5eeb4b2e95b_128.png" />
+                <h4><a href="#">wooster</a></h4>
+                <time>2 weeks ago</time>
+                <like></like>
+                <p>
+                    Thank you for visiting all the way from an unknown location. This is just a test to determine if the Twitter API is working as it should. You should see your profile image and your username at the very top that links to your account. You should also
+                    see that I wrote in a thank you introduction with your location.
+                </p>
+            </article>
 
-        <article>
-            <img id="profile-photo" src="https://randomuser.me/api/portraits/men/32.jpg" />
-            <h4><a href="#">randomuser3</a></h4>
-            <time>1 week ago</time>
-            <like></like>
-            <p>
-                Thank you for visiting all the way from NYC. This is just a test to determine if the Twitter API is working as it should. You should see your profile image and your username at the very top that links to your account. You should also see that I wrote
-                in a thank you introduction with your location.
-            </p>
-        </article>
+            <article>
+                <img id="profile-photo" src="https://randomuser.me/api/portraits/men/32.jpg" />
+                <h4><a href="#">randomuser3</a></h4>
+                <time>1 week ago</time>
+                <like></like>
+                <p>
+                    Thank you for visiting all the way from NYC. This is just a test to determine if the Twitter API is working as it should. You should see your profile image and your username at the very top that links to your account. You should also see that I wrote
+                    in a thank you introduction with your location.
+                </p>
+            </article>
 
-        <article>
-            <img id="profile-photo" src="https://randomuser.me/api/portraits/women/19.jpg" />
-            <h4><a href="#">cathater_</a></h4>
-            <time>3 days ago</time>
-            <like></like>
-            <p>Thank you for visiting all the way from New York, NY.</p>
-        </article>
+            <article>
+                <img id="profile-photo" src="https://randomuser.me/api/portraits/women/19.jpg" />
+                <h4><a href="#">cathater_</a></h4>
+                <time>3 days ago</time>
+                <like></like>
+                <p>Thank you for visiting all the way from New York, NY.</p>
+            </article>
 
-        <article>
-            <img id="profile-photo" src="https://randomuser.me/api/portraits/men/58.jpg" />
-            <h4><a href="#">edwardshair</a></h4>
-            <time>5 minutes ago</time>
-            <like></like>
-            <p>
-                Thank you for visiting all the way from San Francisco, CA. This is just a test to determine if the Twitter API is working as it should. You should see your profile image and your username at the very top that links to your account. You should also
-                see that I wrote in a thank you introduction with your location.
-            </p>
-        </article>*@
+            <article>
+                <img id="profile-photo" src="https://randomuser.me/api/portraits/men/58.jpg" />
+                <h4><a href="#">edwardshair</a></h4>
+                <time>5 minutes ago</time>
+                <like></like>
+                <p>
+                    Thank you for visiting all the way from San Francisco, CA. This is just a test to determine if the Twitter API is working as it should. You should see your profile image and your username at the very top that links to your account. You should also
+                    see that I wrote in a thank you introduction with your location.
+                </p>
+            </article>*@
 
     </section>
 
@@ -286,7 +290,7 @@
                         </div>
                     </form>
                 </div>
-                
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="createReply()">發布</button>
@@ -305,4 +309,5 @@
         var postId = @ViewBag.id;
     </script>
     <script src="~/Scripts/WebApp/Forum/ForumCtrl.js"></script>
+    <script src="~/Scripts/moment-with-locales.js"></script>
 }
