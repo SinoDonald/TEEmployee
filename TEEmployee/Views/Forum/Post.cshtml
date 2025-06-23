@@ -176,6 +176,16 @@
             <span class="material-icons" style="font-size:1rem">send</span>
             回覆貼文
         </button>
+
+        @if (Session["Admin"] is object)
+        {
+            <button type="button" ng-click="confirmDeletePost(post)" class="btn btn-outline-secondary">
+                <span class="material-icons" style="font-size:1rem">delete</span>
+                刪除貼文
+            </button>
+        }
+
+        
     </div>
 
     <section id="app" class="comments mt-5">
@@ -307,6 +317,7 @@
 @section Scripts {
     <script>
         var postId = @ViewBag.id;
+        var indexUrl = '@Url.Action("Index","Forum")';
     </script>
     <script src="~/Scripts/WebApp/Forum/ForumCtrl.js"></script>
     <script src="~/Scripts/moment-with-locales.js"></script>

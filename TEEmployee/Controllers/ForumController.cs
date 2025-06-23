@@ -82,6 +82,13 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        [HttpPost]
+        public JsonResult DeletePost(Post post)
+        {
+            var ret = _service.DeletePost(post);
+            return Json(ret);
+        }
+
         //=============================
         // Database reset
         //=============================

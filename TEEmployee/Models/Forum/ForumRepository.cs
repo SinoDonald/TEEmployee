@@ -140,6 +140,34 @@ namespace TEEmployee.Models.Forum
 
         }
 
+        public bool DeletePost(Post post)
+        {
+            _conn.Open();
+
+            bool ret = true;
+            string deletePostSql = @"DELETE FROM Post WHERE id=@id;";
+            string deleteReplySql = @"DELETE FROM Reply WHERE postId=@id;";
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                try
+                {
+                    _conn.Execute(deleteReplySql, post);
+                    _conn.Execute(deletePostSql, post);
+
+                    tran.Commit();
+                }
+                catch (Exception)
+                {
+                    ret = false;
+                }
+
+            }
+
+            return ret;
+        }
+
+
         public void Dispose()
         {
             _conn.Close();

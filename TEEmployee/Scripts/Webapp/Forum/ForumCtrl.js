@@ -19,6 +19,9 @@ app.service('appService', ['$http', function ($http) {
     this.InsertReply = (o) => {
         return $http.post('Forum/InsertReply', o);
     };
+    this.DeletePost = (o) => {
+        return $http.post('Forum/DeletePost', o);
+    };
 
     // 培文 --> 我要抱抱取消通知
     this.UpdateDatabase = (o) => {
@@ -200,6 +203,21 @@ app.controller('PostCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
     $scope.back = () => {
         $window.history.back();
+    }
+
+
+    $scope.confirmDeletePost = (post) => {
+
+        var result = confirm("確定要刪除這則貼文嗎？");
+
+        if (result) {
+            appService.DeletePost({ post: post }).then((ret) => {
+
+                if (ret.data) {
+                    $window.location.href = indexUrl;
+                }
+            })
+        }
     }
 
     // 我要抱抱通知大家 <-- 培文

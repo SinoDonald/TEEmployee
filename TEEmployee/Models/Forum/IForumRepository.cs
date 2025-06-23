@@ -14,5 +14,6 @@ namespace TEEmployee.Models.Forum
         bool InsertPost(Post post);
         bool InsertReply(Reply reply);
         bool DeleteAll();
+        bool DeletePost(Post post);
     }
 }

@@ -132,6 +132,12 @@ namespace TEEmployee.Models.Forum
             return ret;
         }
 
+        public bool DeletePost(Post post)
+        {
+            var ret = _forumRepository.DeletePost(post);
+            return ret;
+        }
+
         public bool DeleteAll()
         {
             var ret = _forumRepository.DeleteAll();
