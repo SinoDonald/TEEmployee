@@ -204,5 +204,10 @@ namespace TEEmployee.Models
         {
             return;
         }
+
+        public bool InsertCustomUser(User user)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -6,9 +6,11 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Services.Description;
 using System.Xml.Linq;
 using Dapper;
 using OfficeOpenXml;
+using TEEmployee.Models.Forum;
 
 namespace TEEmployee.Models
 {
@@ -469,5 +471,42 @@ namespace TEEmployee.Models
 
             return ret;
         }
+
+        public bool InsertCustomUser(User user)
+        {
+            _conn.Open();
+
+            bool ret = true;
+            string insertUserSql = @"
+                INSERT INTO customUser (empno, name, gid, profTitle, duty, dutyName, tel, email) 
+                VALUES(@empno, @name, @gid, @profTitle, @duty, @dutyName, @tel, @email)
+            "
+            ;
+
+            string insertUserExtraSql = @"
+                INSERT INTO userExtra (empno, department_manager, 'group', group_manager, group_one, group_one_manager, group_two, group_two_manager, group_three, group_three_manager, project_manager, projects, assistant_project_manager, custom_duty) 
+                VALUES(@empno, @department_manager, @group, @group_manager, @group_one, @group_one_manager, @group_two, @group_two_manager, @group_three, @group_three_manager, @project_manager, @projects, @assistant_project_manager, @custom_duty)
+            "
+            ;          
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                try
+                {
+                    _conn.Execute(insertUserSql, user);
+                    _conn.Execute(insertUserExtraSql, user);
+
+                    tran.Commit();
+                }
+                catch (Exception)
+                {
+                    ret = false;
+                }
+
+            }
+
+            return ret;
+        }
+
     }
 }

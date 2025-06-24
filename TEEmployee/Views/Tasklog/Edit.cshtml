@@ -43,10 +43,12 @@
         .dropdown-menu {
             min-width: 6rem;
         }
+
+
     </style>
 }
 
-<div ng-controller="EditCtrl" class="container">
+<div ng-controller="EditCtrl" class="container-fluid">
 
     <header>
         <div class="form-group d-flex justify-content-between">
@@ -98,8 +100,7 @@
             <tr>
                 <th style="width: 8%">計畫編號</th>
                 <th style="width: 8%">工作項目</th>
-                @*<th style="width: 8%">填報時數</th>*@
-                <th style="width: 10%">填報時數</th>
+                <th style="width: 8%">填報時數</th>
                 <th style="width: 8%">實際時數</th>
                 <th>新增</th>
                 <th></th>
@@ -107,7 +108,7 @@
                 <th style="width: 10%">預計完成日期</th>
                 <th style="width: 10%">類型</th>
                 <th>備註</th>
-                <th>連動</th>
+                <th style="width: 4%">連動</th>
                 <th>其他</th>
             </tr>
         </thead>
@@ -134,9 +135,9 @@
                     </button>
                 </td>
                 @*<td>
-            <input type="button" value="+" name="addRow" ng-click="addLogRow($parent.$index, $index)">
-            <input type="button" value="-" name="removeRow" ng-click="removeLogRow($parent.$index, $index)">
-        </td>*@
+                        <input type="button" value="+" name="addRow" ng-click="addLogRow($parent.$index, $index)">
+                        <input type="button" value="-" name="removeRow" ng-click="removeLogRow($parent.$index, $index)">
+                    </td>*@
 
 
                 @*<td><input type="text" ng-model="log.content"></td>*@
@@ -146,7 +147,9 @@
                 <td>
                     <textarea class="form-control autoExpand" ng-model="log.content" id="exampleFormControlTextarea1" cols="50" rows="1"></textarea>
                 </td>
-                <td><input class="form-control" type="text" size="10" ng-model="log.endDate"></td>
+                <td>
+                    <input class="form-control" type="text" size="10" ng-model="log.endDate">
+                </td>
                 @*<td><input class="form-control" type="text" size="10" ng-model="log.note"></td>*@
                 <td>
                     <div>
@@ -167,8 +170,8 @@
                 </td>
                 <td>
                     @*<button type="button" class="btn btn-outline-danger" name="removeRow" ng-click="removeLogRow($parent.$index, $index)">
-                <span class="material-icons">delete</span>
-            </button>*@
+                            <span class="material-icons">delete</span>
+                        </button>*@
                     <div class="dropdown dropright">
                         <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                             <span class="material-icons">
@@ -182,7 +185,7 @@
                         </div>
                     </div>
                 </td>
-</tbody>
+        </tbody>
     </table>
 
 
@@ -198,7 +201,7 @@
         儲存成功!
     </div>
 
-    <div class="form-group">
+    <div class="form-group d-flex justify-content-end">
         <a class="btn btn-warning btn-lg mr-2" href="Tasklog" role="button">返回</a>
         <button type="button" class="btn btn-success btn-lg mr-2" name="addRow" ng-click="addProjRow()">
             <span>新增計畫編號</span>
@@ -206,6 +209,10 @@
         <button type="button" class="btn btn-warning btn-lg mr-2" name="UpdateTasklogData" ng-click="UpdateTasklogData()">
             <span>儲存</span>
         </button>
+    </div>
+
+    <div class="alert alert-warning" role="alert">
+        欲將【工作紀錄管控表】連動【年度行事曆】，預計完成日期須符合標準的日期格式 "YYYY-MM-DD"，例如: 2025-06-24
     </div>
 
 

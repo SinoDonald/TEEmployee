@@ -603,6 +603,25 @@ namespace TEEmployee.Models.TaskLog
             return ret;
         }
 
+        public bool InsertCustomUser()
+        {
+            User user = new User();
+            user.empno = "6843";
+            user.name = "許睿㕢";
+            user.gid = "24";
+            user.profTitle = "工程師一";
+            user.email = "rexshiu@mail.sinotech.com.tw";
+            user.group = "設計";
+            user.group_one = "BIM暨程式開發組";
+            user.group_two = "";
+            user.group_three = "";
+            user.custom_duty = "";
+
+            var ret = _userRepository.InsertCustomUser(user);
+
+            return ret;
+        }
+
 
         //--------------------------------------------------------------------------
 

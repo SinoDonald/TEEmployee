@@ -356,6 +356,13 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        [HttpPost]
+        public JsonResult InsertCustomUser()
+        {
+            var ret = _service.InsertCustomUser();
+            return Json(ret);
+        }
+
         //=============================
         // Database reset
         //=============================

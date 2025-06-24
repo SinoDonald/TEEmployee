@@ -208,7 +208,7 @@ namespace TEEmployee.Filters
 
         private bool IsEmployeeSinoGuest(string empno)
         {
-            HashSet<string> sinoGuests = new HashSet<string> { "9991" };
+            HashSet<string> sinoGuests = new HashSet<string> { "9991", "6843" };
 
             return sinoGuests.Contains(empno);
         }

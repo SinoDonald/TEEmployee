@@ -271,6 +271,11 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         }
     });
 
+    // category
+
+    $scope.createCategoryModal = () => {
+        $scope.newCategoryName = '';
+    }
 
     $scope.createCategory = () => {
 
@@ -286,6 +291,7 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
             if (ret.data) {
                 $scope.getCategoriesByGroupOne();
+                $scope.newCategoryName = '';
             }
         });
 

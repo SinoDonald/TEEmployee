@@ -116,11 +116,12 @@ app.service('appService', ['$http', function ($http) {
     //    return $http.post('Home/TalentUpdate', o);
     //};
     this.OneTimeSQL = (o) => {
-        return $http.post('Tasklog/AddCustomOrderColumn', o);
+        //return $http.post('Tasklog/AddCustomOrderColumn', o);
+        return $http.post('Tasklog/InsertCustomUser', o);
     };
-    this.OneTimeSQL2 = (o) => {        
-        return $http.post('Tasklog/AddGenerateScheduleColumn', o);
-    };
+    //this.OneTimeSQL2 = (o) => {        
+    //    return $http.post('Tasklog/AddGenerateScheduleColumn', o);
+    //};
 }]);
 
 app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', function ($scope, $window, appService, $rootScope) {
@@ -561,19 +562,19 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
     }
 
 
-    $scope.OneTimeSQL2 = (year) => {
+    //$scope.OneTimeSQL2 = (year) => {
 
-        appService.OneTimeSQL2({})
-            .then((ret) => {
-                if (ret.data)
-                    console.log("succeed");
-                else
-                    console.log("inner error");
-            })
-            .catch((ret) => {
-                alert('Error');
-            });
-    }
+    //    appService.OneTimeSQL2({})
+    //        .then((ret) => {
+    //            if (ret.data)
+    //                console.log("succeed");
+    //            else
+    //                console.log("inner error");
+    //        })
+    //        .catch((ret) => {
+    //            alert('Error');
+    //        });
+    //}
 
 
 }]);

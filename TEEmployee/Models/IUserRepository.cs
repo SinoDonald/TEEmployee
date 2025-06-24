@@ -16,6 +16,7 @@ namespace TEEmployee.Models
         List<User> GetManagers();
         List<string> GetGroupList(string view, string empno); // 取得群組
         List<string> GetGroupUsers(string selectedGroup, string empno); // 取得群組同仁
+        bool InsertCustomUser(User user);
         void Dispose();
     }
 }
