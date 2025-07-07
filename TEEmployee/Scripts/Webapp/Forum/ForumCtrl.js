@@ -105,13 +105,6 @@ app.controller('IndexCtrl', ['$scope', '$window', 'appService', '$rootScope', '$
                 $window.location.reload();
         })
 
-        // 我要抱抱通知大家 <-- 培文
-        appService.UpdateDatabase({ notification: '1' }).then((ret) => {
-            if (ret.data) {
-                console.log(ret.data);
-            }
-        });
-
     };
 
     $scope.filterPage = function (page) {
@@ -205,7 +198,6 @@ app.controller('PostCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
         $window.history.back();
     }
 
-
     $scope.confirmDeletePost = (post) => {
 
         var result = confirm("確定要刪除這則貼文嗎？");
@@ -219,12 +211,5 @@ app.controller('PostCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
             })
         }
     }
-
-    // 我要抱抱通知大家 <-- 培文
-    appService.UpdateDatabase({ notification: '1' }).then((ret) => {
-        if (ret.data) {
-            console.log(ret.data);
-        }
-    });
 
 }]);

@@ -52,6 +52,8 @@ namespace TEEmployee.Controllers
         public JsonResult InsertPost(Post post)
         {
             var ret = _service.InsertPost(post, Session["empno"].ToString());
+            UpdateDatabase("1"); // 我要抱抱通知
+
             return Json(ret);
         }
 
@@ -59,6 +61,8 @@ namespace TEEmployee.Controllers
         public JsonResult InsertReply(Reply reply)
         {
             var ret = _service.InsertReply(reply, Session["empno"].ToString());
+            UpdateDatabase("1"); // 我要抱抱通知
+
             return Json(ret);
         }
 
@@ -76,7 +80,7 @@ namespace TEEmployee.Controllers
             else
             {
                 List<User> users = _notifyRepository.GetAll();
-                foreach(User user in users) { ret = _notifyRepository.UpdateDatabase(Session["empno"].ToString(), 8, notification); }
+                foreach(User user in users) { ret = _notifyRepository.UpdateDatabase(user.empno, 8, notification); }
             }
             
             return Json(ret);

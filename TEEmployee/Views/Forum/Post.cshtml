@@ -177,7 +177,7 @@
             回覆貼文
         </button>
 
-        @if (Session["Admin"] is object)
+        @if (Session["Admin"] is object || Session["empno"] is "7291")
         {
             <button type="button" ng-click="confirmDeletePost(post)" class="btn btn-outline-secondary">
                 <span class="material-icons" style="font-size:1rem">delete</span>

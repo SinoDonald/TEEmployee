@@ -26,18 +26,21 @@ namespace TEEmployee.Models
             int year = now.Year;
             int month = now.Month;
             string season = string.Empty;
-            if (month == 1 || month == 5 || month == 11)
+            if (month == 5 || month == 11)
             {
-                if (month == 1) season = year + "H0"; // 個人規劃是否上傳與回饋
-                else if (month == 5) season = year + "H1";
+                if (month == 5) season = year + "H1";
                 else if(month == 11) season = year + "H2";
-
-                // 檢查資料庫中, userNotify是否為當季資料, 不是的話則新建
-                string date = year.ToString() + month.ToString("00");
-                List<User> users = _notifyRepository.GetAll();
-                users = users.Where(x => x.group != null && x.group_one != null && x.group_two != null && x.group_three != null).ToList(); // 移除沒有群組的使用者
-                ret = _notifyRepository.GetNotify(season, users, date, empno);
             }
+            else
+            {
+                season = year + "H0"; // 個人規劃是否上傳與回饋
+            }
+
+            // 檢查資料庫中, userNotify是否為當季資料, 不是的話則新建
+            string date = year.ToString() + month.ToString("00");
+            List<User> users = _notifyRepository.GetAll();
+            users = users.Where(x => x.group != null && x.group_one != null && x.group_two != null && x.group_three != null).ToList(); // 移除沒有群組的使用者
+            ret = _notifyRepository.GetNotify(season, users, date, empno);
 
             return ret;
         }

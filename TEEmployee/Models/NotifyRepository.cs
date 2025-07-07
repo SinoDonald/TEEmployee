@@ -541,32 +541,35 @@ namespace TEEmployee.Models
                 string sql = @"SELECT * FROM userNotify WHERE empno=@empno";
                 UserNotify userNotify = _conn.Query<UserNotify>(sql, new { empno }).SingleOrDefault();
 
-                if (notification == "0")
+                if(userNotify != null)
                 {
-                    if (count.Equals(1)) sql = @"UPDATE userNotify SET self=0 WHERE empno=@empno"; // 自我評估表
-                    else if (count.Equals(2)) sql = @"UPDATE userNotify SET manager_suggest=0 WHERE empno=@empno"; // 給予主管建議表
-                    else if (count.Equals(3)) sql = @"UPDATE userNotify SET freeback=0 WHERE empno=@empno"; // 主管給予員工建議
-                    else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=0 WHERE empno=@empno"; // 未來3年數位轉型規劃
-                    else if (count.Equals(5)) sql = @"UPDATE userNotify SET personPlan=0 WHERE empno=@empno"; // 年度個人規劃
-                    else if (count.Equals(6)) sql = @"UPDATE userNotify SET planFreeback=0 WHERE empno=@empno"; // 個人規劃回饋
-                    else if (count.Equals(7)) sql = @"UPDATE userNotify SET kpi=0 WHERE empno=@empno"; // 填KPI
-                    else if (count.Equals(8)) sql = @"UPDATE userNotify SET hug=0 WHERE empno=@empno"; // 我要抱抱
-                }
-                else
-                {
-                    if (count.Equals(1)) sql = @"UPDATE userNotify SET self=1 WHERE empno=@empno"; // 自我評估表
-                    else if (count.Equals(2)) sql = @"UPDATE userNotify SET manager_suggest=1 WHERE empno=@empno"; // 給予主管建議表
-                    else if (count.Equals(3)) sql = @"UPDATE userNotify SET freeback=1 WHERE empno=@empno"; // 主管給予員工建議
-                    else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=1 WHERE empno=@empno"; // 未來3年數位轉型規劃
-                    else if (count.Equals(5)) sql = @"UPDATE userNotify SET personPlan=1 WHERE empno=@empno"; // 年度個人規劃
-                    else if (count.Equals(6)) sql = @"UPDATE userNotify SET planFreeback=1 WHERE empno=@empno"; // 個人規劃回饋
-                    else if (count.Equals(7)) sql = @"UPDATE userNotify SET kpi=1 WHERE empno=@empno"; // 填KPI
-                    else if (count.Equals(8)) sql = @"UPDATE userNotify SET hug=1 WHERE empno=@empno"; // 我要抱抱
-                }
+                    if (notification == "0")
+                    {
+                        if (count.Equals(1)) sql = @"UPDATE userNotify SET self=0 WHERE empno=@empno"; // 自我評估表
+                        else if (count.Equals(2)) sql = @"UPDATE userNotify SET manager_suggest=0 WHERE empno=@empno"; // 給予主管建議表
+                        else if (count.Equals(3)) sql = @"UPDATE userNotify SET freeback=0 WHERE empno=@empno"; // 主管給予員工建議
+                        else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=0 WHERE empno=@empno"; // 未來3年數位轉型規劃
+                        else if (count.Equals(5)) sql = @"UPDATE userNotify SET personPlan=0 WHERE empno=@empno"; // 年度個人規劃
+                        else if (count.Equals(6)) sql = @"UPDATE userNotify SET planFreeback=0 WHERE empno=@empno"; // 個人規劃回饋
+                        else if (count.Equals(7)) sql = @"UPDATE userNotify SET kpi=0 WHERE empno=@empno"; // 填KPI
+                        else if (count.Equals(8)) sql = @"UPDATE userNotify SET hug=0 WHERE empno=@empno"; // 我要抱抱
+                    }
+                    else
+                    {
+                        if (count.Equals(1)) sql = @"UPDATE userNotify SET self=1 WHERE empno=@empno"; // 自我評估表
+                        else if (count.Equals(2)) sql = @"UPDATE userNotify SET manager_suggest=1 WHERE empno=@empno"; // 給予主管建議表
+                        else if (count.Equals(3)) sql = @"UPDATE userNotify SET freeback=1 WHERE empno=@empno"; // 主管給予員工建議
+                        else if (count.Equals(4)) sql = @"UPDATE userNotify SET future=1 WHERE empno=@empno"; // 未來3年數位轉型規劃
+                        else if (count.Equals(5)) sql = @"UPDATE userNotify SET personPlan=1 WHERE empno=@empno"; // 年度個人規劃
+                        else if (count.Equals(6)) sql = @"UPDATE userNotify SET planFreeback=1 WHERE empno=@empno"; // 個人規劃回饋
+                        else if (count.Equals(7)) sql = @"UPDATE userNotify SET kpi=1 WHERE empno=@empno"; // 填KPI
+                        else if (count.Equals(8)) sql = @"UPDATE userNotify SET hug=1 WHERE empno=@empno"; // 我要抱抱
+                    }
 
-                _conn.Execute(sql, userNotify, tran);
-                tran.Commit();
-                ret = true; // 更新成功
+                    _conn.Execute(sql, userNotify, tran);
+                    tran.Commit();
+                    ret = true; // 更新成功
+                }
             }
             _conn.Close();
 
