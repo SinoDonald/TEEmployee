@@ -34,6 +34,10 @@ app.service('appService', ['$http', function ($http) {
     this.HighPerformer = (o) => {
         return $http.post('Talent/HighPerformer', o);
     }
+    // 取得年份
+    this.GetYears = (o) => {
+        return $http.post('Talent/GetYears', o);
+    };
     // 取得群組
     this.GetGroupList = (o) => {
         return $http.post('Talent/GetGroupList', o);
@@ -61,6 +65,10 @@ app.service('appService', ['$http', function ($http) {
     // 儲存回覆
     this.SaveResponse = function (o) {
         return $http.post('Talent/SaveResponse', o);
+    };
+    // 取得測評資料PDF
+    this.GetPDF = (o) => {
+        return $http.post('Talent/GetPDF', o, config);
     };
     
 }]);
@@ -267,6 +275,35 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
             .catch(function (ret) {
                 alert('未上傳履歷');
             });
+        // 取得年份
+        appService.GetYears({})
+            .then(function (ret) {
+                $scope.years = ret.data;
+                $scope.selectedYear = $scope.years[0];
+            })
+    }
+
+    function GetPDF(show) {
+        // 取得PDF
+        appService.GetPDF({ year: $scope.selectedYear, empno: $scope.data[0].empno })
+            .then(function (ret) {
+                if (ret.data.size != 0) {
+                    const contentDispositionHeader = ret.headers('Content-Disposition');
+                    let fileName = contentDispositionHeader.split(';')[1].trim().split('=')[1].replace(/"/g, '');
+                    fileName = decodeURIComponent(fileName).replace(`UTF-8''`, '');
+                    var pdfData = new Blob([ret.data], { type: 'application/pdf' });
+                    framePDF.src = URL.createObjectURL(pdfData);
+                    //$scope.GetPDF = ret.data;
+                }
+                else {
+                    if (show === true) {
+                        alert("簡報尚未上傳");
+                    }
+                    else {
+                        framePDF.src = "";
+                    }
+                }
+            });
     }
 
     //// 上傳年度績效檔案
@@ -429,6 +466,13 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
         }
     }
 
+    // 取得年份
+    appService.GetYears({})
+        .then(function (ret) {
+            $scope.years = ret.data;
+            $scope.selectedYear = $scope.years[0];
+        })
+
     // 上傳測評資料檔案
     $scope.uploadFile = () => {
         filepicker.click();
@@ -471,6 +515,12 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
         $scope.user.test = result[0].test;
     }
 
+    // 依年份顯示
+    $scope.FilterDataByYear = function (selectedYear) {
+        $scope.selectedYear = selectedYear;
+        GetPDF(false); // 取得PDF
+    }
+
     // 上傳測評資料檔案
     $(document).on("click", "#btnPDFUpload", function () {
         var files = $("#importPDFFile").get(0).files;
@@ -498,6 +548,63 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
             }
         });
     });
+
+    // 上傳測評資料PDF
+    $(document).on("click", "#btnDDIPDFUpload", function () {
+        var files = $("#importDDIPDFFile").get(0).files;
+
+        var formData = new FormData();
+        formData.append('file', files[0]);
+        formData.append('year', $scope.selectedYear);
+        formData.append('folder', "~/App_Data");
+        //formData.append('folder', "~/Content");
+
+        $.ajax({
+            url: 'Talent/UploadPDFFile',
+            enctype: "multipart/form-data",
+            data: formData,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (!data.includes("Error")) {
+                    GetPDF(false); // 取得PDF
+                    $('#framePDF').attr('src', $('#framePDF').attr('src')); // 即時更新PDF
+                    alert("上傳成功");
+                }
+                else {
+                    alert(data);
+                }
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    });
+
+    function GetPDF(show) {
+        // 取得PDF
+        appService.GetPDF({ year: $scope.selectedYear, empno: $scope.user.empno })
+            .then(function (ret) {
+                if (ret.data.size != 0) {
+                    const contentDispositionHeader = ret.headers('Content-Disposition');
+                    let fileName = contentDispositionHeader.split(';')[1].trim().split('=')[1].replace(/"/g, '');
+                    fileName = decodeURIComponent(fileName).replace(`UTF-8''`, '');
+                    var pdfData = new Blob([ret.data], { type: 'application/pdf' });
+                    framePDF.src = URL.createObjectURL(pdfData);
+                    //$scope.GetPDF = ret.data;
+                }
+                else {
+                    if (show === true) {
+                        alert("簡報尚未上傳");
+                    }
+                    else {
+                        framePDF.src = "";
+                    }
+                }
+            });
+    }
+    GetPDF(false); // 取得DDI PDF
 
     // 回上頁
     $scope.ToTalent = function () {

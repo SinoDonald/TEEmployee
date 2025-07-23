@@ -233,6 +233,38 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
         /// <summary>
+        /// 取得年份
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public List<string> GetYears()
+        {
+            // 當前民國年
+            CultureInfo culture = new CultureInfo("zh-TW");
+            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+            string thisYear = DateTime.Now.ToString("yyy", culture);
+            int month = DateTime.Now.Month;
+
+            List<string> ret = new List<string>();
+
+            //string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Content"), "GSchedule", view);
+            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data"), "Talent");
+            string yearFolderPath = Path.Combine(folderPath, thisYear);
+            if (!Directory.Exists(yearFolderPath)) { Directory.CreateDirectory(yearFolderPath); }
+            // 11月即增加明年度的資料夾
+            if (month >= 11)
+            {
+                string nextYear = (Convert.ToInt32(thisYear) + 1).ToString();
+                string nextYearFolderPath = Path.Combine(folderPath, nextYear);
+                if (!Directory.Exists(nextYearFolderPath)) { Directory.CreateDirectory(nextYearFolderPath); }
+            }
+            // 查詢所有子資料夾
+            DirectoryInfo dirInfo = new DirectoryInfo(folderPath);
+            ret = dirInfo.GetDirectories().Select(x => x.Name).OrderByDescending(x => x).ToList();
+
+            return ret;
+        }
+        /// <summary>
         /// 解析SQL seniority文字, 儲存工作、公司與職位年資
         /// </summary>
         /// <param name="empno"></param>
@@ -683,6 +715,77 @@ namespace TEEmployee.Models.Talent
             }
 
             return userCVs;
+        }
+
+        /// <summary>
+        /// 上傳測評資料PDF
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public string UploadPDFFile(HttpPostedFileBase file, string year, string empno)
+        {
+            string path = "";
+            string folder = "App_Data";
+
+            try
+            {
+                //// 當前民國年
+                //CultureInfo culture = new CultureInfo("zh-TW");
+                //culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                //string year = DateTime.Now.ToString("yyy", culture);
+
+                User user = new UserRepository().GetAll().Where(x => x.empno.Equals(empno)).FirstOrDefault();
+
+                if (Path.GetExtension(file.FileName).Equals(".pdf"))
+                {
+                    try
+                    {
+                        string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/" + folder), "Talent", year);
+                        // 檢查資料夾是否存在
+                        if (!Directory.Exists(folderPath)) { Directory.CreateDirectory(folderPath); }
+
+                        try
+                        {
+                            path = Path.Combine(folderPath, user.empno + Path.GetExtension(file.FileName));
+                            file.SaveAs(path); // 將檔案存到Server
+                        }
+                        catch (Exception) { path = "Error"; }
+                    }
+                    catch (Exception ex) { path = "Error：Exist無法檢查 or 資料夾無法建立\n" + ex.Message + "\n" + ex.ToString(); }
+                }
+            }
+            catch (Exception ex) { path = "Error：年份 or User.db有誤\n" + ex.Message + "\n" + ex.ToString(); }
+
+            return path;
+        }
+        /// <summary>
+        /// 取得測評資料PDF
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public string GetPDF(string year, string empno)
+        {
+            string folder = "App_Data";
+            //string folder = "Content";
+
+            if (String.IsNullOrEmpty(year))
+            {
+                // 當前民國年
+                CultureInfo culture = new CultureInfo("zh-TW");
+                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+                year = DateTime.Now.ToString("yyy", culture);
+            }
+
+            User user = new UserRepository().GetAll().Where(x => x.empno.Equals(empno)).FirstOrDefault();
+            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/" + folder), "Talent", year);
+            // 檢查資料夾是否存在
+            if (!Directory.Exists(folderPath)) { Directory.CreateDirectory(folderPath); }
+            string relativePath = Path.Combine(folder, "Talent", year);
+            relativePath = folderPath;
+            var ret = Path.Combine(relativePath, user.group + ".pdf");
+            ret = Path.Combine(relativePath, user.empno + ".pdf");
+
+            return ret;
         }
         /// <summary>
         /// 儲存測評資料

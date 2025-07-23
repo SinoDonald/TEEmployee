@@ -15,6 +15,17 @@ namespace TEEmployee.Models.Talent
             _talentRepository = new TalentRepository();
         }
         /// <summary>
+        /// 取得年份
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="empno"></param>
+        /// <returns></returns>
+        public List<string> GetYears()
+        {
+            List<string> ret = _talentRepository.GetYears();
+            return ret;
+        }
+        /// <summary>
         /// 上傳測評資料檔案
         /// </summary>
         /// <param name="filesInfo"></param>
@@ -23,6 +34,46 @@ namespace TEEmployee.Models.Talent
         {
             List<CV> ret = _talentRepository.ImportPDFFile(file, empno);
             return ret;
+        }
+        /// <summary>
+        /// 上傳測評資料PDF
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="empno"></param>
+        /// <returns></returns>
+        public string UploadPDFFile(HttpPostedFileBase file, string year, string empno)
+        {
+            string ret = _talentRepository.UploadPDFFile(file, year, empno);
+            return ret;
+        }
+        /// <summary>
+        /// 取得測評資料PDF
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="empno"></param>
+        /// <returns></returns>
+        public string GetPDF(string year, string empno)
+        {
+            string ret = _talentRepository.GetPDF(year, empno);
+            return ret;
+        }
+        /// <summary>
+        /// 下載PDF
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="empno"></param>
+        /// <returns></returns>
+        public byte[] DownloadFile(string pdfPath)
+        {
+            try
+            {
+                var fileBytes = File.ReadAllBytes(pdfPath);
+                return fileBytes;
+            }
+            catch
+            {
+                return null;
+            }
         }
         /// <summary>
         /// High Performer

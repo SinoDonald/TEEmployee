@@ -15,11 +15,29 @@ namespace TEEmployee.Models.Talent
         /// <returns></returns>
         bool SaveChoice(List<Ability> users);
         /// <summary>
+        /// 取得年份
+        /// </summary>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        List<string> GetYears();
+        /// <summary>
         /// 上傳測評資料檔案
         /// </summary>
         /// <param name="users"></param>
         /// <returns></returns>
         List<CV> ImportPDFFile(HttpPostedFileBase file, string empno);
+        /// <summary>
+        /// 上傳測評資料檔案
+        /// </summary>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        string UploadPDFFile(HttpPostedFileBase file, string year, string empno);
+        /// <summary>
+        /// 取得測評資料PDF
+        /// </summary>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        string GetPDF(string year, string empno);
         /// <summary>
         /// 儲存回覆
         /// </summary>

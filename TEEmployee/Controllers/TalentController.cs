@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
@@ -68,6 +69,17 @@ namespace TEEmployee.Controllers
         // -----------------------------------------
 
         /// <summary>
+        /// 取得年份
+        /// </summary>
+        /// <param name="selectedGroup"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult GetYears()
+        {
+            var ret = _service.GetYears();
+            return Json(ret);
+        }
+        /// <summary>
         /// 上傳測評資料檔案
         /// </summary>
         /// <param name="file"></param>
@@ -78,6 +90,41 @@ namespace TEEmployee.Controllers
             if (file == null) return Json(new { Status = 0, Message = "No File Selected" });
             var ret = _service.ImportPDFFile(file, Session["empno"].ToString());
             return Json(ret);
+        }
+        /// <summary>
+        /// 上傳測評資料PDF
+        /// </summary>
+        /// <param name="selectedGroup"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult UploadPDFFile(HttpPostedFileBase file, string year)
+        {
+            if (file == null) return Json(new { Status = 0, Message = "No File Selected" });
+            string ret = _service.UploadPDFFile(file, year, Session["empno"].ToString());
+            return Json(ret);
+        }
+        /// <summary>
+        /// 取得測評資料PDF
+        /// </summary>
+        /// <param name="selectedGroup"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetPDF(string year, string empno)
+        {
+            string pdfPath = _service.GetPDF(year, empno);
+            var fileBytes = _service.DownloadFile(pdfPath);
+            string contentType = "application/octet-stream"; // byte
+            FileContentResult result = null;
+            try
+            {
+                result = File(fileBytes, contentType, empno + ".pdf");
+            }
+            catch (Exception)
+            {
+                result = null;
+            }
+
+            return result;
         }
         /// <summary>
         /// High Performer

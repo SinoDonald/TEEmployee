@@ -196,6 +196,40 @@
                     </div>
                     <div class="row">
                         <div class="form-group">
+                            <h4>測評資料</h4>
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <label for="SelectGroup">請選擇年份</label>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" ng-change="FilterDataByYear(selectedYear)" aria-label="Select the Year">
+                                        <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="alert alert-warning" role="alert">
+                                        檔案限定格式為.pdf，檔案大小不超過20MB
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div>
+                                        <form id="formElem">
+                                            <input type="file" id="filepicker" name="file" accept=".pdf" hidden>
+                                        </form>
+                                    </div>
+                                    <input class="form-control" type="file" name="importDDIPDFFile" id="importDDIPDFFile" />
+                                </div>
+                                <div class="col-sm-1">
+                                    <input class="btn btn-primary" id="btnDDIPDFUpload" type="button" value="上傳" />
+                                </div>
+                                <div>
+                                    <iframe id="framePDF" src="" style="width:100%;min-height:800px;margin:0 auto;" type="application/pdf"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="row">
+                        <div class="form-group">
                             <div class="row">
                                 <h4>測評資料</h4>
                                 <div class="col-sm-6">
@@ -208,11 +242,11 @@
                                         </form>
                                     </div>
                                 </div>
-                                <div class="col-sm-1">
+                                <div class="col-sm-1">-->
                                     @*<button class="btn-lg" type="button" ng-click="uploadFile()">
-                                        <span class="material-icons">upload_file</span>
-                                    </button>*@
-                                </div>
+                            <span class="material-icons">upload_file</span>
+                        </button>*@
+                                <!--</div>
                                 <div class="col-sm-4">
                                     <input class="form-control" type="file" name="importPDFFile" id="importPDFFile" />
                                 </div>
@@ -263,7 +297,7 @@
                             }
                         </div>
                     </div>
-                </div>
+                </div>-->
                 <div class="row">
                     <div class="form-group">
                         <h4>待發展能力</h4>
