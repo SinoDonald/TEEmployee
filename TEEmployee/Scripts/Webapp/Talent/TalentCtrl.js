@@ -283,29 +283,6 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
             })
     }
 
-    function GetPDF(show) {
-        // 取得PDF
-        appService.GetPDF({ year: $scope.selectedYear, empno: $scope.data[0].empno })
-            .then(function (ret) {
-                if (ret.data.size != 0) {
-                    const contentDispositionHeader = ret.headers('Content-Disposition');
-                    let fileName = contentDispositionHeader.split(';')[1].trim().split('=')[1].replace(/"/g, '');
-                    fileName = decodeURIComponent(fileName).replace(`UTF-8''`, '');
-                    var pdfData = new Blob([ret.data], { type: 'application/pdf' });
-                    framePDF.src = URL.createObjectURL(pdfData);
-                    //$scope.GetPDF = ret.data;
-                }
-                else {
-                    if (show === true) {
-                        alert("簡報尚未上傳");
-                    }
-                    else {
-                        framePDF.src = "";
-                    }
-                }
-            });
-    }
-
     //// 上傳年度績效檔案
     //$(document).on("click", "#btnUpload", function () {
     //    var files = $("#importFile").get(0).files;
@@ -521,33 +498,33 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
         GetPDF(false); // 取得PDF
     }
 
-    // 上傳測評資料檔案
-    $(document).on("click", "#btnPDFUpload", function () {
-        var files = $("#importPDFFile").get(0).files;
+    //// 上傳測評資料檔案
+    //$(document).on("click", "#btnPDFUpload", function () {
+    //    var files = $("#importPDFFile").get(0).files;
 
-        var formData = new FormData();
-        formData.append('file', files[0]);
+    //    var formData = new FormData();
+    //    formData.append('file', files[0]);
 
-        $.ajax({
-            url: 'Talent/ImportPDFFile',
-            data: formData,
-            type: 'POST',
-            contentType: false,
-            processData: false,
-            success: function (data) {
-                if (data != "") {
-                    $scope.user.advantage = data[0].advantage;
-                    $scope.user.disadvantage = data[0].disadvantage;
-                    $scope.user.test = data[0].test;
-                    $scope.$apply(); // 用$apply強制刷新數據
-                    alert("更新完成");
-                }
-                else {
-                    alert("上傳格式錯誤");
-                }
-            }
-        });
-    });
+    //    $.ajax({
+    //        url: 'Talent/ImportPDFFile',
+    //        data: formData,
+    //        type: 'POST',
+    //        contentType: false,
+    //        processData: false,
+    //        success: function (data) {
+    //            if (data != "") {
+    //                $scope.user.advantage = data[0].advantage;
+    //                $scope.user.disadvantage = data[0].disadvantage;
+    //                $scope.user.test = data[0].test;
+    //                $scope.$apply(); // 用$apply強制刷新數據
+    //                alert("更新完成");
+    //            }
+    //            else {
+    //                alert("上傳格式錯誤");
+    //            }
+    //        }
+    //    });
+    //});
 
     // 上傳測評資料PDF
     $(document).on("click", "#btnDDIPDFUpload", function () {
@@ -583,7 +560,6 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
     });
 
     function GetPDF(show) {
-        // 取得PDF
         appService.GetPDF({ year: $scope.selectedYear, empno: $scope.user.empno })
             .then(function (ret) {
                 if (ret.data.size != 0) {
@@ -591,8 +567,8 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
                     let fileName = contentDispositionHeader.split(';')[1].trim().split('=')[1].replace(/"/g, '');
                     fileName = decodeURIComponent(fileName).replace(`UTF-8''`, '');
                     var pdfData = new Blob([ret.data], { type: 'application/pdf' });
-                    framePDF.src = URL.createObjectURL(pdfData);
                     //$scope.GetPDF = ret.data;
+                    framePDF.src = URL.createObjectURL(pdfData);
                 }
                 else {
                     if (show === true) {

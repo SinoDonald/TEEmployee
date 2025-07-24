@@ -813,7 +813,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                     $scope.projects.push({ logs: [], projno: task.projno, realHour: task.realHour });
                     projidx = $scope.projects.length - 1;
                 }
-                $scope.projects[projidx].logs.push({ id: task.id, content: task.content, endDate: task.endDate, note: task.note });
+                $scope.projects[projidx].logs.push({ id: task.id, content: task.content, endDate: task.endDate, projectType: task.projectType.toString(), note: task.note });
             }
 
             // fill in project item

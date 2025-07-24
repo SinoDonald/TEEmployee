@@ -716,7 +716,6 @@ namespace TEEmployee.Models.Talent
 
             return userCVs;
         }
-
         /// <summary>
         /// 上傳測評資料PDF
         /// </summary>

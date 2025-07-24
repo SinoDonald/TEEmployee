@@ -94,7 +94,8 @@ namespace TEEmployee.Controllers
         /// <summary>
         /// 上傳測評資料PDF
         /// </summary>
-        /// <param name="selectedGroup"></param>
+        /// <param name="file"></param>
+        /// <param name="year"></param>
         /// <returns></returns>
         [HttpPost]
         public ActionResult UploadPDFFile(HttpPostedFileBase file, string year)
@@ -106,7 +107,8 @@ namespace TEEmployee.Controllers
         /// <summary>
         /// 取得測評資料PDF
         /// </summary>
-        /// <param name="selectedGroup"></param>
+        /// <param name="year"></param>
+        /// <param name="empno"></param>
         /// <returns></returns>
         [HttpPost]
         public ActionResult GetPDF(string year, string empno)
