@@ -567,10 +567,12 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
                     let fileName = contentDispositionHeader.split(';')[1].trim().split('=')[1].replace(/"/g, '');
                     fileName = decodeURIComponent(fileName).replace(`UTF-8''`, '');
                     var pdfData = new Blob([ret.data], { type: 'application/pdf' });
+                    $scope.Show = 1;
                     //$scope.GetPDF = ret.data;
                     framePDF.src = URL.createObjectURL(pdfData);
                 }
                 else {
+                    $scope.Show = 0;
                     if (show === true) {
                         alert("簡報尚未上傳");
                     }
