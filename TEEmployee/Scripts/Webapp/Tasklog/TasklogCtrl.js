@@ -831,7 +831,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
                     $scope.projects[projidx].overtime += item.overtime;
                 }
                 else {
-                    $scope.projects[projidx].itemno = `${item.itemno}, `;
+                    //$scope.projects[projidx].itemno = `${item.itemno}, `; // 修正【匯入上月資料】後無法刪除項目的bug
                     $scope.projects[projidx].workHour = item.workHour;
                     $scope.projects[projidx].overtime = item.overtime;
                 }
