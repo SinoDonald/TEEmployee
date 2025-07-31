@@ -191,6 +191,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AssessmentController.cs" />
     <Compile Include="Controllers\EducationController.cs" />
+    <Compile Include="Controllers\EducationV2Controller.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\ForumController.cs" />
     <Compile Include="Controllers\GEducationController.cs" />
@@ -220,6 +221,12 @@
     <Compile Include="Models\Education2024\EducationService.cs" />
     <Compile Include="Models\Education2024\IEducationRepository.cs" />
     <Compile Include="Models\Education2024\Record.cs" />
+    <Compile Include="Models\EducationV2\Assignment.cs" />
+    <Compile Include="Models\EducationV2\Content.cs" />
+    <Compile Include="Models\EducationV2\EducationRepository.cs" />
+    <Compile Include="Models\EducationV2\EducationService.cs" />
+    <Compile Include="Models\EducationV2\IEducationRepository.cs" />
+    <Compile Include="Models\EducationV2\Record.cs" />
     <Compile Include="Models\Education\Chapter.cs" />
     <Compile Include="Models\Education\Course.cs" />
     <Compile Include="Models\Education\EducationRepository.cs" />
@@ -434,6 +441,7 @@
     <Content Include="Scripts\Webapp\Assessment\SelfCtrl.min.js">
       <DependentUpon>SelfCtrl.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Webapp\EducationV2\EducationCtrl.js" />
     <Content Include="Scripts\Webapp\Education\EducationBackupCtrl.js" />
     <Content Include="Scripts\Webapp\Education\EducationCtrl.js" />
     <Content Include="Scripts\Webapp\Forum\ForumCtrl.js" />
@@ -572,6 +580,11 @@
     <Content Include="Views\Training\External.cshtml" />
     <Content Include="Views\IssueV2\Index.cshtml" />
     <Content Include="Views\IssueV2\List.cshtml" />
+    <Content Include="Views\EducationV2\Index.cshtml" />
+    <Content Include="Views\EducationV2\AssignMenu.cshtml" />
+    <Content Include="Views\EducationV2\Assign.cshtml" />
+    <Content Include="Views\EducationV2\Unassign.cshtml" />
+    <Content Include="Views\EducationV2\Record.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Promotion\" />
