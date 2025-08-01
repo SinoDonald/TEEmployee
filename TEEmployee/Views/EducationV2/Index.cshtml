@@ -1,0 +1,109 @@
+﻿
+@{
+    ViewBag.Title = "拓展專業培養";
+}
+
+@section Styles {
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        #mainNav, #mainNav.navbar-shrink {
+            box-shadow: none;
+        }
+
+        #childNav {
+            margin-top: 80px;
+        }
+
+        iframe {
+            width: 80%;
+            height: 80vh;
+        }
+    </style>
+}
+
+<div ng-controller="EducationCtrl" class="container-fluid">
+
+    <nav class="navbar navbar-expand-lg navbar-dark" id="childNav" style="background-color: #695dd9">
+        <a class="navbar-brand" href="@Url.Action("Index", "EducationV2")">拓展專業培養</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="@Url.Action("Index", "EducationV2")">課程總覽</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("AssignMenu", "EducationV2")">課程指派</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Record", "EducationV2")">課表查詢</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Digital", "EducationV2")">數位課程</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+
+    <div class="d-flex justify-content-center my-4">
+        <iframe id="inlineFrameExample"
+                title="Inline Frame Example"
+                @*width="1200"
+                height="900"*@
+                style="border: 2px solid black;"
+                src="https://gitmind.com/app/docs/mn7ez67t">
+        </iframe>
+    </div>
+
+    @if (Session["Admin"] is true)
+    {
+        <div>
+            <form id="formElem">
+                Files: <input type="file" id="coursefilepicker" name="courseFile">
+                <input type="submit">
+            </form>
+        </div>
+    }
+
+
+
+    <div class="mt-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">課程</th>
+                    <th scope="col">章節</th>
+                    <th scope="col">群組</th>
+                    <th scope="col">小組</th>
+                    <th scope="col">領域</th>
+                    <th scope="col">分類</th>
+                    <th scope="col">編碼</th>
+                </tr>
+            </thead>
+            <tbody ng-repeat="item in contents">
+                <tr>
+                    <th scope="row" ng-bind="item.id"></th>
+                    <td ng-bind="item.course_title"></td>
+                    <td ng-bind="item.title"></td>
+                    <td ng-bind="item.course_group"></td>
+                    <td ng-bind="item.course_group_one"></td>
+                    <td ng-bind="item.content_scope"></td>
+                    <td ng-bind="item.content_type"></td>
+                    <td ng-bind="item.content_code"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+@section Scripts {
+    <script src="~/Scripts/WebApp/EducationV2/EducationCtrl.js"></script>
+}
