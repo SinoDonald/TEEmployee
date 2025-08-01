@@ -246,21 +246,29 @@ namespace TEEmployee.Models.Talent
             int month = DateTime.Now.Month;
 
             List<string> ret = new List<string>();
+            string folder = "App_Data";
+            //string folder = "Content";
 
-            //string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/Content"), "GSchedule", view);
-            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data"), "Talent");
+            //string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data"), "Talent");
+            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/" + folder), "Talent");
             string yearFolderPath = Path.Combine(folderPath, thisYear);
-            if (!Directory.Exists(yearFolderPath)) { Directory.CreateDirectory(yearFolderPath); }
-            // 11月即增加明年度的資料夾
-            if (month >= 11)
+            //string yearFolderPath = Path.Combine(folderPath, "\\/"); // 測試
+            try
             {
-                string nextYear = (Convert.ToInt32(thisYear) + 1).ToString();
-                string nextYearFolderPath = Path.Combine(folderPath, nextYear);
-                if (!Directory.Exists(nextYearFolderPath)) { Directory.CreateDirectory(nextYearFolderPath); }
+                if (!Directory.Exists(yearFolderPath)) { Directory.CreateDirectory(yearFolderPath); }
+                // 11月即增加明年度的資料夾
+                if (month >= 11)
+                {
+                    string nextYear = (Convert.ToInt32(thisYear) + 1).ToString();
+                    string nextYearFolderPath = Path.Combine(folderPath, nextYear);
+                    if (!Directory.Exists(nextYearFolderPath)) { Directory.CreateDirectory(nextYearFolderPath); }
+                }
+                // 查詢所有子資料夾
+                DirectoryInfo dirInfo = new DirectoryInfo(folderPath);
+                ret = dirInfo.GetDirectories().Select(x => x.Name).OrderByDescending(x => x).ToList();
             }
-            // 查詢所有子資料夾
-            DirectoryInfo dirInfo = new DirectoryInfo(folderPath);
-            ret = dirInfo.GetDirectories().Select(x => x.Name).OrderByDescending(x => x).ToList();
+            catch (ArgumentException ex) { ret.Add(ex.Message + "\n" + ex.ToString()); }
+            catch (Exception ex) { ret.Add(ex.Message + "\n" + ex.ToString()); }
 
             return ret;
         }
@@ -764,6 +772,7 @@ namespace TEEmployee.Models.Talent
         /// <returns></returns>
         public string GetPDF(string year, string empno)
         {
+            string ret = string.Empty;
             string folder = "App_Data";
             //string folder = "Content";
 
@@ -776,13 +785,19 @@ namespace TEEmployee.Models.Talent
             }
 
             User user = new UserRepository().GetAll().Where(x => x.empno.Equals(empno)).FirstOrDefault();
-            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/" + folder), "Talent", year);
+            string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/" + folder), "Talent");
+            string yearFolderPath = Path.Combine(folderPath, year);
+            //string yearFolderPath = Path.Combine(folderPath, "\\/"); // 測試
             // 檢查資料夾是否存在
-            if (!Directory.Exists(folderPath)) { Directory.CreateDirectory(folderPath); }
-            string relativePath = Path.Combine(folder, "Talent", year);
-            relativePath = folderPath;
-            var ret = Path.Combine(relativePath, user.group + ".pdf");
-            ret = Path.Combine(relativePath, user.empno + ".pdf");
+            try
+            {
+                if (!Directory.Exists(yearFolderPath)) { Directory.CreateDirectory(yearFolderPath); }
+                string relativePath = Path.Combine(folder, "Talent", year);
+                relativePath = yearFolderPath;
+                ret = Path.Combine(relativePath, user.empno + ".pdf");
+            }
+            catch (ArgumentException ex) { ret = ex.Message + "\n" + ex.ToString(); }
+            catch (Exception ex) { ret = ex.Message + "\n" + ex.ToString(); }
 
             return ret;
         }

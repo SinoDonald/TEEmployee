@@ -278,6 +278,7 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
         // 取得年份
         appService.GetYears({})
             .then(function (ret) {
+                console.log(ret.data);
                 $scope.years = ret.data;
                 $scope.selectedYear = $scope.years[0];
             })
