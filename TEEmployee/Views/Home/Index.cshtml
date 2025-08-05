@@ -262,6 +262,17 @@
                             </a>
                         </div>
 
+                        <div class="col-lg-4 col-sm-6">
+                            <a class="portfolio-box" href="@Url.Action("Index", "Facility")">
+                                <div class="position-relative">
+                                    <img class="img-fluid" src="~/Content/assets/img/portfolio/thumbnails/n12.png" alt="..." />
+                                    <div class="portfolio-box-caption p-3">
+                                    </div>
+                                </div>
+                                <p class="text-center mt-2 h3">辦公資源借用</p>
+                            </a>
+                        </div>
+
                         @*@if (Session["Admin"] is object)*@
                         @if (Session["Admin"] is object || Session["empno"] is "6846" || Session["empno"] is "7291" || Session["empno"] is "7596") // 以婕才能匯入組織表
                         {
