@@ -445,6 +445,7 @@
     <Content Include="Scripts\Webapp\EducationV2\EducationCtrl.js" />
     <Content Include="Scripts\Webapp\Education\EducationBackupCtrl.js" />
     <Content Include="Scripts\Webapp\Education\EducationCtrl.js" />
+    <Content Include="Scripts\Webapp\Facility\FacilityCtrl.js" />
     <Content Include="Scripts\Webapp\Forum\ForumCtrl.js" />
     <Content Include="Scripts\Webapp\GEducation\GEducationCtrl.js" />
     <Content Include="Scripts\Webapp\GSchedule\HistoryLineChart.js" />
@@ -587,6 +588,7 @@
     <Content Include="Views\EducationV2\Unassign.cshtml" />
     <Content Include="Views\EducationV2\Record.cshtml" />
     <Content Include="Views\Facility\Index.cshtml" />
+    <Content Include="Views\Facility\Borrow.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Promotion\" />

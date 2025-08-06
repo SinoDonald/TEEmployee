@@ -13,5 +13,13 @@ namespace TEEmployee.Controllers
         {
             return View();
         }
+        /// <summary>
+        /// 部門公用電腦借用
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Borrow()
+        {
+            return View();
+        }
     }
 }
