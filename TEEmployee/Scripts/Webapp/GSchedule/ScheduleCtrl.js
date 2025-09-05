@@ -647,10 +647,12 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
     // gantt
     //$scope.ganttStartMonth = moment({ day: 1 });
-    $scope.ganttStartMonth = moment({ day: 1 }).subtract(5, 'M');
+    //$scope.ganttStartMonth = moment({ day: 1 }).subtract(5, 'M');
+    $scope.ganttStartMonth = moment({ day: 1 }).subtract(1, 'M');
     $scope.updateMonthRange = () => {
         let rangeStart = $scope.ganttStartMonth.local('zh-tw').format('YYYY-MM');
-        let rangeEnd = moment($scope.ganttStartMonth).add(1, 'y').local('zh-tw').format('YYYY-MM');
+        //let rangeEnd = moment($scope.ganttStartMonth).add(1, 'y').local('zh-tw').format('YYYY-MM');
+        let rangeEnd = moment($scope.ganttStartMonth).add(6, 'M').local('zh-tw').format('YYYY-MM');
         $scope.monthRange = `${rangeStart} ~ ${rangeEnd}`;
     }
     $scope.updateMonthRange();
@@ -777,7 +779,8 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         let groupProjectNames = $scope.data
             .filter(x => x.Group.role === $scope.selectedGroup)
             .filter(x => !(
-                new Date(x.Group.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate() ||
+                //new Date(x.Group.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate() ||
+                new Date(x.Group.start_date) > moment($scope.ganttStartMonth).add(6, 'M').toDate() ||
                 new Date(x.Group.end_date) < moment($scope.ganttStartMonth).toDate()))
             .map(x => {
                 count++;
@@ -791,7 +794,8 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         if ($scope.selectedGroup === 'ALL') {
             groupProjectNames = $scope.data
                 .filter(x => !(
-                    new Date(x.Group.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate() ||
+                    //new Date(x.Group.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate() ||
+                    new Date(x.Group.start_date) > moment($scope.ganttStartMonth).add(6, 'M').toDate() ||
                     new Date(x.Group.end_date) < moment($scope.ganttStartMonth).toDate()))
                 .map(x => {
                     count++;
@@ -1150,7 +1154,8 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         // (Group only) end before startMonth or start after endMonth not showing
         // 0704 update: hide 100% group schedule
         if (schedule.type === 1) {
-            if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate())
+            //if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate())
+            if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(1, 'M').toDate())
                 return false;
 
             if (new Date(schedule.end_date) < moment($scope.ganttStartMonth).toDate())
@@ -1413,10 +1418,12 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
     // gantt
 
     //$scope.ganttStartMonth = moment({ day: 1 });
-    $scope.ganttStartMonth = moment({ day: 1 }).subtract(5, 'M');
+    //$scope.ganttStartMonth = moment({ day: 1 }).subtract(5, 'M');
+    $scope.ganttStartMonth = moment({ day: 1 }).subtract(1, 'M');
     $scope.updateMonthRange = () => {
         let rangeStart = $scope.ganttStartMonth.local('zh-tw').format('YYYY-MM');
-        let rangeEnd = moment($scope.ganttStartMonth).add(1, 'y').local('zh-tw').format('YYYY-MM');
+        //let rangeEnd = moment($scope.ganttStartMonth).add(1, 'y').local('zh-tw').format('YYYY-MM');
+        let rangeEnd = moment($scope.ganttStartMonth).add(6, 'M').local('zh-tw').format('YYYY-MM');
         $scope.monthRange = `${rangeStart} ~ ${rangeEnd}`;
     }
     $scope.updateMonthRange();
@@ -1493,7 +1500,8 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
             .filter(x => x.Group.role === $scope.selectedGroup)
             .filter(x => x.Group.member?.includes($scope.selectedMember))
             .filter(x => !(
-                new Date(x.Group.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate() ||
+                //new Date(x.Group.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate() ||
+                new Date(x.Group.start_date) > moment($scope.ganttStartMonth).add(6, 'M').toDate() ||
                 new Date(x.Group.end_date) < moment($scope.ganttStartMonth).toDate()))
             .map(x => {
                 count++;
@@ -1721,7 +1729,8 @@ app.controller('PersonalCtrl', ['$scope', '$location', 'appService', '$rootScope
 
         // (Group only) end before startMonth or start after endMonth not showing
         if (schedule.type === 1) {
-            if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate())
+            //if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate())
+            if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(6, 'M').toDate())
                 return false;
 
             if (new Date(schedule.end_date) < moment($scope.ganttStartMonth).toDate())

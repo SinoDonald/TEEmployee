@@ -112,8 +112,9 @@ namespace TEEmployee.Models.Profession
             var employeeGroups = GetEmployeeGroups(empno);
             var groups = managerGroups.Concat(employeeGroups).Distinct();
 
-            var groupmembers = this.GetGroupMembers(role).Select(x => x.empno).ToList();
-            
+            //var groupmembers = this.GetGroupMembers(role).Select(x => x.empno).ToList();
+            var groupmembers = this.GetGroupMembers(role, user).Select(x => x.empno).ToList();
+
             // group skills
             // check role
             if (groups.Contains(role))
@@ -210,7 +211,8 @@ namespace TEEmployee.Models.Profession
                 if (managerGroups.Contains(group))
                 {
                     //groupAuthority.Members = JArray.FromObject(GetGroupMembers(group).Select(x => x.name).ToList());
-                    groupAuthority.Members = JArray.FromObject(GetGroupMembers(group).ToList());
+                    //groupAuthority.Members = JArray.FromObject(GetGroupMembers(group).ToList());
+                    groupAuthority.Members = JArray.FromObject(GetGroupMembers(group, user).ToList());
                     groupAuthority.Editable = true;
                 }
                 else
@@ -299,12 +301,30 @@ namespace TEEmployee.Models.Profession
 
             return groups;
         }
-        
-        public List<User> GetGroupMembers(string group)
+
+        //public List<User> GetGroupMembers(string group)
+        //{
+        //    List<User> users = _userRepository.GetAll();
+        //    return users.Where(x => x.group_one == group || x.group_two == group || x.group_three == group).ToList();
+        //}
+
+        // 20250805 update: If the user is group one manager, get only group one employees and manager himself,
+        // do not get other group one manager
+        public List<User> GetGroupMembers(string group, User user)
         {
             List<User> users = _userRepository.GetAll();
-            return users.Where(x => x.group_one == group || x.group_two == group || x.group_three == group).ToList();
+            var members = users.Where(x => x.group_one == group || x.group_two == group || x.group_three == group).ToList();
+
+            if ((user.group_one_manager && user.group_one == group) || (user.group_two_manager && user.group_two == group) || (user.group_three_manager && user.group_three == group))
+            {
+                var otherManagers = members.Where(x => (x.empno != user.empno) && ((x.group_one_manager && x.group_one == group) || (x.group_two_manager && x.group_two == group) || (x.group_three_manager && x.group_three == group)));
+                members = members.Except(otherManagers).ToList();
+            }
+
+            return members;
         }
+
+
         // 下載profession.db <-- 培文
         public byte[] DownloadFile(string filePath)
         {

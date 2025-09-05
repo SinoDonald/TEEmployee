@@ -26,7 +26,8 @@ const ganttPlot = () => {
         //const end = new Date(year, 11, 31);
 
         const start = startMonth;
-        let end = moment(startMonth).add(1, 'y').toDate();
+        //let end = moment(startMonth).add(1, 'y').toDate();
+        let end = moment(startMonth).add(6, 'M').toDate();
 
         // future
         if (type === 'future')
