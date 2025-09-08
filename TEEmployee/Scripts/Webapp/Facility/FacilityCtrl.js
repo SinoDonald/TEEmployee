@@ -16,9 +16,14 @@ app.run(['$http', '$window', function ($http, $window) {
 
 app.service('appService', ['$http', function ($http) {
 
+<<<<<<< HEAD
     // 取得裝置行事曆
     this.GetEvents = (o) => {
         return $http.post('Facility/GetEvents', o);
+=======
+    this.GetSensorResourceData = (o) => {
+        return $http.post('Facility/GetSensorResourceData', o);
+>>>>>>> Bonobo/master
     };
 
 }]);
@@ -70,6 +75,7 @@ app.factory('dataservice', function () {
 
 app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', function ($scope, $location, $window, appService, $rootScope) {
 
+<<<<<<< HEAD
     function GetEvents() {
         // 用 JavaScript Date 或 moment.js
         var startDate = new Date();
@@ -106,4 +112,10 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
             events: '@Url.RouteUrl(new{ action="GetEvents", controller="Home"})'
         });
     });
+=======
+    appService.GetSensorResourceData({}).then((ret) => {
+        $scope.data = ret.data.result.map(x => Boolean(Number(x.value)));
+    })
+
+>>>>>>> Bonobo/master
 }]);

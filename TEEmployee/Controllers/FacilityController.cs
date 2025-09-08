@@ -1,15 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Services.Description;
+<<<<<<< HEAD
+=======
+using TEEmployee.Models.Facility;
+>>>>>>> Bonobo/master
 using TEEmployee.Models.Facility;
 
 namespace TEEmployee.Controllers
 {
     public class FacilityController : Controller
     {
+        private PresenceSensorService _presenceSensorService;
+
+        public FacilityController()
+        {
+            _presenceSensorService = new PresenceSensorService();
+        }
+
+
         // GET: Facility
         public ActionResult Index()
         {
@@ -23,6 +36,7 @@ namespace TEEmployee.Controllers
         {
             return View();
         }
+<<<<<<< HEAD
 
         // -----------------------------------------
         // Web API
@@ -34,6 +48,15 @@ namespace TEEmployee.Controllers
         /// <param name="selectedGroup"></param>
         /// <returns></returns>
         [HttpPost]
+=======
+                
+        [HttpPost]
+        public async Task<ActionResult> GetSensorResourceData()
+        {
+            var ret = await _presenceSensorService.GetSensorResourceData();
+            return Content(ret, "application/json");
+        }
+>>>>>>> Bonobo/master
         public JsonResult GetEvents(DateTime start, DateTime end)
         {
             var viewModel = new Facility();
