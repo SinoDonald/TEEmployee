@@ -19,6 +19,17 @@ app.service('appService', ['$http', function ($http) {
 
 app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', function ($scope, $location, $window, appService, $rootScope) {
 
-    $location.path('/TalentOption');
-
+    /*$location.path('/TalentOption');*/
+    $(document).ready(function () {
+        $('#calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+            firstDay: 1, //The day that each week begins (Monday=1)
+            slotMinutes: 60,
+            events: '@Url.RouteUrl(new{ action="GetEvents", controller="Home"})'
+        });
+    });
 }]);

@@ -8,6 +8,8 @@
     <title>@ViewBag.Title - 軌道二部員工平台</title>
     <base href="@Url.Content("~/")" />
     <link rel="stylesheet" href="~/Content/bootstrap.css">
+    <!-- 裝置借用行事曆 -->
+    <link rel="stylesheet" href="~/Content/css/fullcalendar.min.css">
     @*<link rel="stylesheet" href="~/Content/Site.css">*@
     <script src="~/Scripts/modernizr-2.8.3.js"></script>
     <!-- Favicon-->
@@ -66,17 +68,17 @@
                 <ul class="navbar-nav ms-auto my-2 my-lg-0 homepage">
 
                     @*<li class="nav-item"><a class="nav-link" href="@Url.Action("History", "Home")">更新歷程</a></li>
-        <li class="nav-item"><a class="nav-link" href="@Url.Action("Question", "Home")">Q&A</a></li>
-        <li class="nav-item"><a class="nav-link" href="@Url.Action("Document", "Home")">說明文件</a></li>*@
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Question", "Home")">Q&A</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Document", "Home")">說明文件</a></li>*@
 
                     @*<li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                設備借用
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="https://docs.google.com/spreadsheets/d/1wh8ha6Ydx6H9qPEoHzuaGhn7Of8jaD6gbidkXjsK0vg/edit?gid=729790159#gid=729790159">部門公用電腦借用</a>
-            </div>
-        </li>*@
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                設備借用
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" href="https://docs.google.com/spreadsheets/d/1wh8ha6Ydx6H9qPEoHzuaGhn7Of8jaD6gbidkXjsK0vg/edit?gid=729790159#gid=729790159">部門公用電腦借用</a>
+                            </div>
+                        </li>*@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             部門推廣
@@ -129,9 +131,9 @@
 
 
                     @*<li style="vertical-align: middle" class="nav-item"><a class="nav-link" href="#about">About</a></li>
-        <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
-        <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
-        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>*@
+                        <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>*@
                     @if (Session["notify"] is object)
                     {
                         List<bool> notify = (List<bool>)Session["notify"];
@@ -201,9 +203,9 @@
                                     using (Html.BeginForm("Index", "Home", FormMethod.Post))
                                     {
                                         @*<div class="form-group">
-                                @Html.LabelFor(m => m.Name)
-                                @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
-                            </div>*@
+                                                @Html.LabelFor(m => m.Name)
+                                                @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                                            </div>*@
 
                                         // form is postback to /Home/Enroll
                                         @*<input type="submit" value="Enroll" class="btn" />*@
@@ -219,40 +221,40 @@
                                     }
 
                                     @*<form class="px-4 py-3">
-                            <div class="form-group">
-                                <label for="exampleDropdownFormEmail1">員工編號</label>
-                                <input type="email" class="form-control" id="exampleDropdownFormEmail1">
-                            </div>
-                            <button type="submit" class="btn btn-primary">切換身分</button>
-                        </form>*@
+                                            <div class="form-group">
+                                                <label for="exampleDropdownFormEmail1">員工編號</label>
+                                                <input type="email" class="form-control" id="exampleDropdownFormEmail1">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">切換身分</button>
+                                        </form>*@
                                 }
                             </div>
                         </div>
                     </li>
                     @*<li class="nav-item dropdown">
-            <div class="dropdown">
-                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    @User.Identity.Name
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">@Session["group"].ToString()</a>
-                    <a class="dropdown-item" href="#">@Session["group_one"].ToString()</a>
-                    <a class="dropdown-item" href="#">@Session["group_two"].ToString()</a>
-                    <a class="dropdown-item" href="#">@Session["group_three"].ToString()</a>
-                </div>
-            </div>
-        </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Dropdown
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-        </li>*@
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @User.Identity.Name
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="#">@Session["group"].ToString()</a>
+                                    <a class="dropdown-item" href="#">@Session["group_one"].ToString()</a>
+                                    <a class="dropdown-item" href="#">@Session["group_two"].ToString()</a>
+                                    <a class="dropdown-item" href="#">@Session["group_three"].ToString()</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Dropdown
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </li>*@
 
                 </ul>
             </div>
@@ -276,6 +278,9 @@
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
     <script src="~/Scripts/old_popper.min.js"></script>
     <script src="~/Scripts/bootstrap.js"></script>
+    <!-- 裝置借用行事曆 -->
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/fullcalendar.min.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>
