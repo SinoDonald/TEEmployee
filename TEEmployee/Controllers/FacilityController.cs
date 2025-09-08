@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 using TEEmployee.Models.Facility;
 
 namespace TEEmployee.Controllers
@@ -18,11 +19,21 @@ namespace TEEmployee.Controllers
         /// 部門公用電腦借用
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
         public ActionResult Borrow()
         {
             return View();
         }
+
+        // -----------------------------------------
+        // Web API
+        // -----------------------------------------
+
+        /// <summary>
+        /// 取得裝置行事曆
+        /// </summary>
+        /// <param name="selectedGroup"></param>
+        /// <returns></returns>
+        [HttpPost]
         public JsonResult GetEvents(DateTime start, DateTime end)
         {
             var viewModel = new Facility();
