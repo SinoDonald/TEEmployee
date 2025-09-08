@@ -1,63 +1,112 @@
 ﻿
 @{
     ViewBag.Title = "辦公資源借用";
-    //Layout = "~/Views/Shared/_LayoutStar.cshtml";
 }
 
 @section Styles {
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <style>
-        
-
     </style>
 }
 
+<div ng-controller="FacilityCtrl" class="container" style="margin-top:100px; padding-top:20px">
 
-
-
-<div class="container" style="margin-top:100px; padding-top:20px">
-    
-    <header class="mb-4">
-        <h2>辦公資源借用</h2>
-    </header>
-
-    <div class="row">
-        <div class="col-6">
-            <div class="card text-center">
-                <div class="card-body">
-                    <div class="bg-info btn-lg text-white p-3">
-                        <h3><strong>會議室借用</strong></h3>
-                    </div>
-                    <div class="list-group">
-                        <a href="https://portal2023.sinotech.com.tw/MeetingReserve" class="list-group-item list-group-item-action flex-column align-items-start border" target="_blank">                            
-                            <h5 class="p-3">公司會議室</h5>                            
-                        </a>
-                        <a href="https://engserv.sinotech.com.tw/Dept24/BaseApp/Meeting/MeetingRoom.aspx" class="list-group-item list-group-item-action flex-column align-items-start border" target="_blank">
-                            <h5 class="p-3">部門會議室</h5>
-                        </a>                    
+    <div class="mb-5">
+        <div class="row">
+            <div class="col-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="bg-info btn-lg text-white p-3">
+                            <h3 class="m-0"><strong>會議室借用</strong></h3>
+                        </div>
+                        <div class="list-group">
+                            <a href="https://portal2023.sinotech.com.tw/MeetingReserve" class="list-group-item list-group-item-action flex-column align-items-start border" target="_blank">
+                                <h5 class="p-3">公司會議室</h5>
+                            </a>
+                            <a href="https://engserv.sinotech.com.tw/Dept24/BaseApp/Meeting/MeetingRoom.aspx" class="list-group-item list-group-item-action flex-column align-items-start border" target="_blank">
+                                <h5 class="p-3">部門會議室</h5>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-6">
-            <div class="card text-center">
-                <div class="card-body">
-                    <div class="bg-info btn-lg text-white p-3">
-                        <h3><strong>公用電腦借用</strong></h3>
-                    </div>
-                    <div class="list-group">
-                        <a href="https://docs.google.com/spreadsheets/d/1wh8ha6Ydx6H9qPEoHzuaGhn7Of8jaD6gbidkXjsK0vg/edit?gid=729790159#gid=729790159" class="list-group-item list-group-item-action flex-column align-items-start border" target="_blank">
-                            <h5 class="p-3">部門公用電腦借用</h5>
-                        </a>
-                    </div>
-                    <div class="list-group">
-                        <a href="~/Facility/Borrow" class="list-group-item list-group-item-action flex-column align-items-start border" target="_blank">
-                            <h5 class="p-3">部門公用電腦借用</h5>
-                        </a>
+            <div class="col-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="bg-info btn-lg text-white p-3">
+                            <h3 class="m-0"><strong>公用電腦借用</strong></h3>
+                        </div>
+                        <div class="list-group">
+                            <a href="https://docs.google.com/spreadsheets/d/1wh8ha6Ydx6H9qPEoHzuaGhn7Of8jaD6gbidkXjsK0vg/edit?gid=729790159#gid=729790159" class="list-group-item list-group-item-action flex-column align-items-start border" target="_blank">
+                                <h5 class="p-3">部門公用電腦借用</h5>
+                            </a>
+                        </div>
+                        <div class="list-group">
+                            <a href="~/Facility/Borrow" class="list-group-item list-group-item-action flex-column align-items-start border" target="_blank">
+                                <h5 class="p-3">部門公用電腦借用</h5>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <div class="col-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="bg-secondary btn-lg text-white p-3">
+                            <h3 class="m-0"><strong>人體感測器</strong></h3>
+                        </div>
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="d-inline-flex align-items-center">
+                                    <div class="btn btn-lg" style="background-color: #fdeadb;">4A</div>
+                                    <span class="material-symbols-outlined px-2" style="font-size: 2rem" ng-style="{'color': data[1] ? 'red' : 'green'}">
+                                        {{ data[1] ? 'block' : 'check_circle' }}
+                                    </span>
+                                    <span>
+                                        偵測到會議室{{ data[1] ? '使用' : '閒置' }}中
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="d-inline-flex align-items-center">
+                                    <div class="btn btn-lg" style="background-color: #fdeadb;">4B</div>
+                                    <span class="material-symbols-outlined px-2" style="font-size: 2rem" ng-style="{'color': data[0] ? 'red' : 'green'}">
+                                        {{ data[0] ? 'block' : 'check_circle' }}
+                                    </span>
+                                    <span>
+                                        偵測到會議室{{ data[0] ? '使用' : '閒置' }}中
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="d-inline-flex align-items-center">
+                                    <div class="btn btn-lg" style="background-color: #fdeadb;">4C</div>
+                                    <span class="material-symbols-outlined px-2" style="font-size: 2rem" ng-style="{'color': data[2] ? 'red' : 'green'}">
+                                        {{ data[2] ? 'block' : 'check_circle' }}
+                                    </span>
+                                    <span>
+                                        偵測到會議室{{ data[2] ? '使用' : '閒置' }}中
+                                    </span>                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-        
     </div>
+
+
 </div>
 
+
+@section Scripts {
+    <script src="~/Scripts/WebApp/Facility/FacilityCtrl.js"></script>
+}
