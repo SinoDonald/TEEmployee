@@ -2,16 +2,20 @@
 var config = { responseType: 'blob' };
 
 app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+
     $stateProvider
         .state('Borrow', {
             url: '/Borrow',
             templateUrl: 'Facility/Borrow'
         })
+
 }]);
 
 app.run(['$http', '$window', function ($http, $window) {
+
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
     $http.defaults.headers.common['__RequestVerificationToken'] = $('input[name=__RequestVerificationToken]').val();
+
 }])
 
 app.service('appService', ['$http', function ($http) {
@@ -73,43 +77,103 @@ app.factory('dataservice', function () {
 
 app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', function ($scope, $location, $window, appService, $rootScope) {
 
-    //function GetEvents() {
-    //    // 用 JavaScript Date 或 moment.js
-    //    var startDate = new Date();
-    //    var endDate = new Date();
-    //    endDate.setDate(endDate.getDate() + 7); // 七天後
-    //    appService.GetEvents({ start: startDate, end: endDate })
-    //        .then(function (ret) {
-    //            if (ret.data.size != 0) {
-    //                $('#calendar').fullCalendar({
-    //                    header: {
-    //                        left: 'prev,next today',
-    //                        center: 'title',
-    //                        right: 'month,agendaWeek,agendaDay'
-    //                    },
-    //                    firstDay: 1, //每週從星期一開始
-    //                    slotMinutes: 60,
-    //                });
-    //            }
-    //            else {
+    function GetEvents() {
+        // 用 JavaScript Date 或 moment.js
+        var date = new Date();
+        var d = date.getDate();
+        var m = date.getMonth();
+        var y = date.getFullYear();
+        appService.GetEvents({ start: date, end: date })
+            .then(function (ret) {
+                if (ret.data.size != 0) {
+                    $('#calendar').fullCalendar({
+                        header: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'month,agendaWeek,agendaDay'
+                        },
+                        views: {
+                            month: {
+                                buttonText: "月"
+                            },
+                            week: {
+                                buttonText: "週"
+                            },
+                            day: {
+                                buttonText: "日"
+                            }
+                        },
+                        firstDay: 1, //每週從星期一開始
+                        slotMinutes: 60,
+                        editable: true,
+                        //events: [
+                        //    {
+                        //        title: 'All Day Event',
+                        //        start: new Date(y, m, 1)
+                        //    },
+                        //    {
+                        //        title: 'Long Event',
+                        //        start: new Date(y, m, d - 5),
+                        //        end: new Date(y, m, d - 2)
+                        //    },
+                        //    {
+                        //        id: 999,
+                        //        title: 'Repeating Event',
+                        //        start: new Date(y, m, d - 3, 16, 0),
+                        //        allDay: false
+                        //    },
+                        //    {
+                        //        id: 999,
+                        //        title: 'Repeating Event',
+                        //        start: new Date(y, m, d + 4, 16, 0),
+                        //        allDay: false
+                        //    },
+                        //    {
+                        //        title: 'Meeting',
+                        //        start: new Date(y, m, d, 10, 30),
+                        //        allDay: false
+                        //    },
+                        //    {
+                        //        title: 'Lunch',
+                        //        start: new Date(y, m, d, 12, 0),
+                        //        end: new Date(y, m, d, 14, 0),
+                        //        allDay: false
+                        //    },
+                        //    {
+                        //        title: 'Birthday Party',
+                        //        start: new Date(y, m, d + 1, 19, 0),
+                        //        end: new Date(y, m, d + 1, 22, 30),
+                        //        allDay: false
+                        //    },
+                        //    {
+                        //        title: 'Click for Google',
+                        //        start: new Date(y, m, 28),
+                        //        end: new Date(y, m, 29),
+                        //        url: 'http://google.com/'
+                        //    }
+                        //]
+                        events: ret.data
+                    });
+                }
+                else {
 
-    //            }
-    //        });
-    //};
-    //GetEvents(); // 取得裝置行事曆
+                }
+            });
+    };
+    GetEvents(); // 取得裝置行事曆
 
-    $(document).ready(function () {
-        $('#calendar').fullCalendar({
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay'
-            },
-            firstDay: 1, //The day that each week begins (Monday=1)
-            slotMinutes: 60,
-            events: '@Url.RouteUrl(new{ action="GetEvents", controller="Home"})'
-        });
-    });
+    //$(document).ready(function () {
+    //    $('#calendar').fullCalendar({
+    //        header: {
+    //            left: 'prev,next today',
+    //            center: 'title',
+    //            right: 'month,agendaWeek,agendaDay'
+    //        },
+    //        firstDay: 1, //The day that each week begins (Monday=1)
+    //        slotMinutes: 60,
+    //        events: '@Url.RouteUrl(new{ action="GetEvents", controller="Home"})'
+    //    });
+    //});
 
     appService.GetSensorResourceData({}).then((ret) => {
         $scope.data = ret.data.result.map(x => Boolean(Number(x.value)));

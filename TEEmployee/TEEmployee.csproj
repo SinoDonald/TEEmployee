@@ -234,6 +234,9 @@
     <Compile Include="Models\Education\EducationService.cs" />
     <Compile Include="Models\Education\IEducationRepository.cs" />
     <Compile Include="Models\Education\Record.cs" />
+    <Compile Include="Models\Facility\IFacilityRepository.cs" />
+    <Compile Include="Models\Facility\FacilityRepository.cs" />
+    <Compile Include="Models\Facility\FacilityService.cs" />
     <Compile Include="Models\Facility\PresenceSensorService.cs" />
     <Compile Include="Models\Facility\Facility.cs" />
     <Compile Include="Models\Forum\ForumRepository.cs" />

@@ -2,16 +2,20 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using TEEmployee.Filters;
 using TEEmployee.Models.Facility;
 
 namespace TEEmployee.Controllers
 {
+    [MyAuthorize]
     public class FacilityController : Controller
     {
+        private FacilityService _facilityService;
         private PresenceSensorService _presenceSensorService;
 
         public FacilityController()
         {
+            _facilityService = new FacilityService();
             _presenceSensorService = new PresenceSensorService();
         }
 
@@ -20,6 +24,7 @@ namespace TEEmployee.Controllers
         {
             return View();
         }
+
         /// <summary>
         /// 部門公用電腦借用
         /// </summary>
@@ -33,11 +38,6 @@ namespace TEEmployee.Controllers
         // Web API
         // -----------------------------------------
 
-        /// <summary>
-        /// 取得裝置行事曆
-        /// </summary>
-        /// <param name="selectedGroup"></param>
-        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult> GetSensorResourceData()
         {
@@ -45,29 +45,36 @@ namespace TEEmployee.Controllers
             return Content(ret, "application/json");
         }
 
+        /// <summary>
+        /// 取得裝置行事曆
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        [HttpPost]
         public JsonResult GetEvents(DateTime start, DateTime end)
         {
-            var viewModel = new Facility();
-            var events = new List<Facility>();
+            Facility[] ret = new Facility[] { };
+            List<Facility> events = new List<Facility>();
             start = DateTime.Today.AddDays(-14);
             end = DateTime.Today.AddDays(-11);
 
             for (var i = 1; i <= 5; i++)
             {
-                events.Add(new Facility()
-                {
-                    id = i,
-                    title = "Event " + i,
-                    start = start.ToString(),
-                    end = end.ToString(),
-                    allDay = false
-                });
+                Facility facility = new Facility();
+                facility.id = i;
+                facility.title = "Event " + i;
+                facility.start = start.ToString();
+                facility.end = end.ToString();
+                facility.allDay = false;
+                events.Add(facility);
 
                 start = start.AddDays(7);
                 end = end.AddDays(7);
             }
 
-            return Json(events.ToArray(), JsonRequestBehavior.AllowGet);
+            //return Json(events.ToArray(), JsonRequestBehavior.AllowGet);
+            return Json(events.ToArray());
         }
     }
 }
