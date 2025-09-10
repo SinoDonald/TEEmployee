@@ -5,6 +5,7 @@ namespace TEEmployee.Models.Facility
     public class Facility
     {
         public Int64 id { get; set; }
+        public String type { get; set; }
 
         public String empno { get; set; }
 
@@ -29,6 +30,7 @@ namespace TEEmployee.Models.Facility
         public String deviceName { get; set; }
 
         public String title { get; set; }
+        public bool available { get; set; }
 
         public String start { get; set; }
 
