@@ -20,6 +20,10 @@ app.run(['$http', '$window', function ($http, $window) {
 
 app.service('appService', ['$http', function ($http) {
 
+    // 取得當前使用者員編
+    this.CurrentUser = (o) => {
+        return $http.post('Facility/CurrentUser', o)
+    };
     // 取得所有公用裝置
     this.GetDevices = (o) => {
         return $http.post('Facility/GetDevices', o)
@@ -36,19 +40,31 @@ app.service('appService', ['$http', function ($http) {
 
 app.factory('dataservice', function () {
 
-    var user = {}
+    var facility = {}
 
     function set(data) {
-        user.empno = data.empno;
-        user.name = data.name;
-        user.group = data.group;
-        user.group_one = data.group_one;
-        user.group_two = data.group_two;
-        user.group_three = data.group_three;
+        facility.id = data.id;
+        facility.type = data.type;
+        facility.empno = data.empno;
+        facility.name = data.name;
+        facility.contactTel = data.contactTel;
+        facility.startTime = data.startTime;
+        facility.endTime = data.endTime;
+        facility.meetingDate = data.meetingDate;
+        facility.modifiedDate = data.modifiedDate;
+        facility.modifiedUser = data.modifiedUser;
+        facility.num = data.num;
+        facility.deviceID = data.deviceID;
+        facility.deviceName = data.deviceName;
+        facility.title = data.title;
+        facility.available = data.available;
+        facility.start = data.start;
+        facility.end = data.end;
+        facility.allDay = data.allDay;
     }
 
     function get() {
-        return user;
+        return facility;
     }
 
     return {
@@ -58,13 +74,20 @@ app.factory('dataservice', function () {
 
 });
 
+app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', 'dataservice', function ($scope, $location, $window, appService, $rootScope, dataservice) {
 
-app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', function ($scope, $location, $window, appService, $rootScope) {
+    // 取得當前使用者員編
+    appService.CurrentUser({})
+        .then(function (ret) {
+            $scope.currentUser = ret.data.empno;
+        });
 
     // 取得所有公用裝置
     appService.GetDevices({})
         .then(function (ret) {
-            $scope.getDevices = ret.data;
+            // 找到特定type裡的ID, 並使用...new Set()過濾重複值後排序
+            $scope.getDevices = [...new Set(ret.data.filter(x => x.type == "電腦").map(x => x.deviceID))].sort();
+            $scope.getTeams = [...new Set(ret.data.filter(x => x.type == "Teams").map(x => x.deviceID))].sort();
             $scope.device = ret.data[0];
             GetEvents(); // 取得裝置行事曆
         });
@@ -77,6 +100,8 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
         // 用 JavaScript Date 或 moment.js
         appService.GetEvents({ deviceID: $scope.device })
             .then(function (ret) {
+                $scope.bEdit = !1;
+                $scope.editAuth = !1;
                 // 先清空行事曆後, 重新生成, 即時更新
                 $('#calendar').fullCalendar('destroy');
                 $('#calendar').empty();
@@ -100,7 +125,29 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
                     firstDay: 1, //每週從星期一開始
                     slotMinutes: 60,
                     editable: true,
-                    events: ret.data
+                    events: ret.data,
+
+
+                    // 檢視事件
+                    eventClick: function (info) {
+                        $scope.reserve = info;
+                        $scope.$apply(function () {
+                            $scope.bEdit = !0; // eventClick -> 禁用 input
+                            $scope.editAuth = $scope.currentUser == info.modifiedUser ? !0 : !1;
+                        });
+                        $("#reserve-modal").modal("show")
+                    },
+                    // 新增事件
+                    dayClick: function (i) {
+                        $scope.reserve = [];
+                        $scope.$apply(function () {
+                            $scope.bEdit = !1;  // dayClick -> 恢復可輸入
+                        });
+                        $("#reserve-modal").modal("show");
+                        $("#reserve-modal").on("shown.bs.modal", function () {
+                            $("#title").focus()
+                        })
+                    }
                 });
             })
             .catch(function (ret) {

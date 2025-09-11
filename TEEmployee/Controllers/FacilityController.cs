@@ -8,6 +8,7 @@ using System.Web.Services.Description;
 using TEEmployee.Filters;
 using TEEmployee.Models;
 using TEEmployee.Models.Facility;
+using static Microsoft.IO.RecyclableMemoryStreamManager;
 
 namespace TEEmployee.Controllers
 {
@@ -42,11 +43,14 @@ namespace TEEmployee.Controllers
         // Web API
         // -----------------------------------------
 
+        /// <summary>
+        /// 取得當前使用者員編
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> GetSensorResourceData()
+        public JsonResult CurrentUser()
         {
-            var ret = await _presenceSensorService.GetSensorResourceData();
-            return Content(ret, "application/json");
+            return Json(new { empno = Session["empno"] }, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// 取得所有公用裝置
@@ -55,14 +59,13 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult GetDevices()
         {
-            var ret = _facilityService.GetDevices().Select(x => x.deviceID).Distinct().ToList();
+            var ret = _facilityService.GetDevices().ToList();
             return Json(ret);
         }
         /// <summary>
         /// 取得裝置行事曆
         /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
+        /// <param name="deviceID"></param>
         /// <returns></returns>
         [HttpPost]
         public JsonResult GetEvents(string deviceID)
@@ -74,6 +77,36 @@ namespace TEEmployee.Controllers
                 facility.end = DateTime.ParseExact(facility.meetingDate + " " + facility.endTime, "yyyy/MM/dd HH:mm", System.Globalization.CultureInfo.InvariantCulture).ToString("s");
             }
             return Json(facilitys, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 新增事件
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult CreateEvent(string title, string start, string end)
+        {
+            List<Facility> _events = new List<Facility>();
+            var newEvent = new Facility
+            {
+                id = _events.Count > 0 ? _events.Max(e => e.id) + 1 : 1,
+                title = title,
+                start = start,
+                end = end
+            };
+            _events.Add(newEvent);
+
+            return Json(new { success = true, eventObj = newEvent });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> GetSensorResourceData()
+        {
+            var ret = await _presenceSensorService.GetSensorResourceData();
+            return Content(ret, "application/json");
         }
     }
 }
