@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +7,7 @@ using System.Web.Services.Description;
 using TEEmployee.Filters;
 using TEEmployee.Models;
 using TEEmployee.Models.Facility;
-using static Microsoft.IO.RecyclableMemoryStreamManager;
+using TEEmployee.Models.Talent;
 
 namespace TEEmployee.Controllers
 {
@@ -50,7 +49,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult CurrentUser()
         {
-            return Json(new { empno = Session["empno"] }, JsonRequestBehavior.AllowGet);
+            User ret = new UserRepository().Get(Session["empno"].ToString());
+            return Json(ret);
         }
         /// <summary>
         /// 取得所有公用裝置
@@ -78,28 +78,28 @@ namespace TEEmployee.Controllers
             }
             return Json(facilitys, JsonRequestBehavior.AllowGet);
         }
-
         /// <summary>
-        /// 新增事件
+        /// 刪除
         /// </summary>
-        /// <param name="title"></param>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult CreateEvent(string title, string start, string end)
+        public JsonResult Delete(int id)
         {
-            List<Facility> _events = new List<Facility>();
-            var newEvent = new Facility
-            {
-                id = _events.Count > 0 ? _events.Max(e => e.id) + 1 : 1,
-                title = title,
-                start = start,
-                end = end
-            };
-            _events.Add(newEvent);
-
-            return Json(new { success = true, eventObj = newEvent });
+            bool ret = _facilityService.Delete(id);
+            return Json(ret);
+        }
+        /// <summary>
+        /// 修改與新增
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="reserve"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult Send(string state, Facility reserve)
+        {
+            bool ret = _facilityService.Send(state, reserve);
+            return Json(ret);
         }
 
         [HttpPost]

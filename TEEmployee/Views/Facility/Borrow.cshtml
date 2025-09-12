@@ -92,11 +92,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="contact">聯絡人姓名</label>
-                                <input ng-disabled="bEdit && !editAuth" id="name" class="form-control" type="text" ng-model="reserve.name" />
+                                <input ng-disabled="bEdit && !editAuth" id="name" class="form-control" type="text" ng-model="reserve.name" readonly/>
                             </div>
                             <div class="form-group">
                                 <label for="contactTel">聯絡人電話</label>
-                                <input ng-disabled="bEdit && !editAuth" id="contactTel" class="form-control" type="text" ng-model="reserve.contactTel" />
+                                <input ng-disabled="bEdit && !editAuth" id="contactTel" class="form-control" type="text" ng-model="reserve.contactTel" readonly/>
                             </div>
                             <div class="form-group" style="text-align: right">
                                 <small>建立者:&nbsp;<span ng-bind="reserve.modifiedUser"></span>&nbsp;&nbsp;<span ng-if="reserve.modifiedDate!=null">最後更新時間:</span>&nbsp;<span ng-bind="reserve.modifiedDate"></span></small>
