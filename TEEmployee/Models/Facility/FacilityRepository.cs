@@ -61,9 +61,9 @@ namespace TEEmployee.Models.Facility
         /// <param name="state"></param>
         /// <param name="reserve"></param>
         /// <returns></returns>
-        public bool Send(string state, Facility reserve)
+        public string Send(string state, Facility reserve)
         {
-            bool ret = false;
+            string ret = string.Empty;
             try
             {
                 _conn.Open();
@@ -75,11 +75,10 @@ namespace TEEmployee.Models.Facility
                                  DO UPDATE SET id=@id, type=@type, deviceID=@deviceID, deviceName=@deviceName, empno=@empno, name=@name, contactTel=@contactTel, startTime=@startTime, endTime=@endTime, meetingDate=@meetingDate, modifiedDate=@modifiedDate, modifiedUser=@modifiedUser, num=@num, title=@title, available=@available, allDay=@allDay";
                     _conn.Execute(sql, reserve, tran);
                     tran.Commit();
-                    ret = true;
                 }
                 _conn.Close();
             }
-            catch (Exception ex) { string error = ex.Message + "\n" + ex.ToString(); _conn.Close(); }
+            catch (Exception ex) { ret = ex.Message + "\n" + ex.ToString(); _conn.Close(); }
             return ret;
         }
 

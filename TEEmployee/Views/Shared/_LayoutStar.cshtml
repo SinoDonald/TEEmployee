@@ -8,8 +8,6 @@
     <title>@ViewBag.Title - 軌道二部員工平台</title>
     <base href="@Url.Content("~/")" />
     <link rel="stylesheet" href="~/Content/bootstrap.css">
-    <!-- 裝置借用行事曆 -->
-    <link rel="stylesheet" href="~/Content/css/fullcalendar.min.css">
     @*<link rel="stylesheet" href="~/Content/Site.css">*@
     <script src="~/Scripts/modernizr-2.8.3.js"></script>
     <!-- Favicon-->
@@ -22,16 +20,14 @@
     <!-- SimpleLightbox plugin CSS-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css" rel="stylesheet" />
     <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="~/Content/css/starstyles.css" rel="stylesheet" />
-    <link href="~/Content/css/custom.css" rel="stylesheet" />
-    <link href="~/Content/css/animations.css" rel="stylesheet" />
-    <link href="~/Content/css/all.min.css" rel="stylesheet" />
     <script src="~/Scripts/angular.min.js"></script>
     <script src="~/Scripts/angular-ui-router.min.js"></script>
     <script src="~/Scripts/angular-animate.min.js"></script>
     @*<script src="~/Scripts/angular-route.min.js"></script>*@
-    <!-- 警示彈跳視窗-->
-    <script src="~/Scripts/sweetalert2.all.min.js"></script>
+    <link href="~/Content/css/starstyles.css" rel="stylesheet" />
+    <link href="~/Content/css/custom.css" rel="stylesheet" />
+    <link href="~/Content/css/animations.css" rel="stylesheet" />
+    <link href="~/Content/css/all.min.css" rel="stylesheet" />
     @RenderSection("Styles", required: false)
 </head>
 <body id="page-top">
@@ -282,7 +278,12 @@
     <script src="~/Scripts/bootstrap.js"></script>
     <!-- 裝置借用行事曆 -->
     <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
     <script src="~/Scripts/fullcalendar.min.js"></script>
+    <link href="~/Content/css/fullcalendar.min.css" rel="stylesheet">
+    <link href="~/Content/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <!-- 警示彈跳視窗-->
+    <script src="~/Scripts/sweetalert2.all.min.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

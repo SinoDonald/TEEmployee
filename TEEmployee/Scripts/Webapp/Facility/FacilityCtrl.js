@@ -47,43 +47,48 @@ app.service('appService', ['$http', function ($http) {
 
 }]);
 
-app.factory('dataservice', function () {
-
-    var facility = {}
-
-    function set(data) {
-        facility.id = data.id;
-        facility.type = data.type;
-        facility.empno = data.empno;
-        facility.name = data.name;
-        facility.contactTel = data.contactTel;
-        facility.startTime = data.startTime;
-        facility.endTime = data.endTime;
-        facility.meetingDate = data.meetingDate;
-        facility.modifiedDate = data.modifiedDate;
-        facility.modifiedUser = data.modifiedUser;
-        facility.num = data.num;
-        facility.deviceID = data.deviceID;
-        facility.deviceName = data.deviceName;
-        facility.title = data.title;
-        facility.available = data.available;
-        facility.start = data.start;
-        facility.end = data.end;
-        facility.allDay = data.allDay;
-    }
-
-    function get() {
-        return facility;
-    }
-
+// 時間選擇器
+app.directive("datetimepicker", ["$timeout", "$parse", function (n) {
     return {
-        set: set,
-        get: get,
+        require: "?ngModel",
+        link: function (t, i, r, u) {
+            return n(function () {
+                return $(i).datetimepicker({
+                    format: "HH:mm"
+                }).on("dp.change", function () {
+                    var n = $(this).val();
+                    u.$setViewValue(n)
+                })
+            })
+        }
     }
+}]);
 
-});
+app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', function ($scope, $location, $window, appService, $rootScope) {
 
-app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', 'dataservice', function ($scope, $location, $window, appService, $rootScope, dataservice) {
+    $(function () {
+        $('#startPicker').datetimepicker({
+            format: 'HH:mm',     // 只顯示時間
+            stepping: 5,         // 每 5 分鐘一個選項
+            icons: {
+                time: 'glyphicon glyphicon-time',
+                date: 'glyphicon glyphicon-calendar',
+                up: 'glyphicon glyphicon-chevron-up',
+                down: 'glyphicon glyphicon-chevron-down',
+                previous: 'glyphicon glyphicon-chevron-left',
+                next: 'glyphicon glyphicon-chevron-right',
+                today: 'glyphicon glyphicon-screenshot',
+                clear: 'glyphicon glyphicon-trash',
+                close: 'glyphicon glyphicon-remove'
+            }
+        }).on('dp.change', function (e) {
+            // 同步到 AngularJS model
+            var scope = angular.element($('#start')).scope();
+            scope.$apply(function () {
+                scope.reserve.startTime = e.date.format("HH:mm");
+            });
+        });
+    });
 
     // 取得當前使用者員編
     appService.CurrentUser({})
@@ -133,6 +138,11 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
                             buttonText: "日"
                         }
                     },
+                    aspectRatio: 1.25,
+                    weekends: !0,
+                    editable: 0,
+                    eventLimit: !0,
+                    timeFormat: "H:mm",
                     firstDay: 1, //每週從星期一開始
                     slotMinutes: 60,
                     editable: true,
@@ -169,9 +179,9 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
                             $scope.bEdit = !1;  // dayClick -> 恢復可輸入
                         });
                         $("#reserve-modal").modal("show");
-                        $("#reserve-modal").on("shown.bs.modal", function () {
-                            $("#title").focus()
-                        })
+                        //$("#reserve-modal").on("shown.bs.modal", function () {
+                        //    $("#title").focus()
+                        //})
                     }
                 });
                 $scope.Delete = function () {
@@ -184,7 +194,7 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
                         if (result.isConfirmed) {
                             appService.Delete({ id: $scope.reserve.id })
                                 .then(function (ret) {
-                                    GetEvents(data);
+                                    $("#calendar").fullCalendar("removeEvents", $scope.reserve._id); // 刪除事件
                                     $("#reserve-modal").modal("hide");
                                 });
                         }
@@ -208,8 +218,6 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
                         deviceName: $scope.device.deviceName,
                         title: $scope.reserve.title,
                         available: 1,
-                        start: $scope.reserve.start,
-                        end: $scope.reserve.end,
                         allDay: $scope.reserve.allDay
                     };
                     //Swal.fire({
@@ -220,8 +228,29 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
                     //    if (result.isConfirmed) {
                             appService.Send({ state: state, reserve: eventData })
                                 .then(function (ret) {
-                                    GetEvents(data);
-                                    $("#reserve-modal").modal("hide")
+                                    if (ret.data === "") {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '完成',
+                                            showCancelButton: false,
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                GetEvents($scope.deviceID); // 更新新增與修改事件
+                                                $("#reserve-modal").modal("hide")
+                                            }
+                                        })
+                                    }
+                                    else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: ret.data,
+                                            showCancelButton: false,
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+
+                                            }
+                                        })
+                                    }
                                 });
                     //    }
                     //})
@@ -235,7 +264,12 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
     // 取得裝置行事曆
     $scope.GetEvents = function (data) {
         GetEvents(data)
-    }
+    };
+
+    // 新增裝置
+    $scope.CreateDevice = function (data) {
+        $("#create-device").modal("show");
+    };
 
     appService.GetSensorResourceData({}).then((ret) => {
         $scope.data = ret.data.result.map(x => Boolean(Number(x.value)));

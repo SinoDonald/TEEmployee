@@ -98,7 +98,7 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult Send(string state, Facility reserve)
         {
-            bool ret = _facilityService.Send(state, reserve);
+            string ret = _facilityService.Send(state, reserve);
             return Json(ret);
         }
 
