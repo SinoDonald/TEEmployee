@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -74,6 +74,53 @@ namespace TEEmployee.Models.Facility
                                  ON CONFLICT(id)
                                  DO UPDATE SET id=@id, type=@type, deviceID=@deviceID, deviceName=@deviceName, empno=@empno, name=@name, contactTel=@contactTel, startTime=@startTime, endTime=@endTime, meetingDate=@meetingDate, modifiedDate=@modifiedDate, modifiedUser=@modifiedUser, num=@num, title=@title, available=@available, allDay=@allDay";
                     _conn.Execute(sql, reserve, tran);
+                    tran.Commit();
+                }
+                _conn.Close();
+            }
+            catch (Exception ex) { ret = ex.Message + "\n" + ex.ToString(); _conn.Close(); }
+            return ret;
+        }
+        /// <summary>
+        /// 新增裝置
+        /// </summary>
+        /// <param name="facility"></param>
+        /// <returns></returns>
+        public string CreateDevice(Facility facility)
+        {
+            string ret = string.Empty;
+            try
+            {
+                _conn.Open();
+                using (var tran = _conn.BeginTransaction())
+                {
+                    string sql = @"INSERT INTO facility (id, type, deviceID, deviceName, empno, name, contactTel, startTime, endTime, meetingDate, modifiedDate, modifiedUser, num, title, available, allDay)
+                                 VALUES(@id, @type, @deviceID, @deviceName, @empno, @name, @contactTel, @startTime, @endTime, @meetingDate, @modifiedDate, @modifiedUser, @num, @title, @available, @allDay)
+                                 ON CONFLICT(id)
+                                 DO UPDATE SET id=@id, type=@type, deviceID=@deviceID, deviceName=@deviceName, empno=@empno, name=@name, contactTel=@contactTel, startTime=@startTime, endTime=@endTime, meetingDate=@meetingDate, modifiedDate=@modifiedDate, modifiedUser=@modifiedUser, num=@num, title=@title, available=@available, allDay=@allDay";
+                    _conn.Execute(sql, facility, tran);
+                    tran.Commit();
+                }
+                _conn.Close();
+            }
+            catch (Exception ex) { ret = ex.Message + "\n" + ex.ToString(); _conn.Close(); }
+            return ret;
+        }
+        /// <summary>
+        /// 移除裝置
+        /// </summary>
+        /// <param name="deviceID"></param>
+        /// <returns></returns>
+        public string RemoveDevice(string deviceID)
+        {
+            string ret = string.Empty;
+            try
+            {
+                _conn.Open();
+                using (var tran = _conn.BeginTransaction())
+                {
+                    string sql = @"DELETE FROM facility WHERE deviceID=@deviceID;";
+                    _conn.Execute(sql, new { deviceID }, tran);
                     tran.Commit();
                 }
                 _conn.Close();

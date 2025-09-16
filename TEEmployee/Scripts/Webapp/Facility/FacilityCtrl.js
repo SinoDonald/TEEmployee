@@ -40,6 +40,14 @@ app.service('appService', ['$http', function ($http) {
     this.Send = (o) => {
         return $http.post('Facility/Send', o)
     };
+    // 新增裝置
+    this.CreateDevice = (o) => {
+        return $http.post('Facility/CreateDevice', o)
+    };
+    // 移除裝置
+    this.RemoveDevice = (o) => {
+        return $http.post('Facility/RemoveDevice', o)
+    };
     // 取得感測器狀態
     this.GetSensorResourceData = (o) => {
         return $http.post('Facility/GetSensorResourceData', o);
@@ -97,16 +105,21 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
         });
 
     // 取得所有公用裝置
-    appService.GetDevices({})
-        .then(function (ret) {
-            // 找到特定type裡的ID, 並使用...new Set()過濾重複值後排序
-            $scope.getDevices = [...new Set(ret.data.filter(x => x.type == "電腦").map(x => x.deviceID))].sort();
-            $scope.getTeams = [...new Set(ret.data.filter(x => x.type == "Teams").map(x => x.deviceID))].sort();
-            $scope.device = ret.data[0];
-            $scope.deviceID = ret.data[0].deviceID;
-            $scope.insertID = Math.max(...new Set(ret.data.map(item => item.id))) + 1;
-            GetEvents(); // 取得裝置行事曆
-        });
+    function GetDevices() {
+        appService.GetDevices({})
+            .then(function (ret) {
+                $scope.devices = ret.data;
+                $scope.device = ret.data[0];
+                // 找到特定type裡的ID, 並使用...new Set()過濾重複值後排序
+                $scope.getDevices = [...new Set(ret.data.filter(x => x.type == "電腦").map(x => x.deviceID))].sort();
+                $scope.getTeams = [...new Set(ret.data.filter(x => x.type == "Teams").map(x => x.deviceID))].sort();
+                $scope.deviceID = ret.data[0].deviceID;
+                $scope.insertID = Math.max(...new Set(ret.data.map(item => item.id))) + 1;
+                $scope.deviceIDs = [...new Set(ret.data.map(x => x.deviceID))].sort(); // 移除裝置下拉選單
+                GetEvents(); // 取得裝置行事曆
+            });
+    }
+    GetDevices();
 
     // 取得裝置行事曆
     function GetEvents(data) {
@@ -116,6 +129,7 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
         // 用 JavaScript Date 或 moment.js
         appService.GetEvents({ deviceID: $scope.deviceID })
             .then(function (ret) {
+                $scope.device = ret.data[0];
                 $scope.bEdit = !1;
                 $scope.editAuth = !1;
                 // 先清空行事曆後, 重新生成, 即時更新
@@ -140,12 +154,11 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
                     },
                     aspectRatio: 1.25,
                     weekends: !0,
-                    editable: 0,
                     eventLimit: !0,
                     timeFormat: "H:mm",
                     firstDay: 1, //每週從星期一開始
                     slotMinutes: 60,
-                    editable: true,
+                    editable: false,
                     events: ret.data,
 
                     // 檢視事件
@@ -163,7 +176,7 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
                             $scope.reserve = {};
                             $scope.reserve.title = "";
                             $scope.reserve.meetingDate = moment(i._d.toISOString()).format("YYYY/MM/DD");
-                            $scope.reserve.modifiedDate = moment(new Date).format("YYYY/MM/DD HH:mm:ss"),
+                            $scope.reserve.modifiedDate = moment(new Date).format("YYYY/MM/DD HH:mm:ss");
                             $scope.reserve.startTime = (new Date).getHours() + 1 + ":00";
                             $scope.reserve.startTime.length != 5 && ($scope.reserve.startTime = "0" + $scope.reserve.startTime);
                             $scope.reserve.endTime = (new Date).getHours() + 2 + ":00";
@@ -211,7 +224,7 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
                         startTime: $scope.reserve.startTime,
                         endTime: $scope.reserve.endTime,
                         meetingDate: $scope.reserve.meetingDate,
-                        modifiedDate: $scope.reserve.modifiedDate,
+                        modifiedDate: moment(new Date).format("YYYY/MM/DD HH:mm:ss"),
                         modifiedUser: $scope.currentUser.empno,
                         num: $scope.reserve.num,
                         deviceID: $scope.deviceID,
@@ -267,9 +280,82 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
     };
 
     // 新增裝置
-    $scope.CreateDevice = function (data) {
+    $scope.CreateDevice = function () {
+        $scope.createdevice = {};
+        $scope.createdevice.id = $scope.insertID;
+        $scope.createdevice.types = ["電腦", "Teams"];
+        $scope.createdevice.type = $scope.createdevice.types[0];
+        $scope.createdevice.deviceID = "";
+        $scope.createdevice.deviceName = "";
+        $scope.createdevice.empno = $scope.currentUser.empno;
+        $scope.createdevice.name = $scope.currentUser.name;
+        $scope.createdevice.contactTel = '0' + $scope.currentUser.empno;
+        $scope.createdevice.startTime = moment(new Date).format("HH:mm");
+        $scope.createdevice.endTime = moment(new Date).format("HH:mm");
+        $scope.createdevice.meetingDate = moment(new Date).format("YYYY/MM/DD");
+        $scope.createdevice.modifiedDate = moment(new Date).format("YYYY/MM/DD HH:mm:ss");
+        $scope.createdevice.modifiedUser = $scope.currentUser.empno;
+        $scope.createdevice.num = 1;
+        $scope.createdevice.title = "新增裝置";
+        $scope.createdevice.available = 1;
+        $scope.createdevice.allDay = 0;
+        $scope.createdevice.contact = $scope.currentUser.empno + " " + $scope.currentUser.name;
         $("#create-device").modal("show");
     };
+    $scope.Create = function (data)
+    {
+        $scope.createdevice = data;
+        // 如果重複deviceID, 則不得新增
+        isExist = [...new Set($scope.devices.filter(x => x.deviceID == data.deviceID))];
+        if (isExist.length > 0) {
+            Swal.fire({
+                icon: 'error',
+                title: '裝置ID重複，請重新輸入',
+                showCancelButton: false,
+            });
+        }
+        else {
+            appService.CreateDevice({ facility: data })
+                .then(function (ret) {
+                    GetDevices(); // 取得所有公用裝置
+                    $("#create-device").modal("hide")
+                });
+        }
+    }
+
+    // 移除裝置
+    $scope.RemoveDevice = function () {
+        $scope.removedevice = {};
+        $scope.removedevice.deviceIDs = $scope.deviceIDs;
+        $scope.removedevice.deviceID = $scope.deviceIDs[0]; // 移除裝置預設值
+        $("#remove-device").modal("show");
+    };
+    $scope.Remove = function (data) {
+        Swal.fire({
+            icon: 'question',
+            title: '確定要刪除預約嗎?',
+            text: '刪除後，此裝置過往紀錄將將無法復原',
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                appService.RemoveDevice({ deviceID: data.deviceID })
+                    .then(function (ret) {
+                        if (ret.data === "") {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '完成',
+                                showCancelButton: false,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    GetDevices(); // 取得所有公用裝置
+                                    $("#remove-device").modal("hide");
+                                }
+                            })
+                        }
+                    });
+            }
+        })
+    }
 
     appService.GetSensorResourceData({}).then((ret) => {
         $scope.data = ret.data.result.map(x => Boolean(Number(x.value)));

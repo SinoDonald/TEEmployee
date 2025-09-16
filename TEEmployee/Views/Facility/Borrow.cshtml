@@ -13,15 +13,15 @@
 
         <header class="mb-4 d-flex justify-content-between">
             <h2>部門公用電腦借用</h2>
-            <div>
+            @*<div>
                 <a class="btn btn-outline-primary btn-lg mr-2" href="~/" role="button">返回</a>
-            </div>
+            </div>*@
         </header>
 
         <div class="row flex-nowrap">
-            <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
-                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-                    <a href="" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
+                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-dark min-vh-100">
+                    <a href="" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
                         <span class="fs-5 d-none d-sm-inline">選單</span>
                     </a>
                     <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
@@ -60,18 +60,25 @@
                                 </div>
                             </div>
                         </li>
-                        @if (Session["leader"] is true || Session["empno"] is "7291")
-                        {
-                            <li>
+                    </ul>
+                    <!-- 新增移除裝置放最底部 -->
+                    <div class="mt-auto nav-item w-100">
+                        <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
+                            @if (Session["Admin"] is true || Session["leader"] is true || Session["empno"] is "7291" || Session["empno"] is "7596")
+                            {
                                 <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
                                     <h6 class="panel-title">
                                         <button type="button" class="btn btn-danger pull-left" ng-click="CreateDevice()">新增裝置</button>
                                     </h6>
                                 </div>
-                            </li>
-                        }
-                    </ul>
-                    <hr>
+                                <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
+                                    <h6 class="panel-title">
+                                        <button type="button" class="btn btn-danger pull-left" ng-click="RemoveDevice()">移除裝置</button>
+                                    </h6>
+                                </div>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="container">
@@ -129,46 +136,76 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title"><span ng-bind="reserve.meetingDate+' 新增裝置'"></span></h4>
+                            <h4 class="modal-title"><span ng-bind="createdevice.meetingDate+' 新增裝置'"></span></h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="start">開始時間</label>
-                                <input ng-disabled="bEdit && !editAuth" id="start" class="form-control" type="text" ng-model="reserve.startTime" datetimepicker />
+                                <label for="type">裝置類型</label>
+                                @*<input id="type" class="form-control" type="text" ng-model="createdevice.type" />*@
+                                <select class="form-select" id="SelectType" name="SelectType" ng-model="createdevice.type" aria-label="Select the type">
+                                    <option ng-repeat="type in createdevice.types">{{type}}</option>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <label for="end">結束時間</label>
-                                <input ng-disabled="bEdit && !editAuth" id="end" class="form-control" type="text" ng-model="reserve.endTime" datetimepicker />
+                                <label for="deviceID">ID</label>
+                                <input id="deviceID" class="form-control" type="text" ng-model="createdevice.deviceID" />
                             </div>
                             <div class="form-group">
-                                <label for="title">名稱</label>
-                                <input ng-disabled="bEdit && !editAuth" id="title" class="form-control" type="text" ng-model="reserve.title" />
+                                <label for="deviceName">名稱</label>
+                                <input id="deviceName" class="form-control" type="text" ng-model="createdevice.deviceName" />
                             </div>
                             <div class="form-group">
-                                <label for="contact">聯絡人姓名</label>
-                                <input ng-disabled="bEdit && !editAuth" id="name" class="form-control" type="text" ng-model="reserve.name" readonly />
+                                <label for="name">聯絡人姓名</label>
+                                <input id="name" class="form-control" type="text" ng-model="createdevice.name" readonly />
                             </div>
                             <div class="form-group">
                                 <label for="contactTel">聯絡人電話</label>
-                                <input ng-disabled="bEdit && !editAuth" id="contactTel" class="form-control" type="text" ng-model="reserve.contactTel" readonly />
+                                <input id="contactTel" class="form-control" type="text" ng-model="createdevice.contactTel" readonly />
                             </div>
                             <div class="form-group" style="text-align: right">
-                                <small>建立者:&nbsp;<span ng-bind="reserve.modifiedUser"></span>&nbsp;&nbsp;<span ng-if="reserve.modifiedDate!=null">最後更新時間:</span>&nbsp;<span ng-bind="reserve.modifiedDate"></span></small>
+                                <small>建立者:&nbsp;<span ng-bind="createdevice.modifiedUser"></span>&nbsp;&nbsp;<span ng-if="createdevice.modifiedDate!=null">最後更新時間:</span>&nbsp;<span ng-bind="createdevice.modifiedDate"></span></small>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <div class="col-md-12 col-xs-12">
-                                <button ng-if="bEdit && editAuth" type="button" class="btn btn-danger pull-left" ng-click="Delete()">刪除</button>
-                                <button ng-if="bEdit && editAuth" type="button" class="btn btn-primary pull-right" ng-click="Send('edit')">修改</button>
-                                <button ng-if="!bEdit" type="button" class="btn btn-primary pull-right" ng-click="Send('create')">新增</button>
+                                <button type="button" class="btn btn-primary pull-right" ng-click="Create(createdevice)">新增</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+
+            @*彈出視窗-移除裝置*@
+            <div class="modal fade" id="remove-device">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title"><span ng-bind="removedevice.meetingDate+' 移除裝置'"></span></h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="type">ID</label>
+                                <select class="form-select" id="SelectDeviceID" name="SelectDeviceID" ng-model="removedevice.deviceID" aria-label="Select the deviceID">
+                                    <option ng-repeat="deviceID in removedevice.deviceIDs">{{deviceID}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="col-md-12 col-xs-12">
+                                <button type="button" class="btn btn-primary pull-right" ng-click="Remove(removedevice)">移除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

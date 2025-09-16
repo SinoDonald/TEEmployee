@@ -1,10 +1,8 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
-using System.Web.Services.Description;
 
 namespace TEEmployee.Models.Facility
 {
@@ -15,6 +13,12 @@ namespace TEEmployee.Models.Facility
         public FacilityService()
         {
             _facilityRepository = new FacilityRepository();
+        }
+
+        public class TimeInterval
+        {
+            public string Start { get; set; }  // "HH:mm"
+            public string End { get; set; }    // "HH:mm"
         }
 
         /// <summary>
@@ -84,22 +88,26 @@ namespace TEEmployee.Models.Facility
             }
             return ret;
         }
-        private static Regex rx = new Regex(@"^[0-2]\d:[0-5]\d$");
-
-        public static bool IsValidTime(string t)
+        /// <summary>
+        /// 驗證日期格式
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public bool IsValidTime(string date)
         {
-            if (!rx.IsMatch(t)) return false;
-            int hh = int.Parse(t.Substring(0, 2));
+            Regex rx = new Regex(@"^[0-2]\d:[0-5]\d$");
+            if (!rx.IsMatch(date)) return false;
+            int hh = int.Parse(date.Substring(0, 2));
             return hh < 24;
         }
 
-        public static int ToMinutes(string t)
+        public int ToMinutes(string t)
         {
             var parts = t.Split(':').Select(int.Parse).ToArray();
             return parts[0] * 60 + parts[1];
         }
 
-        public static (bool ok, string reason) ValidateInterval(string start, string end, bool allowMidnightCross)
+        public (bool ok, string reason) ValidateInterval(string start, string end, bool allowMidnightCross)
         {
             if (!IsValidTime(start)) return (false, "開始時間格式錯誤");
             if (!IsValidTime(end)) return (false, "結束時間格式錯誤");
@@ -115,13 +123,7 @@ namespace TEEmployee.Models.Facility
             }
             return (true, null);
         }
-
-        public class TimeInterval
-        {
-            public string Start { get; set; }  // "HH:mm"
-            public string End { get; set; }    // "HH:mm"
-        }
-        public static (bool ok, string reason) CheckNoOverlap(List<TimeInterval> intervals, bool allowMidnightCross)
+        public (bool ok, string reason) CheckNoOverlap(List<TimeInterval> intervals, bool allowMidnightCross)
         {
             // 轉成 ranges
             var ranges = new List<(int s, int e, int idx)>();
@@ -152,6 +154,26 @@ namespace TEEmployee.Models.Facility
                 }
             }
             return (true, null);
+        }
+        /// <summary>
+        /// 新增裝置
+        /// </summary>
+        /// <param name="facility"></param>
+        /// <returns></returns>
+        public string CreateDevice(Facility facility)
+        {
+            string ret = _facilityRepository.CreateDevice(facility);
+            return ret;
+        }
+        /// <summary>
+        /// 移除裝置
+        /// </summary>
+        /// <param name="facility"></param>
+        /// <returns></returns>
+        public string RemoveDevice(string deviceID)
+        {
+            string ret = _facilityRepository.RemoveDevice(deviceID);
+            return ret;
         }
     }
 }

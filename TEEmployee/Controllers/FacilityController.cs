@@ -101,6 +101,28 @@ namespace TEEmployee.Controllers
             string ret = _facilityService.Send(state, reserve);
             return Json(ret);
         }
+        /// <summary>
+        /// 新增裝置
+        /// </summary>
+        /// <param name="facility"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult CreateDevice(Facility facility)
+        {
+            string ret = _facilityService.CreateDevice(facility);
+            return Json(ret);
+        }
+        /// <summary>
+        /// 移除裝置
+        /// </summary>
+        /// <param name="deviceID"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult RemoveDevice(string deviceID)
+        {
+            string ret = _facilityService.RemoveDevice(deviceID);
+            return Json(ret);
+        }
 
         [HttpPost]
         public async Task<ActionResult> GetSensorResourceData()
