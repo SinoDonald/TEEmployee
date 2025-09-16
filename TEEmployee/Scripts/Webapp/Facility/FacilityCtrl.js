@@ -1,16 +1,6 @@
 ﻿var app = angular.module('app', ['ui.router', 'ngAnimate']);
 var config = { responseType: 'blob' };
 
-app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
-
-    $stateProvider
-        .state('Borrow', {
-            url: '/Borrow',
-            templateUrl: 'Facility/Borrow'
-        })
-
-}]);
-
 app.run(['$http', '$window', function ($http, $window) {
 
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -73,6 +63,14 @@ app.directive("datetimepicker", ["$timeout", "$parse", function (n) {
 }]);
 
 app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', function ($scope, $location, $window, appService, $rootScope) {
+
+    appService.GetSensorResourceData({}).then((ret) => {
+        $scope.data = ret.data.result.map(x => Boolean(Number(x.value)));
+    });
+
+}]);
+
+app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', function ($scope, $location, $window, appService, $rootScope) {
 
     $(function () {
         $('#startPicker').datetimepicker({
@@ -174,6 +172,8 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
                     dayClick: function (i) {
                         if ($scope.bEdit = !0) {
                             $scope.reserve = {};
+                            $scope.reserve.deviceID = $scope.deviceID;
+                            $scope.reserve.deviceName = $scope.device.deviceName;
                             $scope.reserve.title = "";
                             $scope.reserve.meetingDate = moment(i._d.toISOString()).format("YYYY/MM/DD");
                             $scope.reserve.modifiedDate = moment(new Date).format("YYYY/MM/DD HH:mm:ss");
@@ -357,8 +357,8 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
         })
     }
 
-    appService.GetSensorResourceData({}).then((ret) => {
-        $scope.data = ret.data.result.map(x => Boolean(Number(x.value)));
-    });
+    //appService.GetSensorResourceData({}).then((ret) => {
+    //    $scope.data = ret.data.result.map(x => Boolean(Number(x.value)));
+    //});
 
 }]);
