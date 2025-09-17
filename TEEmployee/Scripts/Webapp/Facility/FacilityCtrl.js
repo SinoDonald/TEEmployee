@@ -72,6 +72,12 @@ app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', 
 
 app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', function ($scope, $location, $window, appService, $rootScope) {
 
+    $scope.activeTab = 'calendar'; // 預設顯示 calendar
+
+    $scope.showContent = function (tab) {
+        $scope.activeTab = tab;
+    };
+
     $(function () {
         $('#startPicker').datetimepicker({
             format: 'HH:mm',     // 只顯示時間
@@ -156,26 +162,26 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                     timeFormat: "H:mm",
                     firstDay: 1, //每週從星期一開始
                     slotMinutes: 60,
-                    editable: false,
+                    editable: true,
                     events: ret.data,
 
                     // 檢視事件
-                    eventClick: function (info) {
-                        $scope.reserve = info;
+                    eventClick: function (event) {
+                        $scope.reserve = event;
                         $scope.$apply(function () {
                             $scope.bEdit = !0; // eventClick -> 禁用 input
-                            $scope.editAuth = $scope.currentUser.empno == info.modifiedUser ? !0 : !1; // 編輯者本人可修改
+                            $scope.editAuth = $scope.currentUser.empno == event.modifiedUser ? !0 : !1; // 編輯者本人可修改
                         });
                         $("#reserve-modal").modal("show");
                     },
                     // 新增事件
-                    dayClick: function (i) {
+                    dayClick: function (event) {
                         if ($scope.bEdit = !0) {
                             $scope.reserve = {};
                             $scope.reserve.deviceID = $scope.deviceID;
                             $scope.reserve.deviceName = $scope.device.deviceName;
                             $scope.reserve.title = "";
-                            $scope.reserve.meetingDate = moment(i._d.toISOString()).format("YYYY/MM/DD");
+                            $scope.reserve.meetingDate = moment(event._d.toISOString()).format("YYYY/MM/DD");
                             $scope.reserve.modifiedDate = moment(new Date).format("YYYY/MM/DD HH:mm:ss");
                             $scope.reserve.startTime = (new Date).getHours() + 1 + ":00";
                             $scope.reserve.startTime.length != 5 && ($scope.reserve.startTime = "0" + $scope.reserve.startTime);
@@ -192,9 +198,46 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                             $scope.bEdit = !1;  // dayClick -> 恢復可輸入
                         });
                         $("#reserve-modal").modal("show");
-                        //$("#reserve-modal").on("shown.bs.modal", function () {
-                        //    $("#title").focus()
-                        //})
+                    },
+                    // 拖曳事件
+                    eventDrop: function (event, delta, revertFunc) {
+                        var eventData = {
+                            id: event.id ,
+                            type: event.type,
+                            empno: event.empno,
+                            name: event.name,
+                            contactTel: event.contactTel,
+                            startTime: event.startTime,
+                            endTime: event.endTime,
+                            meetingDate: event.end.format("YYYY/MM/DD"),
+                            modifiedDate: moment(new Date).format("YYYY/MM/DD HH:mm:ss"),
+                            modifiedUser: $scope.currentUser.empno,
+                            num: event.num,
+                            deviceID: $scope.deviceID,
+                            deviceName: $scope.device.deviceName,
+                            title: event.title,
+                            available: 1,
+                            allDay: event.allDay
+                        };
+                        appService.Send({ state: 'edit', reserve: eventData })
+                            .then(function (ret) {
+                                if (ret.data === "") {
+                                    GetEvents($scope.deviceID); // 更新新增與修改事件
+                                    $scope.reserve = eventData;
+                                    $("#reserve-modal").modal("hide");
+                                }
+                                else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: ret.data,
+                                        showCancelButton: false,
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            revertFunc(); // 還原
+                                        }
+                                    })
+                                }
+                            });
                     }
                 });
                 $scope.Delete = function () {
@@ -217,7 +260,7 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                     // 將$scope.reserve物件轉成純資料
                     var eventData = {
                         id: state == 'edit' ? $scope.reserve.id : $scope.insertID,
-                        type: $scope.deviceID == 'Teams' ? 'Teams' : '電腦',
+                        type: $scope.reserve.type,
                         empno: $scope.reserve.empno,
                         name: $scope.reserve.name,
                         contactTel: $scope.reserve.contactTel,
@@ -282,7 +325,12 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
     // 新增裝置
     $scope.CreateDevice = function () {
         $scope.createdevice = {};
-        $scope.createdevice.id = $scope.insertID;
+        if ($scope.insertID != undefined) {
+            $scope.createdevice.id = $scope.insertID;
+        }
+        else {
+            $scope.createdevice.id = 1;
+        }
         $scope.createdevice.types = ["電腦", "Teams"];
         $scope.createdevice.type = $scope.createdevice.types[0];
         $scope.createdevice.deviceID = "";
@@ -291,7 +339,7 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
         $scope.createdevice.name = $scope.currentUser.name;
         $scope.createdevice.contactTel = '0' + $scope.currentUser.empno;
         $scope.createdevice.startTime = moment(new Date).format("HH:mm");
-        $scope.createdevice.endTime = moment(new Date).format("HH:mm");
+        $scope.createdevice.endTime = moment(new Date).add(1, 'minutes').format("HH:mm");
         $scope.createdevice.meetingDate = moment(new Date).format("YYYY/MM/DD");
         $scope.createdevice.modifiedDate = moment(new Date).format("YYYY/MM/DD HH:mm:ss");
         $scope.createdevice.modifiedUser = $scope.currentUser.empno;
@@ -356,9 +404,5 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
             }
         })
     }
-
-    //appService.GetSensorResourceData({}).then((ret) => {
-    //    $scope.data = ret.data.result.map(x => Boolean(Number(x.value)));
-    //});
 
 }]);

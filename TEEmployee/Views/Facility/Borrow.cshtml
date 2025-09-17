@@ -32,9 +32,15 @@
                             </div>
                         </li>
                         <li>
+                            @*保持展開*@
+                            <!--<div class="nav-link px-0 align-middle panel-heading">
+                                <h6 class="panel-title">
+                                    <i class="fs-4 bi-speedometer2"></i> <a--> @*href="#collapseOne"*@ <!--ng-click="showContent('calendar'); $('#collapseOne').collapse('show')">公用設備</a>
+                                </h6>
+                            </div>-->
                             <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
                                 <h6 class="panel-title">
-                                    <i class="fs-4 bi-speedometer2"></i> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">公用設備</a>
+                                    <i class="fs-4 bi-speedometer2"></i> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" ng-click="showContent('calendar')">公用設備</a>
                                 </h6>
                             </div>
                             <div id="collapseOne" class="collapse show panel-collapse collapse in">
@@ -48,17 +54,24 @@
                         <li>
                             <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
                                 <h6 class="panel-title">
-                                    <i class="fs-4 bi-table"></i> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Teams</a>
+                                    <i class="fs-4 bi-table"></i> <a data-toggle="collapse" data-parent="#accordion" ng-click="showContent('teams')">Teams</a>
                                 </h6>
                             </div>
-                            <div id="collapseTwo" class="collapse show panel-collapse collapse in">
-                                <div class="panel-body">
-                                    <div class="inner" ng-repeat="teams in getTeams">
-                                        <a href="" class="d-none d-sm-inline" value={{teams}} ng-click="GetEvents(teams)">{{teams}}</a>
+                        </li>
+                        @*<li>
+                                <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
+                                    <h6 class="panel-title">
+                                        <i class="fs-4 bi-table"></i> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Teams</a>
+                                    </h6>
+                                </div>
+                                <div id="collapseTwo" class="collapse show panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        <div class="inner" ng-repeat="teams in getTeams">
+                                            <a href="" class="d-none d-sm-inline" value={{teams}} ng-click="GetEvents(teams)">{{teams}}</a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>*@
                     </ul>
                     <!-- 新增移除裝置放最底部 -->
                     <div class="mt-auto nav-item w-100">
@@ -81,7 +94,12 @@
                 </div>
             </div>
             <div class="container">
-                <div id='calendar'></div>
+                <!-- 公用設備區塊 -->
+                <div id="calendar" ng-show="activeTab=='calendar'"></div>
+                <!-- Teams 圖片 -->
+                <div ng-show="activeTab=='teams'">
+                    <img src="~/Content/Facility/Teams借用須知.png" class="img-thumbnail" alt="Teams借用須知">
+                </div>
             </div>
 
             @*彈出視窗-檢視事件*@
@@ -204,7 +222,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
