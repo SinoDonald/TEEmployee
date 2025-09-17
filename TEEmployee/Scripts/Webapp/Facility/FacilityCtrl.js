@@ -30,6 +30,10 @@ app.service('appService', ['$http', function ($http) {
     this.Send = (o) => {
         return $http.post('Facility/Send', o)
     };
+    // 修改Teams密碼
+    this.Change = (o) => {
+        return $http.post('Facility/Change', o)
+    };
     // 新增裝置
     this.CreateDevice = (o) => {
         return $http.post('Facility/CreateDevice', o)
@@ -116,7 +120,7 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                 $scope.device = ret.data[0];
                 // 找到特定type裡的ID, 並使用...new Set()過濾重複值後排序
                 $scope.getDevices = [...new Set(ret.data.filter(x => x.type == "電腦").map(x => x.deviceID))].sort();
-                $scope.getTeams = [...new Set(ret.data.filter(x => x.type == "Teams").map(x => x.deviceID))].sort();
+                $scope.getTeams = [...new Set(ret.data.filter(x => x.type == "Teams"))].sort(x => x.deviceID);
                 $scope.deviceID = ret.data[0].deviceID;
                 $scope.insertID = Math.max(...new Set(ret.data.map(item => item.id))) + 1;
                 $scope.deviceIDs = [...new Set(ret.data.map(x => x.deviceID))].sort(); // 移除裝置下拉選單
@@ -127,9 +131,12 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
 
     // 取得裝置行事曆
     function GetEvents(data) {
+
         if (data != undefined) {
             $scope.deviceID = data;
+            $scope.activeTab = 'calendar'; // 顯示 calendar
         }
+
         // 用 JavaScript Date 或 moment.js
         appService.GetEvents({ deviceID: $scope.deviceID })
             .then(function (ret) {
@@ -180,6 +187,7 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                             $scope.reserve = {};
                             $scope.reserve.deviceID = $scope.deviceID;
                             $scope.reserve.deviceName = $scope.device.deviceName;
+                            $scope.reserve.password = "";
                             $scope.reserve.title = "";
                             $scope.reserve.meetingDate = moment(event._d.toISOString()).format("YYYY/MM/DD");
                             $scope.reserve.modifiedDate = moment(new Date).format("YYYY/MM/DD HH:mm:ss");
@@ -204,6 +212,9 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                         var eventData = {
                             id: event.id ,
                             type: event.type,
+                            deviceID: $scope.deviceID,
+                            deviceName: $scope.device.deviceName,
+                            password: event.password,
                             empno: event.empno,
                             name: event.name,
                             contactTel: event.contactTel,
@@ -213,8 +224,6 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                             modifiedDate: moment(new Date).format("YYYY/MM/DD HH:mm:ss"),
                             modifiedUser: $scope.currentUser.empno,
                             num: event.num,
-                            deviceID: $scope.deviceID,
-                            deviceName: $scope.device.deviceName,
                             title: event.title,
                             available: 1,
                             allDay: event.allDay
@@ -261,6 +270,9 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                     var eventData = {
                         id: state == 'edit' ? $scope.reserve.id : $scope.insertID,
                         type: $scope.reserve.type,
+                        deviceID: $scope.deviceID,
+                        deviceName: $scope.device.deviceName,
+                        password: $scope.reserve.password,
                         empno: $scope.reserve.empno,
                         name: $scope.reserve.name,
                         contactTel: $scope.reserve.contactTel,
@@ -270,8 +282,6 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                         modifiedDate: moment(new Date).format("YYYY/MM/DD HH:mm:ss"),
                         modifiedUser: $scope.currentUser.empno,
                         num: $scope.reserve.num,
-                        deviceID: $scope.deviceID,
-                        deviceName: $scope.device.deviceName,
                         title: $scope.reserve.title,
                         available: 1,
                         allDay: $scope.reserve.allDay
@@ -319,8 +329,50 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
 
     // 取得裝置行事曆
     $scope.GetEvents = function (data) {
-        GetEvents(data)
+        GetEvents(data);
     };
+
+    // 修改Teams密碼
+    $scope.ChangePassword = function () {
+        $scope.teams = {};
+        $scope.teams.deviceID = $scope.getTeams[0].deviceID; // 預設值
+        $("#change-password").modal("show");
+    };
+    $scope.Change = function (data) {
+        Swal.fire({
+            icon: 'question',
+            title: '確定要更改密碼嗎?',
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                appService.Change({ deviceID: data.deviceID, password: data.password })
+                    .then(function (ret) {
+                        if (ret.data === "") {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '完成',
+                                showCancelButton: false,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    GetDevices(); // 取得所有公用裝置
+                                    $scope.activeTab = 'teams'; // 顯示 teams
+                                    $("#change-password").modal("hide");
+                                }
+                            })
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: ret.data,
+                                showCancelButton: false,
+                            }).then((result) => {
+
+                            })
+                        }
+                    });
+            }
+        })
+    }
 
     // 新增裝置
     $scope.CreateDevice = function () {
@@ -335,6 +387,7 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
         $scope.createdevice.type = $scope.createdevice.types[0];
         $scope.createdevice.deviceID = "";
         $scope.createdevice.deviceName = "";
+        $scope.createdevice.password = "";
         $scope.createdevice.empno = $scope.currentUser.empno;
         $scope.createdevice.name = $scope.currentUser.name;
         $scope.createdevice.contactTel = '0' + $scope.currentUser.empno;
@@ -375,7 +428,7 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
     $scope.RemoveDevice = function () {
         $scope.removedevice = {};
         $scope.removedevice.deviceIDs = $scope.deviceIDs;
-        $scope.removedevice.deviceID = $scope.deviceIDs[0]; // 移除裝置預設值
+        $scope.removedevice.deviceID = $scope.deviceIDs[0]; // 預設值
         $("#remove-device").modal("show");
     };
     $scope.Remove = function (data) {

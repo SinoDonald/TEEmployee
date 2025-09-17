@@ -11,6 +11,12 @@ namespace TEEmployee.Models.Facility
 
         public String name { get; set; }
 
+        public String deviceID { get; set; }
+
+        public String deviceName { get; set; }
+
+        public String password { get; set; }
+
         public String contactTel { get; set; }
 
         public String startTime { get; set; }
@@ -24,10 +30,6 @@ namespace TEEmployee.Models.Facility
         public String modifiedUser { get; set; }
 
         public int num { get; set; }
-
-        public String deviceID { get; set; }
-
-        public String deviceName { get; set; }
 
         public String title { get; set; }
         public bool available { get; set; }

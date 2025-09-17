@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -69,11 +68,34 @@ namespace TEEmployee.Models.Facility
                 _conn.Open();
                 using (var tran = _conn.BeginTransaction())
                 {
-                    string sql = @"INSERT INTO facility (id, type, deviceID, deviceName, empno, name, contactTel, startTime, endTime, meetingDate, modifiedDate, modifiedUser, num, title, available, allDay)
-                                 VALUES(@id, @type, @deviceID, @deviceName, @empno, @name, @contactTel, @startTime, @endTime, @meetingDate, @modifiedDate, @modifiedUser, @num, @title, @available, @allDay)
+                    string sql = @"INSERT INTO facility (id, type, deviceID, deviceName, password, empno, name, contactTel, startTime, endTime, meetingDate, modifiedDate, modifiedUser, num, title, available, allDay)
+                                 VALUES(@id, @type, @deviceID, @deviceName, @password, @empno, @name, @contactTel, @startTime, @endTime, @meetingDate, @modifiedDate, @modifiedUser, @num, @title, @available, @allDay)
                                  ON CONFLICT(id)
-                                 DO UPDATE SET id=@id, type=@type, deviceID=@deviceID, deviceName=@deviceName, empno=@empno, name=@name, contactTel=@contactTel, startTime=@startTime, endTime=@endTime, meetingDate=@meetingDate, modifiedDate=@modifiedDate, modifiedUser=@modifiedUser, num=@num, title=@title, available=@available, allDay=@allDay";
+                                 DO UPDATE SET id=@id, type=@type, deviceID=@deviceID, deviceName=@deviceName, password=@password, empno=@empno, name=@name, contactTel=@contactTel, startTime=@startTime, endTime=@endTime, meetingDate=@meetingDate, modifiedDate=@modifiedDate, modifiedUser=@modifiedUser, num=@num, title=@title, available=@available, allDay=@allDay";
                     _conn.Execute(sql, reserve, tran);
+                    tran.Commit();
+                }
+                _conn.Close();
+            }
+            catch (Exception ex) { ret = ex.Message + "\n" + ex.ToString(); _conn.Close(); }
+            return ret;
+        }
+        /// <summary>
+        /// 修改Teams密碼
+        /// </summary>
+        /// <param name="deviceID"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public string Change(string deviceID, string password)
+        {
+            string ret = string.Empty;
+            try
+            {
+                _conn.Open();
+                using (var tran = _conn.BeginTransaction())
+                {
+                    string sql = @"UPDATE facility SET password = @password WHERE deviceID = @deviceID;";
+                    _conn.Execute(sql, new { deviceID, password }, tran);
                     tran.Commit();
                 }
                 _conn.Close();
@@ -94,10 +116,10 @@ namespace TEEmployee.Models.Facility
                 _conn.Open();
                 using (var tran = _conn.BeginTransaction())
                 {
-                    string sql = @"INSERT INTO facility (id, type, deviceID, deviceName, empno, name, contactTel, startTime, endTime, meetingDate, modifiedDate, modifiedUser, num, title, available, allDay)
-                                 VALUES(@id, @type, @deviceID, @deviceName, @empno, @name, @contactTel, @startTime, @endTime, @meetingDate, @modifiedDate, @modifiedUser, @num, @title, @available, @allDay)
+                    string sql = @"INSERT INTO facility (id, type, deviceID, deviceName, password, empno, name, contactTel, startTime, endTime, meetingDate, modifiedDate, modifiedUser, num, title, available, allDay)
+                                 VALUES(@id, @type, @deviceID, @deviceName, @password, @empno, @name, @contactTel, @startTime, @endTime, @meetingDate, @modifiedDate, @modifiedUser, @num, @title, @available, @allDay)
                                  ON CONFLICT(id)
-                                 DO UPDATE SET id=@id, type=@type, deviceID=@deviceID, deviceName=@deviceName, empno=@empno, name=@name, contactTel=@contactTel, startTime=@startTime, endTime=@endTime, meetingDate=@meetingDate, modifiedDate=@modifiedDate, modifiedUser=@modifiedUser, num=@num, title=@title, available=@available, allDay=@allDay";
+                                 DO UPDATE SET id=@id, type=@type, deviceID=@deviceID, deviceName=@deviceName, password=@password, empno=@empno, name=@name, contactTel=@contactTel, startTime=@startTime, endTime=@endTime, meetingDate=@meetingDate, modifiedDate=@modifiedDate, modifiedUser=@modifiedUser, num=@num, title=@title, available=@available, allDay=@allDay";
                     _conn.Execute(sql, facility, tran);
                     tran.Commit();
                 }

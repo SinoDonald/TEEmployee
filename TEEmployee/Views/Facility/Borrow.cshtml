@@ -34,10 +34,12 @@
                         <li>
                             @*保持展開*@
                             <!--<div class="nav-link px-0 align-middle panel-heading">
-                                <h6 class="panel-title">
-                                    <i class="fs-4 bi-speedometer2"></i> <a--> @*href="#collapseOne"*@ <!--ng-click="showContent('calendar'); $('#collapseOne').collapse('show')">公用設備</a>
-                                </h6>
-                            </div>-->
+                        <h6 class="panel-title">
+                            <i class="fs-4 bi-speedometer2"></i> <a-->
+                            @*href="#collapseOne"*@
+                            <!--ng-click="showContent('calendar'); $('#collapseOne').collapse('show')">公用設備</a>
+                        </h6>
+                    </div>-->
                             <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
                                 <h6 class="panel-title">
                                     <i class="fs-4 bi-speedometer2"></i> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" ng-click="showContent('calendar')">公用設備</a>
@@ -59,25 +61,30 @@
                             </div>
                         </li>
                         @*<li>
-                                <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
-                                    <h6 class="panel-title">
-                                        <i class="fs-4 bi-table"></i> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Teams</a>
-                                    </h6>
+                        <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
+                            <h6 class="panel-title">
+                                <i class="fs-4 bi-table"></i> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Teams</a>
+                            </h6>
+                        </div>
+                        <div id="collapseTwo" class="collapse show panel-collapse collapse in">
+                            <div class="panel-body">
+                                <div class="inner" ng-repeat="teams in getTeams">
+                                    <a href="" class="d-none d-sm-inline" value={{teams}} ng-click="GetEvents(teams)">{{teams}}</a>
                                 </div>
-                                <div id="collapseTwo" class="collapse show panel-collapse collapse in">
-                                    <div class="panel-body">
-                                        <div class="inner" ng-repeat="teams in getTeams">
-                                            <a href="" class="d-none d-sm-inline" value={{teams}} ng-click="GetEvents(teams)">{{teams}}</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>*@
+                            </div>
+                        </div>
+                    </li>*@
                     </ul>
                     <!-- 新增移除裝置放最底部 -->
                     <div class="mt-auto nav-item w-100">
                         <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
                             @if (Session["Admin"] is true || Session["leader"] is true || Session["empno"] is "7291" || Session["empno"] is "7596")
                             {
+                                <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
+                                    <h6 class="panel-title">
+                                        <button type="button" class="btn btn-danger pull-left" ng-click="ChangePassword()">修改Teams密碼</button>
+                                    </h6>
+                                </div>
                                 <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
                                     <h6 class="panel-title">
                                         <button type="button" class="btn btn-danger pull-left" ng-click="CreateDevice()">新增裝置</button>
@@ -98,6 +105,14 @@
                 <div id="calendar" ng-show="activeTab=='calendar'"></div>
                 <!-- Teams 圖片 -->
                 <div ng-show="activeTab=='teams'">
+                    <div id="collapseTwo" class="collapse show panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="inner" ng-repeat="teams in getTeams">
+                                <h4 href="" class="d-none d-sm-inline" value={{teams}} ng-click="GetEvents(teams)">帳號：{{teams.deviceID}}<br>密碼：{{teams.password}}<br></h4>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
                     <img src="~/Content/Facility/Teams借用須知.png" class="img-thumbnail" alt="Teams借用須知">
                 </div>
             </div>
@@ -142,6 +157,37 @@
                                 <button ng-if="bEdit && editAuth" type="button" class="btn btn-danger pull-left" ng-click="Delete()">刪除</button>
                                 <button ng-if="bEdit && editAuth" type="button" class="btn btn-primary pull-right" ng-click="Send('edit')">修改</button>
                                 <button ng-if="!bEdit" type="button" class="btn btn-primary pull-right" ng-click="Send('create')">新增</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*彈出視窗-修改Teams密碼*@
+            <div class="modal fade" id="change-password">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title"><span>更改密碼</span></h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="type">ID</label>
+                                <select class="form-select" id="SelectDeviceID" name="SelectDeviceID" ng-model="teams.deviceID" aria-label="Select the deviceID">
+                                    <option ng-repeat="teams in getTeams">{{teams.deviceID}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">密碼</label>
+                                <input id="password" class="form-control" type="text" ng-model="teams.password" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="col-md-12 col-xs-12">
+                                <button type="button" class="btn btn-primary pull-right" ng-click="Change(teams)">更改密碼</button>
                             </div>
                         </div>
                     </div>
@@ -194,7 +240,6 @@
                     </div>
                 </div>
             </div>
-
 
             @*彈出視窗-移除裝置*@
             <div class="modal fade" id="remove-device">

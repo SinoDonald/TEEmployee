@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web.Mvc;
 
 namespace TEEmployee.Models.Facility
 {
@@ -154,6 +153,17 @@ namespace TEEmployee.Models.Facility
                 }
             }
             return (true, null);
+        }
+        /// <summary>
+        /// 修改Teams密碼
+        /// </summary>
+        /// <param name="deviceID"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public string Change(string deviceID, string password)
+        {
+            string ret = _facilityRepository.Change(deviceID, password);
+            return ret;
         }
         /// <summary>
         /// 新增裝置

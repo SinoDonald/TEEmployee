@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using System.Web.Services.Description;
 using TEEmployee.Filters;
 using TEEmployee.Models;
 using TEEmployee.Models.Facility;
-using TEEmployee.Models.Talent;
 
 namespace TEEmployee.Controllers
 {
@@ -99,6 +97,18 @@ namespace TEEmployee.Controllers
         public JsonResult Send(string state, Facility reserve)
         {
             string ret = _facilityService.Send(state, reserve);
+            return Json(ret);
+        }
+        /// <summary>
+        /// 修改Teams密碼
+        /// </summary>
+        /// <param name="deviceID"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult Change(string deviceID, string password)
+        {
+            string ret = _facilityService.Change(deviceID, password);
             return Json(ret);
         }
         /// <summary>
