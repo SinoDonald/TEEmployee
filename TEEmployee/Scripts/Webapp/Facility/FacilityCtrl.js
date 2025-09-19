@@ -185,6 +185,7 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                     dayClick: function (event) {
                         if ($scope.bEdit = !0) {
                             $scope.reserve = {};
+                            $scope.reserve.type = $scope.device.type;
                             $scope.reserve.deviceID = $scope.deviceID;
                             $scope.reserve.deviceName = $scope.device.deviceName;
                             $scope.reserve.password = "";
@@ -209,6 +210,7 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                     },
                     // 拖曳事件
                     eventDrop: function (event, delta, revertFunc) {
+                        $scope.editEndTime = event.end == null ? moment(event.start.toISOString()).add(1, 'hours').format("HH:mm") : moment(event.end.toISOString()).format("HH:mm");
                         var eventData = {
                             id: event.id ,
                             type: event.type,
@@ -218,9 +220,9 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                             empno: event.empno,
                             name: event.name,
                             contactTel: event.contactTel,
-                            startTime: event.startTime,
-                            endTime: event.endTime,
-                            meetingDate: event.end.format("YYYY/MM/DD"),
+                            startTime: event._allDay == true ? "00:00" : moment(event.start.toISOString()).format("HH:mm"),
+                            endTime: event._allDay == true ? "23:59" : $scope.editEndTime,
+                            meetingDate: moment(event.start.toISOString()).format("YYYY/MM/DD"),
                             modifiedDate: moment(new Date).format("YYYY/MM/DD HH:mm:ss"),
                             modifiedUser: $scope.currentUser.empno,
                             num: event.num,
@@ -228,25 +230,34 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                             available: 1,
                             allDay: event.allDay
                         };
-                        appService.Send({ state: 'edit', reserve: eventData })
-                            .then(function (ret) {
-                                if (ret.data === "") {
-                                    GetEvents($scope.deviceID); // 更新新增與修改事件
-                                    $scope.reserve = eventData;
-                                    $("#reserve-modal").modal("hide");
-                                }
-                                else {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: ret.data,
-                                        showCancelButton: false,
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            revertFunc(); // 還原
-                                        }
-                                    })
-                                }
-                            });
+                        // 先驗證是否編輯者本人才允許拖曳
+                        $scope.$apply(function () {
+                            $scope.editAuth = $scope.currentUser.empno == event.modifiedUser ? !0 : !1; // 編輯者本人可修改
+                        });
+                        if ($scope.editAuth) {
+                            appService.Send({ state: 'edit', reserve: eventData })
+                                .then(function (ret) {
+                                    if (ret.data === "") {
+                                        GetEvents($scope.deviceID); // 更新新增與修改事件
+                                        $scope.reserve = eventData;
+                                        $("#reserve-modal").modal("hide");
+                                    }
+                                    else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: ret.data,
+                                            showCancelButton: false,
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                revertFunc(); // 還原
+                                            }
+                                        })
+                                    }
+                                });
+                        }
+                        else {
+                            revertFunc(); // 還原
+                        }
                     }
                 });
                 $scope.Delete = function () {
