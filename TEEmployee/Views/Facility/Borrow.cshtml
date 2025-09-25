@@ -1,5 +1,8 @@
 ﻿@using TEEmployee.Models;
 
+@{
+    ViewBag.Title = "部門公用電腦借用";
+}
 <style type="text/css">
 
     .field-validation-error {
@@ -24,22 +27,22 @@
                         <span class="fs-5 d-none d-sm-inline">選單</span>
                     </a>
                     <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                        <li class="nav-item">
+                        @*<li class="nav-item">
                             <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
                                 <h6 class="panel-title">
                                     <i class="fs-4 bi-house"></i> <a href="/">首頁</a>
                                 </h6>
                             </div>
-                        </li>
+                        </li>*@
                         <li>
                             @*保持展開*@
                             <!--<div class="nav-link px-0 align-middle panel-heading">
-                        <h6 class="panel-title">
-                            <i class="fs-4 bi-speedometer2"></i> <a-->
+                            <h6 class="panel-title">
+                                <i class="fs-4 bi-speedometer2"></i> <a-->
                             @*href="#collapseOne"*@
                             <!--ng-click="showContent('calendar'); $('#collapseOne').collapse('show')">公用設備</a>
-                        </h6>
-                    </div>-->
+                                </h6>
+                            </div>-->
                             <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
                                 <h6 class="panel-title">
                                     <i class="fs-4 bi-speedometer2"></i> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" ng-click="showContent('calendar')">公用設備</a>
@@ -61,19 +64,19 @@
                             </div>
                         </li>
                         @*<li>
-                        <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
-                            <h6 class="panel-title">
-                                <i class="fs-4 bi-table"></i> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Teams</a>
-                            </h6>
-                        </div>
-                        <div id="collapseTwo" class="collapse show panel-collapse collapse in">
-                            <div class="panel-body">
-                                <div class="inner" ng-repeat="teams in getTeams">
-                                    <a href="" class="d-none d-sm-inline" value={{teams}} ng-click="GetEvents(teams)">{{teams}}</a>
+                                <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
+                                    <h6 class="panel-title">
+                                        <i class="fs-4 bi-table"></i> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Teams</a>
+                                    </h6>
                                 </div>
-                            </div>
-                        </div>
-                    </li>*@
+                                <div id="collapseTwo" class="collapse show panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        <div class="inner" ng-repeat="teams in getTeams">
+                                            <a href="" class="d-none d-sm-inline" value={{teams}} ng-click="GetEvents(teams)">{{teams}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>*@
                     </ul>
                     <!-- 新增移除裝置放最底部 -->
                     <div class="mt-auto nav-item w-100">
