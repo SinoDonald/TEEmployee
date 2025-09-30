@@ -137,7 +137,9 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public async Task<ActionResult> GetSensorResourceData()
         {
-            var ret = await _presenceSensorService.GetSensorResourceData();
+            //var ret = await _presenceSensorService.GetSensorResourceData();
+            var ret = await _presenceSensorService.GetSensorResourceDataFromProxy();
+
             return Content(ret, "application/json");
         }
     }

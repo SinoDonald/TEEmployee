@@ -22,23 +22,23 @@ namespace TEEmployee.Models.Facility
         {
             _httpClient = new HttpClient();
 
-            // Add the Appid and Keyid to the default request headers
-            _httpClient.DefaultRequestHeaders.Add("Appid", AppId);
-            _httpClient.DefaultRequestHeaders.Add("Keyid", KeyId);
-            _httpClient.DefaultRequestHeaders.Add("Accesstoken", Accesstoken);
-            _httpClient.DefaultRequestHeaders.Add("AppKey", AppKey);
+            //// Add the Appid and Keyid to the default request headers
+            //_httpClient.DefaultRequestHeaders.Add("Appid", AppId);
+            //_httpClient.DefaultRequestHeaders.Add("Keyid", KeyId);
+            //_httpClient.DefaultRequestHeaders.Add("Accesstoken", Accesstoken);
+            //_httpClient.DefaultRequestHeaders.Add("AppKey", AppKey);
 
-            // Generate Time and Nonce (milliseconds since epoch)
-            long time = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            long nonce = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();            
+            //// Generate Time and Nonce (milliseconds since epoch)
+            //long time = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            //long nonce = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();            
 
-            string preSign = $"Accesstoken={Accesstoken}&Appid={AppId}&Keyid={KeyId}&Nonce={nonce}&Time={time}{AppKey}";
-            string preSignLower = preSign.ToLowerInvariant();
-            string sign = ComputeMD5Hash(preSignLower);
+            //string preSign = $"Accesstoken={Accesstoken}&Appid={AppId}&Keyid={KeyId}&Nonce={nonce}&Time={time}{AppKey}";
+            //string preSignLower = preSign.ToLowerInvariant();
+            //string sign = ComputeMD5Hash(preSignLower);
 
-            _httpClient.DefaultRequestHeaders.Add("Time", time.ToString());
-            _httpClient.DefaultRequestHeaders.Add("Nonce", nonce.ToString());
-            _httpClient.DefaultRequestHeaders.Add("Sign", sign);
+            //_httpClient.DefaultRequestHeaders.Add("Time", time.ToString());
+            //_httpClient.DefaultRequestHeaders.Add("Nonce", nonce.ToString());
+            //_httpClient.DefaultRequestHeaders.Add("Sign", sign);
 
             // Optional: clear and set the Accept header for JSON
             _httpClient.DefaultRequestHeaders.Accept.Clear();
@@ -67,6 +67,14 @@ namespace TEEmployee.Models.Facility
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
+
+        public async Task<string> GetSensorResourceDataFromProxy()
+        {            
+            var response = await _httpClient.GetAsync("https://50-129.sinotech.com.tw:7596/PresenceSensor/api/resource/");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+        }
+
 
         private static string ComputeMD5Hash(string input)
         {
