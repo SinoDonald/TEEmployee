@@ -282,6 +282,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AssessmentController.cs" />
+    <Compile Include="Controllers\BallotController.cs" />
     <Compile Include="Controllers\EducationController.cs" />
     <Compile Include="Controllers\EducationV2Controller.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
@@ -309,6 +310,10 @@
     <Compile Include="Models\AgentModel\AgentRepository.cs" />
     <Compile Include="Models\AgentModel\IAgentRepository.cs" />
     <Compile Include="Models\Assessments\Performance.cs" />
+    <Compile Include="Models\Ballot\Ballot.cs" />
+    <Compile Include="Models\Ballot\BallotRepository.cs" />
+    <Compile Include="Models\Ballot\BallotService.cs" />
+    <Compile Include="Models\Ballot\IBallotRepository.cs" />
     <Compile Include="Models\Education2024\Content.cs" />
     <Compile Include="Models\Education2024\EducationRepository.cs" />
     <Compile Include="Models\Education2024\EducationService.cs" />
@@ -617,6 +622,7 @@
     <Content Include="Scripts\Webapp\Assessment\SelfCtrl.min.js">
       <DependentUpon>SelfCtrl.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Webapp\Ballot\BallotCtrl.js" />
     <Content Include="Scripts\Webapp\EducationV2\EducationCtrl.js" />
     <Content Include="Scripts\Webapp\Education\EducationBackupCtrl.js" />
     <Content Include="Scripts\Webapp\Education\EducationCtrl.js" />
@@ -764,6 +770,7 @@
     <Content Include="Views\EducationV2\Record.cshtml" />
     <Content Include="Views\Facility\Index.cshtml" />
     <Content Include="Views\Facility\Borrow.cshtml" />
+    <Content Include="Views\Ballot\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Promotion\" />

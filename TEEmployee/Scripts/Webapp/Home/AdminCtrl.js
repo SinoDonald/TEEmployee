@@ -74,6 +74,10 @@ app.service('appService', ['$http', function ($http) {
     this.DeleteGEducation = function (o) {
         return $http.post('GEducation/DeleteAll', o);
     };
+
+    this.DeleteBallot = function (o) {
+        return $http.post('Ballot/DeleteAll', o);
+    };
     // =================== 培文 ===================
 
     // 刪除群組規劃
@@ -424,6 +428,9 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
             case '拓展專業培養':
                 $scope.DeleteGEducation();
                 break;
+            case '票選活動':
+                $scope.DeleteBallot();
+                break;
             default:
                 console.log('Sorry');
         }
@@ -503,6 +510,16 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
 
     $scope.DeleteGEducation = () => {
         appService.DeleteGEducation({})
+            .then((ret) => {
+                alert("Successfully deleted");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+
+    $scope.DeleteBallot = () => {
+        appService.DeleteBallot({})
             .then((ret) => {
                 alert("Successfully deleted");
             })
