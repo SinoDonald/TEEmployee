@@ -138,7 +138,7 @@ namespace TEEmployee.Models.GKpi
 
                     tran.Commit();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                 }
 
@@ -156,7 +156,7 @@ namespace TEEmployee.Models.GKpi
             {
                 ret = _conn.Execute(sql, items);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 ret = -1;
             }

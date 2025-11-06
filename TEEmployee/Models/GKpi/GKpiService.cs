@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using TEEmployee.Models.Notify;
 
 namespace TEEmployee.Models.GKpi
 {

@@ -672,7 +672,7 @@ namespace TEEmployee.Models.Training
 
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 ret = false;
             }

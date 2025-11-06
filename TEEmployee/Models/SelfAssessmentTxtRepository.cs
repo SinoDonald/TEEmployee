@@ -886,7 +886,7 @@ namespace TEEmployee.Models
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -909,7 +909,7 @@ namespace TEEmployee.Models
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

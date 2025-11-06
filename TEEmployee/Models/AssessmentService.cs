@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Services.Description;
 using TEEmployee.Models.Assessments;
+using TEEmployee.Models.Notify;
 
 namespace TEEmployee.Models
 {

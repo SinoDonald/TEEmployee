@@ -6,7 +6,7 @@ using System.Linq;
 using System.Web;
 using TEEmployee.Models.GSchedule;
 
-namespace TEEmployee.Models
+namespace TEEmployee.Models.Notify
 {
     public class NotifyService
     {

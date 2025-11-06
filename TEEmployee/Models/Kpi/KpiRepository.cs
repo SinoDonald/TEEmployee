@@ -97,7 +97,7 @@ namespace TEEmployee.Models.Kpi
 
                     tran.Commit();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                 }
 
@@ -115,7 +115,7 @@ namespace TEEmployee.Models.Kpi
             {
                 ret = _conn.Execute(sql, items);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 ret = -1;
             }

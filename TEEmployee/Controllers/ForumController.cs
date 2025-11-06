@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Models;
 using TEEmployee.Models.Forum;
+using TEEmployee.Models.Notify;
 
 namespace TEEmployee.Controllers
 {

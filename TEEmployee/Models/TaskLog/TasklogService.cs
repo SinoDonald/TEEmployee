@@ -228,7 +228,7 @@ namespace TEEmployee.Models.TaskLog
                         _projectTaskRepository.Insert(item);
                 }
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 ret = false;
             }

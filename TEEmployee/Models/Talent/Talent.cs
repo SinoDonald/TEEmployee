@@ -1,8 +1,6 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Web.Script.Serialization;
 
-namespace TEEmployee.Models
+namespace TEEmployee.Models.Talent
 {
     /// <summary>
     /// 條件篩選

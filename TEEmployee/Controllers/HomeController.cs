@@ -12,6 +12,7 @@ using TEEmployee.Models.Talent;
 using Newtonsoft.Json;
 using TEEmployee.Models.Profession;
 using System.IO;
+using TEEmployee.Models.Notify;
 
 namespace TEEmployee.Controllers
 {

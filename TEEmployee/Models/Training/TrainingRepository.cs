@@ -134,7 +134,7 @@ namespace TEEmployee.Models.Training
                     tran.Commit();
                     return ret > 0;
                 }
-                catch(Exception ex)
+                catch(Exception)
                 {
                     return false;
                 }
@@ -222,7 +222,7 @@ namespace TEEmployee.Models.Training
                     tran.Commit();
                     return ret > 0;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return false;
                 }
@@ -323,7 +323,7 @@ namespace TEEmployee.Models.Training
                 return true;
                 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

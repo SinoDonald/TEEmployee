@@ -108,7 +108,7 @@ namespace TEEmployee.Models.TaskLog
                 _conn.Execute(sql);
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {                
                 return false;
             }
@@ -123,7 +123,7 @@ namespace TEEmployee.Models.TaskLog
                 _conn.Execute(sql);
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
