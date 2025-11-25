@@ -27,6 +27,10 @@ app.service('appService', ['$http', function ($http) {
     this.UpdateDatabase = (o) => {
         return $http.post('Forum/UpdateDatabase', o);
     };
+    // 培文 --> 刪除回覆
+    this.DeleteReply = (o) => {
+        return $http.post('Forum/DeleteReply', o);
+    };
 
 }]);
 
@@ -155,7 +159,6 @@ app.controller('PostCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
     }
 
     appService.GetPost({ id: $window.postId }).then((ret) => {
-
         $scope.post = ret.data.Item1;
         $scope.replies = ret.data.Item2;        
 
@@ -198,18 +201,33 @@ app.controller('PostCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
         $window.history.back();
     }
 
+    /// 刪除貼文 <-- 培文
     $scope.confirmDeletePost = (post) => {
-
         var result = confirm("確定要刪除這則貼文嗎？");
 
         if (result) {
             appService.DeletePost({ post: post }).then((ret) => {
-
                 if (ret.data) {
                     $window.location.href = indexUrl;
                 }
             })
         }
     }
-
+    /// 刪除留言 <-- 培文
+    $scope.deleteReply = function (postId, id) {
+        Swal.fire({
+            icon: 'question',
+            title: '確定要刪除留言嗎?',
+            text: '刪除後將無法復原',
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                appService.DeleteReply({ postId: postId, id: id }).then((ret) => {
+                    if (ret.data) {
+                        $window.location.href = indexUrl;
+                    }
+                })
+            }
+        })
+    };
 }]);

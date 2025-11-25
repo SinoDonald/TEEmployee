@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace TEEmployee.Models.Forum
 {
@@ -135,6 +136,18 @@ namespace TEEmployee.Models.Forum
         public bool DeletePost(Post post)
         {
             var ret = _forumRepository.DeletePost(post);
+            return ret;
+        }
+        /// <summary>
+        /// 刪除回覆
+        /// </summary>
+        /// <param name="post"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public bool DeleteReply(int postId, int id)
+        {
+            var ret = _forumRepository.DeleteReply(postId, id);
             return ret;
         }
 

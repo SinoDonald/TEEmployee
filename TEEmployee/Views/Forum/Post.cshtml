@@ -157,6 +157,36 @@
             opacity: 0.8;
             margin-bottom: 20px;
         }
+
+        /* 確保 article 有定位基準 */
+        article {
+            position: relative;
+            padding-right: 30px; /* 右邊留點空隙給按鈕，避免文字重疊 */
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 24px;
+            height: 24px;
+            line-height: 20px;
+            text-align: center;
+            border: 1px solid transparent;
+            background: transparent;
+            color: #aaa;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.2s;
+            font-family: sans-serif;
+        }
+
+            /* 滑鼠移上去變成紅色背景白字 */
+            .delete-btn:hover {
+                background-color: #ff4d4d;
+                color: white;
+            }
     </style>
 }
 
@@ -164,9 +194,9 @@
 
     <div class="btnSet">
         @*<button type="button" ng-click="back()" class="btn btn-outline-secondary" data-toggle="modal" data-target="#exampleModal">
-            <span class="material-icons" style="font-size:1rem">arrow_back</span>
-            上一頁
-        </button>*@
+                <span class="material-icons" style="font-size:1rem">arrow_back</span>
+                上一頁
+            </button>*@
         <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Forum")">
             <span class="material-icons" style="font-size:1rem">arrow_back</span>
             上一頁
@@ -185,7 +215,7 @@
             </button>
         }
 
-        
+
     </div>
 
     <section id="app" class="comments mt-5">
@@ -203,6 +233,8 @@
         </article>
 
         <article ng-repeat="item in replies">
+            @*<button type="button" class="delete-btn" ng-if="item.empno == @Session["empno"]" ng-click="deleteReply(post.id, item.id)">X</button>*@
+
             <img id="profile-photo" ng-src="~/Content/assets/img/forum/f{{item.pic}}.png" />
             <h4 ng-bind="item.name"></h4>
             @*<time ng-bind="item.replyDate"></time>*@
@@ -321,4 +353,6 @@
     </script>
     <script src="~/Scripts/WebApp/Forum/ForumCtrl.js"></script>
     <script src="~/Scripts/moment-with-locales.js"></script>
+    <!-- 警示彈跳視窗-->
+    <script src="~/Scripts/sweetalert2.all.min.js"></script>
 }

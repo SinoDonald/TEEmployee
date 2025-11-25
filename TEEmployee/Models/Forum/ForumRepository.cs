@@ -166,7 +166,32 @@ namespace TEEmployee.Models.Forum
 
             return ret;
         }
+        /// <summary>
+        /// 刪除回覆
+        /// </summary>
+        /// <param name="post"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool DeleteReply(int postId, int id)
+        {
+            _conn.Open();
 
+            string deleteReplySql = @"DELETE FROM Reply WHERE postId=@postId AND id=@id";
+
+            using (var tran = _conn.BeginTransaction())
+            {
+                try
+                {
+                    int rows = _conn.Execute(deleteReplySql, new { postId, id }, tran);
+                    tran.Commit();
+                    return rows > 0; // 是否真的刪除到資料
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
 
         public void Dispose()
         {
@@ -174,6 +199,5 @@ namespace TEEmployee.Models.Forum
             _conn.Dispose();
             return;
         }
-
     }
 }
