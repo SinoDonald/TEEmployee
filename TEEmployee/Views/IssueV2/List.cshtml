@@ -258,7 +258,7 @@
                                     <td ng-bind="issue.content"></td>
                                     <td>
                                         <div>
-                                            <span ng-repeat="obj in issue.memberObjs" ng-bind="obj.name[0]" class="badge circle-badge"></span>
+                                            <span ng-repeat="obj in issue.memberObjs" ng-bind="obj.name.slice(-1)" class="badge circle-badge"></span>
                                         </div>
                                     </td>
                                     <td ng-bind="issue.progress"></td>

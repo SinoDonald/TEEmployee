@@ -210,6 +210,10 @@ namespace TEEmployee.Models.Promotion
                     {
                         promotions[0].achieved = true;
                     }
+                    else
+                    {
+                        promotions[0].achieved = false;
+                    }
 
                     break;
                 }
@@ -247,6 +251,10 @@ namespace TEEmployee.Models.Promotion
                     if ((double)sum / int.Parse(strs[2]) >= int.Parse(strs[3]))
                     {
                         promotions[1].achieved = true;
+                    } 
+                    else
+                    {
+                        promotions[1].achieved = false;
                     }
 
                 }
