@@ -1155,7 +1155,7 @@ app.controller('GroupCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         // 0704 update: hide 100% group schedule
         if (schedule.type === 1) {
             //if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(1, 'y').toDate())
-            if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(1, 'M').toDate())
+            if (new Date(schedule.start_date) > moment($scope.ganttStartMonth).add(6, 'M').toDate())
                 return false;
 
             if (new Date(schedule.end_date) < moment($scope.ganttStartMonth).toDate())

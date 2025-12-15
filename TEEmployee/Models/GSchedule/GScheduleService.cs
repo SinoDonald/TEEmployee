@@ -152,16 +152,18 @@ namespace TEEmployee.Models.GSchedule
                 {
                     if (member.group_one != group) continue;
 
-                    var items = _projectItemRepository.GetProjectItemsByEmpnoAndYYMM(member.empno, targetMonth);
+                    //var items = _projectItemRepository.GetProjectItemsByEmpnoAndYYMM(member.empno, targetMonth);
+                    var items = _projectItemRepository.GetProjectItemsByEmpnoAndYYMM(member.empno, targetMonth).Select(x => x.projno).Distinct();
+
                     var tasks = _projectTaskRepository.GetProjectTasksByEmpnoAndYYMM(member.empno, targetMonth);
 
                     foreach (var item in items)
                     {
-                        var match = groupSchedules.Find(x => x.Group.projno == item.projno);
+                        var match = groupSchedules.Find(x => x.Group.projno == item);
                         
                         if (match != null)
                         {
-                            var tasklogMilestones = tasks.Where(x => x.projno == item.projno && x.generate_schedule).ToList();
+                            var tasklogMilestones = tasks.Where(x => x.projno == item && x.generate_schedule).ToList();
 
                             if (tasklogMilestones.Count == 0) continue;
 
@@ -175,7 +177,7 @@ namespace TEEmployee.Models.GSchedule
                                 custom_order = 0,
                                 parent_id = match.Group.id,
                                 role = group,
-                                projno = item.projno,
+                                projno = item,
                                 member = member.name,
                                 from_tasklog = true,
                             };
