@@ -254,14 +254,14 @@
                             </colgroup>
                             <tbody style="border: none;">
                                 <tr ng-repeat="issue in project.issues | filter:excludeClosedIssue | orderBy:['category', '-importance']" ng-click="updateIssueModal(issue)" class="issue-row" data-toggle="modal" data-target="#issueModal">
-                                    <td ng-bind="issue.category"></td>
+                                    <td ng-bind="issue.category" style="word-break: break-all;"></td>
                                     <td ng-bind="issue.content"></td>
                                     <td>
                                         <div>
                                             <span ng-repeat="obj in issue.memberObjs" ng-bind="obj.name.slice(-1)" class="badge circle-badge"></span>
                                         </div>
                                     </td>
-                                    <td ng-bind="issue.progress"></td>
+                                    <td ng-bind="issue.progress" style="white-space: pre-line; word-break: break-all;"></td>
                                     <td ng-bind="issue.status"></td>
                                     <td ng-bind="issue.finished_date"></td>
                                     <td ng-bind="issue.registered_date"></td>
@@ -340,10 +340,32 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    @*<div class="form-group">
                         <label for="progressInput">辦理情形</label>
                         <input type="text" ng-model="issueModal.progress" class="form-control" id="progressInput" placeholder="請輸入...">
+                    </div>*@
+
+                    <div class="mb-3">
+                        <label for="personalProgressInput">個人辦理情形</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="personalProgressInput" ng-bind="auth.User.name.slice(-2)"></label>
+                            </div>
+                            <input type="text" ng-model="issueModal.personalProgress" class="form-control" id="personalprogressInput" placeholder="請輸入...">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" ng-click="appendProgress()">新增</button>
+                            </div>
+                        </div>
                     </div>
+                    
+
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">議題辦理情形</label>
+                        <textarea ng-model="issueModal.progress" class="form-control" id="progressTextarea" rows="6"></textarea>
+                    </div>
+
+                    
+
 
                     <div class="form-row mb-5">
                         <div class="form-group col-6">

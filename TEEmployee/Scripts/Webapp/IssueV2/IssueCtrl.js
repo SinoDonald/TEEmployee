@@ -312,4 +312,15 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         }
     }
 
+    $scope.appendProgress = () => {
+
+        if (!$scope.issueModal.progress) {
+            $scope.issueModal.progress = `${$scope.auth.User.name.slice(-2)}：${$scope.issueModal.personalProgress}`;
+        } else {
+            $scope.issueModal.progress += `\n${$scope.auth.User.name.slice(-2)}：${$scope.issueModal.personalProgress}`;
+        }
+
+        $scope.issueModal.personalProgress = '';
+    }
+
 }]);
