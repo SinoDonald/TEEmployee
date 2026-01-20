@@ -233,7 +233,10 @@
         </article>
 
         <article ng-repeat="item in replies">
-            @*<button type="button" class="delete-btn" ng-if="item.empno == @Session["empno"]" ng-click="deleteReply(post.id, item.id)">X</button>*@
+            @if (Session["empno"] is "7291")
+            {
+                <button type="button" class="delete-btn" @*ng-if="item.empno == @Session["empno"]"*@ ng-click="deleteReply(post.id, item.id)">X</button>
+            }   
 
             <img id="profile-photo" ng-src="~/Content/assets/img/forum/f{{item.pic}}.png" />
             <h4 ng-bind="item.name"></h4>
