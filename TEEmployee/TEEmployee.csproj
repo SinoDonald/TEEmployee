@@ -626,6 +626,7 @@
     <Content Include="Scripts\Webapp\EducationV2\EducationCtrl.js" />
     <Content Include="Scripts\Webapp\Education\EducationBackupCtrl.js" />
     <Content Include="Scripts\Webapp\Education\EducationCtrl.js" />
+    <Content Include="Scripts\Webapp\Error\ErrorCtrl.js" />
     <Content Include="Scripts\Webapp\Facility\FacilityCtrl.js" />
     <Content Include="Scripts\Webapp\Forum\ForumCtrl.js" />
     <Content Include="Scripts\Webapp\GEducation\GEducationCtrl.js" />

@@ -1,4 +1,6 @@
 ﻿
+@using TEEmployee.Models;
+
 @{
     ViewBag.Title = "Unauthorized";
     Layout = "~/Views/Shared/_LayoutStar - Copy.cshtml";
@@ -9,3 +11,6 @@
     <img class="rounded" src="~/Content/assets/img/You_Shall_Not_Pass.jpg" alt="You_Shall_Not_Pass" />
 </div>
 
+@section Scripts {
+    <script src="@Url.Versioned("~/Scripts/WebApp/Error/ErrorCtrl.js")"></script>
+}
