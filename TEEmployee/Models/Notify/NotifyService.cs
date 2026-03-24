@@ -209,6 +209,10 @@ namespace TEEmployee.Models.Notify
             {
                 ret = _notifyRepository.UpdateDatabase(empno, count, notification);
             }
+            else if (count == 5) // 年度個人規劃
+            {
+                ret = _notifyRepository.UpdateDatabase(empno, count, notification);
+            }
             else if(count == 8) // 我要抱抱
             {
                 ret = _notifyRepository.UpdateDatabase(empno, count, notification); 
