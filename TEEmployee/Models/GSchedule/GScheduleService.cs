@@ -204,7 +204,7 @@ namespace TEEmployee.Models.GSchedule
                             }
 
                             tempDetailSchedule.milestones = tempMilestones;
-                            match.Details.Add(new DetailSchedule() { Detail = tempDetailSchedule });
+                            match.Details.Add(new DetailSchedule() { Detail = tempDetailSchedule, Personals = new List<Schedule>() });
 
                         }
 
