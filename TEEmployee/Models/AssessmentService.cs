@@ -824,6 +824,8 @@ namespace TEEmployee.Models
             foreach (var empno in empnos)
             {
                 User manager = _userRepository.Get(empno);
+                if (manager == null)
+                    continue;
                 managers.Add(manager);
 
                 var allResponses = (_assessmentRepository as ManageAssessmentTxtRepository).GetAllManagerAssessmentResponses(empno, year);
