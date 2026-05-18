@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using TEEmployee.Models.Notify;
+using TEEmployee.Models.TaskLog;
 
 namespace TEEmployee.Models.GKpi
 {
@@ -662,6 +663,13 @@ namespace TEEmployee.Models.GKpi
         public bool DeleteSolitaryKpiModels()
         {
             var ret = _kpiRepository.DeleteSolitaryKpiModels();
+            return ret;
+        }
+
+        public bool UpdateCustomField()
+        {
+            var ret = (_kpiRepository as GKpiRepository).UpdateCustomField();
+
             return ret;
         }
 

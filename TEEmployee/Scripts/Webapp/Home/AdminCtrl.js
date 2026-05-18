@@ -121,7 +121,8 @@ app.service('appService', ['$http', function ($http) {
     //};
     this.OneTimeSQL = (o) => {
         //return $http.post('Tasklog/AddCustomOrderColumn', o);
-        return $http.post('Tasklog/InsertCustomUser', o);
+        //return $http.post('Tasklog/InsertCustomUser', o);
+        return $http.post('GKpi/UpdateCustomField', o);
     };
     //this.OneTimeSQL2 = (o) => {        
     //    return $http.post('Tasklog/AddGenerateScheduleColumn', o);

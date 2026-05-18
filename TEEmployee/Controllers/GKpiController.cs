@@ -107,6 +107,13 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        [HttpPost]
+        public JsonResult UpdateCustomField()
+        {
+            var ret = _service.UpdateCustomField();
+            return Json(ret);
+        }
+
         //=============================
         // Database reset
         //=============================

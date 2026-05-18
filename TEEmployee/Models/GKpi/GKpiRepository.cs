@@ -237,6 +237,27 @@ namespace TEEmployee.Models.GKpi
 
         }
 
+        // For updating urgent changes on annual kpi models/items
+        public bool UpdateCustomField()
+        {
+            int ret = 0;
+
+            string sql = @"
+                UPDATE KpiModel
+                SET role = REPLACE(role, @oldRole, @newRole) WHERE role LIKE @pattern
+            ";
+
+            ret = _conn.Execute(sql, new
+            {
+                oldRole = "經理",
+                newRole = "主管",
+                pattern = "%經理%",
+            });
+
+            return ret > 0;
+        }
+
+
         public bool DeleteAll()
         {
             _conn.Open();
