@@ -296,6 +296,9 @@ namespace TEEmployee.Models.Profession
             if (!String.IsNullOrEmpty(user.group_three))
                 groups.Add(user.group_three);
 
+            if (!String.IsNullOrEmpty(user.group_four))
+                groups.Add(user.group_four);
+
             // remove duplicates
             groups = groups.Distinct().ToList();
 
@@ -313,11 +316,11 @@ namespace TEEmployee.Models.Profession
         public List<User> GetGroupMembers(string group, User user)
         {
             List<User> users = _userRepository.GetAll();
-            var members = users.Where(x => x.group_one == group || x.group_two == group || x.group_three == group).ToList();
+            var members = users.Where(x => x.group_one == group || x.group_two == group || x.group_three == group || x.group_four == group).ToList();
 
-            if ((user.group_one_manager && user.group_one == group) || (user.group_two_manager && user.group_two == group) || (user.group_three_manager && user.group_three == group))
+            if ((user.group_one_manager && user.group_one == group) || (user.group_two_manager && user.group_two == group) || (user.group_three_manager && user.group_three == group) || (user.group_four_manager && user.group_four == group))
             {
-                var otherManagers = members.Where(x => (x.empno != user.empno) && ((x.group_one_manager && x.group_one == group) || (x.group_two_manager && x.group_two == group) || (x.group_three_manager && x.group_three == group)));
+                var otherManagers = members.Where(x => (x.empno != user.empno) && ((x.group_one_manager && x.group_one == group) || (x.group_two_manager && x.group_two == group) || (x.group_three_manager && x.group_three == group) || (x.group_four_manager && x.group_four == group)));
                 members = members.Except(otherManagers).ToList();
             }
 

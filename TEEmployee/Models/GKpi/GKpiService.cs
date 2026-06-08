@@ -227,7 +227,7 @@ namespace TEEmployee.Models.GKpi
             }
 
             // Filter by group again in case employee change their group in the same year
-            List<string> grouplist = new List<string> { user.group, user.group_one, user.group_two, user.group_three };
+            List<string> grouplist = new List<string> { user.group, user.group_one, user.group_two, user.group_three, user.group_four };
             grouplist.RemoveAll(x => string.IsNullOrEmpty(x));
             ret = ret.Where(x => grouplist.Contains(x.group_name)).ToList();
 
@@ -616,7 +616,7 @@ namespace TEEmployee.Models.GKpi
                     kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "管理", role = "組長" });
 
                     // Special case: 技術長 先不要有組長專業KPI
-                    if (!(user.group_two_manager && user.group_three_manager) && models.Any(x => x.role == user.group_one + "組員"))
+                    if (!(user.group_two_manager && user.group_three_manager && user.group_four_manager) && models.Any(x => x.role == user.group_one + "組員"))
                     {
                         kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "專業", role = "組長" });
                     }
@@ -639,6 +639,8 @@ namespace TEEmployee.Models.GKpi
                         kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group_two, kpi_type = "專業", role = "一般工程師" });
                     if (!String.IsNullOrEmpty(user.group_three) && !user.group_three_manager && models.Any(x => x.role == user.group_three + "組員"))
                         kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group_three, kpi_type = "專業", role = "一般工程師" });
+                    if (!String.IsNullOrEmpty(user.group_four) && !user.group_four_manager && models.Any(x => x.role == user.group_four + "組員"))
+                        kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group_four, kpi_type = "專業", role = "一般工程師" });
                 }
             }
 

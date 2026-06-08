@@ -124,6 +124,15 @@ app.service('appService', ['$http', function ($http) {
         //return $http.post('Tasklog/InsertCustomUser', o);
         return $http.post('GKpi/UpdateCustomField', o);
     };
+
+    this.OneTimeSQL2 = (o) => {
+        return $http.post('Tasklog/AddCustomGroupFourColumn', o);
+    };
+
+    this.OneTimeSQL3 = (o) => {
+        return $http.post('Talent/AddCustomGroupFourColumn', o);
+    };
+
     //this.OneTimeSQL2 = (o) => {        
     //    return $http.post('Tasklog/AddGenerateScheduleColumn', o);
     //};
@@ -194,6 +203,9 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
                 row[15] = (row[15] && row[15].length >= 2) ? row[15] : '';
                 newdata.group_three = row[15];
 
+                row[17] = (row[17] && row[17].length >= 2) ? row[17] : '';
+                newdata.group_four = row[17];
+
                 //manager
                 row[8] = (row[8] === 'Y') ? true : false;
                 newdata.department_manager = row[8];
@@ -210,15 +222,18 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
                 row[16] = (row[16] === 'Y') ? true : false;
                 newdata.group_three_manager = row[16];
 
-                row[17] = (row[17] === 'Y') ? true : false;
-                newdata.project_manager = row[17];
-
                 row[18] = (row[18] === 'Y') ? true : false;
-                newdata.assistant_project_manager = row[18];
+                newdata.group_four_manager = row[18];
+
+                row[19] = (row[19] === 'Y') ? true : false;
+                newdata.project_manager = row[19];
+
+                row[20] = (row[20] === 'Y') ? true : false;
+                newdata.assistant_project_manager = row[20];
 
                 // new: custom_duty
-                row[19] = (row[19]) ? row[19] : '';
-                newdata.custom_duty = row[19];
+                row[21] = (row[21]) ? row[21] : '';
+                newdata.custom_duty = row[21];
 
                 $scope.dada.push(newdata);
             }
@@ -580,19 +595,34 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
     }
 
 
-    //$scope.OneTimeSQL2 = (year) => {
+    $scope.OneTimeSQL2 = () => {
 
-    //    appService.OneTimeSQL2({})
-    //        .then((ret) => {
-    //            if (ret.data)
-    //                console.log("succeed");
-    //            else
-    //                console.log("inner error");
-    //        })
-    //        .catch((ret) => {
-    //            alert('Error');
-    //        });
-    //}
+        appService.OneTimeSQL2({})
+            .then((ret) => {
+                if (ret.data)
+                    console.log("succeed");
+                else
+                    console.log("inner error");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
+
+
+    $scope.OneTimeSQL3 = () => {
+
+        appService.OneTimeSQL3({})
+            .then((ret) => {
+                if (ret.data)
+                    console.log("succeed");
+                else
+                    console.log("inner error");
+            })
+            .catch((ret) => {
+                alert('Error');
+            });
+    }
 
 
 }]);

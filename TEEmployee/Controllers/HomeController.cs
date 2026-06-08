@@ -90,6 +90,7 @@ namespace TEEmployee.Controllers
                 Session["group_one"] = user.group_one;
                 Session["group_two"] = user.group_two;
                 Session["group_three"] = user.group_three;
+                Session["group_four"] = user.group_four;
 
                 Session["role"] = null;
                 Session["leader"] = null;
@@ -110,7 +111,7 @@ namespace TEEmployee.Controllers
                     Session["role"] = "PM";
                 }
 
-                if (user.department_manager || user.group_manager || user.group_one_manager || user.group_two_manager || user.group_three_manager)
+                if (user.department_manager || user.group_manager || user.group_one_manager || user.group_two_manager || user.group_three_manager || user.group_four_manager)
                 {
                     Session["role"] = "Manager";
                 }

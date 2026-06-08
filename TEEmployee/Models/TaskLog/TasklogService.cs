@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using TEEmployee.Models.GSchedule;
+using TEEmployee.Models.Talent;
 
 namespace TEEmployee.Models.TaskLog
 {
@@ -370,13 +371,16 @@ namespace TEEmployee.Models.TaskLog
 
             // Fix: group one, two, three now have the same weight
             if (!String.IsNullOrEmpty(user.group_one))
-                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_one || p.group_two == user.group_one || p.group_three == user.group_one).ToList());
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_one || p.group_two == user.group_one || p.group_three == user.group_one || p.group_four == user.group_one).ToList());
 
             if (!String.IsNullOrEmpty(user.group_two))
-                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_two || p.group_two == user.group_two || p.group_three == user.group_two).ToList());
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_two || p.group_two == user.group_two || p.group_three == user.group_two || p.group_four == user.group_two).ToList());
 
             if (!String.IsNullOrEmpty(user.group_three))
-                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_three || p.group_two == user.group_three || p.group_three == user.group_three).ToList());
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_three || p.group_two == user.group_three || p.group_three == user.group_three || p.group_four == user.group_three).ToList());
+
+            if (!String.IsNullOrEmpty(user.group_four))
+                filtered_employees.AddRange(allEmployees.Where(p => p.group_one == user.group_four || p.group_two == user.group_four || p.group_three == user.group_four || p.group_four == user.group_four).ToList());
 
             filtered_employees = filtered_employees.Distinct().ToList();
 
@@ -615,6 +619,7 @@ namespace TEEmployee.Models.TaskLog
             user.group_one = "BIM暨程式開發組";
             user.group_two = "";
             user.group_three = "";
+            user.group_four = "";
             user.custom_duty = "";
 
             var ret = _userRepository.InsertCustomUser(user);
@@ -623,7 +628,14 @@ namespace TEEmployee.Models.TaskLog
         }
 
 
+        public bool AddCustomGroupFourColumn()
+        {
+            var ret = (_userRepository as UserRepository).AddCustomGroupFourColumn();
+            return ret;
+        }
+
         //--------------------------------------------------------------------------
+
 
         public void Dispose()
         {

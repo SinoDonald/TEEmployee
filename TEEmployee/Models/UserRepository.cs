@@ -104,9 +104,9 @@ namespace TEEmployee.Models
 
 
                 sql = @"INSERT INTO userExtra (empno, department_manager, 'group', group_manager,
-                                group_one, group_one_manager, group_two, group_two_manager, group_three, group_three_manager, project_manager, projects, assistant_project_manager, custom_duty) 
+                                group_one, group_one_manager, group_two, group_two_manager, group_three, group_three_manager, group_four, group_four_manager, project_manager, projects, assistant_project_manager, custom_duty) 
                         VALUES(@empno, @department_manager, @group, @group_manager, @group_one, @group_one_manager,
-                                @group_two, @group_two_manager, @group_three, @group_three_manager, @project_manager, @projects, @assistant_project_manager, @custom_duty)";
+                                @group_two, @group_two_manager, @group_three, @group_three_manager, @group_four, @group_four_manager, @project_manager, @projects, @assistant_project_manager, @custom_duty)";
 
                 ret = _conn.Execute(sql, users);
 
@@ -222,6 +222,7 @@ namespace TEEmployee.Models
                 groups.AddRange(users.Select(x => x.group_one));
                 groups.AddRange(users.Select(x => x.group_two));
                 groups.AddRange(users.Select(x => x.group_three));
+                groups.AddRange(users.Select(x => x.group_four));
             }
             else if (user.group_manager)
             {
@@ -232,6 +233,7 @@ namespace TEEmployee.Models
             if (user.group_one_manager) groups.Add(user.group_one);
             if (user.group_two_manager) groups.Add(user.group_two);
             if (user.group_three_manager) groups.Add(user.group_three);
+            if (user.group_four_manager) groups.Add(user.group_four);
 
             // remove duplicates null empty
             groups = groups.Distinct().ToList();
@@ -262,10 +264,12 @@ namespace TEEmployee.Models
                     string group_one = users.Where(x => x.empno.Equals(empno)).Select(x => x.group_one).FirstOrDefault();
                     string group_two = users.Where(x => x.empno.Equals(empno)).Select(x => x.group_two).FirstOrDefault();
                     string group_three = users.Where(x => x.empno.Equals(empno)).Select(x => x.group_three).FirstOrDefault();
+                    string group_four = users.Where(x => x.empno.Equals(empno)).Select(x => x.group_four).FirstOrDefault();
                     if (!String.IsNullOrEmpty(group)) { ret.Add(group); }
                     else if (!String.IsNullOrEmpty(group_one)) { ret.Add(group_one); }
                     else if (!String.IsNullOrEmpty(group_two)) { ret.Add(group_two); }
                     else if (!String.IsNullOrEmpty(group_three)) { ret.Add(group_three); }
+                    else if (!String.IsNullOrEmpty(group_four)) { ret.Add(group_four); }
                 }
             }
             else if (view.Equals("PersonalPlan"))
@@ -288,14 +292,16 @@ namespace TEEmployee.Models
                     ret = ret.Where(x => x != "").Distinct().ToList();
                 }
                 // 組長
-                else if (user.group_one_manager || user.group_two_manager || user.group_three_manager)
+                else if (user.group_one_manager || user.group_two_manager || user.group_three_manager || user.group_four_manager)
                 {
                     string group_one = users.Where(x => x.empno.Equals(empno)).Where(x => x.group_one_manager.Equals(true)).Select(x => x.group_one).FirstOrDefault();
                     string group_two = users.Where(x => x.empno.Equals(empno)).Where(x => x.group_two_manager.Equals(true)).Select(x => x.group_two).FirstOrDefault();
                     string group_three = users.Where(x => x.empno.Equals(empno)).Where(x => x.group_three_manager.Equals(true)).Select(x => x.group_three).FirstOrDefault();
+                    string group_four = users.Where(x => x.empno.Equals(empno)).Where(x => x.group_four_manager.Equals(true)).Select(x => x.group_four).FirstOrDefault();
                     if (group_one != null) { ret.Add(group_one); }
                     if (group_two != null) { ret.Add(group_two); }
                     if (group_three != null) { ret.Add(group_three); }
+                    if (group_four != null) { ret.Add(group_four); }
                 }
                 // 一般使用者
                 else
@@ -304,10 +310,12 @@ namespace TEEmployee.Models
                     string group_one = users.Where(x => x.empno.Equals(empno)).Select(x => x.group_one).FirstOrDefault();
                     string group_two = users.Where(x => x.empno.Equals(empno)).Select(x => x.group_two).FirstOrDefault();
                     string group_three = users.Where(x => x.empno.Equals(empno)).Select(x => x.group_three).FirstOrDefault();
+                    string group_four = users.Where(x => x.empno.Equals(empno)).Select(x => x.group_four).FirstOrDefault();
                     if (!String.IsNullOrEmpty(group)) { ret.Add(group); }
                     else if (!String.IsNullOrEmpty(group_one)) { ret.Add(group_one); }
                     else if (!String.IsNullOrEmpty(group_two)) { ret.Add(group_two); }
                     else if (!String.IsNullOrEmpty(group_three)) { ret.Add(group_three); }
+                    else if (!String.IsNullOrEmpty(group_four)) { ret.Add(group_four); }
                 }
             }
 
@@ -320,9 +328,12 @@ namespace TEEmployee.Models
             List<string> group_one = users.Where(x => x.group != null).Where(x => x.group.Equals(group)).Where(x => !String.IsNullOrEmpty(x.group_one)).Select(x => x.group_one).Distinct().OrderBy(x => x).ToList();
             List<string> group_two = users.Where(x => x.group != null).Where(x => x.group.Equals(group)).Where(x => !String.IsNullOrEmpty(x.group_two)).Select(x => x.group_two).Distinct().OrderBy(x => x).ToList();
             List<string> group_three = users.Where(x => x.group != null).Where(x => x.group.Equals(group)).Where(x => !String.IsNullOrEmpty(x.group_three)).Select(x => x.group_three).Distinct().OrderBy(x => x).ToList();
+            List<string> group_four = users.Where(x => x.group != null).Where(x => x.group.Equals(group)).Where(x => !String.IsNullOrEmpty(x.group_four)).Select(x => x.group_four).Distinct().OrderBy(x => x).ToList();
+            foreach (string item in group_four) { ret.Insert(ret.FindIndex(x => x.Equals(group)) + 1, item); }
             foreach (string item in group_three) { ret.Insert(ret.FindIndex(x => x.Equals(group)) + 1, item); }
             foreach (string item in group_two) { ret.Insert(ret.FindIndex(x => x.Equals(group)) + 1, item); }
             foreach (string item in group_one) { ret.Insert(ret.FindIndex(x => x.Equals(group)) + 1, item); }
+
         }
 
         // 取得群組同仁 <-- 培文
@@ -344,6 +355,10 @@ namespace TEEmployee.Models
                         if (ret.Count.Equals(0))
                         {
                             ret = users.Where(x => !String.IsNullOrEmpty(x.group_three)).Where(x => x.group_three.Equals(selectedGroup)).Select(x => x.name).OrderBy(x => x).ToList(); // 群組三
+                            if (ret.Count.Equals(0))
+                            {
+                                ret = users.Where(x => !String.IsNullOrEmpty(x.group_four)).Where(x => x.group_four.Equals(selectedGroup)).Select(x => x.name).OrderBy(x => x).ToList(); // 群組四
+                            }
                         }
                     }
                 }
@@ -360,11 +375,15 @@ namespace TEEmployee.Models
                         if (ret.Count.Equals(0))
                         {
                             ret = users.Where(x => !String.IsNullOrEmpty(x.group_three)).Where(x => x.group.Equals(user.group) && x.group_three.Equals(selectedGroup)).Select(x => x.name).OrderBy(x => x).ToList(); // 群組三
+                            if (ret.Count.Equals(0))
+                            {
+                                ret = users.Where(x => !String.IsNullOrEmpty(x.group_four)).Where(x => x.group.Equals(user.group) && x.group_four.Equals(selectedGroup)).Select(x => x.name).OrderBy(x => x).ToList(); // 群組四
+                            }
                         }
                     }
                 }
             }
-            else if (user.group_one_manager || user.group_two_manager || user.group_three_manager) // 組長
+            else if (user.group_one_manager || user.group_two_manager || user.group_three_manager || user.group_four_manager) // 組長
             {
                 List<string> groupManagerNames = users.Where(x => !String.IsNullOrEmpty(x.group)).Where(x => x.group.Equals(user.group)).Where(x => x.group_manager).Select(x => x.name).ToList(); // 找到技術經理
                 List<string> groupUserNames = new List<string>();
@@ -379,6 +398,10 @@ namespace TEEmployee.Models
                 else if (user.group_three_manager && user.group_three.Equals(selectedGroup))
                 {
                     ret = users.Where(x => !String.IsNullOrEmpty(x.group_three)).Where(x => x.group_three.Equals(selectedGroup)).Select(x => x.name).OrderBy(x => x).ToList();
+                }
+                else if (user.group_four_manager && user.group_four.Equals(selectedGroup))
+                {
+                    ret = users.Where(x => !String.IsNullOrEmpty(x.group_four)).Where(x => x.group_four.Equals(selectedGroup)).Select(x => x.name).OrderBy(x => x).ToList();
                 }
                 foreach (string groupManagerName in groupManagerNames)
                 {
@@ -456,6 +479,8 @@ namespace TEEmployee.Models
                         ws.Cells[row, col++].Value = user.group_two_manager;
                         ws.Cells[row, col++].Value = user.group_three;
                         ws.Cells[row, col++].Value = user.group_three_manager;
+                        ws.Cells[row, col++].Value = user.group_four;
+                        ws.Cells[row, col++].Value = user.group_four_manager;
                         ws.Cells[row, col++].Value = user.project_manager;
                         ws.Cells[row, col++].Value = user.projects;
                         ws.Cells[row, col++].Value = user.assistant_project_manager;
@@ -484,8 +509,8 @@ namespace TEEmployee.Models
             ;
 
             string insertUserExtraSql = @"
-                INSERT INTO userExtra (empno, department_manager, 'group', group_manager, group_one, group_one_manager, group_two, group_two_manager, group_three, group_three_manager, project_manager, projects, assistant_project_manager, custom_duty) 
-                VALUES(@empno, @department_manager, @group, @group_manager, @group_one, @group_one_manager, @group_two, @group_two_manager, @group_three, @group_three_manager, @project_manager, @projects, @assistant_project_manager, @custom_duty)
+                INSERT INTO userExtra (empno, department_manager, 'group', group_manager, group_one, group_one_manager, group_two, group_two_manager, group_three, group_three_manager, group_four, group_four_manager, project_manager, projects, assistant_project_manager, custom_duty) 
+                VALUES(@empno, @department_manager, @group, @group_manager, @group_one, @group_one_manager, @group_two, @group_two_manager, @group_three, @group_three_manager, @group_four, @group_four_manager, @project_manager, @projects, @assistant_project_manager, @custom_duty)
             "
             ;          
 
@@ -506,6 +531,27 @@ namespace TEEmployee.Models
             }
 
             return ret;
+        }
+
+
+        // Add group_four and group_four_manager for userExtra table
+        public bool AddCustomGroupFourColumn()
+        {
+            try
+            {
+                string createGroupFourColumnsql = "ALTER TABLE userExtra ADD COLUMN group_four TEXT;";
+                _conn.Execute(createGroupFourColumnsql);
+
+                string createGroupFourManagerColumnsql = "ALTER TABLE userExtra ADD COLUMN group_four_manager INTEGER;";
+                _conn.Execute(createGroupFourManagerColumnsql);
+
+                return true;
+
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
     }

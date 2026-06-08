@@ -159,6 +159,8 @@ app.factory('userdata', function () {
         user.group_two_manager = data.group_two_manager;
         user.group_three = data.group_three;
         user.group_three_manager = data.group_three_manager;
+        user.group_four = data.group_four;
+        user.group_four_manager = data.group_four_manager;
     }
 
     function get() {

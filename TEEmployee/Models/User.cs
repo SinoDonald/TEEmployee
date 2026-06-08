@@ -30,6 +30,9 @@ namespace TEEmployee.Models
         public string group_three { get; set; }
         public bool group_three_manager { get; set; }
         [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string group_four { get; set; }
+        public bool group_four_manager { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string projects { get; set; }
         public bool project_manager { get; set; }
         public bool assistant_project_manager { get; set; }
@@ -74,6 +77,8 @@ namespace TEEmployee.Models
         public string group_two { get; set; }
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string group_three { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string group_four { get; set; }
         public string birthday { get; set; }
         public string age { get; set; }
         public string pic { get; set; } // 圖片位置

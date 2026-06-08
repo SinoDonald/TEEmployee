@@ -679,6 +679,7 @@ namespace TEEmployee.Models.GSchedule
                 else if (!String.IsNullOrEmpty(user.group_one)) { planning.group = user.group_one; }
                 else if (!String.IsNullOrEmpty(user.group_two)) { planning.group = user.group_two; }
                 else if (!String.IsNullOrEmpty(user.group_three)) { planning.group = user.group_three; }
+                else if (!String.IsNullOrEmpty(user.group_four)) { planning.group = user.group_four; }
             }
 
             var ret = false;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using TEEmployee.Models.GSchedule;
 using TEEmployee.Models.Profession;
 
 namespace TEEmployee.Models.Talent
@@ -129,6 +130,7 @@ namespace TEEmployee.Models.Talent
                     {
                         if (!String.IsNullOrEmpty(item.group_two) && !groups.Contains(item.group_two)) { groups.Add(item.group_two); }
                         if (!String.IsNullOrEmpty(item.group_three) && !groups.Contains(item.group_three)) { groups.Add(item.group_three); }
+                        if (!String.IsNullOrEmpty(item.group_four) && !groups.Contains(item.group_four)) { groups.Add(item.group_four); }
                     }
                 }
                 else
@@ -143,6 +145,7 @@ namespace TEEmployee.Models.Talent
             if (user.group_one_manager) groups.Add(user.group_one);
             if (user.group_two_manager) groups.Add(user.group_two);
             if (user.group_three_manager) groups.Add(user.group_three);
+            if (user.group_four_manager) groups.Add(user.group_four);
 
             groups = groups.Distinct().ToList();
 
@@ -298,5 +301,11 @@ namespace TEEmployee.Models.Talent
         //    var ret = _talentRepository.ImportFile(file);
         //    return ret;
         //}
+
+        public bool AddCustomGroupFourColumn()
+        {
+            var ret = (_talentRepository as TalentRepository).AddCustomGroupFourColumn();
+            return ret;
+        }
     }
 }

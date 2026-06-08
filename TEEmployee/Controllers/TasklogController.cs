@@ -224,6 +224,11 @@ namespace TEEmployee.Controllers
                 {
                     ret.Add(group);
                 }
+                groups = monthlyRecordData.Where(x => x.User.group_four != "").Select(x => x.User.group_four).Distinct().OrderBy(x => x).ToList();
+                foreach (string group in groups)
+                {
+                    ret.Add(group);
+                }
 
                 ret = ret.OrderBy(x => x.Length).Distinct().ToList();
             }
@@ -252,8 +257,12 @@ namespace TEEmployee.Controllers
             }
             else
             {
-                ret = monthlyRecordData.Where(x => x.User.group.Equals(groupName) || x.User.group_one.Equals(groupName) ||
-                                                                        x.User.group_two.Equals(groupName) || x.User.group_three.Equals(groupName)).ToList();
+                ret = monthlyRecordData.Where(x => 
+                x.User.group.Equals(groupName) || 
+                x.User.group_one.Equals(groupName) || 
+                x.User.group_two.Equals(groupName) || 
+                x.User.group_three.Equals(groupName) ||
+                x.User.group_four.Equals(groupName)).ToList();
             }
 
             return Json(ret);
@@ -360,6 +369,13 @@ namespace TEEmployee.Controllers
         public JsonResult InsertCustomUser()
         {
             var ret = _service.InsertCustomUser();
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult AddCustomGroupFourColumn()
+        {
+            var ret = _service.AddCustomGroupFourColumn();
             return Json(ret);
         }
 

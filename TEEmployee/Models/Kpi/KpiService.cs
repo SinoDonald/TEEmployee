@@ -95,7 +95,7 @@ namespace TEEmployee.Models.Kpi
                     isNormal = false;
                 }
                 // 組長 > 技術 (管理, 專業)
-                if (user.group_one_manager || user.group_two_manager || user.group_three_manager)
+                if (user.group_one_manager || user.group_two_manager || user.group_three_manager || user.group_four_manager)
                 {
                     kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "管理" });
                     kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group, kpi_type = "專業" });
@@ -116,6 +116,8 @@ namespace TEEmployee.Models.Kpi
                         kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group_two, kpi_type = "專業" });
                     if (!String.IsNullOrEmpty(user.group_three))
                         kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group_three, kpi_type = "專業" });
+                    if (!String.IsNullOrEmpty(user.group_four))
+                        kpimodels.Add(new KpiModel { empno = user.empno, group_name = user.group_four, kpi_type = "專業" });
                 }
             }
 
@@ -159,6 +161,9 @@ namespace TEEmployee.Models.Kpi
 
             if (!String.IsNullOrEmpty(user.group_three))
                 groups.Add(user.group_three);
+
+            if (!String.IsNullOrEmpty(user.group_four))
+                groups.Add(user.group_four);
 
             // remove duplicates
             groups = groups.Distinct().ToList();

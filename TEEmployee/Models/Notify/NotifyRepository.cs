@@ -218,7 +218,7 @@ namespace TEEmployee.Models.Notify
                     // 個人規劃回饋(主管才會收到通知)
                     int year = Convert.ToInt32(season.Substring(0, 4)) - 1911;
                     if (user.department_manager.Equals(true) || user.group_manager.Equals(true) || user.group_one_manager.Equals(true) ||
-                        user.group_two_manager.Equals(true) || user.group_three_manager.Equals(true))
+                        user.group_two_manager.Equals(true) || user.group_three_manager.Equals(true) || user.group_four_manager.Equals(true))
                     {
                         ret = false;
                         // 找到同group的user
@@ -229,11 +229,12 @@ namespace TEEmployee.Models.Notify
                         if (user.group_one_manager.Equals(true)) { groupManagers.Add(user.group_one); }
                         if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }
                         if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
+                        if (user.group_four_manager.Equals(true)) { groupManagers.Add(user.group_four); }
                         foreach (string groupManager in groupManagers)
                         {
                             // 該組長相同群組的同仁
                             List<User> list = sameGroupUsers.Where(x => x.group.Equals(groupManager) || x.group_one.Equals(groupManager) ||
-                                                                   x.group_two.Equals(groupManager) || x.group_three.Equals(groupManager)).ToList();
+                                                                   x.group_two.Equals(groupManager) || x.group_three.Equals(groupManager) || x.group_four.Equals(groupManager)).ToList();
                             // 該年度有上傳簡報
                             list = list.Where(x => uploadUsers.Where(y => y.Equals(x.empno)).Count() > 0).ToList();
                             // 查詢主管是否已經回饋
@@ -284,7 +285,7 @@ namespace TEEmployee.Models.Notify
                 {
                     // 主管才會收到通知
                     if (user.department_manager.Equals(true) || user.group_manager.Equals(true) || user.group_one_manager.Equals(true) ||
-                        user.group_two_manager.Equals(true) || user.group_three_manager.Equals(true))
+                        user.group_two_manager.Equals(true) || user.group_three_manager.Equals(true) || user.group_four_manager.Equals(true))
                     {
                         // 找到同group的user                        
                         List<User> sameGroupUsers = SameGroupUsers(user, users);
@@ -346,6 +347,7 @@ namespace TEEmployee.Models.Notify
                     if (user.group_one_manager.Equals(true)) { groupManagers.Add(user.group_one); }
                     if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }
                     if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
+                    if (user.group_four_manager.Equals(true)) { groupManagers.Add(user.group_four); }
                     // 主管才會收到通知
                     if (groupManagers.Count() > 0 || user.department_manager.Equals(true) || user.project_manager.Equals(true)) { ret = true; }
                 }
@@ -426,9 +428,10 @@ namespace TEEmployee.Models.Notify
                 if (user.group_one_manager.Equals(true)) { groupManagers.Add(user.group_one); }
                 if (user.group_two_manager.Equals(true)) { groupManagers.Add(user.group_two); }
                 if (user.group_three_manager.Equals(true)) { groupManagers.Add(user.group_three); }
+                if (user.group_four_manager.Equals(true)) { groupManagers.Add(user.group_four); }
                 foreach (string groupManager in groupManagers)
                 {
-                    foreach (User sameGroupUser in users.Where(x => x.group.Equals(groupManager) || x.group_one.Equals(groupManager) || x.group_two.Equals(groupManager) || x.group_three.Equals(groupManager)).ToList())
+                    foreach (User sameGroupUser in users.Where(x => x.group.Equals(groupManager) || x.group_one.Equals(groupManager) || x.group_two.Equals(groupManager) || x.group_three.Equals(groupManager) || x.group_four.Equals(groupManager)).ToList())
                     {
                         sameGroupUsers.Add(sameGroupUser);
                     }
@@ -472,13 +475,14 @@ namespace TEEmployee.Models.Notify
             List<User> users = GetAll();
             User user = Get(empno);
             managerList.Add(users.Where(x => x.department_manager.Equals(true)).ToList()); // 協理
-            users = users.Where(x => x.group != null && x.group_one != null && x.group_two != null && x.group_three != null).ToList();
+            users = users.Where(x => x.group != null && x.group_one != null && x.group_two != null && x.group_three != null && x.group_four != null).ToList();
             managerList.Add(users.Where(x => x.group.Equals(user.group) && x.group_manager.Equals(true)).ToList());
             if (state.Equals("freeback"))
             {
                 managerList.Add(users.Where(x => x.group_one.Equals(user.group_one) && x.group_one_manager.Equals(true)).ToList());
                 managerList.Add(users.Where(x => x.group_two.Equals(user.group_two) && x.group_two_manager.Equals(true)).ToList());
                 managerList.Add(users.Where(x => x.group_three.Equals(user.group_three) && x.group_three_manager.Equals(true)).ToList());
+                managerList.Add(users.Where(x => x.group_four.Equals(user.group_four) && x.group_four_manager.Equals(true)).ToList());
             }
             List<User> userManagers = new List<User>(); // 使用者的主管們
             foreach(List<User> managers in managerList)

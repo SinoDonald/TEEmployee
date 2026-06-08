@@ -289,5 +289,13 @@ namespace TEEmployee.Controllers
         //    var ret = _service.UploadExperience(file);
         //    return RedirectToAction("Index", "Home");
         //}
+
+        [HttpPost]
+        public JsonResult AddCustomGroupFourColumn()
+        {
+            var ret = _service.AddCustomGroupFourColumn();
+            return Json(ret);
+        }
+
     }
 }

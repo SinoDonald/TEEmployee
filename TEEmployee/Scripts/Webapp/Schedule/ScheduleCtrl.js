@@ -378,7 +378,8 @@ app.controller('TestCtrl', ['$scope', '$location', 'appService', '$rootScope', '
         $scope.filteredEmployees = $scope.employees.filter(emp => (
             emp.group_one === $scope.selectedGroup ||
             emp.group_two === $scope.selectedGroup ||
-            emp.group_three === $scope.selectedGroup));
+            emp.group_three === $scope.selectedGroup ||
+            emp.group_four === $scope.selectedGroup));
     }
 
 

@@ -84,6 +84,7 @@ app.factory('dataservice', function () {
         user.group_one = data.group_one;
         user.group_two = data.group_two;
         user.group_three = data.group_three;
+        user.group_four = data.group_four;
         user.birthday = data.birthday;
         user.age = data.age;
         user.pic = data.pic;
@@ -162,7 +163,7 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
                     $scope.data.push(item);
                 }
             }
-            else if (item.group === selectedGroup || item.group_one === selectedGroup || item.group_two === selectedGroup || item.group_three === selectedGroup) {
+            else if (item.group === selectedGroup || item.group_one === selectedGroup || item.group_two === selectedGroup || item.group_three === selectedGroup || item.group_four === selectedGroup) {
                 if (item.empno === name || item.name.includes(name)) {
                     $scope.data.push(item);
                 }
@@ -233,7 +234,7 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
             else if (selectedGroup === '全部顯示') {
                 $scope.data.push(item);
             }
-            else if (item.group === selectedGroup || item.group_one === selectedGroup || item.group_two === selectedGroup || item.group_three === selectedGroup) {
+            else if (item.group === selectedGroup || item.group_one === selectedGroup || item.group_two === selectedGroup || item.group_three === selectedGroup || item.group_four === selectedGroup) {
                 $scope.data.push(item);
             }
         }

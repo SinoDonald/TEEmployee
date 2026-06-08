@@ -499,6 +499,7 @@ namespace TEEmployee.Models
                 (x.group_one == user.group_one && !x.group_one_manager) 
                 || (x.group_two == user.group_one && !x.group_two_manager)
                 || (x.group_three == user.group_one && !x.group_three_manager)
+                || (x.group_four == user.group_one && !x.group_four_manager)
                 ));
             }
 
@@ -508,6 +509,7 @@ namespace TEEmployee.Models
                 (x.group_one == user.group_two && !x.group_one_manager)
                 || (x.group_two == user.group_two && !x.group_two_manager)
                 || (x.group_three == user.group_two && !x.group_three_manager)
+                || (x.group_four == user.group_two && !x.group_four_manager)
                 ));
             }
 
@@ -517,6 +519,17 @@ namespace TEEmployee.Models
                 (x.group_one == user.group_three && !x.group_one_manager)
                 || (x.group_two == user.group_three && !x.group_two_manager)
                 || (x.group_three == user.group_three && !x.group_three_manager)
+                || (x.group_four == user.group_three && !x.group_four_manager)
+                ));
+            }
+
+            if (user.group_four_manager == true)
+            {
+                filtered_employees.AddRange(allEmployees.Where(x =>
+                (x.group_one == user.group_four && !x.group_one_manager)
+                || (x.group_two == user.group_four && !x.group_two_manager)
+                || (x.group_three == user.group_four && !x.group_three_manager)
+                || (x.group_four == user.group_four && !x.group_four_manager)
                 ));
             }
 
@@ -673,6 +686,10 @@ namespace TEEmployee.Models
                             {
                                 groups.Add(item.group_three);
                             }
+                            if (!String.IsNullOrEmpty(item.group_four) && !groups.Contains(item.group_four))
+                            {
+                                groups.Add(item.group_four);
+                            }
                         }
 
                     }
@@ -697,6 +714,7 @@ namespace TEEmployee.Models
             if (user.group_one_manager) groups.Add(user.group_one);
             if (user.group_two_manager) groups.Add(user.group_two);
             if (user.group_three_manager) groups.Add(user.group_three);
+            if (user.group_four_manager) groups.Add(user.group_four);
 
             groups = groups.Distinct().ToList();
 
@@ -912,7 +930,7 @@ namespace TEEmployee.Models
         {
             List<User> users = _userRepository.GetAll();
             users = users.Where(x => x.department_manager || x.group_manager || x.group_one_manager
-                                    || x.group_two_manager || x.group_three_manager || x.project_manager).ToList();
+                                    || x.group_two_manager || x.group_three_manager || x.group_four_manager || x.project_manager).ToList();
 
             return users;
         }
@@ -1033,7 +1051,7 @@ namespace TEEmployee.Models
         private List<User> GetSubGroupMembers(string group)
         {
             List<User> users = new List<User>();
-            users = _userRepository.GetAll().Where(x => x.group_one == group || x.group_two == group || x.group_three == group).ToList();
+            users = _userRepository.GetAll().Where(x => x.group_one == group || x.group_two == group || x.group_three == group || x.group_four == group).ToList();
             return users;
         }
 
@@ -1044,12 +1062,12 @@ namespace TEEmployee.Models
             if (user.department_manager)
             {
                 managers = _userRepository.GetAll()
-                    .Where(x => x.group_manager || x.group_one_manager || x.group_two_manager).ToList();
+                    .Where(x => x.group_manager || x.group_one_manager || x.group_two_manager || x.group_three_manager || x.group_four_manager).ToList();
             }
             else if (user.group_manager)
             {
                 managers = _userRepository.GetAll()
-                   .Where(x => x.group_one_manager || x.group_two_manager || x.group_three_manager)
+                   .Where(x => x.group_one_manager || x.group_two_manager || x.group_three_manager || x.group_four_manager)
                    .Where(x => x.group == user.group).ToList();
             }
 

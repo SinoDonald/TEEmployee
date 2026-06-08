@@ -529,6 +529,9 @@ namespace TEEmployee.Models.GSchedule
             if (!String.IsNullOrEmpty(user.group_three))
                 groups.Add(user.group_three);
 
+            if (!String.IsNullOrEmpty(user.group_four))
+                groups.Add(user.group_four);
+
             // remove duplicates
             groups = groups.Distinct().ToList();
 
@@ -553,7 +556,7 @@ namespace TEEmployee.Models.GSchedule
         public List<User> GetGroupMembers(string group)
         {
             List<User> users = _userRepository.GetAll();
-            return users.Where(x => x.group_one == group || x.group_two == group || x.group_three == group).ToList();
+            return users.Where(x => x.group_one == group || x.group_two == group || x.group_three == group || x.group_four == group).ToList();
         }
 
         private void AddCustomAgent(Authorization auth)

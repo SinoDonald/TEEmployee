@@ -103,10 +103,10 @@ namespace TEEmployee.Models.Talent
                 using (var tran = _conn.BeginTransaction())
                 {
                     //string sql = @"UPDATE userCVExtra SET 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three WHERE empno=@empno";
-                    string sql = @"INSERT INTO userCVExtra (empno, name, 'group', group_one, group_two, group_three)
-                                 VALUES(@empno, @name, @group, @group_one, @group_two, @group_three)
+                    string sql = @"INSERT INTO userCVExtra (empno, name, 'group', group_one, group_two, group_three, group_four)
+                                 VALUES(@empno, @name, @group, @group_one, @group_two, @group_three, @group_four)
                                  ON CONFLICT(empno)
-                                 DO UPDATE SET name=@name, 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three";
+                                 DO UPDATE SET name=@name, 'group'=@group, group_one=@group_one, group_two=@group_two, group_three=@group_three, group_four=@group_four";
                     _conn.Execute(sql, users, tran);
                     tran.Commit();
                     ret = true;
@@ -1905,5 +1905,22 @@ namespace TEEmployee.Models.Talent
 
         //    return ret;
         //}
+
+        // Add group_four for userCVExtra table
+        public bool AddCustomGroupFourColumn()
+        {
+            try
+            {
+                string createGroupFourColumnsql = "ALTER TABLE userCVExtra ADD COLUMN group_four TEXT;";
+                _conn.Execute(createGroupFourColumnsql);
+
+                return true;
+
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }

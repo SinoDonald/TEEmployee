@@ -97,6 +97,7 @@ namespace TEEmployee.Filters
                     filterContext.HttpContext.Session["group_one"] = ret.group_one;
                     filterContext.HttpContext.Session["group_two"] = ret.group_two;
                     filterContext.HttpContext.Session["group_three"] = ret.group_three;
+                    filterContext.HttpContext.Session["group_four"] = ret.group_four;
 
                     filterContext.HttpContext.Session["role"] = null;
                     filterContext.HttpContext.Session["leader"] = null;
@@ -117,7 +118,7 @@ namespace TEEmployee.Filters
                     {
                         filterContext.HttpContext.Session["role"] = "PM";
                     }
-                    if (ret.department_manager || ret.group_manager || ret.group_one_manager || ret.group_two_manager || ret.group_three_manager)
+                    if (ret.department_manager || ret.group_manager || ret.group_one_manager || ret.group_two_manager || ret.group_three_manager || ret.group_four_manager)
                     {
                         filterContext.HttpContext.Session["role"] = "Manager";
                     }
@@ -135,7 +136,10 @@ namespace TEEmployee.Filters
                             filterContext.HttpContext.Session["group_two"] = "";
 
                         if (filterContext.HttpContext.Session["group_three"] is null)
-                            filterContext.HttpContext.Session["group_three"] = "";                        
+                            filterContext.HttpContext.Session["group_three"] = "";
+
+                        if (filterContext.HttpContext.Session["group_four"] is null)
+                            filterContext.HttpContext.Session["group_four"] = "";
 
                     }
                     //filterContext.HttpContext.Session["role"] = ret.Role;
