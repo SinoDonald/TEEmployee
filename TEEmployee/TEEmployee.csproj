@@ -302,6 +302,7 @@
     <Compile Include="Controllers\TasklogController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\TrainingController.cs" />
+    <Compile Include="Controllers\WishController.cs" />
     <Compile Include="Filters\MyAuthorizeAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -772,6 +773,7 @@
     <Content Include="Views\Facility\Index.cshtml" />
     <Content Include="Views\Facility\Borrow.cshtml" />
     <Content Include="Views\Ballot\Index.cshtml" />
+    <Content Include="Views\Wish\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Promotion\" />
