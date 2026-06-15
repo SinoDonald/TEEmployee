@@ -1,7 +1,645 @@
 ﻿
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "我要升級！LEVEL UP！";
 }
 
-<h2>Index</h2>
+@section Styles {
 
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+
+        body {
+            background-color: #f2f2f2;
+            font-family: 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
+            color: #2c2c2c;
+        }
+
+        .page-wrapper {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Title Box */
+        .title-box {
+            border: 3px solid #2c2c2c;
+            text-align: center;
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            background-color: #fff;
+        }
+
+            .title-box h1 {
+                font-size: 1.8rem;
+                font-weight: 900;
+                letter-spacing: 0.08em;
+                margin: 0;
+                color: #1a1a1a;
+            }
+
+        /* Description */
+        .description {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 24px;
+            color: #2c2c2c;
+        }
+
+            .description strong {
+                font-weight: 700;
+            }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+
+        .btn-apply {
+            background-color: #c6c1ba;
+            border: none;
+            color: #2c2c2c;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 10px 22px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .btn-apply:hover {
+                background-color: #b5b0a5;
+                color: #1a1a1a;
+            }
+
+        /* Table */
+        .request-table-wrapper {
+            background-color: #f0ece4;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .request-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+            .request-table thead tr {
+                background-color: #c6c1ba;
+            }
+
+            .request-table thead th {
+                padding: 14px 16px;
+                font-weight: 700;
+                font-size: 0.95rem;
+                color: #2c2c2c;
+                border: none;
+                text-align: center;
+            }
+
+            .request-table tbody tr {
+                border-bottom: 1px solid #ddd8cf;
+                background-color: #f0ece4;
+            }
+
+                .request-table tbody tr:last-child {
+                    border-bottom: none;
+                }
+
+            .request-table tbody td {
+                padding: 16px;
+                text-align: center;
+                font-size: 0.95rem;
+                /*                background-color: #f0ece4;*/
+                color: #2c2c2c;
+                vertical-align: middle;
+            }
+
+                .request-table tbody td:last-child {
+                    text-align: left;
+                }
+
+        /* Status Badges */
+        .badge-processing {
+            background-color: #92d050;
+            color: #1a1a1a;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-closed {
+            background-color: #d7dfe1;
+            color: #1a1a1a;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-pending {
+            background-color: #fac777;
+            color: #1a1a1a;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Footer Contact */
+        .footer-contact {
+            border-top: 2px solid #c8c3b8;
+            padding-top: 16px;
+            font-size: 1rem;
+            color: #2c2c2c;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .footer-contact .phone-icon {
+                font-size: 1.3rem;
+            }
+
+
+        /* Modal */
+        .modal-content {
+            background-color: #f2f2f2;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .modal-header {
+            border-bottom: 2px solid #b0aa9e;
+            padding: 18px 24px 14px;
+        }
+
+            .modal-header .modal-title {
+                font-weight: 800;
+                font-size: 1.15rem;
+                letter-spacing: 0.05em;
+            }
+
+            .modal-header .close {
+                color: #2c2c2c;
+                opacity: 0.6;
+            }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            border-top: 2px solid #b0aa9e;
+            padding: 14px 24px;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Form field labels */
+        .form-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            display: block;
+            color: #2c2c2c;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* Styled input / textarea */
+        .field-box {
+            background-color: #9bafb5;
+            border: 2px solid #684206;
+            border-radius: 20px;
+            padding: 12px 18px;
+            width: 100%;
+            font-family: 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
+            font-size: 0.95rem;
+            /*            color: #1a1a1a;*/
+            color: #fff;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+            .field-box::placeholder {
+                font-weight: bold;
+                opacity: 0.8;
+                color: #f2f2f2;
+            }
+
+
+            .field-box:focus {
+                border-color: #866838;
+                box-shadow: 0 0 0 3px rgba(90,110,74,0.15);
+            }
+
+        textarea.field-box {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Radio group box */
+        .radio-box {
+            background-color: #9bafb5;
+            border: 2px solid #684206;
+            border-radius: 20px;
+            padding: 12px 20px;
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+            .radio-box .form-check {
+                padding: 0;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .radio-box .form-check-input {
+                position: relative;
+                margin: 0;
+                width: 18px;
+                height: 18px;
+                accent-color: #2c2c2c;
+                cursor: pointer;
+            }
+
+            .radio-box .form-check-label {
+                font-size: 0.95rem;
+                font-weight: 500;
+                color: #fff;
+                cursor: pointer;
+                margin: 0;
+            }
+
+        /* Modal submit / cancel buttons */
+        .btn-modal-cancel {
+            background-color: #c8c3b8;
+            border: none;
+            color: #2c2c2c;
+            font-weight: 600;
+            padding: 8px 24px;
+            border-radius: 6px;
+        }
+
+            .btn-modal-cancel:hover {
+                background-color: #b5b0a5;
+            }
+
+        .btn-modal-submit {
+            background-color: #c8c3b8;
+            border: none;
+            color: #2c2c2c;
+            font-weight: 600;
+            padding: 8px 24px;
+            border-radius: 6px;
+        }
+
+            .btn-modal-submit:hover {
+                background-color: #b5b0a5;
+            }
+
+
+        .request-table .wish-row {
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            border-bottom: none;
+        }
+
+            .request-table .wish-row:hover {
+                background-color: #e4dfd6;
+            }
+
+        /* View modal — information card */
+        .info-card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 24px 28px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+
+        .info-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+
+        .info-card-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .info-card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px 6px;
+            margin: 12px 0 18px;
+            font-size: 1.0rem;
+            color: #6b6560;
+        }
+
+            .info-card-meta .meta-dot {
+                color: #c8c3b8;
+            }
+
+        .tag {
+            display: inline-block;
+            background-color: #e8e4dc;
+            color: #5a5450;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            border: 1px solid #c8c3b8;
+        }
+
+        .info-card-divider {
+            border: none;
+            border-top: 1px solid #ece8e0;
+            margin: 0 0 16px;
+        }
+
+        .info-card-section-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #a09890;
+            margin-bottom: 8px;
+        }
+
+        .info-card-body {
+            font-size: 0.97rem;
+            color: #2c2c2c;
+            line-height: 1.85;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+
+        /* Status select in view modal */
+        .status-select {
+            appearance: none;
+            -webkit-appearance: none;
+            border: none;
+            background: transparent;
+            font-family: 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px 28px 6px 12px;
+            border-radius: 4px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23555'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+        }
+
+            .status-select.processing {
+                background-color: #92d050;
+                color: #1a1a1a;
+            }
+
+            .status-select.closed {
+                background-color: #d7dfe1;
+                color: #1a1a1a;
+            }
+
+            .status-select.pending {
+                background-color: #fac777;
+                color: #1a1a1a;
+            }
+
+            .status-select option {
+                background: #fff;
+                color: #2c2c2c;
+                font-weight: 600;
+            }
+    </style>
+
+}
+
+<div style="height: 100px"></div>
+
+<div ng-controller="IndexCtrl" class="container-fluid">
+
+    <div class="page-wrapper">
+
+        <!-- Title -->
+        <div class="title-box">
+            <h1>我要升級！LEVEL UP!</h1>
+        </div>
+
+        <!-- Description -->
+        <p class="description">
+            覺得手邊的工具不夠聰明？操作平台時總是覺得哪裡可以更好？ 這裡就是你的「平台精進」<strong>與</strong>「自動化工具」需求開發許願池！不管是想讓平台更好用，還是想擺脫重複的雜事，在這裡可以幫你實現！
+        </p>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-apply" data-toggle="modal" data-target="#applyModal" ng-click="showCreateModal()">
+                <span class="material-icons">star</span> 我要申請
+            </button>
+        </div>
+
+        <!-- Table -->
+        <div class="request-table-wrapper">
+            <table class="request-table table-hover">
+                <thead>
+                    <tr>
+                        <th>編號</th>
+                        <th>申請人</th>
+                        <th>需求類別</th>
+                        <th>處理狀態</th>
+                        <th>申請日期</th>
+                        <th>需求標題</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in wishes" class="wish-row" data-toggle="modal" data-target="#viewModal" ng-click="showViewModal(item)">
+                        <td ng-bind="item.wish.id"></td>
+                        <td ng-bind="item.name"></td>
+                        <td ng-bind="item.wish.category"></td>
+                        <td>
+                            <span class="badge-processing" ng-bind="statusLabels[item.wish.status]" ng-class="{
+                                'badge-pending': item.wish.status === 0,
+                                'badge-processing': item.wish.status === 1,
+                                'badge-closed':  item.wish.status === 2
+                            }"></span>
+                        </td>
+                        <td ng-bind="item.applicationDate"></td>
+                        <td ng-bind="item.wish.purpose"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer Contact -->
+        <div class="footer-contact">
+            <span class="phone-icon">📞</span>
+            <span>聯絡專線 : 曾姿燕 #08477</span>
+        </div>
+
+
+        <!-- Apply Modal -->
+        <div class="modal fade" id="applyModal" tabindex="-1" role="dialog" aria-labelledby="applyModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="applyModalLabel">我要申請</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <!-- 標題 -->
+                        <div class="form-group">
+                            <label class="form-label">標題:</label>
+                            <input type="text" ng-model="modal.purpose" class="field-box" id="inputTitle" placeholder="請輸入需求標題" />
+                        </div>
+
+                        <!-- 需求分類 -->
+                        <div class="form-group">
+                            <label class="form-label">需求分類:</label>
+                            <div class="radio-box">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="category" id="cat1" ng-model="modal.category" value="員工平台" checked />
+                                    <label class="form-check-label" for="cat1">員工平台</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="category" id="cat2" ng-model="modal.category" value="自動化開發" />
+                                    <label class="form-check-label" for="cat2">自動化開發</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="category" id="cat3" ng-model="modal.category" value="其他" />
+                                    <label class="form-check-label" for="cat3">其他</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 現況與建議 -->
+                        <div class="form-group">
+                            <label class="form-label">現況與建議:</label>
+                            <textarea class="field-box" ng-model="modal.detail" id="inputDescription" placeholder="請描述目前現況與改善建議…"></textarea>
+                        </div>
+
+                        <!-- 附件 -->
+                        <div class="form-group" style="margin-bottom:0">
+                            <label class="form-label" for="wishFile">培訓資料</label>
+                            <button type="button" ng-click="openFileDialog()" class="btn ml-3" style="background-color: #c6c1ba">選擇</button>
+                            <input type="text" class="form-control ml-3 w-50 d-inline-block" id="fakeInput" ng-model="modal.fakename" readonly>
+                            <input type="file" class="form-control mx-3 w-75" id="wishFile" style="display: none">
+                            <button type="button" ng-click="deleteFakename()" class="btn d-inline-flex">
+                                <span class="material-icons" style="color: grey">delete</span>
+                            </button>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-modal-cancel" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-modal-submit" ng-click="createWish()">送出申請</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View Modal -->
+        <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewModalLabel">申請內容</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="padding: 20px 24px;">
+                        <div class="info-card">
+
+                            <!-- Header: title + status badge -->
+                            <div class="info-card-header">
+                                <h2 class="info-card-title">
+                                    <span>#<span id="view-id" ng-bind="viewModal.wish.id"></span></span>
+                                    <span class="meta-dot">·</span>
+                                    <span ng-bind="viewModal.wish.purpose"></span>
+                                </h2>
+                                <select id="view-status-select" class="status-select"
+                                        ng-disabled="!editable"
+                                        ng-model="viewModal.status"
+                                        ng-change="updateStatus(viewModal)"
+                                        ng-class="{
+                                'pending': viewModal.status === '0',
+                                'processing': viewModal.status === '1',
+                                'closed':  viewModal.status === '2'
+                            }">
+                                    <option ng-repeat="opt in statusOptions" value="{{ opt.value }}">
+                                        {{ opt.label }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Meta row: applicant · date · category tag -->
+                            <div class="info-card-meta">
+                                <span>👤 <span id="view-applicant" ng-bind="viewModal.name"></span></span>
+                                <span class="meta-dot">·</span>
+                                <span>📅 <span id="view-date" ng-bind="viewModal.applicationDate"></span></span>
+                                <span class="meta-dot">·</span>
+                                <span class="tag" id="view-category" ng-bind="viewModal.wish.category"></span>
+                            </div>
+
+                            <hr class="info-card-divider">
+
+                            <!-- Description body -->
+                            <div class="info-card-section-label">現況與建議</div>
+                            <p class="info-card-body" id="view-body-text" ng-bind="viewModal.wish.detail"></p>
+
+                            <hr class="info-card-divider">
+
+                            <!-- File -->
+                            <div class="info-card-section-label">附件</div>
+                            <a ng-show="viewModal.wish.filepath" href="" ng-click="downloadFile(viewModal)">
+                                <span class="material-icons">attach_file</span>
+                                <span ng-bind="viewModal.wish.filepath"></span>
+                            </a>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-modal-cancel" data-dismiss="modal">關閉</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+    <script src="~/Scripts/WebApp/Wish/WishCtrl.js"></script>
+    <script src="~/Scripts/moment-with-locales.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.js" integrity="sha512-B+gr+zLWg81qxVwvtYwKrmjvQtZKD/GGFF7jD80OfzbqFw+NsbS5faEqpCO7Q7oRw1bYi0+WLJf54j8Vm7NADw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+}

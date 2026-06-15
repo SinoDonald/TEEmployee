@@ -433,6 +433,10 @@
     <Compile Include="Models\UserRepository.cs" />
     <Compile Include="Models\UserTxtRepository.cs" />
     <Compile Include="Models\Utilities.cs" />
+    <Compile Include="Models\Wish\IWishRepository.cs" />
+    <Compile Include="Models\Wish\Wish.cs" />
+    <Compile Include="Models\Wish\WishRepository.cs" />
+    <Compile Include="Models\Wish\WishService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -658,6 +662,7 @@
       <DependentUpon>TasklogCtrl.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Webapp\Vincent\TalentCtrl.js" />
+    <Content Include="Scripts\Webapp\Wish\WishCtrl.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
