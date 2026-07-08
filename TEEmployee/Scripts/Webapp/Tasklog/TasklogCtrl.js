@@ -249,10 +249,10 @@ app.controller('UserDetailsCtrl', ['$scope', '$location', '$window', 'appService
     $scope.ctrl = {};
     $scope.ctrl.datepicker = moment().add(-3, 'months').locale('zh-tw').format('YYYY-MM');
     $scope.ctrl.datepicker1 = moment().add(-1, 'months').locale('zh-tw').format('YYYY-MM');
-    $scope.user = userDetailsFactory.get().user;    
+    $scope.user = userDetailsFactory.get().user;
 
     let projectTypeMap = ['', '計畫執行', '研發創新', '技術深根'];
-    
+
     $scope.GetUserAllMonthlyRecordData = () => {
         // 取得個人各月詳細工作項目
         appService.GetUserContent({ startMonth: $scope.ctrl.datepicker, endMonth: $scope.ctrl.datepicker1, user: $scope.user }).then((ret) => {
@@ -498,6 +498,9 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
     $scope.ctrl.datepicker = moment().locale('zh-tw').format('YYYY-MM');
     /*$scope.ctrl.datepicker = "";*/
 
+    // 匯入資料：預設帶入上個月，使用者可自行選擇其他月份 <-- 培文
+    $scope.ctrl.importDatepicker = moment().add(-1, 'months').locale('zh-tw').format('YYYY-MM');
+
     const date = new Date();
     const [month, year] = [date.getMonth(), date.getFullYear()];
 
@@ -560,7 +563,7 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
         if (logs.length >= 1 && idx > 0) {
             [logs[idx - 1], logs[idx]] = [logs[idx], logs[idx - 1]];
-        }        
+        }
     };
 
     $scope.moveDownLogRow = (projectidx, idx) => {
@@ -796,12 +799,13 @@ app.controller('EditCtrl', ['$scope', '$window', 'appService', '$rootScope', '$q
 
     $scope.GetTasklogData();
 
-    // 匯入上月資料 <-- 培文
+    // 匯入資料：依使用者於彈窗中選擇的年月份匯入 <-- 培文
     $scope.GetLastMonthData = () => {
         let yymm = `${Number($scope.ctrl.datepicker.slice(0, 4)) - 1911}${$scope.ctrl.datepicker.slice(5, 7)}`;
+        let importYymm = `${Number($scope.ctrl.importDatepicker.slice(0, 4)) - 1911}${$scope.ctrl.importDatepicker.slice(5, 7)}`;
 
-        // 撈取本月與上月資料
-        appService.GetLastMonthData({ yymm: yymm }).then((ret) => {
+        // 撈取本月與使用者所選匯入月份的資料
+        appService.GetLastMonthData({ yymm: yymm, importYymm: importYymm }).then((ret) => {
             $scope.projects = [];
             const projectItems = ret.data.ProjectItems;
             const projectTasks = ret.data.ProjectTasks;

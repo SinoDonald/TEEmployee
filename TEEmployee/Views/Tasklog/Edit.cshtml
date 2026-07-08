@@ -43,8 +43,6 @@
         .dropdown-menu {
             min-width: 6rem;
         }
-
-
     </style>
 }
 
@@ -53,11 +51,45 @@
     <header>
         <div class="form-group d-flex justify-content-between">
             <h2>@ViewBag.Title <font size="6" color="orange">({{selectedMonth}}月)</font></h2>
-            <button type="button" class="btn btn-warning btn-lg mr-2" name="GetLastMonthData" ng-click="GetLastMonthData()">
-                <span>匯入上月資料</span>
+            <button type="button" class="btn btn-warning btn-lg mr-2" name="GetLastMonthData" data-toggle="modal" data-target="#importDataModal">
+                <span>匯入資料</span>
             </button>
         </div>
     </header>
+
+    <!-- 匯入資料 Modal: 讓使用者選擇要匯入的年月份 -->
+    <div class="modal fade" id="importDataModal" tabindex="-1" role="dialog" aria-labelledby="importDataModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importDataModalLabel">匯入資料</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="importDatepicker">請選擇欲匯入的年月份：</label>
+                    <div class="input-group mb-3"
+                         moment-picker="ctrl.importDatepicker"
+                         format="YYYY-MM"
+                         locale="zh-tw">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text material-icons">calendar_month</span>
+                        </div>
+                        <input id="importDatepicker"
+                               class="form-control"
+                               placeholder="請選擇年月份"
+                               ng-model="ctrl.importDatepicker"
+                               ng-model-options="{ updateOn: 'blur' }">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal" ng-click="GetLastMonthData()">確認匯入</button>
+                </div>
+            </div>
+        </div>
+    </div>
     @*<div class="month-select">
             <div>
                 <label for="SelectYear">請選擇年份：</label>

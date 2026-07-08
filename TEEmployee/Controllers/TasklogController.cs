@@ -94,7 +94,7 @@ namespace TEEmployee.Controllers
 
         [HttpPost]
         public JsonResult GetTasklogData(string empno, string yymm)
-        {           
+        {
             var ret = _service.GetTasklogData(Session["empno"].ToString(), yymm);
             return Json(ret);
         }
@@ -102,7 +102,7 @@ namespace TEEmployee.Controllers
 
         [HttpPost]
         public bool UpdateProjectTask(List<ProjectTask> projectTasks)
-        {            
+        {
             var ret = _service.UpdateProjectTask(projectTasks, Session["empno"].ToString());
             return ret;
         }
@@ -129,35 +129,19 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
         /// <summary>
-        /// 匯入上月資料
+        /// 匯入資料：將使用者指定月份(importYymm)的資料匯入至目前檢視的月份(yymm)
         /// </summary>
-        /// <param name="yymm"></param>
+        /// <param name="yymm">目前檢視(要匯入進去)的民國年月, 例如 "11507"</param>
+        /// <param name="importYymm">使用者選擇的匯入來源民國年月, 例如 "11506"</param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult GetLastMonthData(string yymm)
+        public JsonResult GetLastMonthData(string yymm, string importYymm)
         {
-            int insertIndex = yymm.Length - 2;
-            // 轉換年月, format加上"-"
-            string thisMonth = yymm.Insert(insertIndex, "-");
-            string lastMonth = yymm.Insert(insertIndex, "-");
-
-            // 民國年轉西元, 並減一個月
-            CultureInfo culture = new CultureInfo("zh-TW");
-            culture.DateTimeFormat.Calendar = new System.Globalization.TaiwanCalendar();
-            DateTime thisMonthDateTime = DateTime.Parse(lastMonth, culture);
-            DateTime lastMonthDateTime = DateTime.Parse(lastMonth, culture).AddMonths(-1);
-            
-            // 將西元年轉成民國
-            culture = new CultureInfo("zh-TW");
-            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
-            thisMonth = thisMonthDateTime.ToString("yyy-MM", culture).Replace("-", "");
-            lastMonth = lastMonthDateTime.ToString("yyy-MM", culture).Replace("-", "");
-
-            // 儲存上月與本月的資料
+            // 儲存匯入來源月份與本月的資料
             List<ProjectItem> projectItems = new List<ProjectItem>();
             List<ProjectTask> projectTasks = new List<ProjectTask>();
 
-            TasklogData thisMonthData = _service.GetTasklogData(Session["empno"].ToString(), thisMonth);
+            TasklogData thisMonthData = _service.GetTasklogData(Session["empno"].ToString(), yymm);
             foreach (ProjectItem projectItem in thisMonthData.ProjectItems)
             {
                 projectItems.Add(projectItem);
@@ -168,12 +152,12 @@ namespace TEEmployee.Controllers
             }
 
             // 更新抓取回來的id與月份
-            TasklogData lastMonthData = _service.GetTasklogData(Session["empno"].ToString(), lastMonth);
-            foreach(ProjectItem projectItem in lastMonthData.ProjectItems)
+            TasklogData importMonthData = _service.GetTasklogData(Session["empno"].ToString(), importYymm);
+            foreach (ProjectItem projectItem in importMonthData.ProjectItems)
             {
-                // 上月與本月有同計畫編號時, 只留存本月的
+                // 匯入來源月份與本月有同計畫編號時, 只留存本月的
                 ProjectItem samePrjName = projectItems.Where(x => x.projno.Equals(projectItem.projno)).FirstOrDefault();
-                if(samePrjName == null)
+                if (samePrjName == null)
                 {
                     projectItem.yymm = yymm;
                     projectItem.workHour = 0; // 工時不要帶入
@@ -181,7 +165,7 @@ namespace TEEmployee.Controllers
                     projectItems.Add(projectItem);
                 }
             }
-            foreach (ProjectTask projectTask in lastMonthData.ProjectTasks)
+            foreach (ProjectTask projectTask in importMonthData.ProjectTasks)
             {
                 projectTask.id = 0;
                 projectTask.yymm = yymm;
@@ -202,7 +186,7 @@ namespace TEEmployee.Controllers
         {
             List<MonthlyRecordData> monthlyRecordData = JsonConvert.DeserializeObject<List<MonthlyRecordData>>(json); //反序列化
             List<string> ret = new List<string>();
-            if(monthlyRecordData != null && monthlyRecordData.Count > 0)
+            if (monthlyRecordData != null && monthlyRecordData.Count > 0)
             {
                 List<string> groups = monthlyRecordData.Where(x => x.User.group != "").Select(x => x.User.group).Distinct().OrderBy(x => x).ToList();
                 foreach (string group in groups)
@@ -257,10 +241,10 @@ namespace TEEmployee.Controllers
             }
             else
             {
-                ret = monthlyRecordData.Where(x => 
-                x.User.group.Equals(groupName) || 
-                x.User.group_one.Equals(groupName) || 
-                x.User.group_two.Equals(groupName) || 
+                ret = monthlyRecordData.Where(x =>
+                x.User.group.Equals(groupName) ||
+                x.User.group_one.Equals(groupName) ||
+                x.User.group_two.Equals(groupName) ||
                 x.User.group_three.Equals(groupName) ||
                 x.User.group_four.Equals(groupName)).ToList();
             }
@@ -322,7 +306,7 @@ namespace TEEmployee.Controllers
             {
                 ret.Add(_service.GetMultiTasklogData(user, yymm));
             }
-            
+
             return Json(ret);
         }
 
@@ -335,7 +319,7 @@ namespace TEEmployee.Controllers
 
         [HttpPost]
         public JsonResult AddProjectTypeColumn()
-        {               
+        {
             try
             {
                 _service.AddProjectTypeColumn();
