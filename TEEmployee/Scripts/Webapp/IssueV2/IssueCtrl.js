@@ -58,9 +58,23 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     appService.GetAuth({}).then((ret) => {
 
         $scope.auth = ret.data;
-        let group_array = $scope.auth.Users.map(x => x.group_one);
-        $scope.groups = [...new Set(group_array)];
-        $scope.selectedGroup = $scope.groups[0];
+        // let group_array = $scope.auth.Users.map(x => x.group_one);
+        // $scope.groups = [...new Set(group_array)];
+        // $scope.selectedGroup = $scope.groups[0];
+
+        // Add new option 'group' for mangers
+        let group_one_string_array = $scope.auth.Users.map(x => x.group_one);
+        $scope.groups = [...new Set(group_one_string_array)].map(x => ({ group_name: x, is_group_one: true }));
+        
+
+        if ($scope.auth.User.department_manager || $scope.auth.User.group_manager || $scope.auth.User.group_one_manager) {
+            let additional_group_string_array = $scope.auth.Users.map(x => x.group).filter(group => group);
+            let additional_group_array = [...new Set(additional_group_string_array)].map(x => ({ group_name: x, is_group_one: false }));
+            $scope.groups = $scope.groups.concat(additional_group_array);
+        }
+
+        $scope.selectedGroup = $scope.groups[0].group_name;
+
         $scope.selectGroup();
     });
 
@@ -232,7 +246,15 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     $scope.selectGroup = () => {
         $scope.getProjectsByGroupOne();
         $scope.getCategoriesByGroupOne();
-        $scope.groupMembers = $scope.auth.Users.filter(x => x.group_one === $scope.selectedGroup);
+        // $scope.groupMembers = $scope.auth.Users.filter(x => x.group_one === $scope.selectedGroup);
+
+        let is_group_one = $scope.groups.find(x => x.group_name === $scope.selectedGroup).is_group_one;
+
+        if (is_group_one) {
+            $scope.groupMembers = $scope.auth.Users.filter(x => x.group_one === $scope.selectedGroup);
+        } else {
+            $scope.groupMembers = $scope.auth.Users.filter(x => x.group === $scope.selectedGroup && (x.group_one_manager || x.group_manager));
+        }
     }
 
 
