@@ -12,6 +12,7 @@ namespace TEEmployee.Models.IssueV2
         List<Project> GetAllProjects();
         List<Project> GetProjectsByGroupOne(string group_one);
         bool InsertProject(Project project);
+        bool UpdateProject(Project project);
         bool DeleteProject(Project project);
         bool InsertIssue(Issue issue);
         bool UpdateIssue(Issue issue);

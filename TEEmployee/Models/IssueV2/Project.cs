@@ -12,7 +12,7 @@ namespace TEEmployee.Models.IssueV2
         public string name { get; set; }
         public int project_type { get; set; }
         public List<Issue> issues { get; set; }
-
+        public bool finished { get; set; }
         public Project()
         {
             issues = new List<Issue>();

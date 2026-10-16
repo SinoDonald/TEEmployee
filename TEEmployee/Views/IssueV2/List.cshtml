@@ -182,6 +182,10 @@
             </select>
         </div>
         <div class="col-2 form-group form-check text-center">
+            <input type="checkbox" class="form-check-input" ng-model="showFinishedProject" id="showFinishedProjectCheck">
+            <label class="form-check-label" for="showFinishedProjectCheck">顯示已結案計畫</label>
+        </div>
+        <div class="col-2 form-group form-check text-center">
             <input type="checkbox" class="form-check-input" ng-model="showClosedIssue" id="showClosedIssueCheck">
             <label class="form-check-label" for="showClosedIssueCheck">顯示已結案議題</label>
         </div>
@@ -229,12 +233,13 @@
                         </div>
                     </td>
                 </tr>
-                <tr ng-repeat="project in filterProjectType($index)" style="border-bottom: none">
+                <tr ng-repeat="project in filterProjectType($index) | filter:excludeFinishedProject" style="border-bottom: none">
                     <td class="align-middle text-center hover-cell" ng-style="{'background-color': pjColors[$parent.$index]}">
                         <div ng-bind="project.name"></div>
                         <div class="btn-group">
-                            <button type="button" class="btn" ng-click="confirmDeleteProject(project)">
-                                <span class="material-icons" style="color:grey">cancel</span>
+                            <button type="button" class="btn" ng-click="updateProjectModal(project)" data-toggle="modal" data-target="#projectModal">
+                                @*<span class="material-icons" style="color:grey">cancel</span>*@
+                                <span class="material-icons" style="color:grey">edit</span>
                             </button>
                             <button type="button" ng-click="createIssueModal(project)" class="btn" data-toggle="modal" data-target="#issueModal">
                                 <span class="material-icons" style="color:grey">add_circle</span>
@@ -280,7 +285,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="projectModalLabel">新增計畫</h5>
+                    <h5 class="modal-title" id="projectModalLabel" ng-bind="isEditProjectModal ? '編輯計畫' : '新增計畫'"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -291,10 +296,20 @@
                         <label for="projectNameInput">計畫名稱</label>
                         <input type="text" ng-model="projectModal.name" class="form-control" id="projectNameInput" placeholder="請輸入...">
                     </div>
+
+                    <div class="form-group form-check" ng-show="isEditProjectModal">
+                        <input type="checkbox" class="form-check-input" ng-model="projectModal.finished" id="projectFinishedInput">
+                        <label class="form-check-label" for="projectFinishedInput">已結案計畫</label>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                    <button type="button" ng-click="createProject()" data-dismiss="modal" class="btn btn-primary">儲存</button>
+                <div class="modal-footer justify-content-between">
+                    <div>
+                        <button type="button" ng-show="isEditProjectModal" class="btn btn-danger" ng-click="confirmDeleteProject(projectModal)">刪除</button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                        <button type="button" ng-click="upsertProject()" data-dismiss="modal" class="btn btn-primary">儲存</button>
+                    </div>
                 </div>
             </div>
         </div>

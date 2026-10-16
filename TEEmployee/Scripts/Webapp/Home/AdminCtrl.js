@@ -122,16 +122,17 @@ app.service('appService', ['$http', function ($http) {
     this.OneTimeSQL = (o) => {
         //return $http.post('Tasklog/AddCustomOrderColumn', o);
         //return $http.post('Tasklog/InsertCustomUser', o);
-        return $http.post('GKpi/UpdateCustomField', o);
+        // return $http.post('GKpi/UpdateCustomField', o);
+        return $http.post('IssueV2/AlterTableAddProjectFinishedColumn', o);
     };
 
-    this.OneTimeSQL2 = (o) => {
-        return $http.post('Tasklog/AddCustomGroupFourColumn', o);
-    };
+    // this.OneTimeSQL2 = (o) => {
+    //     return $http.post('Tasklog/AddCustomGroupFourColumn', o);
+    // };
 
-    this.OneTimeSQL3 = (o) => {
-        return $http.post('Talent/AddCustomGroupFourColumn', o);
-    };
+    // this.OneTimeSQL3 = (o) => {
+    //     return $http.post('Talent/AddCustomGroupFourColumn', o);
+    // };
 
     //this.OneTimeSQL2 = (o) => {        
     //    return $http.post('Tasklog/AddGenerateScheduleColumn', o);
@@ -595,34 +596,34 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
     }
 
 
-    $scope.OneTimeSQL2 = () => {
+    // $scope.OneTimeSQL2 = () => {
 
-        appService.OneTimeSQL2({})
-            .then((ret) => {
-                if (ret.data)
-                    console.log("succeed");
-                else
-                    console.log("inner error");
-            })
-            .catch((ret) => {
-                alert('Error');
-            });
-    }
+    //     appService.OneTimeSQL2({})
+    //         .then((ret) => {
+    //             if (ret.data)
+    //                 console.log("succeed");
+    //             else
+    //                 console.log("inner error");
+    //         })
+    //         .catch((ret) => {
+    //             alert('Error');
+    //         });
+    // }
 
 
-    $scope.OneTimeSQL3 = () => {
+    // $scope.OneTimeSQL3 = () => {
 
-        appService.OneTimeSQL3({})
-            .then((ret) => {
-                if (ret.data)
-                    console.log("succeed");
-                else
-                    console.log("inner error");
-            })
-            .catch((ret) => {
-                alert('Error');
-            });
-    }
+    //     appService.OneTimeSQL3({})
+    //         .then((ret) => {
+    //             if (ret.data)
+    //                 console.log("succeed");
+    //             else
+    //                 console.log("inner error");
+    //         })
+    //         .catch((ret) => {
+    //             alert('Error');
+    //         });
+    // }
 
 
 }]);

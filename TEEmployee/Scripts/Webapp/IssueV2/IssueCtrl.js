@@ -19,6 +19,9 @@ app.service('appService', ['$http', function ($http) {
     this.CreateProject = (o) => {
         return $http.post('IssueV2/CreateProject', o);
     };
+    this.UpdateProject = (o) => {
+        return $http.post('IssueV2/UpdateProject', o);
+    };
     this.DeleteProject = (o) => {
         return $http.post('IssueV2/DeleteProject', o);
     };
@@ -50,6 +53,7 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
     $scope.projectTypes = ['宣達事項/其他', '計畫執行', '技術深耕', '研發創新'];
     $scope.importanceOptions = ['1', '2', '3', '4', '5'];
     $scope.statusOptions = ['持續追蹤', '建議結案', '結案'];
+    $scope.showFinishedProject = false;
     $scope.showClosedIssue = false;
 
     $scope.hdColors = ['#bf9000', '#e06666', '#6aa84f', '#3c78d8'];
@@ -138,6 +142,14 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         });
     };
 
+    $scope.excludeFinishedProject = function (item) {
+        if ($scope.showFinishedProject)
+            return true;
+        else
+            return item.finished == false;
+    };
+
+
     $scope.excludeClosedIssue = function (item) {
         if ($scope.showClosedIssue)
             return true;
@@ -147,21 +159,51 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
     $scope.createProjectModal = (idx) => {
 
+        $scope.isEditProjectModal = false;
         $scope.projectModal = {
             name: '',
             project_type: Number(idx),
             group_one: $scope.selectedGroup,
+            finished: false,
         };
 
     };
 
-    $scope.createProject = () => {
+    $scope.updateProjectModal = (project) => {
 
-        appService.CreateProject({ project: $scope.projectModal }).then((ret) => {
-            if (ret.data)
-                $scope.getProjectsByGroupOne();
-        })
+        $scope.isEditProjectModal = true;
+        $scope.projectModal = { ...project };
+
     };
+
+    // $scope.createProject = () => {
+
+    //     appService.CreateProject({ project: $scope.projectModal }).then((ret) => {
+    //         if (ret.data)
+    //             $scope.getProjectsByGroupOne();
+    //     })
+    // };
+
+    $scope.upsertProject = () => {
+
+        let newProject = { ...$scope.projectModal };
+
+        if (newProject.id) {
+
+            appService.UpdateProject({ project: newProject }).then((ret) => {
+                if (ret.data)
+                    $scope.getProjectsByGroupOne();
+            })
+
+        } else {
+
+            appService.CreateProject({ project: newProject }).then((ret) => {
+                if (ret.data)
+                    $scope.getProjectsByGroupOne();
+            })
+        }
+    };
+
 
     $scope.createIssueModal = (project) => {
 
@@ -221,6 +263,7 @@ app.controller('IssueCtrl', ['$scope', '$location', 'appService', '$rootScope', 
 
                 if (ret.data) {
                     $scope.getProjectsByGroupOne();
+                    $('#projectModal').modal('hide');
                 }
             })
         }

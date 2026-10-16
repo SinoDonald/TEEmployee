@@ -53,6 +53,13 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
+        public JsonResult UpdateProject(Project project)
+        {
+            var ret = _service.UpdateProject(project);
+            return Json(ret);
+        }
+
+        [HttpPost]
         public JsonResult DeleteProject(Project project)
         {
             var ret = _service.DeleteProject(project);
@@ -105,6 +112,13 @@ namespace TEEmployee.Controllers
         public JsonResult DeleteCategory(CustomCategory category)
         {
             var ret = _service.DeleteCategory(category);
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult AlterTableAddProjectFinishedColumn()
+        {
+            var ret = _service.AlterTableAddProjectFinishedColumn();
             return Json(ret);
         }
     }

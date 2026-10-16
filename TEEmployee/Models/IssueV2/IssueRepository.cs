@@ -101,8 +101,23 @@ namespace TEEmployee.Models.IssueV2
             int ret = 0;
 
             string sql = @"
-                INSERT INTO Project (name, group_one, project_type) 
-                VALUES(@name, @group_one, @project_type)"
+                INSERT INTO Project (name, group_one, project_type, finished) 
+                VALUES(@name, @group_one, @project_type, @finished)"
+            ;
+
+            ret = _conn.Execute(sql, project);
+            return ret > 0;
+        }
+
+        public bool UpdateProject(Project project)
+        {
+            int ret = 0;
+
+            string sql = @"
+                UPDATE Project
+                SET name=@name, finished=@finished
+                WHERE id=@id;
+            "
             ;
 
             ret = _conn.Execute(sql, project);
@@ -219,6 +234,21 @@ namespace TEEmployee.Models.IssueV2
             ret = _conn.Execute(sql, category);
 
             return ret > 0;
+        }
+
+        public bool AlterTableAddProjectFinishedColumn()
+        {
+            string sql = "ALTER TABLE Project ADD COLUMN finished INTEGER NOT NULL DEFAULT 0;";
+
+            try
+            {
+                _conn.Execute(sql);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public void Dispose()

@@ -39,6 +39,12 @@ namespace TEEmployee.Models.IssueV2
             return ret;
         }
 
+        public bool UpdateProject(Project project)
+        {
+            var ret = _issueRepository.UpdateProject(project);
+            return ret;
+        }
+
         public bool DeleteProject(Project project)
         {
             var ret = _issueRepository.DeleteProject(project);
@@ -121,6 +127,12 @@ namespace TEEmployee.Models.IssueV2
         public bool DeleteCategory(CustomCategory category)
         {
             var ret = _issueRepository.DeleteCustomCategory(category);
+            return ret;
+        }
+
+        public bool AlterTableAddProjectFinishedColumn()
+        {
+            var ret = (_issueRepository as IssueRepository).AlterTableAddProjectFinishedColumn();
             return ret;
         }
 
