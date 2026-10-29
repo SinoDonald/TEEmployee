@@ -10,10 +10,13 @@ namespace TEEmployee.Models
 {
     public static class HtmlHelperExtensions
     {
+        // 是否啟用 min.js 與版本號 (?v=) 輸出；原本以 if(false) 停用，改用 static readonly 避免 CS0162
+        private static readonly bool EnableVersioning = false; // 原條件: !HttpContext.Current.IsDebuggingEnabled
+
         public static HtmlString Versioned(this UrlHelper helper, string target)
         {
             
-            if (/*!HttpContext.Current.IsDebuggingEnabled*/false)
+            if (EnableVersioning)
             {
                 var minTarget = target.Substring(0, target.Length - 2) + "min.js";
 
