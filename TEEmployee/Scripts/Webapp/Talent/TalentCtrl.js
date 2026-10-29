@@ -602,7 +602,7 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
         // 取得員工履歷
         appService.SaveResponse({ userCV: data, planning: planning })
             .then(function (ret) {
-                if (ret.data === false) { alert('僅限協理儲存'); }
+                if (ret.data === false) { alert('僅限資協儲存'); }
                 else { alert('儲存成功'); }
             })
             .catch(function (ret) {
