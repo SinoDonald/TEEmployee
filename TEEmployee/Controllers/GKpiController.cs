@@ -83,9 +83,9 @@ namespace TEEmployee.Controllers
 
         // Upload file from client side to server 
         [HttpPost]
-        public ActionResult UploadKpiFile(HttpPostedFileBase kpifiles)
+        public ActionResult UploadKpiFile(HttpPostedFileBase kpifiles, string year)
         {
-            var ret = _service.UploadKpiFile(kpifiles.InputStream, Session["empno"].ToString());
+            var ret = _service.UploadKpiFile(kpifiles.InputStream, Session["empno"].ToString(), year);
 
             //var jj = Json(ret);
             var jj = Json((ret is null) ? "succeed" : "fail");

@@ -273,13 +273,13 @@ namespace TEEmployee.Models.GKpi
         /// <param name="input">年度KPI項目Stream</param>
         /// <returns>個人年度KPI項目列舉</returns>
         /// <remarks>上傳EXCEL檔，匯入資料庫</remarks>
-        public List<KpiModel> UploadKpiFile(Stream input, string empno)
+        public List<KpiModel> UploadKpiFile(Stream input, string empno, string year)
         {
             string gid = _userRepository.Get(empno).gid;
 
             // Insert KpiModels then Insert Kpiitems
             List<KpiModel> processedInput = ProcessKpiXlsx(input);
-            List<KpiModel> insertedModels = InsertKpiModelsNew(processedInput);
+            List<KpiModel> insertedModels = InsertKpiModelsNew(processedInput, year);
 
             List<KpiItem> createdKpiitems = new List<KpiItem>();
 
@@ -573,18 +573,30 @@ namespace TEEmployee.Models.GKpi
         /// </summary>
         /// <returns>個人年度KPI項目列舉</returns>
         // Insert, Update and Delete KpiModels based on current Users in database and kpi relationships this year
-        public List<KpiModel> InsertKpiModelsNew(List<KpiModel> models)
+        public List<KpiModel> InsertKpiModelsNew(List<KpiModel> models, string yearStr)
         {
            
             List<User> users = _userRepository.GetAll();
             List<KpiModel> kpimodels = new List<KpiModel>();
-            
-            
-            int year = DateTime.Now.Year;
+
+            if (int.TryParse(yearStr, out int year) && year >= 1 && year <= 9999)
+            {
+                //Console.WriteLine($"Valid year: {year}");
+            }
+            else
+            {
+                year = DateTime.Now.Year;
+                if (DateTime.Now.Month >= 11)
+                    year += 1;
+                //Console.WriteLine("Invalid year.");
+            }
+
+
+            //int year = DateTime.Now.Year;
 
             // Create next year data when it is Nov
-            if (DateTime.Now.Month >= 11)
-                year += 1;
+            //if (DateTime.Now.Month >= 11)
+            //    year += 1;
 
             // create data from user role
             foreach (var user in users)
