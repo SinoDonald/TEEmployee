@@ -1,12 +1,17 @@
 ﻿@using TEEmployee.Models;
 
 @{
-    ViewBag.Title = "部門公用電腦借用";
+    ViewBag.Title = "部門公用裝置借用";
 }
 <style type="text/css">
 
     .field-validation-error {
         color: #ff0000;
+    }
+    /* 目前選取的裝置 */
+    .device-link.active {
+        font-weight: bold;
+        text-decoration: underline;
     }
 </style>
 
@@ -14,7 +19,7 @@
     <div class="container-fluid">
 
         <header class="mb-4 d-flex justify-content-between">
-            <h2>部門公用電腦借用</h2>
+            <h2>部門公用裝置借用</h2>
             @*<div>
                     <a class="btn btn-outline-primary btn-lg mr-2" href="~/" role="button">返回</a>
                 </div>*@
@@ -45,13 +50,13 @@
                             </div>-->
                             <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
                                 <h6 class="panel-title">
-                                    <i class="fs-4 bi-speedometer2"></i> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" ng-click="showContent('calendar')">公用設備</a>
+                                    <i class="fs-4 bi-laptop"></i> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" ng-click="showContent('calendar')">公用設備</a>
                                 </h6>
                             </div>
                             <div id="collapseOne" class="collapse show panel-collapse collapse in">
                                 <div class="panel-body">
                                     <div class="inner" ng-repeat="device in getDevices">
-                                        <a href="" class="d-none d-sm-inline" value={{device}} ng-click="GetEvents(device)">{{device}}</a>
+                                        <a href="" class="d-none d-sm-inline device-link" ng-class="{active: device.deviceID == deviceID && activeTab == 'calendar'}" title="ID：{{device.deviceID}}" ng-click="GetEvents(device.deviceID)">{{device.deviceName}}</a>
                                     </div>
                                 </div>
                             </div>
@@ -59,7 +64,7 @@
                         <li>
                             <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
                                 <h6 class="panel-title">
-                                    <i class="fs-4 bi-table"></i> <a data-toggle="collapse" data-parent="#accordion" ng-click="showContent('teams')">Teams</a>
+                                    <i class="fs-4 bi-camera-video"></i> <a data-toggle="collapse" data-parent="#accordion" style="cursor: pointer;" ng-click="showContent('teams')">Teams</a>
                                 </h6>
                             </div>
                         </li>
@@ -125,7 +130,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title"><span ng-bind="reserve.deviceID + '：' + reserve.meetingDate + ' 預約'"></span></h4>
+                            <h4 class="modal-title"><span ng-bind="(reserve.deviceName || reserve.deviceID) + '：' + reserve.meetingDate + ' 預約'"></span></h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
@@ -217,11 +222,13 @@
                             </div>
                             <div class="form-group">
                                 <label for="deviceID">ID</label>
-                                <input id="deviceID" class="form-control" type="text" ng-model="createdevice.deviceID" />
+                                <input id="deviceID" class="form-control" type="text" ng-model="createdevice.deviceID" placeholder="{{createdevice.type == 'Teams' ? '例：mte-dpt2-1@s365.sinotech.com.tw' : (createdevice.type == '電腦' ? '例：50-090（電腦編號）' : '例：SPK-01（財產編號或自訂代碼）')}}" />
+                                <small class="form-text text-muted">唯一識別碼，不可重複</small>
                             </div>
                             <div class="form-group">
                                 <label for="deviceName">名稱</label>
-                                <input id="deviceName" class="form-control" type="text" ng-model="createdevice.deviceName" />
+                                <input id="deviceName" class="form-control" type="text" ng-model="createdevice.deviceName" placeholder="{{createdevice.type == 'Teams' ? '例：Teams帳號1' : (createdevice.type == '電腦' ? '例：50-090' : '例：擴音機')}}" />
+                                <small class="form-text text-muted">左側選單顯示的名稱，未填則顯示ID</small>
                             </div>
                             <div class="form-group">
                                 <label for="name">聯絡人姓名</label>
@@ -258,7 +265,7 @@
                             <div class="form-group">
                                 <label for="type">ID</label>
                                 <select class="form-select" id="SelectDeviceID" name="SelectDeviceID" ng-model="removedevice.deviceID" aria-label="Select the deviceID">
-                                    <option ng-repeat="deviceID in removedevice.deviceIDs">{{deviceID}}</option>
+                                    <option ng-repeat="d in removedevice.deviceIDs" value="{{d.deviceID}}">{{d.label}}</option>
                                 </select>
                             </div>
                         </div>

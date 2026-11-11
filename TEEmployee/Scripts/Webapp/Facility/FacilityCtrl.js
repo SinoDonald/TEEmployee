@@ -118,16 +118,47 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
             .then(function (ret) {
                 $scope.devices = ret.data;
                 $scope.device = ret.data[0];
-                // 找到特定type裡的ID, 並使用...new Set()過濾重複值後排序
-                $scope.getDevices = [...new Set(ret.data.filter(x => x.type == "電腦").map(x => x.deviceID))].sort();
+                // 非Teams的裝置(電腦、其他...)依deviceID合併, 顯示名稱優先使用deviceName, 沒有則顯示deviceID
+                $scope.getDevices = BuildDeviceList(ret.data.filter(x => x.type != "Teams"));
                 $scope.getTeams = [...new Set(ret.data.filter(x => x.type == "Teams"))].sort(x => x.deviceID);
-                $scope.deviceID = ret.data[0].deviceID;
+                // 保留目前選取的裝置, 否則預設第一個公用設備
+                if (!$scope.getDevices.some(x => x.deviceID == $scope.deviceID)) {
+                    $scope.deviceID = $scope.getDevices.length > 0 ? $scope.getDevices[0].deviceID : ret.data[0].deviceID;
+                }
                 $scope.insertID = Math.max(...new Set(ret.data.map(item => item.id))) + 1;
-                $scope.deviceIDs = [...new Set(ret.data.map(x => x.deviceID))].sort(); // 移除裝置下拉選單
+                // 移除裝置下拉選單(顯示：名稱 (ID))
+                $scope.deviceIDs = BuildDeviceList(ret.data).map(x => ({
+                    deviceID: x.deviceID,
+                    label: x.deviceName == x.deviceID ? x.deviceID : x.deviceName + ' (' + x.deviceID + ')'
+                }));
                 GetEvents(); // 取得裝置行事曆
             });
     }
     GetDevices();
+
+    // 依deviceID合併成裝置清單 [{deviceID, deviceName, type}], 依類型(電腦優先)、名稱排序
+    function BuildDeviceList(rows) {
+        var map = {};
+        rows.forEach(function (x) {
+            if (!x.deviceID) return;
+            if (!map[x.deviceID]) {
+                map[x.deviceID] = { deviceID: x.deviceID, deviceName: "", type: x.type };
+            }
+            if (!map[x.deviceID].deviceName && x.deviceName) {
+                map[x.deviceID].deviceName = x.deviceName;
+            }
+        });
+        var typeOrder = { "電腦": 0, "Teams": 2 };
+        return Object.values(map).map(function (d) {
+            d.deviceName = d.deviceName || d.deviceID; // 沒有名稱則顯示ID
+            return d;
+        }).sort(function (a, b) {
+            var ta = typeOrder[a.type] !== undefined ? typeOrder[a.type] : 1;
+            var tb = typeOrder[b.type] !== undefined ? typeOrder[b.type] : 1;
+            if (ta != tb) return ta - tb;
+            return a.deviceName.localeCompare(b.deviceName, 'zh-Hant', { numeric: true });
+        });
+    }
 
     // 取得裝置行事曆
     function GetEvents(data) {
@@ -394,7 +425,7 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
         else {
             $scope.createdevice.id = 1;
         }
-        $scope.createdevice.types = ["電腦", "Teams"];
+        $scope.createdevice.types = ["電腦", "Teams", "其他"];
         $scope.createdevice.type = $scope.createdevice.types[0];
         $scope.createdevice.deviceID = "";
         $scope.createdevice.deviceName = "";
@@ -417,8 +448,19 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
     $scope.Create = function (data)
     {
         $scope.createdevice = data;
+        data.deviceID = (data.deviceID || "").trim();
+        data.deviceName = (data.deviceName || "").trim();
+        if (data.deviceID == "") {
+            Swal.fire({
+                icon: 'error',
+                title: '請輸入裝置ID',
+                showCancelButton: false,
+            });
+            return;
+        }
+        if (data.deviceName == "") data.deviceName = data.deviceID; // 未填名稱則以ID作為名稱
         // 如果重複deviceID, 則不得新增
-        isExist = [...new Set($scope.devices.filter(x => x.deviceID == data.deviceID))];
+        var isExist = [...new Set($scope.devices.filter(x => x.deviceID == data.deviceID))];
         if (isExist.length > 0) {
             Swal.fire({
                 icon: 'error',
@@ -427,7 +469,10 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
             });
         }
         else {
-            appService.CreateDevice({ facility: data })
+            // 只送出後端需要的欄位(不含types陣列)
+            var facility = angular.copy(data);
+            delete facility.types;
+            appService.CreateDevice({ facility: facility })
                 .then(function (ret) {
                     GetDevices(); // 取得所有公用裝置
                     $("#create-device").modal("hide")
@@ -439,7 +484,7 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
     $scope.RemoveDevice = function () {
         $scope.removedevice = {};
         $scope.removedevice.deviceIDs = $scope.deviceIDs;
-        $scope.removedevice.deviceID = $scope.deviceIDs[0]; // 預設值
+        $scope.removedevice.deviceID = $scope.deviceIDs.length > 0 ? $scope.deviceIDs[0].deviceID : ""; // 預設值
         $("#remove-device").modal("show");
     };
     $scope.Remove = function (data) {
