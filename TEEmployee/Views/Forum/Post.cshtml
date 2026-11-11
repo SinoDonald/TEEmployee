@@ -187,6 +187,125 @@
                 background-color: #ff4d4d;
                 color: white;
             }
+
+        /* ===== 附加圖片 (上傳) ===== */
+        .forum-dropzone {
+            border: 2px dashed #ced4da;
+            border-radius: 8px;
+            padding: 14px;
+            text-align: center;
+            color: #6c757d;
+            background: #fafafa;
+            transition: .15s;
+        }
+            .forum-dropzone.dragover {
+                border-color: #007bff;
+                background: #e9f2ff;
+                color: #007bff;
+            }
+        .forum-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .forum-preview-item {
+            position: relative;
+            width: 96px;
+            height: 96px;
+        }
+            .forum-preview-item img {
+                position: static;
+                width: 96px;
+                height: 96px;
+                object-fit: cover;
+                border-radius: 6px;
+                border: 1px solid #dee2e6;
+            }
+            .forum-preview-item button {
+                position: absolute;
+                top: -8px;
+                right: -8px;
+                width: 22px;
+                height: 22px;
+                padding: 0;
+                border: none;
+                border-radius: 50%;
+                background: #dc3545;
+                color: #fff;
+                font-size: 15px;
+                line-height: 22px;
+                cursor: pointer;
+            }
+
+        /* ===== 貼文 / 回文中的附圖 ===== */
+        html body .comments article .forum-thumbs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: -8px 0 20px 0;
+        }
+            html body .comments article .forum-thumbs img {
+                position: static;
+                width: auto;
+                height: 120px;
+                max-width: 220px;
+                object-fit: cover;
+                border-radius: 6px;
+                border: 1px solid #e0e0e0;
+                cursor: zoom-in;
+            }
+
+        /* ===== 點圖放大 ===== */
+        .forum-viewer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, .85);
+            cursor: zoom-out;
+        }
+            .forum-viewer img {
+                max-width: 90vw;
+                max-height: 85vh;
+                border-radius: 4px;
+                box-shadow: 0 0 24px rgba(0, 0, 0, .6);
+                cursor: default;
+            }
+            .forum-viewer .viewer-btn {
+                position: absolute;
+                border: none;
+                border-radius: 50%;
+                width: 52px;
+                height: 52px;
+                background: rgba(255, 255, 255, .15);
+                color: #fff;
+                font-size: 2.2rem;
+                line-height: 48px;
+                padding: 0;
+                cursor: pointer;
+            }
+                .forum-viewer .viewer-btn:hover {
+                    background: rgba(255, 255, 255, .3);
+                }
+            .forum-viewer .viewer-prev { left: 24px; top: 50%; transform: translateY(-50%); }
+            .forum-viewer .viewer-next { right: 24px; top: 50%; transform: translateY(-50%); }
+            .forum-viewer .viewer-close { right: 24px; top: 16px; }
+            .forum-viewer .viewer-footer {
+                position: absolute;
+                bottom: 16px;
+                color: #fff;
+                font-size: .95rem;
+            }
+                .forum-viewer .viewer-footer a {
+                    color: #9fd0ff;
+                    margin-left: 12px;
+                }
     </style>
 }
 
@@ -207,7 +326,7 @@
             回覆貼文
         </button>
 
-        @if (Session["Admin"] is object || Session["empno"] is "7291")
+        @if (ViewBag.isForumAdmin == true)
         {
             <button type="button" ng-click="confirmDeletePost(post)" class="btn btn-outline-secondary">
                 <span class="material-icons" style="font-size:1rem">delete</span>
@@ -230,10 +349,13 @@
             <time ng-bind="post.dateStr"></time>
             <like></like>
             <p ng-bind="post.content"></p>
+            <div class="forum-thumbs" ng-if="post.images.length">
+                <img ng-repeat="img in post.images" ng-src="{{imgUrl(img, true)}}" ng-click="openImage(post.images, $index)" alt="附圖" title="點擊放大" loading="lazy" />
+            </div>
         </article>
 
         <article ng-repeat="item in replies">
-            @if (Session["empno"] is "7291")
+            @if (ViewBag.isForumAdmin == true)
             {
                 <button type="button" class="delete-btn" @*ng-if="item.empno == @Session["empno"]"*@ ng-click="deleteReply(post.id, item.id)">X</button>
             }   
@@ -245,6 +367,9 @@
             <like></like>
             <p ng-bind="item.replyContent">
             </p>
+            <div class="forum-thumbs" ng-if="item.images.length">
+                <img ng-repeat="img in item.images" ng-src="{{imgUrl(img, true)}}" ng-click="openImage(item.images, $index)" alt="附圖" title="點擊放大" loading="lazy" />
+            </div>
         </article>
 
         @*<article>
@@ -311,6 +436,18 @@
     </section>
 
 
+    <!-- 點圖放大 -->
+    <div class="forum-viewer" ng-if="viewer" ng-click="closeImage()">
+        <button type="button" class="viewer-btn viewer-close" title="關閉 (Esc)" ng-click="closeImage()">&times;</button>
+        <button type="button" class="viewer-btn viewer-prev" title="上一張 (←)" ng-if="viewer.list.length > 1" ng-click="stepImage(-1, $event)">&lsaquo;</button>
+        <img ng-src="{{imgUrl(viewer.list[viewer.index], false)}}" alt="附圖" ng-click="$event.stopPropagation()" />
+        <button type="button" class="viewer-btn viewer-next" title="下一張 (→)" ng-if="viewer.list.length > 1" ng-click="stepImage(1, $event)">&rsaquo;</button>
+        <div class="viewer-footer" ng-click="$event.stopPropagation()">
+            <span ng-if="viewer.list.length > 1" ng-bind="(viewer.index + 1) + ' / ' + viewer.list.length"></span>
+            <a ng-href="{{imgUrl(viewer.list[viewer.index], false)}}" target="_blank">開新分頁看原圖</a>
+        </div>
+    </div>
+
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -327,18 +464,40 @@
                             <label for="exampleFormControlTextarea1">回覆內容</label>
                             <textarea ng-model="modal.content" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
                         </div>
+                        <div class="form-group">
+                            <label>附加圖片 <small class="text-muted">（選填，最多 5 張，JPG / PNG / GIF，單張 8 MB 以內）</small></label>
+                            <div id="forumDropZone" class="forum-dropzone">
+                                <span class="material-icons" style="vertical-align: middle">add_photo_alternate</span>
+                                將圖片拖曳到這裡，或在此視窗按 <kbd>Ctrl</kbd> + <kbd>V</kbd> 貼上截圖
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="document.getElementById('forumImageInput').click()">選擇圖片</button>
+                                </div>
+                                <input type="file" id="forumImageInput" accept="image/jpeg,image/png,image/gif" multiple hidden />
+                            </div>
+                            <div class="forum-preview" ng-if="picker.items.length">
+                                <div class="forum-preview-item" ng-repeat="img in picker.items">
+                                    <img ng-src="{{img.url}}" alt="預覽" />
+                                    <button type="button" title="移除" ng-click="picker.remove($index)">&times;</button>
+                                </div>
+                            </div>
+                            <small class="text-danger d-block mt-1" ng-if="picker.error" ng-bind="picker.error"></small>
+                        </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" ng-model="modal.anonymous">
                             <label class="form-check-label" for="defaultCheck1">
                                 匿名
                             </label>
                         </div>
+                        <div class="alert alert-warning py-2 mt-2 mb-0" ng-if="modal.anonymous && picker.items.length">
+                            <strong>匿名提醒：</strong>系統會自動移除照片的拍攝資訊（GPS 位置、手機型號等），但請自行確認圖片內容（例如截圖中的姓名、帳號、Email）不會透露身分。
+                        </div>
+                        <div class="alert alert-danger py-2 mt-2 mb-0" ng-if="submitError" ng-bind="submitError"></div>
                     </form>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="createReply()">發布</button>
+                    <button type="button" class="btn btn-primary" ng-click="createReply()" ng-disabled="submitting"><span ng-bind="submitting ? '發布中…' : '發布'"></span></button>
                 </div>
             </div>
         </div>

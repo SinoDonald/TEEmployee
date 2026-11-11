@@ -145,6 +145,62 @@
             font-family: "Helvetica", Arial, sans-serif;
             /* Add other styling properties as needed */
         }
+
+        /* ===== 附加圖片 (上傳) ===== */
+        .forum-dropzone {
+            border: 2px dashed #ced4da;
+            border-radius: 8px;
+            padding: 14px;
+            text-align: center;
+            color: #6c757d;
+            background: #fafafa;
+            transition: .15s;
+        }
+            .forum-dropzone.dragover {
+                border-color: #007bff;
+                background: #e9f2ff;
+                color: #007bff;
+            }
+        .forum-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .forum-preview-item {
+            position: relative;
+            width: 96px;
+            height: 96px;
+        }
+            .forum-preview-item img {
+                position: static;
+                width: 96px;
+                height: 96px;
+                object-fit: cover;
+                border-radius: 6px;
+                border: 1px solid #dee2e6;
+            }
+            .forum-preview-item button {
+                position: absolute;
+                top: -8px;
+                right: -8px;
+                width: 22px;
+                height: 22px;
+                padding: 0;
+                border: none;
+                border-radius: 50%;
+                background: #dc3545;
+                color: #fff;
+                font-size: 15px;
+                line-height: 22px;
+                cursor: pointer;
+            }
+        .forum-has-image {
+            font-size: 1.1rem;
+            vertical-align: -3px;
+            color: #6c757d;
+            margin-right: 4px;
+        }
     </style>
 }
 
@@ -181,7 +237,7 @@
                 </a>*@
                 
                 <a ng-href="~/Forum/Post/{{item.id}}">
-                    <h4 class="post-stub-title" ng-bind="item.title" style="width: 550px"></h4>
+                    <h4 class="post-stub-title" style="width: 550px"><span class="material-icons forum-has-image" ng-if="item.imageCount > 0" title="有附圖">image</span><span ng-bind="item.title"></span></h4>
                     <h4 class="post-stub-title post-name" ng-bind="item.name" style="width: 100px"></h4>
                     @*<time class="post-stub-date post-name" ng-bind="item.postDate" style="width: 300px"></time>*@
                     <time class="post-stub-date post-name" ng-bind="item.dateStr" style="width: 200px; white-space:pre"></time>
@@ -275,18 +331,40 @@
                             <label for="exampleFormControlTextarea1">貼文內容</label>
                             <textarea ng-model="modal.content" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
                         </div>
+                        <div class="form-group">
+                            <label>附加圖片 <small class="text-muted">（選填，最多 5 張，JPG / PNG / GIF，單張 8 MB 以內）</small></label>
+                            <div id="forumDropZone" class="forum-dropzone">
+                                <span class="material-icons" style="vertical-align: middle">add_photo_alternate</span>
+                                將圖片拖曳到這裡，或在此視窗按 <kbd>Ctrl</kbd> + <kbd>V</kbd> 貼上截圖
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="document.getElementById('forumImageInput').click()">選擇圖片</button>
+                                </div>
+                                <input type="file" id="forumImageInput" accept="image/jpeg,image/png,image/gif" multiple hidden />
+                            </div>
+                            <div class="forum-preview" ng-if="picker.items.length">
+                                <div class="forum-preview-item" ng-repeat="img in picker.items">
+                                    <img ng-src="{{img.url}}" alt="預覽" />
+                                    <button type="button" title="移除" ng-click="picker.remove($index)">&times;</button>
+                                </div>
+                            </div>
+                            <small class="text-danger d-block mt-1" ng-if="picker.error" ng-bind="picker.error"></small>
+                        </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" ng-model="modal.anonymous">
                             <label class="form-check-label" for="defaultCheck1">
                                 匿名
                             </label>
                         </div>
+                        <div class="alert alert-warning py-2 mt-2 mb-0" ng-if="modal.anonymous && picker.items.length">
+                            <strong>匿名提醒：</strong>系統會自動移除照片的拍攝資訊（GPS 位置、手機型號等），但請自行確認圖片內容（例如截圖中的姓名、帳號、Email）不會透露身分。
+                        </div>
+                        <div class="alert alert-danger py-2 mt-2 mb-0" ng-if="submitError" ng-bind="submitError"></div>
                     </form>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="createPost()">發布</button>
+                    <button type="button" class="btn btn-primary" ng-click="createPost()" ng-disabled="submitting"><span ng-bind="submitting ? '發布中…' : '發布'"></span></button>
                 </div>
             </div>
         </div>

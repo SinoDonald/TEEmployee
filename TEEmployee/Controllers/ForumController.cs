@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TEEmployee.Filters;
 using TEEmployee.Models;
 using TEEmployee.Models.Forum;
 using TEEmployee.Models.Notify;
 
 namespace TEEmployee.Controllers
 {
+    [MyAuthorize]
     public class ForumController : Controller
     {
         private ForumService _service;
@@ -16,6 +18,15 @@ namespace TEEmployee.Controllers
         public ForumController()
         {
             _service = new ForumService();
+        }
+
+        /// <summary>
+        /// 我要抱抱管理權限：系統管理員 (Web.config Admin) 或 7291
+        /// 與 View 中顯示刪除按鈕的條件一致
+        /// </summary>
+        private bool IsForumAdmin()
+        {
+            return Session["Admin"] is object || (Session["empno"] as string) == "7291";
         }
 
         // GET: Forum
@@ -27,6 +38,7 @@ namespace TEEmployee.Controllers
         public ActionResult Post(int id)
         {
             ViewBag.id = id;
+            ViewBag.isForumAdmin = IsForumAdmin();
             return View();
         }
 
@@ -49,22 +61,67 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
+        /// <summary>
+        /// 新增貼文 (multipart/form-data：post.* 欄位 + images 檔案)
+        /// </summary>
         [HttpPost]
-        public JsonResult InsertPost(Post post)
+        public JsonResult InsertPost(Post post, IEnumerable<HttpPostedFileBase> images)
         {
-            var ret = _service.InsertPost(post, Session["empno"].ToString());
-            UpdateDatabase("1"); // 我要抱抱通知
+            try
+            {
+                int id = _service.InsertPost(post, Session["empno"].ToString(), images);
+                UpdateDatabase("1"); // 我要抱抱通知
 
-            return Json(ret);
+                return Json(new { ok = true, id });
+            }
+            catch (ForumImageException ex)
+            {
+                return Json(new { ok = false, message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return Json(new { ok = false, message = "發文失敗，請稍後再試。" });
+            }
         }
 
+        /// <summary>
+        /// 新增回文 (multipart/form-data：reply.* 欄位 + images 檔案)
+        /// </summary>
         [HttpPost]
-        public JsonResult InsertReply(Reply reply)
+        public JsonResult InsertReply(Reply reply, IEnumerable<HttpPostedFileBase> images)
         {
-            var ret = _service.InsertReply(reply, Session["empno"].ToString());
-            UpdateDatabase("1"); // 我要抱抱通知
+            try
+            {
+                int id = _service.InsertReply(reply, Session["empno"].ToString(), images);
+                UpdateDatabase("1"); // 我要抱抱通知
 
-            return Json(ret);
+                return Json(new { ok = true, id });
+            }
+            catch (ForumImageException ex)
+            {
+                return Json(new { ok = false, message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return Json(new { ok = false, message = "回覆失敗，請稍後再試。" });
+            }
+        }
+
+        /// <summary>
+        /// 讀取圖片 (圖片存在 App_Data，只能透過此 action 經登入驗證後取得)
+        /// GET Forum/Image/5 原圖；Forum/Image/5?thumb=true 縮圖
+        /// </summary>
+        [HttpGet]
+        public ActionResult Image(int id, bool thumb = false)
+        {
+            var file = _service.GetImageFile(id, thumb);
+            if (file.path == null) return HttpNotFound();
+
+            Response.Cache.SetCacheability(HttpCacheability.Private);
+            Response.Cache.SetMaxAge(TimeSpan.FromDays(7));
+            Response.Headers["X-Content-Type-Options"] = "nosniff";
+
+            return File(file.path, file.contentType);
         }
 
         /// <summary>
@@ -83,13 +140,15 @@ namespace TEEmployee.Controllers
                 List<User> users = _notifyRepository.GetAll();
                 foreach(User user in users) { ret = _notifyRepository.UpdateDatabase(user.empno, 8, notification); }
             }
-            
+
             return Json(ret);
         }
 
         [HttpPost]
         public JsonResult DeletePost(Post post)
         {
+            if (!IsForumAdmin()) return Json(false);
+
             var ret = _service.DeletePost(post);
             return Json(ret);
         }
@@ -102,6 +161,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult DeleteReply(int postId, int id)
         {
+            if (!IsForumAdmin()) return Json(false);
+
             var ret = _service.DeleteReply(postId, id);
             return Json(ret);
         }
@@ -113,6 +174,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult DeleteAll()
         {
+            if (!(Session["Admin"] is object)) return Json(false);
+
             var ret = _service.DeleteAll();
             return Json(ret);
         }

@@ -35,5 +35,9 @@ namespace TEEmployee.Models.Forum
         /// </summary>
         public string replyDate { get; set; }
         public bool anonymous { get; set; }
+        /// <summary>
+        /// 回文附加的圖片
+        /// </summary>
+        public List<PostImage> images { get; set; }
     }
 }

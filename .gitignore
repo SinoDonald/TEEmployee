@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# 我要抱抱：使用者上傳的圖片，不納入版控
+TEEmployee/App_Data/ForumImages/
