@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TEEmployee.Models;
+using TEEmployee.Filters;
 
 namespace TEEmployee.Controllers
 {
+    [MyAuthorize]
     public class TestController : Controller
     {
         public TestController()
@@ -17,6 +20,8 @@ namespace TEEmployee.Controllers
         // GET: Test
         public ActionResult Index()
         {
+            if (!Permissions.IsAdmin(Session)) return RedirectToAction("Index", "Home"); // 限系統管理員
+
             return View();
         }
 
@@ -26,6 +31,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public ActionResult UploadFile(HttpPostedFileBase files)
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var num = HttpContext.Request.Files.Count;
 
             var file = HttpContext.Request.Files[0];
@@ -39,6 +46,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public ActionResult UploadFiles(List<HttpPostedFileBase> files)
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var num = HttpContext.Request.Files.Count;
 
             var file = HttpContext.Request.Files[0];
@@ -54,6 +63,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public ActionResult SubmitForm(FormCollection form)
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var name = form.GetValue("firstName");
             bool res = true;
             return Json(res);
@@ -64,6 +75,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public FileContentResult DownloadMyPage(string name)
         {
+            if (!Permissions.IsAdmin(Session)) return null; // 限系統管理員
+
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             //string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";

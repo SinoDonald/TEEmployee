@@ -446,9 +446,9 @@ namespace TEEmployee.Models.Training
                     if (!Directory.Exists(_uploadFolder))
                         Directory.CreateDirectory(_uploadFolder);
 
-                    training.filepath = file.FileName;
-                    string fileName = Path.GetFileNameWithoutExtension(file.FileName);
-                    string extension = Path.GetExtension(file.FileName);
+                    training.filepath = Path.GetFileName(file.FileName);
+                    string fileName = Path.GetFileNameWithoutExtension(Path.GetFileName(file.FileName));
+                    string extension = Path.GetExtension(Path.GetFileName(file.FileName));
                     string fullPath = Path.Combine(_uploadFolder, fileName + extension);
 
                     while (File.Exists(fullPath))
@@ -486,12 +486,12 @@ namespace TEEmployee.Models.Training
                     }
                     else // replace
                     {
-                        File.Delete(Path.Combine(_uploadFolder, training.filepath));
+                        File.Delete(SafeUploadPath(_uploadFolder, training.filepath));
                     }
 
-                    training.filepath = file.FileName;
-                    string fileName = Path.GetFileNameWithoutExtension(file.FileName);
-                    string extension = Path.GetExtension(file.FileName);
+                    training.filepath = Path.GetFileName(file.FileName);
+                    string fileName = Path.GetFileNameWithoutExtension(Path.GetFileName(file.FileName));
+                    string extension = Path.GetExtension(Path.GetFileName(file.FileName));
                     string fullPath = Path.Combine(_uploadFolder, fileName + extension);
 
                     while (File.Exists(fullPath))
@@ -516,7 +516,7 @@ namespace TEEmployee.Models.Training
                         // Delete
                         if (string.IsNullOrEmpty(fakename))
                         {
-                            File.Delete(Path.Combine(_uploadFolder, training.filepath));
+                            File.Delete(SafeUploadPath(_uploadFolder, training.filepath));
                             training.filepath = null;
                         }
                         else // Keep original file
@@ -538,10 +538,21 @@ namespace TEEmployee.Models.Training
 
         }
 
+        /// <summary>
+        /// 附件路徑：只取檔名並確認在 App_Data\Training 內 (避免 ..\ 讀取、刪除或寄出其他檔案)
+        /// </summary>
+        private static string SafeUploadPath(string folder, string fileName)
+        {
+            string path = Permissions.SafeFilePath(folder, fileName);
+            if (path == null) throw new ArgumentException("附件檔名不合法：" + fileName);
+            return path;
+        }
+
         public byte[] DownloadFile(ExternalTraining training)
         {
             string _uploadFolder = HttpContext.Current.Server.MapPath("~/App_Data/Training");
-            string fn = Path.Combine(_uploadFolder, training.filepath);
+            string fn = Permissions.SafeFilePath(_uploadFolder, training?.filepath);
+            if (fn == null) return null;
 
             try
             {
@@ -563,7 +574,8 @@ namespace TEEmployee.Models.Training
 
             if (ret && !string.IsNullOrWhiteSpace(training.filepath))
             {
-                File.Delete(Path.Combine(_uploadFolder, training.filepath));
+                string oldPath = Permissions.SafeFilePath(_uploadFolder, training.filepath);
+                if (oldPath != null && File.Exists(oldPath)) File.Delete(oldPath);
             }
 
             return ret;
@@ -645,9 +657,9 @@ namespace TEEmployee.Models.Training
                 {
                     string _uploadFolder = HttpContext.Current.Server.MapPath("~/App_Data/Training");
 
-                    //builder.Attachments.Add(Path.Combine(_uploadFolder, training.filepath));
+                    //builder.Attachments.Add(SafeUploadPath(_uploadFolder, training.filepath));
 
-                    var attachment = builder.Attachments.Add(Path.Combine(_uploadFolder, training.filepath));
+                    var attachment = builder.Attachments.Add(SafeUploadPath(_uploadFolder, training.filepath));
                     attachment.ContentDisposition.FileName = training.filepath;
                     attachment.ContentType.Name = training.filepath;
                     foreach (var param in attachment.ContentDisposition.Parameters)

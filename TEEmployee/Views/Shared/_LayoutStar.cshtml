@@ -200,7 +200,7 @@
                                 <a class="dropdown-item" href="#">@Session["group_two"].ToString()</a>
                                 <a class="dropdown-item" href="#">@Session["group_three"].ToString()</a>
                                 <a class="dropdown-item" href="#">@Session["group_four"].ToString()</a>
-                                @if (Session["Admin"] is object)
+                                @if (Session["Admin"] is object || Session["ImpersonatorAdmin"] is object)
                                 {
                                     using (Html.BeginForm("Index", "Home", FormMethod.Post))
                                     {
@@ -281,5 +281,12 @@
     <script src="~/Scripts/old_popper.min.js"></script>
     <script src="~/Scripts/bootstrap.js"></script>
     @RenderSection("scripts", required: false)
+    @* 頁面沒有自己的 AngularJS 程式時，補一個空的 app 模組，避免 ng-app="app" 找不到模組而報錯 (操作說明、Q&A 等靜態頁) *@
+    <script>
+        (function () {
+            if (!window.angular) return;
+            try { angular.module('app'); } catch (e) { angular.module('app', []); }
+        })();
+    </script>
 </body>
 </html>

@@ -33,7 +33,7 @@
 
         <div class="row container border" ng-repeat="user in data | filter: ageFilter | orderBy:'-age'">
             <div class="col text-center w-50 p-3 h-50 d-inline-block">
-                <img type="submit" value={{user.name}} ng-click="TalentRecord(user.empno)" src="~/Content/CV/{{user.empno}}.jpg" class="img-thumbnail" alt="{{user.name}}">
+                <img type="submit" value={{user.name}} ng-click="TalentRecord(user.empno)" ng-src="Content/CV/{{user.empno}}.jpg" onerror="this.onerror=null;this.src='Content/CV/0000.jpg'" class="img-thumbnail" alt="{{user.name}}">
                 <h5>{{user.name}} ({{user.age}})</h5>
                 <h5>{{user.custom_duty}}</h5>
             </div>

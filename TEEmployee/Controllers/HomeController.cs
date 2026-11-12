@@ -45,6 +45,10 @@ namespace TEEmployee.Controllers
         /// <returns></returns>
         public ActionResult Admin()
         {
+            // 只有管理員與 AdminPageUsers 名單可進入 (首頁連結的顯示條件相同)
+            if (!Permissions.CanUseAdminPage(Session))
+                return RedirectToAction("Index");
+
             ViewBag.Message = "Hello there!!";
 
             return View();
@@ -74,23 +78,31 @@ namespace TEEmployee.Controllers
         //    return View();
         //}
 
+        /// <summary>
+        /// 管理員切換身分 (模擬其他員工)。
+        /// 切換後 Session 完全以該員工為準 (包含沒有管理員權限)，
+        /// 但保留 Session["ImpersonatorAdmin"]，可再切換回自己；切回自己時恢復管理員權限。
+        /// </summary>
         [HttpPost]
         public ActionResult Index(User fake)
         {
-            if (Session["Admin"] is object)
+            if (Permissions.CanSwitchIdentity(Session) && fake != null && !string.IsNullOrWhiteSpace(fake.empno))
             {
-                User user = new UserRepository().Get(fake.empno);
+                User user = new UserRepository().Get(fake.empno.Trim());
 
-                if (user is null)                    
+                if (user is null)
                     return RedirectToAction("Unauthorized", "Error");
+
+                string original = Session["original_empno"] as string;
+                bool backToSelf = Permissions.SameEmpno(user.empno, original);
 
                 Session["empno"] = user.empno;
                 Session["empname"] = user.name;
-                Session["group"] = user.group;
-                Session["group_one"] = user.group_one;
-                Session["group_two"] = user.group_two;
-                Session["group_three"] = user.group_three;
-                Session["group_four"] = user.group_four;
+                Session["group"] = user.group ?? "";
+                Session["group_one"] = user.group_one ?? "";
+                Session["group_two"] = user.group_two ?? "";
+                Session["group_three"] = user.group_three ?? "";
+                Session["group_four"] = user.group_four ?? "";
 
                 Session["role"] = null;
                 Session["leader"] = null;
@@ -116,6 +128,16 @@ namespace TEEmployee.Controllers
                     Session["role"] = "Manager";
                 }
 
+                // 管理員權限依「被切換成的員工」決定
+                if (Permissions.IsAdminEmpno(user.empno))
+                    Session["Admin"] = true;
+                else
+                    Session.Remove("Admin");
+
+                if (backToSelf)
+                    Session.Remove("ImpersonatorAdmin");
+                else
+                    Session["ImpersonatorAdmin"] = true;
             }
 
             return RedirectToAction("Index");
@@ -141,6 +163,7 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult UpdateNotify()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員 (會重建全體員工的通知)
             var ret = new NotifyService().UpdateNotify(Session["empno"].ToString());
             return Json(ret);
         }
@@ -150,6 +173,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult DeleteNotifyLog()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = new NotifyService().DeleteNotifyLog();
             return Json(ret);
         }
@@ -160,6 +185,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult ReviewUserDB()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(new List<User>()); // 限系統管理員
+
             var ret = new UserRepository().GetAll().OrderBy(x => x.empno).ToList();
             return Json(ret);
         }
@@ -169,6 +196,8 @@ namespace TEEmployee.Controllers
         /// <returns></returns>
         public ActionResult DownloadUserDB()
         {
+            if (!Permissions.IsAdmin(Session)) return new HttpStatusCodeResult(403); // 限系統管理員
+
             string filePath = new UserRepository().DownloadUserDB();
             ProfessionService _service = new ProfessionService();
             var fileBytes = _service.DownloadFile(filePath);
@@ -191,6 +220,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult ReviewProfessionDB()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(new List<object>()); // 限系統管理員
+
             var ret = new ProfessionRepository().GetAll().OrderBy(x => x.id).ToList();
             return Json(ret);
         }
@@ -200,6 +231,8 @@ namespace TEEmployee.Controllers
         /// <returns></returns>
         public ActionResult DownloadProfessionDB()
         {
+            if (!Permissions.IsAdmin(Session)) return new HttpStatusCodeResult(403); // 限系統管理員
+
             string filePath = new ProfessionRepository().DownloadProfessionDB();
             ProfessionService _service = new ProfessionService();
             var fileBytes = _service.DownloadFile(filePath);
@@ -219,6 +252,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public bool InsertProjectItem()
         {
+            if (!Permissions.IsAdmin(Session)) return false; // 限系統管理員
+
             bool ret = false;
 
             if (/*Session["Admin"] is object*/ true)
@@ -291,6 +326,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public bool UpdateUser()
         {
+            if (!Permissions.CanUseAdminPage(Session)) return false; // 匯入組織表：管理員或 AdminPageUsers
+
             // update user from txt file
 
             bool ret = false;
@@ -321,6 +358,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public bool InsertUserExtra(string usersJson)
         {
+            if (!Permissions.CanUseAdminPage(Session)) return false; // 匯入組織表：管理員或 AdminPageUsers
+
             bool ret = false;
 
             List<User> users = JsonConvert.DeserializeObject<List<User>>(usersJson);
@@ -370,6 +409,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public bool CreateMonthlyRecord(string yymm)
         {
+            if (!Permissions.IsAdmin(Session)) return false; // 限系統管理員
+
             bool ret = false;
 
             //if (Session["Admin"] is object)
@@ -394,6 +435,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult UpdateAllPercentComplete()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             using (GScheduleService service = new GScheduleService())
             {
                 var ret = service.UpdateAllPercentComplete();
@@ -404,6 +447,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult UploadEmployeeFile(HttpPostedFileBase employeeFile)
         {
+            if (!Permissions.CanUseAdminPage(Session)) return Json(false); // 匯入組織表：管理員或 AdminPageUsers
+
             using (TasklogService service = new TasklogService())
             {
                 var ret = service.UploadEmployeeFile(employeeFile.InputStream);
@@ -414,6 +459,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult UploadProjectItemFile(HttpPostedFileBase projectItemFile)
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             using (TasklogService service = new TasklogService())
             {
                 var ret = service.UploadProjectItemFile(projectItemFile.InputStream);

@@ -380,7 +380,8 @@ app.controller('GroupPlanCtrl', ['$scope', '$location', 'appService', '$rootScop
                 .then(function (ret) {
                     $scope.years = ret.data;
                     $scope.selectedYear = $scope.years[0];
-                    //GetPDF(true); // 取得PDF
+                    // 使用者資料比群組晚載入時，在這裡補取 PDF
+                    if ($scope.selectedGroup) GetPDF(false);
             })
         })
         .catch(function (ret) {
@@ -388,6 +389,8 @@ app.controller('GroupPlanCtrl', ['$scope', '$location', 'appService', '$rootScop
         });
 
     function GetPDF(show) {
+        // 使用者資料尚未載入 (兩個請求的先後順序不固定)，等載入後再取
+        if (!$scope.user) return;
         // 取得PDF
         appService.GetPDF({ view: "GroupPlan", year: $scope.selectedYear, group: $scope.selectedGroup, userName: $scope.user.name })
             .then(function (ret) {

@@ -28,15 +28,21 @@ namespace TEEmployee.Filters
 
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
+#if DEBUG
+            // 測試模式：切換測試身分時重置 Session (Release 版不會編譯這段)
+            TestMode.BeforeAuthorize(filterContext.HttpContext);
+#endif
             string loginUser = filterContext.HttpContext.User.Identity.Name;
             //Match m = Regex.Match(loginUser, @"\\{0,1}(\d{4})@{0,1}");
             //if (m.Success)
             //    loginUser = m.Groups[1].ToString();
 
             Match m = Regex.Match(loginUser, @"\\{0,1}(\d{4,5})@{0,1}");
+            string fullEmpno = loginUser;   // 帳號中的完整數字 (可能是 5 碼，例如 04125)
             if (m.Success)
             {
                 string empno = m.Groups[1].ToString();
+                fullEmpno = empno;
                 loginUser = empno.Substring(Math.Max(0, empno.Length - 4));
             }
 
@@ -74,7 +80,13 @@ namespace TEEmployee.Filters
 
             if (filterContext.HttpContext.Session["empno"] == null)
             {                
-                var ret = _userRepository.Get(loginUser);
+                // 員編可能是 4 碼或前面補 0 的 5 碼，依序嘗試
+                User ret = null;
+                foreach (var candidate in new[] { loginUser, fullEmpno, "0" + loginUser }.Distinct())
+                {
+                    ret = _userRepository.Get(candidate);
+                    if (ret != null) break;
+                }
                 // Fake User v1
 
                 //User ret;
@@ -122,7 +134,7 @@ namespace TEEmployee.Filters
                     {
                         filterContext.HttpContext.Session["role"] = "Manager";
                     }
-                    if (ConfigurationManager.AppSettings["Admin"].Contains(ret.empno))
+                    if (Permissions.IsAdminEmpno(ret.empno))
                     {
                         filterContext.HttpContext.Session["Admin"] = true;
 
@@ -153,6 +165,11 @@ namespace TEEmployee.Filters
                     return;
                 }                
             }
+
+#if DEBUG
+            // 測試模式：套用「強制管理員 / 強制非管理員」
+            TestMode.AfterAuthorize(filterContext.HttpContext);
+#endif
 
             
 

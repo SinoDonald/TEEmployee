@@ -833,7 +833,8 @@ namespace TEEmployee.Models.Talent
         /// <returns></returns>
         public CV SaveResponse(CV userCV, string planning)
         {
-            planning = planning.Substring(0, planning.Length - 1);
+            if (!string.IsNullOrEmpty(planning))
+                planning = planning.Substring(0, planning.Length - 1);
             userCV.planning = planning;
             try
             {

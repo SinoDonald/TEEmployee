@@ -59,15 +59,22 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult GetAuthorization()
         {
-            var ret = _service.GetAuthorization(Session["empno"].ToString());
+            var user = _service.GetAuthorization(Session["empno"].ToString());
 
-            return Json(ret);
+            // isHandler：可修改需求狀態 (只限 Web.config WishHandler 名單)，前端依此開放編輯
+            return Json(new
+            {
+                empno = user?.empno,
+                name = user?.name,
+                isHandler = Permissions.IsWishHandler(Session),
+            });
         }
 
         [HttpPost]
         public JsonResult UpdateWishStatus(Wish wish)
         {
-            var ret = _service.UpdateWishStatus(wish, Session["empno"].ToString());
+            if (!Permissions.IsWishHandler(Session)) return Json(false); // 限許願池處理人 (WishHandler)
+            var ret = _service.UpdateWishStatus(wish);
             return Json(ret);
         }
 
@@ -76,8 +83,9 @@ namespace TEEmployee.Controllers
         public FileContentResult DownloadFile(Wish wish)
         {
             var fileBytes = _service.DownloadFile(wish);
+            if (fileBytes == null) return null;
             string contentType = "application/octet-stream"; // byte 
-            return File(fileBytes, contentType, wish.filepath);
+            return File(fileBytes, contentType, System.IO.Path.GetFileName(wish.filepath));
         }
 
 

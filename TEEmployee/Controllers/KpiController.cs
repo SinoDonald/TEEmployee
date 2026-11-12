@@ -4,9 +4,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Models.Kpi;
+using TEEmployee.Models;
+using TEEmployee.Filters;
 
 namespace TEEmployee.Controllers
 {
+    [MyAuthorize]
     public class KpiController : Controller
     {
         private KpiService _service;

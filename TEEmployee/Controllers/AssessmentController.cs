@@ -229,6 +229,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult GetResponse(User employee)
         {
+            if (!_service.CanAccessEmployee(Session["empno"].ToString(), employee?.empno)) return Json(new List<object>()); // 只能存取本人或所管理員工的資料
+
             if (employee.empno is null)
                 employee.empno = Session["empno"].ToString();            
             var ret = _service.GetSelfAssessmentResponse(employee.empno);
@@ -251,7 +253,9 @@ namespace TEEmployee.Controllers
 
         [HttpPost]
         public JsonResult GetResponseByYear(User employee, string year)
-        {            
+        {
+            if (!_service.CanAccessEmployee(Session["empno"].ToString(), employee?.empno)) return Json(new List<object>()); // 只能存取本人或所管理員工的資料
+            
             if (employee.empno is null)
                 employee.empno = Session["empno"].ToString();
             var ret = _service.GetSelfAssessmentResponse(employee.empno, year);
@@ -261,6 +265,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult GetAllResponses()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(new List<Assessment>()); // 限系統管理員
+
             var ret = _service.GetAllSelfAssessmentResponses();
             return Json(ret);
         }
@@ -318,13 +324,17 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public bool CreateMResponse(List<Assessment> assessments, User employee)
         {
+            if (!_service.CanAccessEmployee(Session["empno"].ToString(), employee?.empno)) return false; // 只能存取本人或所管理員工的資料
+
             bool ret = _service.UpdateMResponse(assessments, employee.empno, Session["empno"].ToString());
             return ret;
         }
 
         [HttpPost]
         public JsonResult GetMResponse(User employee)
-        {            
+        {
+            if (!_service.CanAccessEmployee(Session["empno"].ToString(), employee?.empno)) return Json(new List<object>()); // 只能存取本人或所管理員工的資料
+            
             var ret = _service.GetSelfAssessmentMResponse(employee.empno, Session["empno"].ToString());
             return Json(ret);
         }
@@ -332,6 +342,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult GetMixResponse(User employee)
         {
+            if (!_service.CanAccessEmployee(Session["empno"].ToString(), employee?.empno)) return Json(new List<object>()); // 只能存取本人或所管理員工的資料
+
             var ret = _service.GetSelfAssessmentMixResponse(employee.empno, Session["empno"].ToString());
             return Json(ret);
         }
@@ -339,6 +351,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult CreateMixResponse(List<MixResponse> mixResponses, User employee)
         {
+            if (!_service.CanAccessEmployee(Session["empno"].ToString(), employee?.empno)) return Json(false); // 只能存取本人或所管理員工的資料
+
             var ret = _service.UpdateSelfAssessmentMixResponse(mixResponses, employee.empno, Session["empno"].ToString());
             return Json(ret);
         }
@@ -361,6 +375,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult GetFeedback(string empno)
         {
+            if (!_service.CanAccessEmployee(Session["empno"].ToString(), empno)) return Json(new List<object>()); // 只能存取本人或所管理員工的資料
+
             var ret = _service.GetFeedback(empno, Session["empno"].ToString());
             return Json(ret);
         }
@@ -368,6 +384,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult GetAllOtherFeedbacks(string empno)
         {
+            if (!_service.CanAccessEmployee(Session["empno"].ToString(), empno)) return Json(new List<object>()); // 只能存取本人或所管理員工的資料
+
             var ret = _service.GetAllOtherFeedbacks(empno, Session["empno"].ToString());
             return Json(ret);
         }
@@ -375,6 +393,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult GetAllFeedbacksForManager(string year, string empno)
         {
+            if (!_service.CanAccessEmployee(Session["empno"].ToString(), empno)) return Json(new List<object>()); // 只能存取本人或所管理員工的資料
+
             var ret = _service.GetAllFeedbacksForManager(year, empno, Session["empno"].ToString());
             return Json(ret);
         }
@@ -389,6 +409,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public bool UpdateFeedback(List<string> feedbacks, string state, string empno)
         {
+            if (!_service.CanAccessEmployee(Session["empno"].ToString(), empno)) return false; // 只能存取本人或所管理員工的資料
+
            bool ret = _service.UpdateFeedback(feedbacks, state, empno, Session["empno"].ToString());
             // 如果狀態為submit並修改成功, 則更新通知資料庫 <-- 培文
             if (state.Equals("submit") && ret == true)
@@ -413,6 +435,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult GetReviewByYear(string year, string empno)
         {
+            if (!_service.CanAccessEmployee(Session["empno"].ToString(), empno)) return Json(new List<object>()); // 只能存取本人或所管理員工的資料
+
             var ret = _service.GetReviewByYear(year, empno, Session["empno"].ToString());
             return Json(ret);
         }
@@ -484,6 +508,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public bool UpdateScoreManagers(List<User> selectedManagers)
         {
+            if (!Permissions.IsAdmin(Session) && !Permissions.IsDepartmentManager(Session)) return false; // 限部門主管或管理員 (設定評分主管)
+
             _service = new AssessmentService("manage");
             var ret = _service.UpdateScoreManagers(selectedManagers);
             return ret;
@@ -503,6 +529,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public bool UpdateFeedbackNotification(string empno)
         {
+            if (!_service.CanAccessEmployee(Session["empno"].ToString(), empno)) return false; // 只能存取本人或所管理員工的資料
+
             var ret = _service.UpdateFeedbackNotification(Session["empno"].ToString(), empno);
             return ret;
         }
@@ -532,6 +560,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult DeleteAll()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret1 = _service.DeleteAll();
 
             AssessmentService _service2 = new AssessmentService("manage");

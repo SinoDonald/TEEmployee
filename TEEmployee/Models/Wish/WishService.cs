@@ -61,9 +61,9 @@ namespace TEEmployee.Models.Wish
                     if (!Directory.Exists(_uploadFolder))
                         Directory.CreateDirectory(_uploadFolder);
 
-                    wish.filepath = file.FileName;
-                    string fileName = Path.GetFileNameWithoutExtension(file.FileName);
-                    string extension = Path.GetExtension(file.FileName);
+                    wish.filepath = Path.GetFileName(file.FileName);
+                    string fileName = Path.GetFileNameWithoutExtension(Path.GetFileName(file.FileName));
+                    string extension = Path.GetExtension(Path.GetFileName(file.FileName));
                     string fullPath = Path.Combine(_uploadFolder, fileName + extension);
 
                     while (File.Exists(fullPath))
@@ -97,9 +97,10 @@ namespace TEEmployee.Models.Wish
             return user;
         }
 
-        public bool UpdateWishStatus(Wish wish, string empno)
+        /// <summary>修改需求狀態 (權限由 WishController 以 Permissions.IsWishHandler 檢查)</summary>
+        public bool UpdateWishStatus(Wish wish)
         {
-            if (empno != "8477") return false;
+            if (wish == null) return false;
 
             var ret = _wishRepository.UpdateWishStatus(wish);
             return ret;
@@ -108,7 +109,9 @@ namespace TEEmployee.Models.Wish
         public byte[] DownloadFile(Wish wish)
         {
             string _uploadFolder = HttpContext.Current.Server.MapPath("~/App_Data/Wish");
-            string fn = Path.Combine(_uploadFolder, wish.filepath);
+            // 只取檔名，避免 ..\ 路徑穿越讀到資料夾以外的檔案
+            string fn = Permissions.SafeFilePath(_uploadFolder, wish?.filepath);
+            if (fn == null) return null;
 
             try
             {

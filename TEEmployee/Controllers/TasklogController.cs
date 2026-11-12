@@ -320,6 +320,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult AddProjectTypeColumn()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             try
             {
                 _service.AddProjectTypeColumn();
@@ -337,6 +339,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult AddCustomOrderColumn()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.AddCustomOrderColumn();
             return Json(ret);
         }
@@ -345,6 +349,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult AddGenerateScheduleColumn()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.AddGenerateScheduleColumn();
             return Json(ret);
         }
@@ -352,6 +358,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult InsertCustomUser()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.InsertCustomUser();
             return Json(ret);
         }
@@ -359,6 +367,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult AddCustomGroupFourColumn()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.AddCustomGroupFourColumn();
             return Json(ret);
         }
@@ -370,6 +380,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult DeleteAll()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             // Only delete ProjectTask and MonthlyRecord
             var ret = _service.DeleteAll();
             return Json(ret);

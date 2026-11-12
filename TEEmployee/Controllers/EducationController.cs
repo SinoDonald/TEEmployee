@@ -4,9 +4,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Models.Education2024;
+using TEEmployee.Models;
+using TEEmployee.Filters;
 
 namespace TEEmployee.Controllers
 {
+    [MyAuthorize]
     public class EducationController : Controller
     {
         private EducationService _service;

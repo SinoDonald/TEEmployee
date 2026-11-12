@@ -117,6 +117,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult GetPersonal(string empno)
         {
+            if (!_service.CanViewMember(Session["empno"].ToString(), empno)) return Json(new List<object>()); // 只能查看本人或所管理群組成員
+
             //var ret = _service.GetPersonal(Session["empno"].ToString());
             var ret = _service.GetPersonal(empno);
 
@@ -126,6 +128,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult UpsertPersonal(List<Personal> personals)
         {
+            if (personals != null && personals.Any(p => !Permissions.SameEmpno(p.empno, Session["empno"].ToString()))) return Json(false); // 只能修改本人的自評
+
             var ret = _service.UpsertPersonal(personals, Session["empno"].ToString());
             return Json(ret);
         }
@@ -133,6 +137,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult DeletePersonal(List<Personal> personals)
         {
+            if (personals != null && personals.Any(p => !Permissions.SameEmpno(p.empno, Session["empno"].ToString()))) return Json(false); // 只能刪除本人的自評
+
             var ret = _service.DeletePersonal(personals, Session["empno"].ToString());
             return Json(ret);
         }
@@ -144,6 +150,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult DeleteAll()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.DeleteAll();
             return Json(ret);
         }

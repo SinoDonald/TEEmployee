@@ -13,7 +13,7 @@
             <br />
             <div class="row">
                 <div class="col-3">
-                    <img src="~/Content/CV/{{user.empno}}.jpg" class="img-thumbnail" alt="{{user.name}}">
+                    <img ng-src="Content/CV/{{user.empno}}.jpg" onerror="this.onerror=null;this.src='Content/CV/0000.jpg'" class="img-thumbnail" alt="{{user.name}}">
                 </div>
                 <div class="col-3">
                     <h3>姓名：{{user.name}}</h3>

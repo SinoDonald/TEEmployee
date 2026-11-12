@@ -5,9 +5,12 @@ using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Models.Issue;
 using TEEmployee.Models.Training;
+using TEEmployee.Models;
+using TEEmployee.Filters;
 
 namespace TEEmployee.Controllers
 {
+    [MyAuthorize]
     public class IssueController : Controller
     {
         private IssueService _service;

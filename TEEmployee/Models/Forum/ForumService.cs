@@ -48,6 +48,40 @@ namespace TEEmployee.Models.Forum
         }
 
         /// <summary>
+        /// 論壇時間的標準格式 (與既有資料相同)：M/d/yyyy, HH:mm:ss
+        /// 新增貼文 / 回文時由伺服器產生，不再採用前端傳來的時間
+        /// </summary>
+        public const string DateFormat = "M/d/yyyy, HH:mm:ss";
+
+        public static string Now()
+        {
+            return DateTime.Now.ToString(DateFormat, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// 解析論壇時間；格式異常時不拋例外 (避免一筆資料讓整個列表失敗)，回傳 DateTime.MinValue
+        /// </summary>
+        public static DateTime ParseForumDate(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return DateTime.MinValue;
+
+            string[] formats = { DateFormat, "M/d/yyyy, H:mm:ss", "M/d/yyyy H:mm:ss", "yyyy-MM-ddTHH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy/MM/dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy/MM/dd HH:mm" };
+            if (DateTime.TryParseExact(value.Trim(), formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime d)) return d;
+
+            // 舊版瀏覽器午夜可能產生 "24:xx:xx"
+            string fixedValue = System.Text.RegularExpressions.Regex.Replace(value.Trim(), @", 24:", ", 00:");
+            if (DateTime.TryParseExact(fixedValue, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out d)) return d;
+
+            return DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out d) ? d : DateTime.MinValue;
+        }
+
+        /// <summary>員工姓名；找不到 (例如已離職) 時不拋例外</summary>
+        private static string NameOf(List<User> users, string empno)
+        {
+            return users.Find(y => y.empno == empno)?.name ?? "（離職同仁）";
+        }
+
+        /// <summary>
         /// 取得所有貼文。
         /// </summary>
         /// <returns>包含所有貼文的列舉。</returns>
@@ -57,7 +91,7 @@ namespace TEEmployee.Models.Forum
             var ret = _forumRepository.GetAllPosts();
 
             var users = _userRepository.GetAll();
-            ret.ForEach(x => x.name = users.Find(y => y.empno == x.empno).name);
+            ret.ForEach(x => x.name = NameOf(users, x.empno));
 
             foreach (var item in ret)
             {
@@ -86,24 +120,28 @@ namespace TEEmployee.Models.Forum
                 {
                     var replies = item.replies.Select(x => new
                     {
-                        Parsed = DateTime.ParseExact(x.replyDate, "M/d/yyyy, HH:mm:ss", CultureInfo.InvariantCulture).ToString("yyyy-MM-ddTHH:mm:ss"),
+                        Parsed = ParseForumDate(x.replyDate).ToString("yyyy-MM-ddTHH:mm:ss"),
                         Empno = x.empno,
                         Anonymous = x.anonymous,
                     }).ToList();
 
                     var latest = replies.OrderByDescending(x => x.Parsed).First();
-                    item.latestName = latest.Anonymous ? "匿名" : users.Find(x => x.empno == latest.Empno).name;
+                    item.latestName = latest.Anonymous ? "匿名" : NameOf(users, latest.Empno);
                     item.latestDate = latest.Parsed;
                 }
                 else
                 {
                     item.latestName = item.name;
-                    item.latestDate = DateTime.ParseExact(item.postDate, "M/d/yyyy, HH:mm:ss", CultureInfo.InvariantCulture).ToString("yyyy-MM-ddTHH:mm:ss");
+                    item.latestDate = ParseForumDate(item.postDate).ToString("yyyy-MM-ddTHH:mm:ss");
                 }
 
             }
 
             ret = ret.OrderByDescending(x => x.latestDate).ToList();
+
+            // 回文明細不回傳到列表 (列表只需要回覆數、最新回覆者與時間)；
+            // 避免匿名回文的員編從列表 API 外洩
+            ret.ForEach(x => x.replies = null);
 
             return ret;
         }
@@ -116,11 +154,12 @@ namespace TEEmployee.Models.Forum
         public (Post, List<Reply>) GetPost(int id)
         {
             Post post = _forumRepository.GetPost(id);
+            if (post == null) return (null, new List<Reply>());   // 貼文不存在 (例如已被刪除)
             List<Reply> replies = _forumRepository.GetReplies(id);
 
             var users = _userRepository.GetAll();
-            post.name = users.Find(y => y.empno == post.empno).name;
-            replies.ForEach(x => x.name = users.Find(y => y.empno == x.empno).name);
+            post.name = NameOf(users, post.empno);
+            replies.ForEach(x => x.name = NameOf(users, x.empno));
 
             if (post.anonymous)
             {
@@ -201,6 +240,9 @@ namespace TEEmployee.Models.Forum
         /// <returns>新回文 id</returns>
         public int InsertReply(Reply reply, string empno, IEnumerable<HttpPostedFileBase> files)
         {
+            if (reply == null || _forumRepository.GetPost(reply.postId) == null)
+                throw new ForumImageException("找不到要回覆的貼文，可能已被刪除。");
+
             reply.empno = empno;
             var processed = PrepareImages(files, empno);
             var written = new List<string>();

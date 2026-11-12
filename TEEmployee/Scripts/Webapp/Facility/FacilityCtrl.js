@@ -69,7 +69,8 @@ app.directive("datetimepicker", ["$timeout", "$parse", function (n) {
 app.controller('FacilityCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', function ($scope, $location, $window, appService, $rootScope) {
 
     appService.GetSensorResourceData({}).then((ret) => {
-        $scope.data = ret.data.result.map(x => Boolean(Number(x.value)));
+        // 感測器服務連不到時 result 不存在，避免整頁報錯
+        $scope.data = ((ret.data && ret.data.result) || []).map(x => Boolean(Number(x.value)));
     });
 
 }]);

@@ -4,9 +4,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Models.Ballot;
+using TEEmployee.Models;
+using TEEmployee.Filters;
 
 namespace TEEmployee.Controllers
 {
+    [MyAuthorize]
     public class BallotController : Controller
     {
         private BallotService _service;
@@ -51,6 +54,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult DeleteAll()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.DeleteAll();
             return Json(ret);
         }
@@ -58,6 +63,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public FileContentResult DownloadEmployeeVoteExcel()
         {
+            if (!Permissions.IsAdmin(Session)) return null; // 限系統管理員
+
             string contentType = "application/octet-stream"; // byte 
             var fileName = $"績優員工票選2025.xlsx";
             var excelData = _service.DownloadEmployeeVoteExcel();

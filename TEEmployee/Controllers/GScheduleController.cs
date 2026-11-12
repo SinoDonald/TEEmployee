@@ -101,6 +101,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult UpdateAllPercentComplete()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.UpdateAllPercentComplete();
             return Json(ret);
         }
@@ -212,6 +214,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult UpdatePersonalPlan()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.UpdatePersonalPlan();
             return Json(ret);
         }
@@ -303,6 +307,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult DeleteGroupPlan()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.DeleteGroupPlan();
             return Json(ret);
         }
@@ -313,6 +319,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult DeletePersonalPlan()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.DeletePersonalPlan();
             return Json(ret);
         }
@@ -352,6 +360,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult DeleteAll()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.DeleteAll();
             return Json(ret);
         }
@@ -359,6 +369,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult AddCustomOrderColumn()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.AddCustomOrderColumn();
             return Json(ret);
         }

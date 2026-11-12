@@ -7,9 +7,12 @@ using System.Web.Mvc;
 using TEEmployee.Models.Issue;
 using TEEmployee.Models.Promotion;
 using TEEmployee.Models.Training;
+using TEEmployee.Models;
+using TEEmployee.Filters;
 
 namespace TEEmployee.Controllers
 {
+    [MyAuthorize]
     public class TrainingController : Controller
     {
         private TrainingService _service;
@@ -163,13 +166,16 @@ namespace TEEmployee.Controllers
         public FileContentResult DownloadFile(ExternalTraining training)
         {
             var fileBytes = _service.DownloadFile(training);
+            if (fileBytes == null) return null;
             string contentType = "application/octet-stream"; // byte 
-            return File(fileBytes, contentType, training.filepath);
+            return File(fileBytes, contentType, System.IO.Path.GetFileName(training.filepath));
         }
 
         [HttpPost]
         public JsonResult EnsureTablesExist()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.EnsureTablesExist();
             return Json(ret);
         }

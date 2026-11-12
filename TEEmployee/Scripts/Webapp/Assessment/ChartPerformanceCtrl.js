@@ -36,14 +36,17 @@ app.controller('ChartPerformanceCtrl', ['$scope', '$window', 'appService', '$roo
 
     $scope.selectYear = () => {
         appService.GetPerformanceChart({ year: $scope.selectedYear }).then((ret) => {
-            $scope.managers = ret.data;
+            $scope.managers = ret.data || [];
+            if ($scope.managers.length === 0) return;   // 該年度沒有資料
             $scope.selectedManager = $scope.managers[0].empno;
             $scope.selectManager();            
         })
     }
 
     $scope.selectManager = () => {
-        $scope.groups = $scope.managers.find(x => x.empno === $scope.selectedManager).groups;
+        let manager = $scope.managers.find(x => x.empno === $scope.selectedManager);
+        $scope.groups = (manager && manager.groups) || [];
+        if ($scope.groups.length === 0) return;   // 沒有可顯示的群組
         $scope.selectedGroup = $scope.groups[0].group_name;
         $scope.selectGroup();  
     }

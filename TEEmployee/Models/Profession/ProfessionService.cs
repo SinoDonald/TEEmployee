@@ -313,6 +313,24 @@ namespace TEEmployee.Models.Profession
 
         // 20250805 update: If the user is group one manager, get only group one employees and manager himself,
         // do not get other group one manager
+        /// <summary>
+        /// 是否可以查看某位員工的個人專業自評：本人，或該員工屬於自己管理的群組 (與 GetAuthorization 的成員範圍相同)
+        /// </summary>
+        public bool CanViewMember(string callerEmpno, string targetEmpno)
+        {
+            if (string.IsNullOrWhiteSpace(targetEmpno) || Permissions.SameEmpno(callerEmpno, targetEmpno)) return true;
+
+            User user = _userRepository.Get(callerEmpno);
+            if (user == null) return false;
+
+            foreach (var group in GetManagerGroups(callerEmpno))
+            {
+                if (GetGroupMembers(group, user).Any(x => Permissions.SameEmpno(x.empno, targetEmpno)))
+                    return true;
+            }
+            return false;
+        }
+
         public List<User> GetGroupMembers(string group, User user)
         {
             List<User> users = _userRepository.GetAll();

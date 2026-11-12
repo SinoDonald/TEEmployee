@@ -314,6 +314,11 @@ app.controller('TalentOptionCtrl', ['$scope', '$location', '$window', 'appServic
 app.controller('TalentHighPerformersCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', 'dataservice', 'highperformers', function ($scope, $location, $window, appService, $rootScope, dataservice, highperformers) {
 
     $scope.GetAll = highperformers.get(); // 取得員工履歷
+    // 直接開啟網址或重新整理時沒有資料，回到人員篩選頁
+    if (!Array.isArray($scope.GetAll)) {
+        $location.path('/TalentOption');
+        return;
+    }
     //$scope.positions = ['', '技術經理', '計畫經理', '組長'];
     //$scope.groups = ['全部顯示', '技術經理', '計畫經理', '組長'];
     $scope.groups = ['全部顯示', '技術經理', '技術組長', '一般計畫經理', '重大計畫經理', '重大計畫副理', '計畫組長', '研發案主持人'];
@@ -430,6 +435,11 @@ app.controller('TalentSuccessExampleCtrl', ['$scope', '$location', '$window', 'a
 app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appService', '$rootScope', 'dataservice', function ($scope, $location, $window, appService, $rootScope, dataservice) {
 
     $scope.user = dataservice.get(); // 取得員工履歷
+    // 直接開啟網址或重新整理時沒有選取員工，回到人員篩選頁
+    if (!$scope.user || !$scope.user.empno) {
+        $location.path('/TalentOption');
+        return;
+    }
     $scope.planning = []; // 規劃進程
     for (let i = 0; i < $scope.user.planning.length; i++) {
         if ($scope.planning.length < 6) {

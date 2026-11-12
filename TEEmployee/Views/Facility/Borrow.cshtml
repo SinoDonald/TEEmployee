@@ -86,7 +86,7 @@
                     <!-- 新增移除裝置放最底部 -->
                     <div class="mt-auto nav-item w-100">
                         <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
-                            @if (Session["Admin"] is true || Session["leader"] is true || Session["empno"] is "7291" || Session["empno"] is "7596")
+                            @if (TEEmployee.Models.Permissions.IsFacilityManager(Session))
                             {
                                 <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
                                     <h6 class="panel-title">

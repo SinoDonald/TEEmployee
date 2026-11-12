@@ -324,8 +324,11 @@ app.controller('ScoreCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         if (dataservice.getGroup() && $scope.editableGroup.find(x => x.GroupName === dataservice.getGroup())) {
             $scope.selectedGroup = dataservice.getGroup()
         }
-        else {
+        else if ($scope.editableGroup.length > 0) {
             $scope.selectedGroup = $scope.editableGroup[0].GroupName;
+        }
+        else {
+            return;   // 沒有可管理的群組 (非主管)，此頁不顯示資料
         }
         //$scope.selectedGroup = $scope.editableGroup[0].GroupName;
 
@@ -488,8 +491,11 @@ app.controller('ChartCtrl', ['$scope', '$location', 'appService', '$rootScope', 
         if (dataservice.getGroup() && $scope.editableGroup.find(x => x.GroupName === dataservice.getGroup())) {
             $scope.selectedGroup = dataservice.getGroup()
         }
-        else {
+        else if ($scope.editableGroup.length > 0) {
             $scope.selectedGroup = $scope.editableGroup[0].GroupName;
+        }
+        else {
+            return;   // 沒有可管理的群組 (非主管)，此頁不顯示資料
         }
 
         //$scope.selectedGroup = $scope.editableGroup[0].GroupName;
@@ -529,8 +535,11 @@ app.controller('ScatterCtrl', ['$scope', '$location', 'appService', '$rootScope'
         if (dataservice.getGroup() && $scope.editableGroup.find(x => x.GroupName === dataservice.getGroup())) {
             $scope.selectedGroup = dataservice.getGroup()
         }
-        else {
+        else if ($scope.editableGroup.length > 0) {
             $scope.selectedGroup = $scope.editableGroup[0].GroupName;
+        }
+        else {
+            return;   // 沒有可管理的群組 (非主管)，此頁不顯示資料
         }
         //$scope.selectedGroup = $scope.editableGroup[0].GroupName;
         //$scope.selectedGroup = $scope.auth.GroupAuthorities[0].GroupName;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace TEEmployee.Models.Forum
 {
@@ -29,6 +30,7 @@ namespace TEEmployee.Models.Forum
         /// <summary>
         /// 回文內容
         /// </summary>
+        [AllowHtml]   // 允許輸入 < > 等字元 (前端以 ng-bind 顯示，不會執行)
         public string replyContent { get; set; }
         /// <summary>
         /// 回文日期

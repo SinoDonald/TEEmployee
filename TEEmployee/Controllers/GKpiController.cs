@@ -4,9 +4,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TEEmployee.Models.GKpi;
+using TEEmployee.Models;
+using TEEmployee.Filters;
 
 namespace TEEmployee.Controllers
 {
+    [MyAuthorize]
     public class GKpiController : Controller
     {
         private GKpiService _service;
@@ -19,7 +22,8 @@ namespace TEEmployee.Controllers
         // GET: Kpi
         public ActionResult Index()
         {
-            return View();
+            // 沒有對應的 View，導向 KPI 填寫頁
+            return RedirectToAction("Fillin");
         }
 
         public ActionResult Fillin()
@@ -52,6 +56,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult InsertKpiModels()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.InsertKpiModels();
 
             return Json(ret);
@@ -96,6 +102,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public ActionResult DeleteKpiModels(string year)
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.DeleteKpiModels(year);
             return Json(ret);
         }
@@ -103,6 +111,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public ActionResult DeleteSolitaryKpiModels()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.DeleteSolitaryKpiModels();
             return Json(ret);
         }
@@ -110,6 +120,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult UpdateCustomField()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.UpdateCustomField();
             return Json(ret);
         }
@@ -121,6 +133,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult DeleteAll()
         {
+            if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員
+
             var ret = _service.DeleteAll();
             return Json(ret);
         }

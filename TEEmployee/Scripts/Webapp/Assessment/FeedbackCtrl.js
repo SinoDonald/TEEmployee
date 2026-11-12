@@ -199,6 +199,12 @@ app.controller('AssessEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
     const optionText = ['優良', '好', '普通', '待加強', 'N/A'];
     const limit = 250; // textarea height limit
 
+    // 直接開啟網址或重新整理時沒有選取員工，回到員工清單
+    if (!myFactory.get() || !myFactory.get().EmployeeInfo) {
+        $window.location.href = 'Assessment/Feedback#!/EmployeeList';
+        return;
+    }
+
     $scope.name = myFactory.get().EmployeeInfo.Employee.name;
     $scope.isBoss = myFactory.get().isBoss;
 
@@ -405,6 +411,11 @@ app.controller('ReviewEmployeeCtrl', ['$scope', '$window', 'appService', '$rootS
     const optionText = ['優良', '好', '普通', '待加強', 'N/A'];
 
     $scope.empData = myFactory.getReview();
+    // 直接開啟網址或重新整理時沒有選取員工，回到員工清單
+    if (!$scope.empData || !$scope.empData.EmployeeInfo) {
+        $window.location.href = 'Assessment/Feedback#!/EmployeeList';
+        return;
+    }
     $scope.name = $scope.empData.EmployeeInfo.Employee.name;
 
     appService.GetYearList({ isManagerResponse: false }).then((ret) => {

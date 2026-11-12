@@ -173,6 +173,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AssessmentController.cs" />
     <Compile Include="Controllers\BallotController.cs" />
+    <Compile Include="Controllers\DevToolsController.cs" />
     <Compile Include="Controllers\EducationController.cs" />
     <Compile Include="Controllers\EducationV2Controller.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
@@ -194,6 +195,7 @@
     <Compile Include="Controllers\TrainingController.cs" />
     <Compile Include="Controllers\WishController.cs" />
     <Compile Include="Filters\MyAuthorizeAttribute.cs" />
+    <Compile Include="Filters\TestMode.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -270,6 +272,7 @@
     <Compile Include="Models\GSchedule\GScheduleRepository.cs" />
     <Compile Include="Models\GSchedule\GScheduleService.cs" />
     <Compile Include="Models\HtmlHelperExtensions.cs" />
+    <Compile Include="Models\Permissions.cs" />
     <Compile Include="Models\IAssessmentRepository.cs" />
     <Compile Include="Models\Assessment.cs" />
     <Compile Include="Models\IResponseRepository.cs" />
@@ -644,6 +647,7 @@
     <Content Include="Views\Assessment\Compare.cshtml" />
     <Content Include="Views\Assessment\EmpList.cshtml" />
     <Content Include="Views\Assessment\AssessEmp.cshtml" />
+    <Content Include="Views\DevTools\Index.cshtml" />
     <Content Include="Views\Error\Unauthorized.cshtml" />
     <Content Include="Views\Assessment\Feedback.cshtml" />
     <Content Include="Views\Assessment\EmployeeList.cshtml" />

@@ -26,7 +26,7 @@ namespace TEEmployee.Controllers
         /// </summary>
         private bool IsForumAdmin()
         {
-            return Session["Admin"] is object || (Session["empno"] as string) == "7291";
+            return Permissions.IsForumAdmin(Session);   // Web.config Admin 或 ForumAdmin 名單
         }
 
         // GET: Forum
@@ -69,6 +69,8 @@ namespace TEEmployee.Controllers
         {
             try
             {
+                if (post == null) return Json(new { ok = false, message = "資料不完整。" });
+                post.postDate = ForumService.Now();   // 時間由伺服器產生
                 int id = _service.InsertPost(post, Session["empno"].ToString(), images);
                 UpdateDatabase("1"); // 我要抱抱通知
 
@@ -92,6 +94,8 @@ namespace TEEmployee.Controllers
         {
             try
             {
+                if (reply == null) return Json(new { ok = false, message = "資料不完整。" });
+                reply.replyDate = ForumService.Now();   // 時間由伺服器產生
                 int id = _service.InsertReply(reply, Session["empno"].ToString(), images);
                 UpdateDatabase("1"); // 我要抱抱通知
 
@@ -174,7 +178,7 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult DeleteAll()
         {
-            if (!(Session["Admin"] is object)) return Json(false);
+            if (!Permissions.IsAdmin(Session)) return Json(false);
 
             var ret = _service.DeleteAll();
             return Json(ret);

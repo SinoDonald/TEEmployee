@@ -364,3 +364,9 @@ FodyWeavers.xsd
 
 # 我要抱抱：使用者上傳的圖片，不納入版控
 TEEmployee/App_Data/ForumImages/
+
+# 測試環境 (TestEnv) 執行期檔案：測試站台副本、種子資料、測試報告
+TestEnv/.runtime/
+TestEnv/node_modules/
+TestEnv/test-results/
+TestEnv/playwright-report/

@@ -69,6 +69,48 @@ namespace TEEmployee.Models.IssueV2
             return ret;
         }
 
+        /// <summary>
+        /// 可存取的群組 (與 GetAuthorization + 前端群組選單相同)：
+        /// 部門主管：全部；組長：同部門成員的小組；一般員工：自己的小組；
+        /// 主管 (部門主管 / 組長 / 小組主管) 另可存取成員所屬的部門層級群組
+        /// </summary>
+        public HashSet<string> GetAllowedGroups(string empno)
+        {
+            var allowed = new HashSet<string>();
+            User user = _userRepository.Get(empno);
+            if (user == null) return allowed;
+
+            List<User> users = _userRepository.GetAll();
+            if (user.department_manager) { }
+            else if (user.group_manager) users = users.Where(x => x.group == user.group).ToList();
+            else users = users.Where(x => x.group_one == user.group_one).ToList();
+
+            users = users.Where(x => !string.IsNullOrEmpty(x.group_one)).ToList();
+
+            foreach (var u in users) allowed.Add(u.group_one);
+            if (user.department_manager || user.group_manager || user.group_one_manager)
+                foreach (var u in users.Where(x => !string.IsNullOrEmpty(x.group))) allowed.Add(u.group);
+
+            return allowed;
+        }
+
+        public bool CanAccessGroup(string empno, string group)
+        {
+            return !string.IsNullOrEmpty(group) && GetAllowedGroups(empno).Contains(group);
+        }
+
+        /// <summary>找出計畫 (依計畫 id)</summary>
+        public Project FindProject(int projectId)
+        {
+            return _issueRepository.GetAllProjects().FirstOrDefault(p => p.id == projectId);
+        }
+
+        /// <summary>找出議題所屬的計畫 (依資料庫中的議題 id，不採用前端傳來的 project_id)</summary>
+        public Project FindProjectOfIssue(int issueId)
+        {
+            return _issueRepository.GetAllProjects().FirstOrDefault(p => p.issues != null && p.issues.Any(i => i.id == issueId));
+        }
+
         public dynamic GetAuthorization(string empno)
         {
             User user = _userRepository.Get(empno);

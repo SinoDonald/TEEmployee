@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace TEEmployee.Models.Forum
 {
@@ -25,10 +26,12 @@ namespace TEEmployee.Models.Forum
         /// <summary>
         /// 貼文標題
         /// </summary>
+        [AllowHtml]   // 允許輸入 < > 等字元 (前端以 ng-bind 顯示，不會執行)
         public string title { get; set; }
         /// <summary>
         /// 貼文內容
         /// </summary>
+        [AllowHtml]   // 允許輸入 < > 等字元 (前端以 ng-bind 顯示，不會執行)
         public string content { get; set; }
         /// <summary>
         /// 貼文日期

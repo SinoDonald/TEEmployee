@@ -1,0 +1,215 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>測試模擬環境</title>
+    <style>
+        :root { --bg:#f5f6f8; --card:#fff; --ink:#1f2933; --muted:#6b7785; --line:#e1e5ea; --accent:#2f6fde; --warn:#c2410c; --ok:#15803d; }
+        * { box-sizing: border-box; }
+        body { margin:0; font-family: "Microsoft JhengHei", "Noto Sans TC", system-ui, sans-serif; background:var(--bg); color:var(--ink); font-size:14px; }
+        header { background:#1f2933; color:#fff; padding:14px 24px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+        header h1 { font-size:18px; margin:0; font-weight:600; }
+        header .tag { background:var(--warn); padding:2px 8px; border-radius:4px; font-size:12px; }
+        main { max-width:1200px; margin:0 auto; padding:20px 16px 60px; display:grid; gap:16px; grid-template-columns: 1fr 340px; }
+        @@media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+        .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:16px; }
+        .card h2 { font-size:15px; margin:0 0 12px; }
+        .toolbar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+        input[type=text], select { padding:6px 8px; border:1px solid var(--line); border-radius:6px; font-size:14px; font-family:inherit; }
+        input[type=text] { flex:1; min-width:160px; }
+        button, .btn { padding:6px 12px; border:1px solid var(--accent); background:var(--accent); color:#fff; border-radius:6px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-block; font-family:inherit; }
+        button.ghost, .btn.ghost { background:#fff; color:var(--accent); }
+        button.danger { background:var(--warn); border-color:var(--warn); }
+        table { width:100%; border-collapse:collapse; }
+        th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:middle; }
+        th { font-size:12px; color:var(--muted); font-weight:600; position:sticky; top:0; background:#fff; }
+        .scroll { max-height:60vh; overflow:auto; }
+        .pill { display:inline-block; padding:1px 6px; border-radius:10px; font-size:12px; background:#eef2f7; margin:1px 2px 1px 0; }
+        .pill.admin { background:#fde8e1; color:var(--warn); }
+        .pill.mgr { background:#e6effd; color:var(--accent); }
+        .pill.pm { background:#e7f6ec; color:var(--ok); }
+        dl { display:grid; grid-template-columns: 110px 1fr; gap:4px 8px; margin:0; font-size:13px; }
+        dt { color:var(--muted); }
+        dd { margin:0; word-break:break-all; }
+        .links { display:grid; grid-template-columns: 1fr 1fr; gap:6px; }
+        .links a { font-size:13px; color:var(--accent); text-decoration:none; }
+        .links a:hover { text-decoration:underline; }
+        .muted { color:var(--muted); font-size:12px; }
+        .msg { margin-top:8px; font-size:13px; }
+        tr.current { background:#fff8e6; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>軌道二部員工平台 · 測試模擬環境</h1>
+        <span class="tag">測試站台 — 資料為副本，可隨意操作</span>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2>選擇要模擬的身分</h2>
+            <div class="toolbar">
+                <input type="text" id="q" placeholder="搜尋員編、姓名、組別…" />
+                <select id="roleFilter">
+                    <option value="">全部角色</option>
+                    <option value="系統管理員">系統管理員</option>
+                    <option value="部門主管">部門主管</option>
+                    <option value="組長">組長</option>
+                    <option value="小組主管">小組主管</option>
+                    <option value="計畫經理">計畫經理</option>
+                    <option value="一般員工">一般員工</option>
+                </select>
+                <select id="adminOverride" title="管理員權限">
+                    <option value="">管理員：依 Web.config</option>
+                    <option value="1">管理員：強制開啟</option>
+                    <option value="0">管理員：強制關閉</option>
+                </select>
+            </div>
+            <div class="toolbar">
+                <input type="text" id="customEmpno" placeholder="或直接輸入員編（可測試不存在的員編）" />
+                <button class="ghost" id="customLogin">以此員編登入</button>
+            </div>
+            <div class="scroll">
+                <table>
+                    <thead><tr><th>員編</th><th>姓名</th><th>組別</th><th>角色</th><th></th></tr></thead>
+                    <tbody id="users"><tr><td colspan="5" class="muted">載入中…</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+
+        <aside style="display:grid; gap:16px; align-content:start;">
+            <section class="card">
+                <h2>目前身分</h2>
+                <dl id="who"><dt>狀態</dt><dd>載入中…</dd></dl>
+                <div class="toolbar" style="margin-top:12px;">
+                    <a class="btn" id="goReturn" href="@ViewBag.returnUrl">進入網站</a>
+                    <a class="btn ghost" href="@Url.Action("Logout")">登出</a>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>測試資料</h2>
+                <p class="muted">所有新增、上傳、刪除都只影響測試站台的資料副本。按下重置會還原成啟動時的種子資料，網站會自動重新啟動（約數秒）。</p>
+                <p class="muted">種子資料：@ViewBag.seedPath</p>
+                <button class="danger" id="reset">重置測試資料</button>
+                <div class="msg" id="resetMsg"></div>
+            </section>
+
+            <section class="card">
+                <h2>快速前往</h2>
+                <div class="links">
+                    <a href="~/">首頁</a>
+                    <a href="~/Home/Admin">管理頁 (Admin)</a>
+                    <a href="~/Forum">我要抱抱</a>
+                    <a href="~/Wish">許願池</a>
+                    <a href="~/Assessment">自評表與考核</a>
+                    <a href="~/GSchedule">年度行事曆目標</a>
+                    <a href="~/Tasklog">工作紀錄管控表</a>
+                    <a href="~/Talent">人才培育資料庫</a>
+                    <a href="~/Profession">核心專業盤點</a>
+                    <a href="~/Promotion">升等規劃與條件</a>
+                    <a href="~/EducationV2">拓展專業培養</a>
+                    <a href="~/Training">培訓紀錄與規劃</a>
+                    <a href="~/GKpi/Fillin">KPI 填寫</a>
+                    <a href="~/Facility/Borrow">公用裝置</a>
+                    <a href="~/IssueV2/List">議題管控</a>
+                    <a href="~/Ballot">票選活動</a>
+                </div>
+            </section>
+        </aside>
+    </main>
+
+    <script>
+        (function () {
+            var base = '@Url.Content("~/")';
+            var returnUrl = '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode((string)ViewBag.returnUrl))';
+            var current = '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode((string)ViewBag.current))';
+            var all = [];
+
+            var adminSel = document.getElementById('adminOverride');
+            adminSel.value = '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode((string)ViewBag.adminOverride))';
+
+            function esc(s) {
+                return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+                });
+            }
+
+            function loginUrl(empno) {
+                return base + 'DevTools/Login?empno=' + encodeURIComponent(empno)
+                    + '&admin=' + encodeURIComponent(adminSel.value)
+                    + '&returnUrl=' + encodeURIComponent(returnUrl);
+            }
+
+            function pills(label) {
+                return label.split('、').map(function (t) {
+                    var cls = t === '系統管理員' ? 'admin' : (t === '計畫經理' ? 'pm' : (t.indexOf('主管') >= 0 || t === '組長' ? 'mgr' : ''));
+                    return '<span class="pill ' + cls + '">' + esc(t) + '</span>';
+                }).join('');
+            }
+
+            function render() {
+                var q = document.getElementById('q').value.trim().toLowerCase();
+                var role = document.getElementById('roleFilter').value;
+                var rows = all.filter(function (u) {
+                    var text = [u.empno, u.name, u.group, u.group_one, u.group_two, u.group_three].join(' ').toLowerCase();
+                    return (!q || text.indexOf(q) >= 0) && (!role || u.roleLabel.indexOf(role) >= 0);
+                });
+                document.getElementById('users').innerHTML = rows.length ? rows.map(function (u) {
+                    return '<tr class="' + (u.empno === current ? 'current' : '') + '">'
+                        + '<td>' + esc(u.empno) + '</td>'
+                        + '<td>' + esc(u.name) + '</td>'
+                        + '<td class="muted">' + esc([u.group, u.group_one].filter(Boolean).join(' / ')) + '</td>'
+                        + '<td>' + pills(u.roleLabel) + '</td>'
+                        + '<td><a class="btn" data-testid="login-' + esc(u.empno) + '" href="' + loginUrl(u.empno) + '">登入</a></td>'
+                        + '</tr>';
+                }).join('') : '<tr><td colspan="5" class="muted">沒有符合的員工</td></tr>';
+            }
+
+            fetch(base + 'DevTools/Users', { credentials: 'same-origin' })
+                .then(function (r) { return r.json(); })
+                .then(function (data) { all = data; render(); })
+                .catch(function (e) { document.getElementById('users').innerHTML = '<tr><td colspan="5">讀取失敗：' + esc(e) + '</td></tr>'; });
+
+            fetch(base + 'DevTools/WhoAmI', { credentials: 'same-origin' })
+                .then(function (r) { return r.json(); })
+                .then(function (w) {
+                    var labels = { identity: '測試身分', empno: '員編', empname: '姓名', group: '部門', group_one: '組', role: 'role', leader: '部門主管', group_leader: '組長', Admin: '系統管理員', adminOverride: '管理員覆寫' };
+                    var html = Object.keys(labels).map(function (k) {
+                        var v = w[k];
+                        if (v === null || v === undefined || v === '') v = '—';
+                        return '<dt>' + labels[k] + '</dt><dd>' + esc(v) + '</dd>';
+                    }).join('');
+                    if (!w.identity) html = '<dt>狀態</dt><dd>尚未選擇身分</dd>';
+                    else if (!w.empno) html += '<dt>備註</dt><dd class="muted">進入網站後才會載入員工資料</dd>';
+                    document.getElementById('who').innerHTML = html;
+                });
+
+            ['q', 'roleFilter'].forEach(function (id) { document.getElementById(id).addEventListener('input', render); });
+            adminSel.addEventListener('change', render);
+
+            document.getElementById('customLogin').addEventListener('click', function () {
+                var v = document.getElementById('customEmpno').value.trim();
+                if (v) location.href = loginUrl(v);
+            });
+
+            document.getElementById('reset').addEventListener('click', function () {
+                if (!confirm('確定要把測試資料還原成種子資料嗎？')) return;
+                var msg = document.getElementById('resetMsg');
+                msg.textContent = '重置中…';
+                fetch(base + 'DevTools/Reset', { method: 'POST', credentials: 'same-origin' })
+                    .then(function (r) { return r.json(); })
+                    .then(function (ret) {
+                        msg.style.color = ret.ok ? 'var(--ok)' : 'var(--warn)';
+                        msg.textContent = ret.ok ? '已重置，網站重新啟動中，請稍候再操作。' : ('重置失敗：' + (ret.message || (ret.errors || []).join(', ')));
+                    })
+                    .catch(function (e) { msg.textContent = '重置失敗：' + e; });
+            });
+        })();
+    </script>
+</body>
+</html>

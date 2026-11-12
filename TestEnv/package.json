@@ -1,0 +1,17 @@
+{
+  "name": "teemployee-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "軌道二部員工平台 - 自動化測試 (Playwright)",
+  "scripts": {
+    "test": "playwright test",
+    "test:smoke": "playwright test --project=smoke",
+    "test:forum": "playwright test tests/10-forum.spec.ts",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^20.11.0"
+  }
+}

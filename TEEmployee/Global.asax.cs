@@ -17,5 +17,15 @@ namespace TEEmployee
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+#if DEBUG
+        /// <summary>
+        /// 測試模式：以 Cookie 指定的員工身分登入 (只在 Debug 編譯 + Web.config TestMode=true + 本機連線時生效)
+        /// </summary>
+        protected void Application_PostAuthenticateRequest(object sender, EventArgs e)
+        {
+            TEEmployee.Filters.TestMode.OnPostAuthenticateRequest(Context);
+        }
+#endif
     }
 }

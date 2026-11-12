@@ -470,6 +470,19 @@ namespace TEEmployee.Models
             return employeesWithStates;
         }
 
+        /// <summary>
+        /// 是否可以查看 / 處理某位員工的自評資料：本人，或依角色可管理的員工 (與「員工清單」相同範圍)
+        /// </summary>
+        public bool CanAccessEmployee(string callerEmpno, string targetEmpno)
+        {
+            if (string.IsNullOrWhiteSpace(targetEmpno) || Permissions.SameEmpno(callerEmpno, targetEmpno)) return true;
+
+            User user = _userRepository.Get(callerEmpno);
+            if (user == null) return false;
+
+            return FilterEmployeeByRole(user).Any(x => Permissions.SameEmpno(x.empno, targetEmpno));
+        }
+
         List<User> FilterEmployeeByRole(User user)
         {
             var allEmployees = _userRepository.GetAll();

@@ -43,7 +43,8 @@ app.controller('IndexCtrl', ['$scope', '$window', 'appService', '$rootScope', '$
     ];
 
     appService.GetAuthorization({}).then((ret) => {
-        $scope.editable = ret.data.empno === '8477';
+        // 是否可修改狀態由後端依 Web.config WishHandler 名單判斷
+        $scope.editable = ret.data.isHandler === true;
     })
 
     $scope.GetAll = () => {

@@ -28,6 +28,32 @@ namespace TEEmployee.Models.Promotion
         /// 取得所有員工升等項目。
         /// </summary>
         /// <returns>包含所有員工升等項目的列舉。</returns>        
+        /// <summary>
+        /// 是否可以查看 / 修改某位員工的升等資料 (與 GetAuthorization 的人員範圍相同)：
+        /// 本人；部門主管可看所有人；組長可看同部門 (group) 的人
+        /// </summary>
+        public bool CanAccess(string callerEmpno, string targetEmpno)
+        {
+            if (string.IsNullOrWhiteSpace(targetEmpno) || Permissions.SameEmpno(callerEmpno, targetEmpno)) return true;
+
+            User caller = _userRepository.Get(callerEmpno);
+            if (caller == null) return false;
+            if (caller.department_manager) return true;
+
+            if (caller.group_manager)
+            {
+                User target = _userRepository.GetAll().FirstOrDefault(x => Permissions.SameEmpno(x.empno, targetEmpno));
+                return target != null && target.group == caller.group;
+            }
+            return false;
+        }
+
+        /// <summary>員編格式檢查 (避免被拿來組出 ..\ 之類的檔案路徑)</summary>
+        private static bool IsValidEmpno(string empno)
+        {
+            return !string.IsNullOrEmpty(empno) && System.Text.RegularExpressions.Regex.IsMatch(empno, @"^\d{1,6}$");
+        }
+
         public List<Promotion> GetAll(string empno)
         {
             return _promotionRepository.GetAll();
@@ -102,6 +128,8 @@ namespace TEEmployee.Models.Promotion
         /// <returns>是否更新成功</returns>
         public bool UploadFile(HttpPostedFileBase file, Promotion promotion)
         {
+            if (file == null || promotion == null || !IsValidEmpno(promotion.empno)) return false;
+
             try
             {
                 string _appData = HttpContext.Current.Server.MapPath("~/App_Data/Promotion");
@@ -127,6 +155,8 @@ namespace TEEmployee.Models.Promotion
         /// <returns>檔案位元資料</returns>
         public byte[] DownloadFile(Promotion promotion)
         {
+            if (promotion == null || !IsValidEmpno(promotion.empno)) return null;
+
             string _appData = HttpContext.Current.Server.MapPath("~/App_Data/Promotion");
             string extension = Path.GetExtension(promotion.filepath);
             string fn = Path.Combine(_appData, $"{promotion.empno}_{promotion.condition}{extension}");
@@ -158,7 +188,12 @@ namespace TEEmployee.Models.Promotion
             if (cv == null)
                 return;
 
+            if (user == null) return;
             string[] strs = this.NextConditions(user.profTitle);
+
+            // 職稱不在升等對照表中 (例如主管職稱)，沒有可套用的升等條件，直接顯示原始內容
+            if (strs == null || strs.Length < 4 || strs.Any(s => s == null)) return;
+            if (promotions == null || promotions.Count < 2 || promotions[0].content == null || promotions[1].content == null) return;
 
             // 20240716 update: remove "(" and ")" of job title
             strs[0] = strs[0].Replace("(", "").Replace(")", "");

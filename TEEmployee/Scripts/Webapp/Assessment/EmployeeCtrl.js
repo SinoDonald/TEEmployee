@@ -38,7 +38,8 @@ app.service('appService', ['$http', function ($http) {
     };
 
     this.GetAllEmployeesWithState = function (o) {
-        return $http.post('Assessment/GetAllEmployeesWithState', o);
+        // 舊 API GetAllEmployeesWithState 已不存在，改用依角色篩選的版本
+        return $http.post('Assessment/GetAllEmployeesWithStateByRole', o);
     };
 
     this.GetResponse = function (o) {

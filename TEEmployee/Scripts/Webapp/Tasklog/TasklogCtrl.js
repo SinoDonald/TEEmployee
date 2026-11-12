@@ -321,7 +321,13 @@ app.controller('UserDetailsCtrl', ['$scope', '$location', '$window', 'appService
     $scope.GetUserAllMonthlyRecordData();
 
 }]);
-app.controller('UsersDetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', function ($scope, $window, appService, $rootScope, myFactory) {
+app.controller('UsersDetailsCtrl', ['$scope', '$window', 'appService', '$rootScope', 'myFactory', '$location', function ($scope, $window, appService, $rootScope, myFactory, $location) {
+
+    // 直接開啟網址或重新整理時沒有選取資料，回到人員清單
+    if (!myFactory.get() || !myFactory.get().monthlyRecord) {
+        $location.path('/UserList');
+        return;
+    }
 
     $scope.ctrl = {};
     $scope.ctrl.datepicker = `${Number(myFactory.get().monthlyRecord.slice(0, 3)) + 1911}-${myFactory.get().monthlyRecord.slice(3, 5)}`;
