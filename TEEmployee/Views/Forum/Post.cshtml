@@ -513,7 +513,7 @@
         var postId = @ViewBag.id;
         var indexUrl = '@Url.Action("Index","Forum")';
     </script>
-    <script src="~/Scripts/WebApp/Forum/ForumCtrl.js"></script>
+    <script src="@TEEmployee.Models.HtmlHelperExtensions.Versioned(Url, "~/Scripts/WebApp/Forum/ForumCtrl.js")"></script>
     <script src="~/Scripts/moment-with-locales.js"></script>
     <!-- 警示彈跳視窗-->
     <script src="~/Scripts/sweetalert2.all.min.js"></script>
