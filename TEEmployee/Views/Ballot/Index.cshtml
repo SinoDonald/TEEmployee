@@ -29,19 +29,27 @@
 
     <h1 class="text-center my-2">軌道二部績優員工票選</h1>
 
-    @if (Session["leader"] is object)
-    {
-        <div class="text-center">
-            <button type="button" ng-click="download()" class="btn btn-danger btn-lg">下載統計資料</button>
-        </div>
-        
-    }
+    <div class="d-flex justify-content-center align-items-center flex-wrap my-3">
+        <label for="ballotEvent" class="mb-0 mr-2">票選活動</label>
+        <select id="ballotEvent" class="form-control w-auto mr-2"
+                ng-model="selected.code"
+                ng-change="changeEvent()"
+                ng-options="e.code as (e.name + (e.status === 'open' ? '（投票中）' : (e.status === 'closed' ? '（已截止）' : '（尚未開始）'))) for e in events">
+        </select>
+
+        @if (TEEmployee.Models.Permissions.CanDownloadBallot(Session))
+        {
+            <button type="button" ng-click="download()" ng-disabled="!currentEvent" class="btn btn-danger">下載統計資料</button>
+        }
+    </div>
+
+    <h3 class="text-center my-2" ng-if="currentEvent">{{ currentEvent.name }}</h3>
 
     <div class="my-2">
         <p style="white-space: pre-line;">
-            本部門績優員工，為納入同仁票選參與，擬請同仁針對下述因素進行考量，挑出6名心目中最優秀的軌道二部員工，供部門進行績優員工提報進行參考。
-            投票時間於11/5日(三)上午9:00開始投票，11/7日(五)下午5:00截止
-            所有同仁均須投票，候選人為全部門同仁(不含協理與技術經理)
+            本部門績優員工，為納入同仁票選參與，擬請同仁針對下述因素進行考量，挑出{{ currentEvent.choiceCount }}名心目中最優秀的軌道二部員工，供部門進行績優員工提報進行參考。
+            {{ currentEvent.periodText }}
+            所有同仁均須投票，候選人為全部門同仁(不含資協與技術經理)
             •  工作績效顯著：
             • 達成或超越年度/專案目標 。
             • 執行重要專案或臨時交辦事項，圓滿達成且成效卓著。
@@ -54,7 +62,15 @@
         </p>
     </div>
 
-    <div ng-if="!user">
+    <div class="text-center my-4" ng-if="loading">載入中…</div>
+
+    <div ng-if="!loading && !user && currentEvent.status !== 'open'">
+        <div class="alert alert-secondary text-center" role="alert">
+            {{ currentEvent.status === 'closed' ? '此活動投票已截止，你沒有投票紀錄。' : '此活動尚未開始投票。' }}
+        </div>
+    </div>
+
+    <div ng-if="!loading && !user && currentEvent.status === 'open'">
 
         <div class="row row-cols-1 row-cols-md-6">
             <div ng-repeat="item in data" class="col mb-4">
@@ -68,28 +84,24 @@
         </div>
 
         <div class="my-2">
-            <div class="alert" role="alert" ng-class="count === 6 ? 'alert-success' : 'alert-warning'">
-                你已經選擇 {{ count }} 位候選人 <span ng-hide="count === 6">【請選擇 6 位】</span>
+            <div class="alert" role="alert" ng-class="count === currentEvent.choiceCount ? 'alert-success' : 'alert-warning'">
+                你已經選擇 {{ count }} 位候選人 <span ng-hide="count === currentEvent.choiceCount">【請選擇 {{ currentEvent.choiceCount }} 位】</span>
             </div>
         </div>
 
         <div class="d-flex justify-content-center">
-            <button type="button" ng-click="sendBallot()" class="btn btn-warning btn-lg" ng-disabled="count !== 6">送出</button>
+            <button type="button" ng-click="sendBallot()" class="btn btn-warning btn-lg" ng-disabled="count !== currentEvent.choiceCount || sending">送出</button>
         </div>
 
     </div>
 
-    <div ng-if="user">
+    <div ng-if="!loading && user">
         <div class="my-2">
             <div class="alert alert-success" role="alert">
-                你已經選擇 {{ user.choices }}
+                你在「{{ currentEvent.name }}」已經選擇 {{ user.choicesText }}
             </div>
         </div>
     </div>
-
-
-
-
 
 </div>
 

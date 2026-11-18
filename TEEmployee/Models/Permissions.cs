@@ -14,7 +14,6 @@ namespace TEEmployee.Models
     ///   AdminPageUsers 可進入管理頁、匯入組織表的非管理員 (例：6846、7291、7596)
     ///   FacilityManagers 公用裝置管理員 (新增 / 移除裝置、修改 Teams 密碼、代改他人預約)
     ///   ForumAdmin     我要抱抱管理者 (可刪除貼文 / 回文)
-    ///   TalentEditor   人才培育資料庫可「儲存」的資協
     ///   WishHandler    許願池處理人 (可修改需求狀態)
     ///
     /// 員編比對會忽略前面補的 0：「4125」與「04125」視為同一人。
@@ -28,7 +27,6 @@ namespace TEEmployee.Models
             { "AdminPageUsers", "6846,7291,7596" },
             { "FacilityManagers", "7291,7596" },
             { "ForumAdmin", "7291" },
-            { "TalentEditor", "4125" },
             { "WishHandler", "8477" },
         };
 
@@ -113,11 +111,6 @@ namespace TEEmployee.Models
             return IsAdmin(session) || InList("ForumAdmin", CurrentEmpno(session));
         }
 
-        /// <summary>人才培育資料庫：可儲存規劃、優勢、劣勢等欄位 (只限資協)</summary>
-        public static bool IsTalentEditor(HttpSessionStateBase session)
-        {
-            return InList("TalentEditor", CurrentEmpno(session));
-        }
 
         /// <summary>許願池處理人：可修改需求狀態 (只限 WishHandler 名單，管理員也不行)</summary>
         public static bool IsWishHandler(HttpSessionStateBase session)
@@ -132,6 +125,12 @@ namespace TEEmployee.Models
         public static bool CanSwitchIdentity(HttpSessionStateBase session)
         {
             return IsAdmin(session) || (session != null && session["ImpersonatorAdmin"] is object);
+        }
+
+        /// <summary>績優員工票選：可下載統計結果 (只限部門主管；Admin 需切換成部門主管身分)</summary>
+        public static bool CanDownloadBallot(HttpSessionStateBase session)
+        {
+            return IsDepartmentManager(session);
         }
 
         // ------------------------------------------------------------------ 檔案路徑

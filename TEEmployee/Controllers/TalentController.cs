@@ -116,7 +116,7 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public ActionResult GetPDF(string year, string empno)
         {
-            // 只有部門主管與資協可以看其他人的測評資料
+            // 只有部門主管可以看其他人的測評資料
             if (!CanViewOthers() || string.IsNullOrWhiteSpace(empno))
                 empno = Session["empno"].ToString();
 
@@ -142,7 +142,7 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult HighPerformer()
         {
-            if (!(Permissions.IsDepartmentManager(Session) || Permissions.IsTalentEditor(Session) || Permissions.IsAdmin(Session))) return Json(Tuple.Create(new List<Ability>(), "僅限部門主管查看")); // 高績效名單限部門主管、資協或管理員
+            if (!(Permissions.IsDepartmentManager(Session) || Permissions.IsAdmin(Session))) return Json(Tuple.Create(new List<Ability>(), "僅限部門主管查看")); // 高績效名單限部門主管或管理員
 
             var ret = _service.HighPerformer();
             return Json(ret);
@@ -165,7 +165,7 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult SaveChoice(List<Ability> users)
         {
-            if (!(Permissions.IsDepartmentManager(Session) || Permissions.IsTalentEditor(Session) || Permissions.IsAdmin(Session))) return Json(false); // 限部門主管、資協或管理員
+            if (!(Permissions.IsDepartmentManager(Session) || Permissions.IsAdmin(Session))) return Json(false); // 限部門主管或管理員
 
             var ret = false;
             _service.SaveChoice(users);
@@ -214,7 +214,7 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult Get(string empno)
         {
-            // 只有部門主管 (與 Talent/GetAll 的範圍相同) 與資協 (需要編修) 可以看其他人的履歷，其他人一律只能看自己
+            // 只有部門主管 (與 Talent/GetAll 的範圍相同) 可以看其他人的履歷，其他人一律只能看自己
             // 註：非主管的 Session["leader"] 是 null 而不是 false，舊寫法 is false 永遠不成立
             if (!CanViewOthers() || string.IsNullOrWhiteSpace(empno))
             {
@@ -242,8 +242,8 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult SaveResponse(CV userCV, string planning)
         {
-            // 只有資協 (Web.config TalentEditor，預設 4125；04125 也視為同一人) 可以儲存
-            if (!Permissions.IsTalentEditor(Session) || userCV == null)
+            // 只有部門主管 (Session["leader"]，與 TalentRecord 頁面顯示編輯欄位的條件相同) 可以儲存
+            if (!Permissions.IsDepartmentManager(Session) || userCV == null)
                 return Json(false);
 
             _service.SaveResponse(userCV, planning ?? "");
@@ -264,10 +264,10 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
 
-        /// <summary>可以查看其他員工的履歷 / 測評：部門主管、資協 (TalentEditor)</summary>
+        /// <summary>可以查看其他員工的履歷 / 測評：部門主管</summary>
         private bool CanViewOthers()
         {
-            return Permissions.IsDepartmentManager(Session) || Permissions.IsTalentEditor(Session);
+            return Permissions.IsDepartmentManager(Session);
         }
 
         protected override void Dispose(bool disposing)

@@ -92,7 +92,7 @@ namespace TEEmployee.Controllers
                 u.project_manager,
                 isAdmin = Permissions.IsAdminEmpno(u.empno),
                 isForumAdmin = Permissions.IsAdminEmpno(u.empno) || Permissions.InList("ForumAdmin", u.empno),
-                isTalentEditor = Permissions.InList("TalentEditor", u.empno),
+                isTalentEditor = u.department_manager,   // 保留舊欄位名稱 (TestEnv 用)；人才培育儲存權限已改為部門主管
                 isWishHandler = Permissions.InList("WishHandler", u.empno),
                 isAdminPageUser = Permissions.InList("AdminPageUsers", u.empno),
                 isFacilityManager = Permissions.InList("FacilityManagers", u.empno),
@@ -171,7 +171,6 @@ namespace TEEmployee.Controllers
             if (u.group_manager) tags.Add("組長");
             if (u.group_one_manager || u.group_two_manager || u.group_three_manager || u.group_four_manager) tags.Add("小組主管");
             if (u.project_manager) tags.Add("計畫經理");
-            if (Permissions.InList("TalentEditor", u.empno)) tags.Add("資協");
             if (Permissions.InList("WishHandler", u.empno)) tags.Add("許願池處理人");
             if (Permissions.InList("AdminPageUsers", u.empno)) tags.Add("管理頁使用者");
             if (Permissions.InList("FacilityManagers", u.empno)) tags.Add("公用裝置管理員");

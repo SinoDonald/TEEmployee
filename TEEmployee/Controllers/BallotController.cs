@@ -30,6 +30,13 @@ namespace TEEmployee.Controllers
           ====================================== */
 
         [HttpPost]
+        public JsonResult GetEvents()
+        {
+            var ret = _service.GetEvents();
+            return Json(ret);
+        }
+
+        [HttpPost]
         public JsonResult GetAllEmployeeCandidates()
         {
             var ret = _service.GetAllEmployeeCandidates();
@@ -46,9 +53,11 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult CreateBallot(Ballot ballot)
         {
+            if (ballot == null) return Json(new { success = false, message = "資料錯誤" });
+
             ballot.empno = Session["empno"].ToString();
-            var ret = _service.CreateBallot(ballot);
-            return Json(ret);
+            string error = _service.CreateBallot(ballot);
+            return Json(new { success = error == null, message = error });
         }
 
         [HttpPost]
@@ -61,13 +70,16 @@ namespace TEEmployee.Controllers
         }
 
         [HttpPost]
-        public FileContentResult DownloadEmployeeVoteExcel()
+        public FileContentResult DownloadEmployeeVoteExcel(string event_name)
         {
-            if (!Permissions.IsAdmin(Session)) return null; // 限系統管理員
+            if (!Permissions.CanDownloadBallot(Session)) return null; // 限 Admin 與部門主管
+
+            var ev = BallotEvents.Find(event_name) ?? BallotEvents.Default(DateTime.Now);
+            if (ev == null) return null;
 
             string contentType = "application/octet-stream"; // byte 
-            var fileName = $"績優員工票選2025.xlsx";
-            var excelData = _service.DownloadEmployeeVoteExcel();
+            var fileName = $"{ev.name}.xlsx";
+            var excelData = _service.DownloadEmployeeVoteExcel(ev.code);
 
             return File(excelData, contentType, fileName);
         }
