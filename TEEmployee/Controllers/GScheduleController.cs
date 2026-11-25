@@ -74,6 +74,7 @@ namespace TEEmployee.Controllers
         public JsonResult UpdateSchedule(Schedule schedule)
         {
             var ret = _service.UpdateSchedule(schedule, Session["empno"].ToString());
+            ClearFutureNotify(schedule, ret != null);
             return Json(ret);
         }
 
@@ -81,7 +82,20 @@ namespace TEEmployee.Controllers
         public JsonResult InsertSchedule(Schedule schedule)
         {          
             var ret = _service.InsertSchedule(schedule, Session["empno"].ToString());
+            ClearFutureNotify(schedule, ret != null);
             return Json(ret);
+        }
+
+        /// <summary>
+        /// 新增/修改「未來3年數位轉型規劃」(type 4 主項、type 5 細項)成功後, 取消該使用者的首頁通知
+        /// </summary>
+        private void ClearFutureNotify(Schedule schedule, bool success)
+        {
+            if (!success || schedule == null) return;
+            if (schedule.type == 4 || schedule.type == 5)
+            {
+                new NotifyService().UpdateDatabase(Session["empno"].ToString(), 4, "0");
+            }
         }
 
         [HttpPost]

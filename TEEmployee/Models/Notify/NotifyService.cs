@@ -57,6 +57,7 @@ namespace TEEmployee.Models.Notify
             string season = string.Empty; 
             if (month == 5) season = year + "H1_Update";
             else if (month == 11) season = year + "H2_Update";
+            else return ret; // 非考核月份(5、11月以外)不更新
 
             // 檢查資料庫中, userNotify是否為當季資料, 不是的話則新建
             string date = year.ToString() + month.ToString("00");
@@ -133,13 +134,10 @@ namespace TEEmployee.Models.Notify
         {
             bool ret = false;
 
-            // 先確認當月為1月
-            DateTime now = DateTime.Now;
+            // 不限月份 (原本限定1月, 其他月份主管回饋後通知不會消失)
             CultureInfo culture = new CultureInfo("zh-TW");
             culture.DateTimeFormat.Calendar = new TaiwanCalendar();
             string year = DateTime.Now.ToString("yyy", culture);
-            int month = now.Month;
-            if (month == 1)
             {
                 NotifyRepository notifyRepository = new NotifyRepository();
                 List<User> users = notifyRepository.GetAll();
@@ -203,22 +201,9 @@ namespace TEEmployee.Models.Notify
         // 更新資料庫 <-- 培文
         public bool UpdateDatabase(string empno, int count, string notification)
         {
-            bool ret = false;
-
-            // 先確認當月為1、5、11月才會進行資料庫更新
-            int month = DateTime.Now.Month;
-            if (month == 1 || month == 5 || month == 11)
-            {
-                ret = _notifyRepository.UpdateDatabase(empno, count, notification);
-            }
-            else if (count == 5) // 年度個人規劃
-            {
-                ret = _notifyRepository.UpdateDatabase(empno, count, notification);
-            }
-            else if(count == 8) // 我要抱抱
-            {
-                ret = _notifyRepository.UpdateDatabase(empno, count, notification); 
-            }
+            // 不限月份: 任何時間完成動作(寄出自評、存KPI、上傳簡報…)都即時更新通知狀態
+            // (原本只在1、5、11月才寫入, 導致其他月份完成後通知仍持續亮著)
+            bool ret = _notifyRepository.UpdateDatabase(empno, count, notification);
 
             return ret;
         }

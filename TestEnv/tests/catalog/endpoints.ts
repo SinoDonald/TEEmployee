@@ -111,6 +111,7 @@ export const READ_ENDPOINTS: EndpointDef[] = [
   { url: 'IssueV2/GetAuthorization' },
 
   // 票選
+  { url: 'Ballot/GetEvents' },
   { url: 'Ballot/GetAllEmployeeCandidates' },
   { url: 'Ballot/GetBallotByUserAndEvent', data: { event_name: '2025emp' } },
 ];

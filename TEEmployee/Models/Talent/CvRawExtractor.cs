@@ -28,8 +28,33 @@ namespace TEEmployee.Models.Talent
             {
 
             }
-            
+
+            // userCV 的「基本資料」只存匯入當時的歲數 (沒有生日)，資料是 2024/06/20 匯入後就沒再更新，
+            // 直接顯示會一直停在當年的歲數。改為：匯入時歲數 + 匯入日到今天經過的整年數 (可能與實際差 1 歲以內)。
+            // 重新匯入履歷時請同步更新 Web.config 的 TalentCvDataDate
+            if (int.TryParse((age ?? "").Trim(), out int baseAge) && baseAge > 0)
+            {
+                age = (baseAge + YearsSince(CvDataDate(), DateTime.Today)).ToString();
+            }
+
             return age;
+        }
+
+        /// <summary>履歷資料 (userCV) 的匯入日期：Web.config appSettings「TalentCvDataDate」，未設定時為 2024-06-20</summary>
+        private static DateTime CvDataDate()
+        {
+            string raw = System.Configuration.ConfigurationManager.AppSettings["TalentCvDataDate"];
+            if (DateTime.TryParse(raw, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date)) return date;
+            return new DateTime(2024, 6, 20);
+        }
+
+        /// <summary>兩個日期之間經過的整年數 (未滿一年不算)</summary>
+        private static int YearsSince(DateTime from, DateTime to)
+        {
+            if (to <= from) return 0;
+            int years = to.Year - from.Year;
+            if (to < from.AddYears(years)) years--;
+            return years;
         }
 
         /// <summary>

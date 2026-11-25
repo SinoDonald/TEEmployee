@@ -96,6 +96,7 @@ namespace TEEmployee.Controllers
                 isWishHandler = Permissions.InList("WishHandler", u.empno),
                 isAdminPageUser = Permissions.InList("AdminPageUsers", u.empno),
                 isFacilityManager = Permissions.InList("FacilityManagers", u.empno),
+                isDbViewer = Permissions.InList("DbViewers", u.empno),
                 roleLabel = RoleLabel(u),
             }).ToList();
 
@@ -174,6 +175,7 @@ namespace TEEmployee.Controllers
             if (Permissions.InList("WishHandler", u.empno)) tags.Add("許願池處理人");
             if (Permissions.InList("AdminPageUsers", u.empno)) tags.Add("管理頁使用者");
             if (Permissions.InList("FacilityManagers", u.empno)) tags.Add("公用裝置管理員");
+            if (Permissions.InList("DbViewers", u.empno)) tags.Add("開發者(資料檢視)");
             if (tags.Count == 0) tags.Add("一般員工");
             return string.Join("、", tags);
         }

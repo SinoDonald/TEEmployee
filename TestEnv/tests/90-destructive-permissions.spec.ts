@@ -82,22 +82,22 @@ test.describe('不能修改 / 刪除別人的資料', () => {
     await api.dispose();
   });
 
-  test('人才資料庫：資協 (TalentEditor) 可以儲存', async () => {
+  test('人才資料庫：部門主管可以儲存別人的履歷', async () => {
     const editor = requireRole('talentEditor');
     const emp = requireRole('employee');
     const api = await apiAs(editor.empno);
     const r = await post(api, 'Talent/SaveResponse', { userCV: { empno: emp.empno }, planning: '自動化測試寫入\n' });
-    expect(r.json, `資協 ${editor.empno} 無法儲存：${firstLines(r.text)}`).toBe(true);
+    expect(r.json, `部門主管 ${editor.empno} 無法儲存：${firstLines(r.text)}`).toBe(true);
     await api.dispose();
   });
 
-  test('人才資料庫：資協以 5 碼員編 (前面補 0) 登入也可以儲存', async () => {
+  test('人才資料庫：部門主管以 5 碼員編 (前面補 0) 登入也可以儲存', async () => {
     const editor = requireRole('talentEditor');
     const emp = requireRole('employee');
-    test.skip(editor.empno.length !== 4, '資協員編不是 4 碼');
+    test.skip(editor.empno.length !== 4, '部門主管員編不是 4 碼');
     const api = await apiAs('0' + editor.empno);
     const r = await post(api, 'Talent/SaveResponse', { userCV: { empno: emp.empno }, planning: '自動化測試寫入\n' });
-    expect(r.json, `以 0${editor.empno} 登入的資協無法儲存`).toBe(true);
+    expect(r.json, `以 0${editor.empno} 登入的部門主管無法儲存`).toBe(true);
     await api.dispose();
   });
 

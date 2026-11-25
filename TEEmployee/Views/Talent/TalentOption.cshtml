@@ -1,150 +1,149 @@
 ﻿@using TEEmployee.Models;
+@{
+    // 權限條件與舊版相同：部門主管 (Session["leader"]) 或 7291 才顯示 High Performers Pool、條件篩選、組別選單與搜尋
+    // 實際資料範圍由後端決定：Talent/GetAll 非部門主管只回傳自己；Talent/HighPerformer 限部門主管或 Admin
+    bool canBrowse = Session["leader"] is true || Session["empno"] is "7291";
+}
 
-<div ng-controller="TalentOptionCtrl" class="container" style="margin-top: 100px">
-    <div class="container">
+<div ng-controller="TalentOptionCtrl" class="tal-page">
 
-        <header class="mb-4 d-flex justify-content-between">
-            <h2>職涯規劃溝通與紀錄平台－人才培育資料庫</h2>
+    @* ---------- Hero ---------- *@
+    <section class="tal-hero">
+        <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+        <div class="tal-hero-row">
             <div>
-                <a class="btn btn-outline-primary btn-lg mr-2" href="~/" role="button">返回</a>
+                <div class="tal-eyebrow"><i class="bi bi-diagram-3"></i> 職涯規劃溝通與紀錄平台</div>
+                <h2>人才培育資料庫</h2>
+                <p class="sub">盤點經歷、看見優勢，一起規劃下一步的成長路徑。</p>
             </div>
-        </header>
-
-        <div class="row text-center">
-            <div class="col-sm-2">
-                <input type="submit" value="成功典範" ng-click="TalentSuccessExample()" class="btn btn-outline-primary" style="text-align:center" />
-            </div>
-            @if (Session["leader"] is true || Session["empno"] is "7291")
+            <a class="tal-btn tal-btn-glass" href="~/" role="button"><i class="bi bi-house-door"></i> 返回首頁</a>
+        </div>
+        <div class="tal-chips">
+            @if (canBrowse)
             {
-                <div class="col-sm-2">
-                    <input type="submit" value="High Performers Pool" ng-click="TalentHighPerformers()" class="btn btn-outline-primary" style="text-align:center" />
-                </div>
-                <div class="col-sm-2">
-                    <h4 class="panel-title btn btn-outline-primary">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                            條件篩選
-                        </a>
-                    </h4>
-                </div>
-                @*<div class="col-sm-2 text-right">
-                    <label>請選擇年度績效檔案：</label>
-                </div>
-                <div class="col-sm-4">
-                    <div class="row text-left">
-                        <div class="col-sm-10">
-                            <input class="form-control" type="file" name="importFile" id="importFile" />
-                        </div>
-                        <div class="col-sm-1">
-                            <input class="btn btn-primary" id="btnUpload" type="button" value="上傳" />
-                        </div>
-                    </div>
-                </div>*@
+                <span class="tal-chip"><i class="bi bi-people"></i> 目前顯示 <b>{{data.length || 0}}</b> 位</span>
+                <span class="tal-chip" ng-if="selectedGroup"><i class="bi bi-funnel"></i> {{selectedGroup}}</span>
             }
+            else
+            {
+                <span class="tal-chip"><i class="bi bi-person-badge"></i> 個人資料檢視</span>
+            }
+            <span class="tal-chip"><i class="bi bi-hand-index-thumb"></i> 點選照片查看完整資料</span>
         </div>
-        <div class="row justify-content-center text-center">
-            <br />
-        </div>
+    </section>
 
-        @if (Session["leader"] is true || Session["empno"] is "7291")
+    @* ---------- 功能磚 ---------- *@
+    <div class="tal-tiles">
+        <button type="button" class="tal-tile" ng-click="TalentSuccessExample()">
+            <span class="ico g-amber"><i class="bi bi-trophy"></i></span>
+            <span><b>成功典範</b><em>技術經理、計畫經理、組長的養成路徑</em></span>
+        </button>
+        @if (canBrowse)
         {
-            <div id="collapseOne" class="panel-collapse collapse in">
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="row">
-                            <div class="card">
-                                @*<h5 class="card-header">條件查詢</h5>*@
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="row">
-                                            <div class="col-sm-3">
-                                                <label class="form-check-label" for="inlineCheckbox1">年齡：</label>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <label class="form-check-label" for="inlineCheckbox1">公司年資：</label>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <label class="form-check-label" for="inlineCheckbox1">教育程度：</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            @*onkeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))" <-- 避免輸入英文字母'e'*@
-                                            <div class="col-sm-3">
-                                                <input class="col-md-4" type="number" data-ng-model="filter.age1" onkeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))" />
-                                                <label>~</label>
-                                                <input class="col-md-4" type="number" data-ng-model="filter.age2" onkeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))" />
-                                                <label>歲</label>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <input class="col-md-4" type="number" data-ng-model="filter.companyYear1" onkeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))" />
-                                                <label>~</label>
-                                                <input class="col-md-4" type="number" data-ng-model="filter.companyYear2" onkeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))" />
-                                                <label>年</label>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <select class="form-select w-50" id="SelectedEducational" name="SelectedEducational" data-ng-model="filter.educational">
-                                                    <option ng-repeat="educational in educationals" value="{{educational}}">{{educational}}</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-3">
-                                                <label class="form-check-label" for="inlineCheckbox1">曾任職等：</label>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <label class="form-check-label" for="inlineCheckbox1">當前職等：</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-3">
-                                                <select class="form-select w-50" id="SelectedSeniority" name="SelectedSeniority" data-ng-model="filter.seniority">
-                                                    <option ng-repeat="seniority in senioritys" value="{{seniority}}">{{seniority}}</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <select class="form-select w-50" id="SelectedNowPosition" name="SelectedNowPosition" data-ng-model="filter.nowPosition">
-                                                    <option ng-repeat="seniority in senioritys" value="{{seniority}}">{{seniority}}</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <input type="submit" value="確定" ng-click="ConditionFilter(filter)" class="btn btn-warning float-right" style="text-align:center" />
-                                </div>
-                            </div>
+            <button type="button" class="tal-tile" ng-click="TalentHighPerformers()">
+                <span class="ico g-indigo"><i class="bi bi-rocket-takeoff"></i></span>
+                <span><b>High Performers Pool</b><em>高績效人才與培養規劃</em></span>
+            </button>
+            <a class="tal-tile" data-toggle="collapse" href="#collapseOne" role="button" aria-expanded="false" aria-controls="collapseOne">
+                <span class="ico g-teal"><i class="bi bi-sliders"></i></span>
+                <span><b>條件篩選</b><em>依年齡、年資、學歷、職等查詢</em></span>
+            </a>
+        }
+    </div>
+
+    @if (canBrowse)
+    {
+        @* ---------- 條件篩選 ---------- *@
+        <div id="collapseOne" class="collapse">
+            <div class="tal-card">
+                <div class="tal-card-head">
+                    <h5 class="tal-card-title"><span class="dot g-teal"><i class="bi bi-sliders"></i></span>條件篩選</h5>
+                    <span class="tal-muted">設定條件後按「套用篩選」</span>
+                </div>
+                <div class="tal-filter-grid">
+                    @*onkeypress 避免輸入英文字母'e'*@
+                    <div>
+                        <label class="tal-label">年齡</label>
+                        <div class="tal-range">
+                            <input class="tal-input" type="number" data-ng-model="filter.age1" onkeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))" />
+                            <span>~</span>
+                            <input class="tal-input" type="number" data-ng-model="filter.age2" onkeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))" />
+                            <span>歲</span>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="row justify-content-center text-center">
-                <br />
-            </div>
-
-            <div class="chartmenu mb-5">
-                <div class="col-sm-2">
-                    <label for="SelectGroup">請選擇組別</label>
-                </div>
-                <div class="col-sm-6">
-                    <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
-                        <option ng-repeat="group in groups" ng-class="{'highlight-select': group == 'High Performer' || group == '全部顯示'|| group == '設計' || group == '規劃'|| group == '專管'|| group == '營運'|| group == '智慧軌道創新小組'|| group == '行政組'|| group == '計畫管理組'}" value="{{group}}">{{group}}</option>
-                    </select>
-                </div>
-                <div class="col-sm-4">
-                    <div class="text-right">
-                        <input class="input-medium search-query" type="text" placeholder="搜尋員編或姓名" data-ng-model="name" />
-                        <input class="btn btn-primary" type="button" value="搜尋" ng-click="SearchByName(selectedGroup, name)" />
+                    <div>
+                        <label class="tal-label">公司年資</label>
+                        <div class="tal-range">
+                            <input class="tal-input" type="number" data-ng-model="filter.companyYear1" onkeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))" />
+                            <span>~</span>
+                            <input class="tal-input" type="number" data-ng-model="filter.companyYear2" onkeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))" />
+                            <span>年</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="tal-label" for="SelectedEducational">教育程度</label>
+                        <select class="tal-select" id="SelectedEducational" name="SelectedEducational" data-ng-model="filter.educational">
+                            <option ng-repeat="educational in educationals" value="{{educational}}">{{educational || '不限'}}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="tal-label" for="SelectedSeniority">曾任職等</label>
+                        <select class="tal-select" id="SelectedSeniority" name="SelectedSeniority" data-ng-model="filter.seniority">
+                            <option ng-repeat="seniority in senioritys" value="{{seniority}}">{{seniority}}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="tal-label" for="SelectedNowPosition">當前職等</label>
+                        <select class="tal-select" id="SelectedNowPosition" name="SelectedNowPosition" data-ng-model="filter.nowPosition">
+                            <option ng-repeat="seniority in senioritys" value="{{seniority}}">{{seniority}}</option>
+                        </select>
                     </div>
                 </div>
-            </div>
-        }
-
-        <div class="row justify-content-center text-center">
-            <div class="col-lg-2 col-sm-2" ng-repeat="user in data">
-                <img type="submit" value={{user.name}} ng-click="TalentRecord(user.empno)" ng-src="Content/CV/{{user.pic}}.jpg" onerror="this.onerror=null;this.src='Content/CV/0000.jpg'" class="img-thumbnail" alt="{{user.name}}">
-                <input type="submit" value={{user.name}} ng-click="TalentRecord(user.empno)" class="btn btn-warning" style="text-align:center" />
+                <div class="text-right mt-3">
+                    <button type="button" class="tal-btn tal-btn-primary" ng-click="ConditionFilter(filter)"><i class="bi bi-check2-circle"></i> 套用篩選</button>
+                </div>
             </div>
         </div>
 
+        @* ---------- 組別與搜尋 ---------- *@
+        <div class="tal-toolbar">
+            <div class="grow">
+                <label class="tal-label" for="SelectGroup">組別</label>
+                <select class="tal-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
+                    <option ng-repeat="group in groups" ng-class="{'highlight-select': group == 'High Performer' || group == '全部顯示'|| group == '設計' || group == '規劃'|| group == '專管'|| group == '營運'|| group == '智慧軌道創新小組'|| group == '行政組'|| group == '計畫管理組'}" value="{{group}}">{{group}}</option>
+                </select>
+            </div>
+            <div class="tal-search">
+                <label class="tal-label">搜尋</label>
+                <div class="box">
+                    <i class="bi bi-search"></i>
+                    <input class="tal-input" type="text" placeholder="輸入員編或姓名，按 Enter 搜尋" data-ng-model="name" ng-keyup="$event.keyCode === 13 && SearchByName(selectedGroup, name)" />
+                </div>
+            </div>
+            <button type="button" class="tal-btn tal-btn-primary" ng-click="SearchByName(selectedGroup, name)"><i class="bi bi-search"></i> 搜尋</button>
+        </div>
+    }
+
+    @* ---------- 人員卡片 ---------- *@
+    <div class="tal-people">
+        <div class="tal-person" ng-repeat="user in data" ng-click="TalentRecord(user.empno)" ng-style="{'animation-delay': ($index < 24 ? $index * 35 : 0) + 'ms'}" title="查看 {{user.name}} 的資料">
+            <div class="photo">
+                <img ng-src="Content/CV/{{user.pic}}.jpg" onerror="this.onerror=null;this.src='Content/CV/0000.jpg'" alt="{{user.name}}">
+                <div class="view"><i class="bi bi-eye"></i> 查看資料</div>
+            </div>
+            <div class="name">{{user.name}}</div>
+            <div class="meta">
+                {{user.empno}}<span ng-if="user.group"> · {{user.group}}</span>
+            </div>
+            <div class="mt-1" ng-if="user.pic == '0000'"><span class="tal-badge"><i class="bi bi-file-earmark-x"></i> 尚未上傳履歷</span></div>
+        </div>
     </div>
+
+    <div class="tal-empty" ng-if="data && data.length === 0">
+        <i class="bi bi-person-x"></i>
+        沒有符合條件的人員
+    </div>
+
 </div>
 
 @section Scripts {

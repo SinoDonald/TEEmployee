@@ -348,8 +348,8 @@ app.controller('AdminCtrl', ['$scope', '$window', 'appService', '$rootScope', fu
     // 更新通知 <-- 培文
     $scope.UpdateNotify = () => {
         appService.UpdateNotify({}).then((ret) => {
-            if (ret.data) {
-                console.log(ret.data);
+            if (ret.data && ret.data.message) {
+                alert(ret.data.message); // 非5、11月:「目前非考核月份」; 成功:「通知已更新」
             }
         });
     }

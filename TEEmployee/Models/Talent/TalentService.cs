@@ -216,6 +216,13 @@ namespace TEEmployee.Models.Talent
             return ret;
         }
         /// <summary>
+        /// 員工本人儲存「自我發展規劃」(只更新 future 欄位)
+        /// </summary>
+        public bool SaveFuture(string empno, string future)
+        {
+            return (_talentRepository as TalentRepository).SaveFuture(empno, future);
+        }
+        /// <summary>
         /// 刪除人才資料庫
         /// </summary>
         /// <returns></returns>

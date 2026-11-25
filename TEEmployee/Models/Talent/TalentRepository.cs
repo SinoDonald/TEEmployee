@@ -852,6 +852,29 @@ namespace TEEmployee.Models.Talent
             return userCV;
         }
         /// <summary>
+        /// 員工本人儲存「自我發展規劃」：只更新 future 欄位，不動主管填寫的規劃進程、待發展能力等
+        /// </summary>
+        public bool SaveFuture(string empno, string future)
+        {
+            bool ret = false;
+            try
+            {
+                _conn.Open();
+                using (var tran = _conn.BeginTransaction())
+                {
+                    // 員編忽略前導 0 比對 (與 Permissions.SameEmpno 一致)
+                    string sql = @"UPDATE userCVExtra SET future=@future WHERE ltrim(empno, '0')=ltrim(@empno, '0')";
+                    ret = _conn.Execute(sql, new { empno = empno.Trim(), future }, tran) > 0;
+                    tran.Commit();
+                }
+                _conn.Close();
+            }
+            catch (Exception) { ret = false; }
+            finally { if (_conn.State != System.Data.ConnectionState.Closed) _conn.Close(); }
+
+            return ret;
+        }
+        /// <summary>
         /// 刪除人才資料庫
         /// </summary>
         /// <returns></returns>
@@ -919,7 +942,7 @@ namespace TEEmployee.Models.Talent
         public void MapCvProperty(CV cv)
         {
             var cvRaws = GetCVStringList(cv.empno);
-            cv.age = CvRawExtractor.ExtractAge(cvRaws);
+            cv.age = CvRawExtractor.ExtractAge(cvRaws); // 匯入時歲數 + 經過年數
             cv.educational = CvRawExtractor.ExtractEducation(cvRaws);
             cv.expertise = CvRawExtractor.ExtractExpertise(cvRaws);
             cv.academic = CvRawExtractor.ExtractAcademic(cvRaws);

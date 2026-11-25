@@ -5,145 +5,556 @@
 }
 
 @section Styles {
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300&display=swap" rel="stylesheet">
+    @* 本模組用到較新的圖示，載入 bootstrap-icons 1.11.3（與版面的 1.5.0 圖示編碼相同，不影響既有圖示） *@
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
     <style>
-        body {
-            /*background-color: linen;*/
+        /* ======================================================
+           人才培育資料庫 新版樣式（2026-11-25）
+           所有子頁（TalentOption / TalentRecord / TalentHighPerformers / TalentSuccessExample）共用
+           類別一律以 tal- 開頭，避免影響版面其他元件
+           ====================================================== */
+        .tal-page {
+            --tal-ink: #1e293b;
+            --tal-muted: #64748b;
+            --tal-line: #e5e9f2;
+            --tal-soft: #f5f7fb;
+            --tal-card: #ffffff;
+            --tal-indigo: #4f46e5;
+            --tal-violet: #7c3aed;
+            --tal-teal: #0d9488;
+            --tal-sky: #0ea5e9;
+            --tal-amber: #f59e0b;
+            --tal-rose: #e11d48;
+            --tal-lime: #65a30d;
+            --tal-radius: 18px;
+            margin-top: 96px;
+            margin-bottom: 110px;
+            color: var(--tal-ink);
+            font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
         }
 
-        header {
-            margin-top: 100px;
+        .tal-page h1, .tal-page h2, .tal-page h3, .tal-page h4, .tal-page h5 { font-family: inherit; }
+
+        /* ---------- Hero ---------- */
+        .tal-hero {
+            position: relative;
+            overflow: hidden;
+            border-radius: 26px;
+            padding: 32px 36px 28px;
+            color: #fff;
+            background: linear-gradient(120deg, #312e81, #4f46e5, #7c3aed, #0d9488);
+            background-size: 300% 300%;
+            animation: tal-gradient 16s ease infinite;
+            box-shadow: 0 18px 40px -18px rgba(79, 70, 229, .6);
         }
 
-        .chartmenu {
+        .tal-hero.compact { padding: 24px 30px 22px; }
+
+        @@keyframes tal-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .tal-hero .blob {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .13);
+            animation: tal-float 9s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .tal-hero .b1 { width: 240px; height: 240px; right: -70px; top: -90px; }
+        .tal-hero .b2 { width: 120px; height: 120px; right: 200px; bottom: -60px; animation-delay: -3s; }
+        .tal-hero .b3 { width: 56px; height: 56px; right: 130px; top: 26px; animation-delay: -6s; background: rgba(255,255,255,.22); }
+
+        @@keyframes tal-float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-14px) scale(1.06); }
+        }
+
+        .tal-hero-row {
+            position: relative;
             display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
         }
 
-            .chartmenu div {
-                flex: 1;
-                margin: 0 20px;
-            }
-
-        .top-btn {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            z-index: 99;
-        }
-        /* .back-btn {
-            position: fixed;
-            bottom: 40px;
-            right: 120px;
-            z-index: 99;
-        }*/
-        .highlight-select {
-            background-color: papayawhip;
+        .tal-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .82rem;
+            letter-spacing: 1.5px;
+            opacity: .85;
+            margin-bottom: 6px;
         }
 
-        .bar div {
-            height: 50vh;
+        .tal-hero h2 {
+            font-weight: 800;
+            font-size: 2rem;
+            margin: 0 0 6px;
+            letter-spacing: .5px;
         }
 
-        .wrapper {
+        .tal-hero .sub { opacity: .9; margin: 0; }
+
+        .tal-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .tal-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .18);
+            backdrop-filter: blur(6px);
+            font-size: .9rem;
+            white-space: nowrap;
+        }
+
+        .tal-chip b { font-variant-numeric: tabular-nums; }
+
+        /* ---------- Buttons ---------- */
+        .tal-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: 0;
+            font-weight: 600;
+            font-size: .95rem;
+            cursor: pointer;
+            text-decoration: none !important;
+            transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+        }
+
+        .tal-btn:hover { transform: translateY(-2px); }
+        .tal-btn:active { transform: translateY(0); }
+
+        .tal-btn-glass { background: rgba(255,255,255,.18); color: #fff !important; border: 1px solid rgba(255,255,255,.35); }
+        .tal-btn-glass:hover { background: rgba(255,255,255,.28); }
+
+        .tal-btn-primary { background: linear-gradient(135deg, var(--tal-indigo), var(--tal-violet)); color: #fff !important; box-shadow: 0 10px 20px -10px rgba(79,70,229,.8); }
+        .tal-btn-light { background: #fff; color: var(--tal-ink) !important; border: 1px solid var(--tal-line); }
+        .tal-btn-light:hover { border-color: #c7cde0; }
+        .tal-btn-sm { padding: 7px 14px; font-size: .88rem; border-radius: 10px; }
+
+        /* ---------- Action tiles ---------- */
+        .tal-tiles {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            grid-auto-rows: minmax(200px, auto);
-            margin-top: 100px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin: 22px 0 6px;
         }
 
-            .wrapper > div {
-                background-color: #f2f2f2;
-            }
-
-        .box1 {
-            grid-column: 1 / 2;
-            grid-row: 1 / 2;
-        }
-
-        .box2 {
-            grid-column: 2 / 3;
-            grid-row: 1 / 2;
-        }
-
-        .box3 {
-            grid-column: 1 / 2;
-            grid-row: 2 / 5;
+        .tal-tile {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+            background: var(--tal-card);
+            border: 1px solid var(--tal-line);
+            border-radius: 16px;
+            color: var(--tal-ink) !important;
+            text-decoration: none !important;
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+            transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+        }
+
+        .tal-tile:hover { transform: translateY(-3px); box-shadow: 0 14px 28px -16px rgba(30,41,59,.35); border-color: transparent; }
+        .tal-tile:focus { outline: none; box-shadow: 0 0 0 3px rgba(79,70,229,.25); }
+
+        .tal-tile .ico {
+            flex: 0 0 46px;
+            height: 46px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            font-size: 1.35rem;
+            color: #fff;
+        }
+
+        .tal-tile b { display: block; font-size: 1rem; }
+        .tal-tile em { font-style: normal; font-size: .8rem; color: var(--tal-muted); }
+
+        .g-amber { background: linear-gradient(135deg, #fbbf24, #f97316); }
+        .g-indigo { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+        .g-teal { background: linear-gradient(135deg, #14b8a6, #0ea5e9); }
+        .g-rose { background: linear-gradient(135deg, #fb7185, #e11d48); }
+
+        /* ---------- Card / section ---------- */
+        .tal-card {
+            background: var(--tal-card);
+            border: 1px solid var(--tal-line);
+            border-radius: var(--tal-radius);
+            padding: 20px 22px;
+            margin-top: 18px;
+            box-shadow: 0 6px 18px -14px rgba(30,41,59,.25);
+        }
+
+        .tal-card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .tal-card-title {
+            display: flex;
+            align-items: center;
             gap: 10px;
+            font-size: 1.08rem;
+            font-weight: 700;
+            margin: 0;
         }
 
-        .box4 {
-            grid-column: 2 / 3;
-            grid-row: 2 / 5;
+        .tal-card-title .dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .tal-muted { color: var(--tal-muted); font-size: .85rem; }
+
+        .tal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: .76rem;
+            font-weight: 600;
+            background: var(--tal-soft);
+            color: var(--tal-muted);
+            border: 1px solid var(--tal-line);
+        }
+
+        .tal-badge.edit { background: #eef2ff; color: var(--tal-indigo); border-color: #c7d2fe; }
+
+        /* ---------- Form controls ---------- */
+        .tal-label { display: block; font-size: .82rem; font-weight: 600; color: var(--tal-muted); margin-bottom: 6px; }
+
+        .tal-input, .tal-select, .tal-textarea {
+            display: block;
+            width: 100%;
+            padding: 9px 12px;
+            border-radius: 12px;
+            border: 2px solid var(--tal-line);
+            background: #fff;
+            color: var(--tal-ink);
+            font-size: .95rem;
+            transition: border-color .15s ease, box-shadow .15s ease;
+        }
+
+        .tal-input:focus, .tal-select:focus, .tal-textarea:focus { outline: none; border-color: var(--tal-indigo); box-shadow: 0 0 0 4px rgba(79,70,229,.12); }
+        .tal-input[readonly], .tal-textarea[readonly] { background: var(--tal-soft); color: #475569; }
+        .tal-textarea { resize: vertical; line-height: 1.7; }
+
+        .tal-range { display: flex; align-items: center; gap: 8px; }
+        .tal-range .tal-input { text-align: center; }
+        .tal-range span { color: var(--tal-muted); white-space: nowrap; }
+
+        .tal-filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px 18px;
+        }
+
+        /* ---------- Toolbar ---------- */
+        .tal-toolbar {
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 12px;
+            margin-top: 22px;
         }
 
-        .box5 {
-            grid-column: 1 / 3;
-            grid-row: 5 / 7;
+        .tal-toolbar .grow { flex: 1 1 240px; }
+
+        .tal-search { flex: 1 1 260px; max-width: 420px; }
+        .tal-search .box { position: relative; }
+        .tal-search i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--tal-muted); }
+        .tal-search .tal-input { padding-left: 38px; }
+
+        .highlight-select { background-color: #eef2ff; font-weight: 600; }
+
+        /* ---------- People grid ---------- */
+        .tal-people {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
         }
 
-        p {
-            margin: 0;
-            padding: 2px;
-        }
-
-        h2 {
-            margin: 0;
-        }
-
-        h4 {
-            margin: 0;
+        .tal-person {
+            position: relative;
+            background: #fff;
+            border: 1px solid var(--tal-line);
+            border-radius: 18px;
+            padding: 12px 12px 14px;
             text-align: center;
-            padding: 10px;
-            background-color: #a9a9a9;
-            margin-bottom: 10px;
+            cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease;
+            animation: tal-rise .45s ease both;
         }
 
-        .exp {
-            flex: 1 0 auto;
+        .tal-person:hover { transform: translateY(-5px); box-shadow: 0 18px 30px -18px rgba(79,70,229,.55); }
+
+        .tal-person .photo {
+            position: relative;
+            overflow: hidden;
+            border-radius: 14px;
+            aspect-ratio: 3 / 4;
+            background: var(--tal-soft);
         }
 
-        .textblock {
-            margin: 2em;
+        .tal-person .photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+        .tal-person:hover .photo img { transform: scale(1.05); }
+
+        .tal-person .photo .view {
+            position: absolute;
+            inset: auto 0 0 0;
+            padding: 8px;
+            font-size: .8rem;
+            color: #fff;
+            background: linear-gradient(to top, rgba(30,27,75,.85), transparent);
+            opacity: 0;
+            transition: opacity .2s ease;
         }
 
-        .outer {
+        .tal-person:hover .photo .view { opacity: 1; }
+
+        .tal-person .name { margin: 10px 0 2px; font-weight: 700; font-size: 1.02rem; }
+        .tal-person .meta { font-size: .78rem; color: var(--tal-muted); }
+
+        @@keyframes tal-rise {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tal-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--tal-muted);
+            border: 2px dashed var(--tal-line);
+            border-radius: 18px;
+            margin-top: 20px;
+        }
+
+        .tal-empty i { font-size: 2rem; display: block; margin-bottom: 6px; }
+
+        /* ---------- Profile (TalentRecord) ---------- */
+        .tal-profile {
+            position: relative;
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 26px;
+            align-items: center;
+        }
+
+        .tal-profile .avatar {
+            width: 150px;
+            aspect-ratio: 3 / 4;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 4px solid rgba(255,255,255,.6);
+            box-shadow: 0 14px 30px -12px rgba(0,0,0,.45);
+            background: rgba(255,255,255,.2);
+        }
+
+        .tal-profile .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .tal-profile.three { grid-template-columns: 150px 1fr minmax(220px, 300px); }
+
+        .tal-glass {
+            align-self: stretch;
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.25);
+            border-radius: 16px;
+            padding: 14px 16px 6px;
+            max-height: 230px;
+            overflow-y: auto;
+        }
+
+        .tal-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+            max-width: 560px;
+        }
+
+        .tal-stat {
+            background: rgba(255,255,255,.16);
+            border: 1px solid rgba(255,255,255,.25);
+            border-radius: 14px;
+            padding: 10px 14px;
+        }
+
+        .tal-stat small { display: block; opacity: .8; font-size: .78rem; }
+        .tal-stat b { font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+        /* tabs */
+        .tal-tabs {
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 6px;
+            margin: 22px 0 4px;
+            background: #fff;
+            border: 1px solid var(--tal-line);
+            border-radius: 16px;
+            list-style: none;
+        }
+
+        .tal-tabs li { flex: 1 1 150px; }
+
+        .tal-tabs a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 14px;
+            border-radius: 12px;
+            color: var(--tal-muted) !important;
+            font-weight: 600;
+            text-decoration: none !important;
+            transition: background .15s ease, color .15s ease;
+        }
+
+        .tal-tabs a:hover { background: var(--tal-soft); color: var(--tal-ink) !important; }
+        .tal-tabs a.active { background: linear-gradient(135deg, var(--tal-indigo), var(--tal-violet)); color: #fff !important; box-shadow: 0 10px 18px -12px rgba(79,70,229,.9); }
+
+        .tal-page .tab-pane.fade { transition: opacity .25s linear; }
+
+        /* table */
+        .tal-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .tal-table th { font-size: .8rem; color: var(--tal-muted); font-weight: 600; text-align: left; padding: 8px 12px; background: var(--tal-soft); }
+        .tal-table th:first-child { border-radius: 10px 0 0 10px; }
+        .tal-table th:last-child { border-radius: 0 10px 10px 0; }
+        .tal-table td { padding: 10px 12px; border-bottom: 1px solid var(--tal-line); }
+        .tal-table tr:last-child td { border-bottom: 0; }
+
+        /* performance */
+        .tal-perf { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+        .tal-perf div { text-align: center; padding: 14px 6px; border-radius: 14px; background: var(--tal-soft); font-weight: 700; font-size: 1.05rem; min-height: 54px; }
+        .tal-perf div:nth-child(1) { background: #eef2ff; color: #4338ca; }
+
+        /* tags */
+        .tal-skill-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+        .tal-skill-col { background: var(--tal-soft); border-radius: 14px; padding: 14px; }
+        .tal-skill-col h6 { font-weight: 700; margin: 0 0 10px; display: flex; align-items: center; gap: 6px; }
+        .tal-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .tal-tag { display: inline-block; padding: 5px 11px; border-radius: 999px; background: #fff; border: 1px solid var(--tal-line); font-size: .86rem; }
+        .tal-tag.indigo { background: #eef2ff; border-color: #c7d2fe; color: #3730a3; }
+        .tal-tag.teal { background: #f0fdfa; border-color: #99f6e4; color: #115e59; }
+        .tal-tag.amber { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+
+        /* timeline */
+        .tal-timeline { list-style: none; margin: 0; padding: 0 0 0 22px; position: relative; }
+        .tal-timeline::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: linear-gradient(var(--tal-indigo), var(--tal-teal)); border-radius: 2px; }
+        .tal-timeline li { position: relative; padding: 6px 0 10px 8px; }
+        .tal-timeline li::before { content: ""; position: absolute; left: -20px; top: 12px; width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 3px solid var(--tal-indigo); }
+        .tal-timeline.teal li::before { border-color: var(--tal-teal); }
+
+        .tal-hero .tal-timeline::before { background: rgba(255,255,255,.5); }
+        .tal-hero .tal-timeline li::before { background: transparent; border-color: #fff; }
+
+        /* planning grid */
+        .tal-plan { display: grid; grid-template-columns: 120px repeat(3, minmax(0, 1fr)); gap: 10px; align-items: center; }
+        .tal-plan .lbl { font-weight: 700; color: var(--tal-muted); font-size: .88rem; }
+        .tal-plan .tal-input { text-align: center; }
+
+        .tal-note { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 10px; background: #fffbeb; color: #92400e; font-size: .85rem; border: 1px solid #fde68a; }
+
+        .tal-pdf { margin-top: 14px; border-radius: 14px; overflow: hidden; border: 1px solid var(--tal-line); }
+
+        /* sticky action bar */
+        .tal-actionbar {
+            position: fixed;
+            left: 50%;
+            bottom: 22px;
+            transform: translateX(-50%);
+            z-index: 1020;
+            display: flex;
             gap: 10px;
+            padding: 10px;
+            border-radius: 18px;
+            background: rgba(255,255,255,.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--tal-line);
+            box-shadow: 0 18px 40px -16px rgba(30,41,59,.45);
         }
 
-        .inner {
+        /* ---------- High performers ---------- */
+        .tal-hp {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .tal-hp .photo { cursor: pointer; border-radius: 16px; overflow: hidden; aspect-ratio: 3 / 4; background: var(--tal-soft); }
+        .tal-hp .photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease; }
+        .tal-hp .photo:hover img { transform: scale(1.05); }
+
+        .tal-criteria { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; margin-top: 12px; }
+
+        .tal-check {
             display: flex;
-            flex-direction: row;
-            /*   gap: 10px; */
-            justify-content: space-around;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 2px solid var(--tal-line);
+            cursor: pointer;
+            font-size: .9rem;
+            transition: border-color .15s ease, background .15s ease;
         }
 
-            .inner p {
-                /*   flex: 1; */
-                width: 30%;
-                flex-direction: row;
-                background-color: #dcdcdc;
-                text-align: center;
-                word-wrap: break-word;
-            }
+        .tal-check:hover { border-color: #c7d2fe; }
+        .tal-check input { width: 18px; height: 18px; accent-color: var(--tal-indigo); flex: 0 0 auto; }
+        .tal-check.on { border-color: var(--tal-indigo); background: #eef2ff; }
 
-        .btn-custom {
-            background-color: #adb5bd;
-            border-color: #adb5bd;
-            color: #000;
+        .tal-progress { height: 8px; border-radius: 99px; background: var(--tal-soft); overflow: hidden; width: 140px; }
+        .tal-progress span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--tal-amber), var(--tal-lime)); transition: width .25s ease; }
+
+        /* ---------- Success example ---------- */
+        .tal-example img { max-width: 100%; border-radius: 14px; }
+
+        /* ---------- Responsive ---------- */
+        @@media (max-width: 767.98px) {
+            .tal-hero { padding: 24px 20px; }
+            .tal-hero h2 { font-size: 1.5rem; }
+            .tal-profile, .tal-profile.three, .tal-hp { grid-template-columns: 1fr; }
+            .tal-profile .avatar { width: 120px; }
+            .tal-skill-grid { grid-template-columns: 1fr; }
+            .tal-perf { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .tal-plan { grid-template-columns: 1fr 1fr 1fr; }
+            .tal-plan .lbl { grid-column: 1 / -1; }
         }
 
-        .middle {
-            float: none;
-            display: inline-block;
-            vertical-align: middle;
+        @@media (prefers-reduced-motion: reduce) {
+            .tal-hero, .tal-hero .blob, .tal-person { animation: none !important; }
         }
     </style>
 }

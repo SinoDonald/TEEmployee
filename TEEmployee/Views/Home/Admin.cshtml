@@ -1,298 +1,1230 @@
 ﻿@{
     ViewBag.Title = "Admin";
+    var adminName = Session["empname"] != null ? Session["empname"].ToString() : "管理員";
 }
 
 @section Styles {
-
+    @* 本頁用到較新的圖示，載入 bootstrap-icons 1.11.3（與版面的 1.5.0 圖示編碼相同，不影響既有圖示） *@
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
     <style>
-        header {
-            margin-top: 100px;
+        /* ===== Admin 管理頁（2026-11 新版 UI）=====
+           所有樣式都以 .adm 前綴，避免影響其他頁面 */
+        .adm {
+            --adm-ink: #1f2a37;
+            --adm-muted: #6b7280;
+            --adm-card: #ffffff;
+            --adm-line: #e8ecf3;
+            --adm-lime: #9cc42a;
+            --adm-teal: #14b8a6;
+            --adm-blue: #3b82f6;
+            --adm-violet: #8b5cf6;
+            --adm-amber: #f59e0b;
+            --adm-rose: #f43f5e;
+            --adm-radius: 18px;
+            margin-top: 96px;
+            margin-bottom: 48px;
+            color: var(--adm-ink);
+            font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
         }
 
-        h4.lime {
-            /* Font color set to white */
-            color: white;
-            /* Background color set to lemon green */
-            background-color: #b3d334; /* Lemon green, you might need to adjust this to get the exact shade you want */
-            /* Rounded corners */
-            border-radius: 15px; /* This creates rounded corners; adjust as needed */
-            /* Since no border is requested, we don't include the border property */
-            /* Padding to ensure the background extends around the text nicely */
-            padding: 15px;
-            /* Margins for some spacing around the element */
-            /* Ensures the background spans the content width */
-            max-width: fit-content;
-            margin-top: 1em;
-            margin-bottom: 1em;
+        /* ---------- Hero ---------- */
+        .adm-hero {
+            position: relative;
+            overflow: hidden;
+            border-radius: 26px;
+            padding: 34px 36px 30px;
+            color: #fff;
+            background: linear-gradient(120deg, #84cc16, #14b8a6, #3b82f6, #8b5cf6);
+            background-size: 300% 300%;
+            animation: adm-gradient 14s ease infinite;
+            box-shadow: 0 18px 40px -18px rgba(20, 184, 166, .55);
         }
 
-        .modal-content {
-            padding: 16px;
-            text-align: center;
+        @@keyframes adm-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        .customBtn {
-            background-color: #04AA6D;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            cursor: pointer;
+        .adm-hero .blob {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .16);
+            animation: adm-float 9s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .adm-hero .b1 { width: 220px; height: 220px; right: -60px; top: -70px; }
+        .adm-hero .b2 { width: 120px; height: 120px; right: 180px; bottom: -50px; animation-delay: -3s; }
+        .adm-hero .b3 { width: 60px; height: 60px; right: 120px; top: 30px; animation-delay: -6s; background: rgba(255,255,255,.25); }
+
+        @@keyframes adm-float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-14px) scale(1.06); }
+        }
+
+        .adm-hero h2 {
+            font-weight: 800;
+            font-size: 2rem;
+            margin: 0 0 6px;
+            letter-spacing: .5px;
+        }
+
+        .adm-hero .wave {
+            display: inline-block;
+            transform-origin: 70% 70%;
+            animation: adm-wave 2.4s ease-in-out infinite;
+        }
+
+        @@keyframes adm-wave {
+            0%, 60%, 100% { transform: rotate(0); }
+            10%, 30% { transform: rotate(16deg); }
+            20%, 40% { transform: rotate(-8deg); }
+        }
+
+        .adm-hero .sub { opacity: .92; margin: 0; }
+
+        .adm-hero .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .adm-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .2);
+            backdrop-filter: blur(6px);
+            font-size: .9rem;
+            white-space: nowrap;
+        }
+
+        .adm-chip b { font-variant-numeric: tabular-nums; }
+
+        /* ---------- Toolbar ---------- */
+        .adm-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            margin: 24px 0 8px;
+        }
+
+        .adm-search {
+            position: relative;
+            flex: 1 1 260px;
+            max-width: 380px;
+        }
+
+        .adm-search i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--adm-muted);
+        }
+
+        .adm-search input {
             width: 100%;
-            opacity: 0.9;
+            border: 2px solid var(--adm-line);
+            border-radius: 999px;
+            padding: 9px 16px 9px 40px;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
         }
 
-        .cancelbtn, .deletebtn {
-            float: left;
-            width: 50%;
+        .adm-search input:focus {
+            border-color: var(--adm-teal);
+            box-shadow: 0 0 0 4px rgba(20, 184, 166, .15);
         }
 
-        /* Add a color to the cancel button */
-        .cancelbtn {
-            background-color: #ccc;
-            color: black;
-        }
-            .cancelbtn:hover {
-                opacity: 1;
-            }
-        /* Add a color to the delete button */
-        .deletebtn {
-            background-color: #f44336;
-        }
-            .deletebtn:hover {
-                opacity: 1;
-            }
+        .adm-pills { display: flex; flex-wrap: wrap; gap: 6px; }
 
-        /* Clear floats */
-        .clearfix::after {
-            content: "";
-            clear: both;
-            display: table;
+        .adm-pill {
+            border: 0;
+            border-radius: 999px;
+            padding: 7px 14px;
+            background: #f1f5f9;
+            color: var(--adm-ink);
+            font-size: .9rem;
+            cursor: pointer;
+            transition: background .2s, color .2s, transform .15s;
+        }
+
+        .adm-pill:hover { transform: translateY(-2px); }
+        .adm-pill.active { background: var(--adm-ink); color: #fff; }
+
+        /* ---------- Layout ---------- */
+        .adm-main {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 280px;
+            gap: 22px;
+            align-items: start;
+        }
+
+        @@media (max-width: 991px) {
+            .adm-main { grid-template-columns: 1fr; }
+        }
+
+        .adm-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .adm-section {
+            background: var(--adm-card);
+            border: 1px solid var(--adm-line);
+            border-radius: var(--adm-radius);
+            padding: 20px;
+            box-shadow: 0 6px 20px -12px rgba(15, 23, 42, .25);
+            animation: adm-pop .5s cubic-bezier(.2, .9, .3, 1.2) both;
+            transition: box-shadow .25s, transform .25s;
+        }
+
+        .adm-section:hover {
+            box-shadow: 0 16px 32px -16px rgba(15, 23, 42, .3);
+        }
+
+        .adm-section.wide { grid-column: 1 / -1; }
+        .adm-section.hidden-by-filter { display: none; }
+
+        @@keyframes adm-pop {
+            from { opacity: 0; transform: translateY(16px) scale(.98); }
+            to { opacity: 1; transform: none; }
+        }
+
+        .adm-section-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .adm-icon {
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            font-size: 1.3rem;
+            color: #fff;
+            transition: transform .3s;
+        }
+
+        .adm-section:hover .adm-icon { transform: rotate(-8deg) scale(1.08); }
+
+        .adm-section-head h4 {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .adm-section-head small { color: var(--adm-muted); }
+
+        .c-lime { background: linear-gradient(135deg, #a3e635, #65a30d); }
+        .c-teal { background: linear-gradient(135deg, #2dd4bf, #0d9488); }
+        .c-blue { background: linear-gradient(135deg, #60a5fa, #2563eb); }
+        .c-violet { background: linear-gradient(135deg, #a78bfa, #7c3aed); }
+        .c-amber { background: linear-gradient(135deg, #fbbf24, #d97706); }
+        .c-rose { background: linear-gradient(135deg, #fb7185, #e11d48); }
+
+        /* ---------- Action tiles ---------- */
+        .adm-tiles {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .adm-tile {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+            text-align: left;
+            border: 1px solid var(--adm-line);
+            border-radius: 14px;
+            background: #fafbfd;
+            padding: 12px 14px;
+            color: var(--adm-ink);
+            cursor: pointer;
+            text-decoration: none !important;
+            transition: transform .18s, box-shadow .18s, border-color .18s, background .18s;
+        }
+
+        .adm-tile i { font-size: 1.25rem; }
+        .adm-tile span { font-weight: 600; font-size: .95rem; }
+        .adm-tile em { font-style: normal; font-size: .78rem; color: var(--adm-muted); }
+
+        .adm-tile:hover {
+            transform: translateY(-3px);
+            background: #fff;
+            border-color: transparent;
+            box-shadow: 0 10px 20px -10px rgba(15, 23, 42, .35);
+            color: var(--adm-ink);
+        }
+
+        .adm-tile:active { transform: translateY(0) scale(.97); }
+        .adm-tile:focus-visible { outline: 3px solid rgba(20, 184, 166, .5); outline-offset: 2px; }
+
+        .t-teal i { color: var(--adm-teal); }
+        .t-blue i { color: var(--adm-blue); }
+        .t-violet i { color: var(--adm-violet); }
+        .t-amber i { color: var(--adm-amber); }
+        .t-lime i { color: #65a30d; }
+        .t-slate i { color: #475569; }
+
+        .adm-ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            background: rgba(20, 184, 166, .28);
+            animation: adm-ripple .6s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @@keyframes adm-ripple { to { transform: scale(4); opacity: 0; } }
+
+        /* ---------- Drop zones ---------- */
+        .adm-drop {
+            position: relative;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 22px 16px;
+            text-align: center;
+            color: var(--adm-muted);
+            background: #f8fafc;
+            transition: border-color .2s, background .2s, transform .2s;
+            cursor: pointer;
+        }
+
+        .adm-drop i {
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 4px;
+            transition: transform .3s;
+        }
+
+        .adm-drop:hover, .adm-drop.dragover {
+            border-color: var(--adm-teal);
+            background: #f0fdfa;
+            color: #0f766e;
+        }
+
+        .adm-drop:hover i, .adm-drop.dragover i { transform: translateY(-4px); }
+        .adm-drop.dragover { transform: scale(1.02); }
+        .adm-drop.has-file { border-style: solid; border-color: var(--adm-lime); background: #f7fee7; color: #3f6212; }
+
+        /* 讓檔案欄位覆蓋整個區塊：可點選、也可直接拖放 */
+        .adm-drop input[type=file] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .adm-drop .fname { display: block; margin-top: 4px; font-weight: 600; word-break: break-all; }
+
+        .adm-form-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .adm-input {
+            flex: 1 1 140px;
+            border: 2px solid var(--adm-line);
+            border-radius: 12px;
+            padding: 8px 12px;
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        .adm-input:focus { border-color: var(--adm-teal); }
+
+        .adm-mini {
+            border: 0;
+            border-radius: 999px;
+            padding: 5px 11px;
+            font-size: .8rem;
+            background: #eef2ff;
+            color: #4338ca;
+            cursor: pointer;
+            transition: transform .15s;
+        }
+
+        .adm-mini:hover { transform: scale(1.06); }
+
+        .adm-submit {
+            border: 0;
+            border-radius: 12px;
+            padding: 9px 20px;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #2dd4bf, #0d9488);
+            box-shadow: 0 8px 16px -8px rgba(13, 148, 136, .7);
+            cursor: pointer;
+            transition: transform .15s, box-shadow .15s;
+        }
+
+        .adm-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 20px -8px rgba(13, 148, 136, .8); }
+
+        /* ---------- 資料檢視（開發者）表格 ---------- */
+        .adm-dev-badge {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 1px 8px;
+            border-radius: 999px;
+            background: #ede9fe;
+            color: #6d28d9;
+            font-size: .72rem;
+            font-weight: 700;
+            vertical-align: middle;
+        }
+
+        .adm-dt {
+            margin-top: 14px;
+            border: 1px solid var(--adm-line);
+            border-radius: 14px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .adm-dt-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--adm-line);
+        }
+
+        .adm-dt-title { font-weight: 700; }
+        .adm-dt-title i { color: var(--adm-violet); margin-right: 4px; }
+        .adm-dt-count { color: var(--adm-muted); font-size: .85rem; margin-left: 6px; }
+
+        .adm-dt-tools { display: flex; gap: 8px; align-items: center; flex: 1 1 260px; justify-content: flex-end; }
+
+        .adm-dt-search {
+            position: relative;
+            flex: 0 1 300px;
+        }
+
+        .adm-dt-search i { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--adm-muted); }
+
+        .adm-dt-search input {
+            width: 100%;
+            border: 2px solid var(--adm-line);
+            border-radius: 999px;
+            padding: 6px 12px 6px 32px;
+            outline: none;
+            font-size: .88rem;
+        }
+
+        .adm-dt-search input:focus { border-color: var(--adm-violet); }
+
+        .adm-dt-close {
+            border: 0;
+            background: transparent;
+            color: var(--adm-muted);
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .adm-dt-close:hover { color: var(--adm-rose); }
+
+        .adm-dt-scroll { max-height: 460px; overflow: auto; }
+
+        .adm-dt table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .84rem; }
+
+        .adm-dt th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background: #f1f5f9;
+            color: #334155;
+            text-align: left;
+            padding: 8px 10px;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            border-bottom: 1px solid var(--adm-line);
+        }
+
+        .adm-dt th:hover { background: #e2e8f0; }
+        .adm-dt th .sort { color: var(--adm-violet); margin-left: 2px; }
+
+        .adm-dt td {
+            padding: 7px 10px;
+            border-bottom: 1px solid #f1f5f9;
+            white-space: nowrap;
+            max-width: 280px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: top;
+        }
+
+        .adm-dt tbody tr.dt-row:hover td { background: #faf5ff; }
+        .adm-dt td.yes { color: #16a34a; font-weight: 700; }
+        .adm-dt td.no { color: #cbd5e1; }
+
+        .adm-dt mark { padding: 0; background: #fde68a; border-radius: 3px; }
+
+        .adm-dt .nest-btn {
+            border: 0;
+            border-radius: 999px;
+            padding: 1px 9px;
+            background: #ede9fe;
+            color: #6d28d9;
+            font-size: .78rem;
+            cursor: pointer;
+        }
+
+        .adm-dt .nest-row td { background: #faf5ff; white-space: normal; max-width: none; }
+        .adm-dt .nest-row table { background: #fff; border: 1px solid var(--adm-line); border-radius: 10px; font-size: .8rem; }
+        .adm-dt .nest-row th { position: static; cursor: default; }
+
+        .adm-dt-empty { padding: 28px 16px; text-align: center; color: var(--adm-muted); }
+        .adm-dt-empty i { display: block; font-size: 1.8rem; margin-bottom: 4px; }
+        .adm-dt-more { padding: 8px 14px; color: var(--adm-muted); font-size: .8rem; background: #f8fafc; }
+
+        /* ---------- Danger zone ---------- */
+        .adm-danger {
+            background: repeating-linear-gradient(-45deg, #fff, #fff 14px, #fff5f6 14px, #fff5f6 28px);
+            border-color: #fecdd3;
+        }
+
+        .adm-danger .adm-section-head small { color: #be123c; }
+
+        .adm-db-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+        }
+
+        .adm-db {
+            border: 1.5px solid #fecdd3;
+            background: #fff;
+            color: #be123c;
+            border-radius: 12px;
+            padding: 9px 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .2s, color .2s, transform .2s;
+        }
+
+        .adm-db i { margin-right: 4px; }
+
+        .adm-db:hover {
+            background: #e11d48;
+            color: #fff;
+            animation: adm-shake .35s ease;
+        }
+
+        @@keyframes adm-shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px) rotate(-1deg); }
+            75% { transform: translateX(3px) rotate(1deg); }
+        }
+
+        /* ---------- Activity feed ---------- */
+        .adm-feed {
+            position: sticky;
+            top: 96px;
+            background: var(--adm-card);
+            border: 1px solid var(--adm-line);
+            border-radius: var(--adm-radius);
+            padding: 18px;
+            box-shadow: 0 6px 20px -12px rgba(15, 23, 42, .25);
+        }
+
+        .adm-feed h5 { font-weight: 700; font-size: 1rem; margin-bottom: 12px; }
+        .adm-feed ul { list-style: none; padding: 0; margin: 0; max-height: 420px; overflow: auto; }
+
+        .adm-feed li {
+            display: flex;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--adm-line);
+            font-size: .88rem;
+            animation: adm-slide .35s ease both;
+        }
+
+        .adm-feed li:last-child { border-bottom: 0; }
+        .adm-feed li time { color: var(--adm-muted); font-variant-numeric: tabular-nums; flex: 0 0 auto; }
+        .adm-feed .empty { color: var(--adm-muted); text-align: center; padding: 26px 0; }
+        .adm-feed .empty i { font-size: 2rem; display: block; margin-bottom: 6px; animation: adm-float 4s ease-in-out infinite; }
+
+        @@keyframes adm-slide { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+
+        .adm-tip {
+            margin-top: 14px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: #fefce8;
+            color: #854d0e;
+            font-size: .82rem;
+        }
+
+        /* ---------- Toast ---------- */
+        .adm-toasts {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .adm-toast {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 240px;
+            max-width: 360px;
+            padding: 12px 16px;
+            border-radius: 14px;
+            background: #0f172a;
+            color: #fff;
+            box-shadow: 0 14px 28px -12px rgba(0, 0, 0, .5);
+            animation: adm-toast-in .35s cubic-bezier(.2, .9, .3, 1.3) both;
+            font-size: .9rem;
+        }
+
+        .adm-toast.out { animation: adm-toast-out .3s ease forwards; }
+        .adm-toast i { font-size: 1.15rem; color: #5eead4; }
+        .adm-toast.danger i { color: #fda4af; }
+
+        @@keyframes adm-toast-in { from { opacity: 0; transform: translateY(20px) scale(.9); } to { opacity: 1; transform: none; } }
+        @@keyframes adm-toast-out { to { opacity: 0; transform: translateX(40px); } }
+
+        /* ---------- Modal (重置確認) ---------- */
+        #exampleModal .modal-content {
+            border: 0;
+            border-radius: 24px;
+            padding: 28px 24px 22px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        #exampleModal .warn-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 2.1rem;
+            color: #e11d48;
+            background: #ffe4e6;
+            animation: adm-pulse 1.6s ease-in-out infinite;
+        }
+
+        @@keyframes adm-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, .35); }
+            50% { box-shadow: 0 0 0 14px rgba(225, 29, 72, 0); }
+        }
+
+        #exampleModal h3 { font-weight: 800; margin-bottom: 6px; }
+        #exampleModal p { color: var(--adm-muted); }
+
+        .adm-modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .adm-modal-actions button {
+            flex: 1;
+            border: 0;
+            border-radius: 14px;
+            padding: 12px 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .adm-cancel { background: #f1f5f9; color: var(--adm-ink); }
+        .adm-cancel:hover { background: #e2e8f0; }
+
+        .adm-hold {
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+            background: #fb7185;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+
+        .adm-hold .fill {
+            position: absolute;
+            inset: 0;
+            width: 0;
+            background: #be123c;
+            pointer-events: none;
+        }
+
+        .adm-hold .label { position: relative; }
+
+        @@media (prefers-reduced-motion: reduce) {
+            .adm *, .adm-hero, .adm-toast { animation: none !important; transition: none !important; }
         }
     </style>
 }
 
-<div ng-controller="AdminCtrl" class="container">
+<div ng-controller="AdminCtrl" class="container adm">
 
-    <header>
-        <h2>Admin261103</h2>
+    @* ===== Hero ===== *@
+    <header class="adm-hero">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+        <div class="blob b3"></div>
+        <h2><span id="admGreeting">你好</span>，@adminName <span class="wave">👋</span></h2>
+        <p class="sub">歡迎回到軌道二部員工平台管理中心，今天想整理哪個模組呢？</p>
+        <div class="meta">
+            <span class="adm-chip"><i class="bi bi-calendar3"></i> <b id="admDate">--</b></span>
+            <span class="adm-chip"><i class="bi bi-clock"></i> <b id="admClock">--:--:--</b></span>
+            <span class="adm-chip"><i class="bi bi-lightning-charge"></i> 本頁已執行 <b id="admCount">0</b> 項動作</span>
+            <span class="adm-chip"><i class="bi bi-tag"></i> v261103</span>
+        </div>
     </header>
 
-    <div>
-        <h4 class="lime">帳號管理</h4>
-        @*<div class="d-inline-block">
-                <button type="button" class="btn btn-outline-info" name="addRow" ng-click="UpdateUser()">
-                    更新員工名單
-                </button>
-            </div>*@
-
-        <div class="d-inline-block">
-            <label for="input" class="btn btn-outline-danger m-0">匯入組織表</label>
-            <input id="input" style="visibility:hidden;" type="file">
+    @* ===== 搜尋 / 分類篩選 ===== *@
+    <div class="adm-toolbar">
+        <div class="adm-search">
+            <i class="bi bi-search"></i>
+            <input id="admSearch" type="text" placeholder="搜尋功能…（按 / 快速聚焦）" autocomplete="off" />
+        </div>
+        <div class="adm-pills" id="admPills">
+            <button type="button" class="adm-pill active" data-cat="all">全部</button>
+            <button type="button" class="adm-pill" data-cat="account">帳號</button>
+            <button type="button" class="adm-pill" data-cat="assess">考核</button>
+            <button type="button" class="adm-pill" data-cat="schedule">行事曆</button>
+            <button type="button" class="adm-pill" data-cat="data">資料工具</button>
+            <button type="button" class="adm-pill" data-cat="danger">危險區</button>
         </div>
     </div>
-    <div>
-        <h4 class="lime">自評表與考核</h4>
-        <div class="col-sm-4">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="text-success">KPI檔</h4>
+
+    <div class="adm-main">
+        <div class="adm-sections" id="admSections">
+
+            @* ----- 帳號管理 ----- *@
+            <section class="adm-section" data-cat="account" data-keywords="帳號管理 匯入組織表 excel 員工 組織" style="animation-delay:.05s">
+                <div class="adm-section-head">
+                    <div class="adm-icon c-lime"><i class="bi bi-people-fill"></i></div>
                     <div>
-                        <form id="formKpiElem">
-                            <input type="file" id="kpifilepicker" name="kpifiles">
-                            <input type="text" id="kpiyear" name="year" placeholder="請輸入西元年分" />
-                            <input type="submit" value="上傳" />
-                        </form>
+                        <h4>帳號管理</h4>
+                        <small>匯入組織表，更新員工群組與主管設定</small>
                     </div>
                 </div>
+                <div class="adm-drop" id="orgDrop">
+                    <i class="bi bi-file-earmark-spreadsheet"></i>
+                    點選或拖放 <b>組織表 Excel</b> 到這裡
+                    <span class="fname" data-default="（第一欄標題需為 empno）">（第一欄標題需為 empno）</span>
+                    <input id="input" type="file" accept=".xlsx,.xls" title="匯入組織表" />
+                </div>
+            </section>
+
+            @* ----- 自評表與考核 ----- *@
+            <section class="adm-section" data-cat="assess" data-keywords="自評表與考核 kpi 上傳 年份" style="animation-delay:.1s">
+                <div class="adm-section-head">
+                    <div class="adm-icon c-teal"><i class="bi bi-clipboard2-check-fill"></i></div>
+                    <div>
+                        <h4>自評表與考核</h4>
+                        <small>上傳 KPI 檔</small>
+                    </div>
+                </div>
+                <form id="formKpiElem">
+                    <div class="adm-drop" id="kpiDrop">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                        點選或拖放 <b>KPI 檔</b>
+                        <span class="fname" data-default="尚未選擇檔案">尚未選擇檔案</span>
+                        <input type="file" id="kpifilepicker" name="kpifiles" title="KPI檔" />
+                    </div>
+                    <div class="adm-form-row">
+                        <input type="text" id="kpiyear" name="year" class="adm-input" placeholder="請輸入西元年分" inputmode="numeric" />
+                        <button type="button" class="adm-mini" data-year="0">今年</button>
+                        <button type="button" class="adm-mini" data-year="1">明年</button>
+                        <input type="submit" value="上傳" class="adm-submit" />
+                    </div>
+                </form>
+            </section>
+
+            @* ----- 年度行事曆目標 ----- *@
+            <section class="adm-section" data-cat="schedule" data-keywords="年度行事曆目標 累積進度 個人規劃簡報" style="animation-delay:.15s">
+                <div class="adm-section-head">
+                    <div class="adm-icon c-blue"><i class="bi bi-calendar2-week-fill"></i></div>
+                    <div>
+                        <h4>年度行事曆目標</h4>
+                        <small>重新計算進度、整理簡報資料夾</small>
+                    </div>
+                </div>
+                <div class="adm-tiles">
+                    <button type="button" class="adm-tile t-blue" ng-click="UpdateAllPercentComplete()" data-toast="更新累積進度">
+                        <i class="bi bi-graph-up-arrow"></i>
+                        <span>更新累積進度</span>
+                        <em>重算所有人完成率</em>
+                    </button>
+                    <button type="button" class="adm-tile t-violet" ng-click="UpdatePersonalPlan()" data-toast="更新個人規劃簡報">
+                        <i class="bi bi-easel2"></i>
+                        <span>更新個人規劃簡報</span>
+                        <em>搬移簡報到正確資料夾</em>
+                    </button>
+                </div>
+            </section>
+
+            @* ----- 其他 / 資料工具 ----- *@
+            <section class="adm-section" data-cat="data" data-keywords="其他 資料工具 維護 通知 log sql" style="animation-delay:.2s">
+                <div class="adm-section-head">
+                    <div class="adm-icon c-amber"><i class="bi bi-tools"></i></div>
+                    <div>
+                        <h4>維護工具</h4>
+                        <small>通知紀錄與一次性資料表調整</small>
+                    </div>
+                </div>
+                <div class="adm-tiles">
+                    <button type="button" class="adm-tile t-amber" ng-click="DeleteNotifyLog()" data-toast="刪除通知 Log 檔">
+                        <i class="bi bi-bell-slash"></i>
+                        <span>刪除通知 Log 檔</span>
+                        <em>清除通知紀錄</em>
+                    </button>
+                    <button type="button" class="adm-tile t-violet" ng-click="OneTimeSQL()" data-toast="One-time SQL">
+                        <i class="bi bi-terminal"></i>
+                        <span>One-time SQL</span>
+                        <em>一次性資料表調整</em>
+                    </button>
+                </div>
+            </section>
+
+            @* ----- 資料檢視（限系統管理員與 DbViewers 開發者名單，見 Models/Permissions.cs）----- *@
+            @if (TEEmployee.Models.Permissions.CanViewDb(Session))
+            {
+                <section class="adm-section wide" data-cat="data" data-keywords="資料檢視 開發者 檢視 userdb professiondb 員工 核心專業 搜尋" style="animation-delay:.22s">
+                    <div class="adm-section-head">
+                        <div class="adm-icon c-violet"><i class="bi bi-table"></i></div>
+                        <div>
+                            <h4>資料檢視 <span class="adm-dev-badge">開發者</span></h4>
+                            <small>檢視資料庫內容以便除錯（每次檢視都會留下存取紀錄）</small>
+                        </div>
+                    </div>
+                    <div class="adm-tiles">
+                        <button type="button" class="adm-tile t-slate" ng-click="ReviewUserDB(); viewer = 'user'" data-toast="檢視 UserDB">
+                            <i class="bi bi-people"></i>
+                            <span>檢視 UserDB</span>
+                            <em>員工與組織資料</em>
+                        </button>
+                        <button type="button" class="adm-tile t-blue" ng-click="ReviewProfessionDB(); viewer = 'profession'" data-toast="檢視 ProfessionDB">
+                            <i class="bi bi-award"></i>
+                            <span>檢視 ProfessionDB</span>
+                            <em>核心專業項目與評分</em>
+                        </button>
+                    </div>
+
+                    <div ng-if="viewer === 'user' && userDB">
+                        <div adm-data-table rows="userDB" title="user.db" on-close="$parent.viewer = null"></div>
+                    </div>
+                    <div ng-if="viewer === 'profession' && professionDB">
+                        <div adm-data-table rows="professionDB" title="profession.db" on-close="$parent.viewer = null"></div>
+                    </div>
+                </section>
+            }
+
+            @* ----- 資料庫重置（危險區）----- *@
+            <section class="adm-section wide adm-danger" data-cat="danger" data-keywords="資料庫重置 危險區 刪除 自評表 核心專業 行事曆 升等規劃 工作紀錄 我要抱抱 kpi 群組規劃 個人規劃 人才資料庫 拓展專業培養 票選活動" style="animation-delay:.25s">
+                <div class="adm-section-head">
+                    <div class="adm-icon c-rose"><i class="bi bi-exclamation-octagon-fill"></i></div>
+                    <div>
+                        <h4>資料庫重置</h4>
+                        <small>危險區：重置後資料無法復原，確認時需長按按鈕</small>
+                    </div>
+                </div>
+                <div class="adm-db-grid">
+                    <button type="button" class="adm-db" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '自評表'"><i class="bi bi-clipboard-x"></i>自評表</button>
+                    <button type="button" class="adm-db" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '核心專業'"><i class="bi bi-award"></i>核心專業</button>
+                    <button type="button" class="adm-db" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '行事曆'"><i class="bi bi-calendar-x"></i>行事曆</button>
+                    <button type="button" class="adm-db" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '升等規劃'"><i class="bi bi-ladder"></i>升等規劃</button>
+                    <button type="button" class="adm-db" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '工作紀錄'"><i class="bi bi-journal-x"></i>工作紀錄</button>
+                    <button type="button" class="adm-db" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '我要抱抱'"><i class="bi bi-chat-heart"></i>我要抱抱</button>
+                    <button type="button" class="adm-db" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = 'KPI'"><i class="bi bi-bullseye"></i>KPI</button>
+                    <button type="button" class="adm-db" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '群組規劃'"><i class="bi bi-diagram-3"></i>群組規劃</button>
+                    <button type="button" class="adm-db" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '個人規劃'"><i class="bi bi-person-x"></i>個人規劃</button>
+                    <button type="button" class="adm-db" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '人才資料庫'"><i class="bi bi-people"></i>人才資料庫</button>
+                    <button type="button" class="adm-db" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '拓展專業培養'"><i class="bi bi-mortarboard"></i>拓展專業培養</button>
+                    <button type="button" class="adm-db" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '票選活動'"><i class="bi bi-trophy"></i>票選活動</button>
+                </div>
+            </section>
+
+            <div class="adm-section wide" id="admNoResult" style="display:none; text-align:center; color:#6b7280">
+                <div style="font-size:2.4rem">🔍</div>
+                找不到符合的功能，換個關鍵字試試看？
             </div>
         </div>
 
-    </div>
-    @*<div>
-            <h4 class="lime">工作紀錄管控表</h4>
-            <button type="button" class="btn btn-outline-success" name="addRow" ng-click="InsertProjectItem()">
-                更新旬卡資料
-            </button>
-
-            <button type="button" class="btn btn-outline-warning" name="addRow" ng-click="CreateMonthlyRecord()">
-                建立本月工作紀錄表
-            </button>
-        </div>*@
-
-<div>
-    <h4 class="lime">年度行事曆目標</h4>
-    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="UpdateAllPercentComplete()">
-        更新累積進度
-    </button>
-    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="UpdatePersonalPlan()">
-        更新個人規劃簡報
-    </button>
-</div>
-
-    @*<div>
-            <h4 class="lime">人才培育資料庫</h4>
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="text-success">員工履歷Word檔(多檔)</h4>
-                            @using (Html.BeginForm("Uploaded", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                            {
-                                <input type="file" id="filepicker" name="files" multiple />
-                                <input type="submit" value="上傳" />
-                            }
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="text-success">員工經歷文字檔</h4>
-                            @using (Html.BeginForm("UploadExperience", "Talent", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                            {
-                                <input type="file" id="filepicker" name="file" />
-                                <input type="submit" value="上傳" />
-                            }
-                        </div>
-                    </div>
-                </div>
-
+        @* ===== 右側：本頁操作紀錄 ===== *@
+        <aside class="adm-feed">
+            <h5><i class="bi bi-activity"></i> 本頁操作紀錄</h5>
+            <ul id="admFeed">
+                <li class="empty" id="admFeedEmpty"><span style="width:100%"><i class="bi bi-stars"></i>還沒有任何操作，點個按鈕試試吧！</span></li>
+            </ul>
+            <div class="adm-tip">
+                <i class="bi bi-lightbulb"></i>
+                部分動作（更新累積進度、刪除通知 Log、One-time SQL）的結果只會寫在瀏覽器 Console（F12）。
             </div>
-        </div>*@
-
-<div>
-    <h4 class="lime">其他</h4>
-    <div class="row">
-        <div class="col-sm-1">
-            <a href='@Url.Action("DownloadUserDB", "Home")'>下載UserDB</a>
-        </div>
-        <div class="col-sm-1">
-            <a href='@Url.Action("DownloadProfessionDB", "Home")'>下載ProfessionDB</a>
-        </div>
+        </aside>
     </div>
-    <button type="button" class="btn btn-outline-secondary" name="addRow" ng-click="ReviewUserDB()">
-        檢視UserDB
-    </button>
-    <button type="button" class="btn btn-outline-primary" name="addRow" ng-click="ReviewProfessionDB()">
-        檢視ProfessionDB
-    </button>
-    @*<button type="button" class="btn btn-outline-dark" name="addRow" ng-click="UpdateNotify()">
-            更新通知
-        </button>*@
-    <button type="button" class="btn btn-outline-dark" name="addRow" ng-click="DeleteNotifyLog()">
-        刪除通知Log檔
-    </button>
-    <button type="button" class="btn btn-outline-dark" name="addRow" ng-click="OneTimeSQL()">
-        One-time SQL
-    </button>
-    @*<button type="button" class="btn btn-outline-dark" name="addRow" ng-click="OneTimeSQL2()">
-        One-time SQL 2
-    </button>
-    <button type="button" class="btn btn-outline-dark" name="addRow" ng-click="OneTimeSQL3()">
-        One-time SQL 3
-    </button>*@
-</div>
 
-<div>
-    <h4 class="lime">資料庫重置</h4>
-
-    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '自評表'">
-        自評表
-    </button>
-    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '核心專業'">
-        核心專業
-    </button>
-    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '行事曆'">
-        行事曆
-    </button>
-    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '升等規劃'">
-        升等規劃
-    </button>
-    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '工作紀錄'">
-        工作紀錄
-    </button>
-    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '我要抱抱'">
-        我要抱抱
-    </button>
-    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = 'KPI'">
-        KPI
-    </button>
-    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '群組規劃'">
-        群組規劃
-    </button>
-    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '個人規劃'">
-        個人規劃
-    </button>
-    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '人才資料庫'">
-        人才資料庫
-    </button>
-    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '拓展專業培養'">
-        拓展專業培養
-    </button>
-    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ng-click="resetedDB = '票選活動'">
-        票選活動
-    </button>
-
-    <!--<button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteAssessemnt()">
-        自評表
-    </button>
-    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteProfession()">
-        核心專業
-    </button>
-    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteGSchedule()">
-        行事曆
-    </button>
-    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeletePromotion()">
-        升等規劃
-    </button>
-    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteTasklog()">
-        工作紀錄
-    </button>
-    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteForum()">
-        我要抱抱
-    </button>
-    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteKpi()">
-        KPI
-    </button>-->
-    @*培文*@
-    <!--<button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteGroupPlan()">
-        群組規劃
-    </button>
-    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeletePersonalPlan()">
-        個人規劃
-    </button>
-    <button type="button" class="btn btn-outline-danger" name="addRow" ng-click="DeleteTalent()">
-        人才資料庫
-    </button>-->
-</div>
-
-    <!-- Button trigger modal -->
-    @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        Launch demo modal
-    </button>*@
-
-    <!-- Modal -->
+    @* ===== 重置確認視窗（長按確認）===== *@
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-body">
-                    <h1>重置【{{resetedDB}}】</h1>
-                    <p>確定要重置{{resetedDB}}資料庫?</p>
-
-                    <div class="clearfix">
-                        <button type="button" class="customBtn cancelbtn" data-dismiss="modal">取消</button>
-                        <button type="button" class="customBtn deletebtn" data-dismiss="modal" ng-click="ResetDB(resetedDB)">確定</button>
-                    </div>
-                </div>                
+                <div class="warn-icon"><i class="bi bi-trash3-fill"></i></div>
+                <h3 id="exampleModalLabel">重置【{{resetedDB}}】</h3>
+                <p>確定要重置 <b>{{resetedDB}}</b> 資料庫？此動作無法復原。</p>
+                <div class="adm-modal-actions">
+                    <button type="button" class="adm-cancel" data-dismiss="modal">取消</button>
+                    <button type="button" class="adm-hold" hold-confirm="ResetDB(resetedDB)" hold-label="{{resetedDB}}">
+                        <span class="fill"></span>
+                        <span class="label">長按 1.5 秒確定重置</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-
+    <div class="adm-toasts" id="admToasts" aria-live="polite"></div>
 </div>
 
 @section Scripts {
     <script src="@TEEmployee.Models.HtmlHelperExtensions.Versioned(Url, "~/Scripts/WebApp/Home/AdminCtrl.js")"></script>
     <script src="~/Scripts/read-excel-file.min.js"></script>
+    <script>
+        (function () {
+            'use strict';
+
+            // ---------- 共用：Toast 與操作紀錄 ----------
+            var count = 0;
+            function pad(n) { return (n < 10 ? '0' : '') + n; }
+            function nowText() { var d = new Date(); return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()); }
+
+            function toast(msg, danger) {
+                var box = document.getElementById('admToasts');
+                if (!box) return;
+                var el = document.createElement('div');
+                el.className = 'adm-toast' + (danger ? ' danger' : '');
+                el.innerHTML = '<i class="bi ' + (danger ? 'bi-exclamation-triangle-fill' : 'bi-check-circle-fill') + '"></i><span></span>';
+                el.querySelector('span').textContent = msg;
+                box.appendChild(el);
+                setTimeout(function () { el.classList.add('out'); }, 2800);
+                setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 3150);
+            }
+
+            function log(action, danger) {
+                var feed = document.getElementById('admFeed');
+                var empty = document.getElementById('admFeedEmpty');
+                if (!feed) return;
+                if (empty) empty.parentNode.removeChild(empty);
+                var li = document.createElement('li');
+                li.innerHTML = '<time></time><span></span>';
+                li.querySelector('time').textContent = nowText();
+                li.querySelector('span').textContent = (danger ? '⚠️ ' : '') + action;
+                feed.insertBefore(li, feed.firstChild);
+                count++;
+                var c = document.getElementById('admCount');
+                if (c) c.textContent = count;
+            }
+
+            window.admNotify = function (action, danger) {
+                toast((danger ? '已送出重置：' : '已送出：') + action, danger);
+                log(action, danger);
+            };
+
+            // ---------- 資料檢視表格（adm-data-table）：搜尋、排序、展開巢狀清單 ----------
+            if (window.angular) {
+                angular.module('app').directive('admDataTable', ['$sce', function ($sce) {
+                    var MAX_ROWS = 500;
+                    function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+                    function toText(v) {
+                        if (v === null || v === undefined) return '';
+                        if (typeof v === 'object') return JSON.stringify(v);
+                        return String(v);
+                    }
+                    function columnsOf(list) {
+                        var cols = [];
+                        (list || []).slice(0, 50).forEach(function (r) {
+                            if (r && typeof r === 'object') Object.keys(r).forEach(function (k) {
+                                if (k.charAt(0) !== '$' && cols.indexOf(k) < 0) cols.push(k);
+                            });
+                        });
+                        return cols;
+                    }
+                    return {
+                        restrict: 'A',
+                        scope: { rows: '=', onClose: '&' }, // title 由 link 中的 attrs 取得（避免在 Razor 檔中使用小老鼠符號）
+                        template:
+                            '<div class="adm-dt">' +
+                            '  <div class="adm-dt-bar">' +
+                            '    <div><span class="adm-dt-title"><i class="bi bi-table"></i>{{title}}</span>' +
+                            '      <span class="adm-dt-count">{{filtered.length}} / {{rows.length}} 筆</span></div>' +
+                            '    <div class="adm-dt-tools">' +
+                            '      <div class="adm-dt-search"><i class="bi bi-search"></i>' +
+                            '        <input type="text" ng-model="q" ng-model-options="{ debounce: 150 }" ng-change="apply()" placeholder="搜尋任何欄位，例如員編、姓名" /></div>' +
+                            '      <button type="button" class="adm-dt-close" ng-click="onClose()" title="關閉"><i class="bi bi-x-lg"></i></button>' +
+                            '    </div>' +
+                            '  </div>' +
+                            '  <div class="adm-dt-empty" ng-if="rows.length === 0"><i class="bi bi-inbox"></i>沒有資料（或沒有檢視權限）</div>' +
+                            '  <div class="adm-dt-empty" ng-if="rows.length > 0 && filtered.length === 0"><i class="bi bi-search"></i>找不到符合「{{q}}」的資料</div>' +
+                            '  <div class="adm-dt-scroll" ng-if="filtered.length > 0">' +
+                            '    <table><thead><tr>' +
+                            '      <th ng-repeat="c in cols" ng-click="sortBy(c)">{{c}}<span class="sort" ng-if="sortKey === c">{{ sortDesc ? "▼" : "▲" }}</span></th>' +
+                            '    </tr></thead>' +
+                            '    <tbody ng-repeat="item in filtered | limitTo: max track by item.i">' +
+                            '      <tr class="dt-row">' +
+                            '        <td ng-repeat="c in cols" ng-class="cls(item.r[c])" title="{{text(item.r[c])}}">' +
+                            '          <button type="button" class="nest-btn" ng-if="isList(item.r[c])" ng-click="toggle(item, c)">{{item.r[c].length}} 筆 {{ open[item.i] === c ? "▾" : "▸" }}</button>' +
+                            '          <span ng-if="!isList(item.r[c])" ng-bind-html="show(item.r[c])"></span>' +
+                            '        </td>' +
+                            '      </tr>' +
+                            '      <tr class="nest-row" ng-if="open[item.i]"><td colspan="{{cols.length}}">' +
+                            '        <b>{{open[item.i]}}</b>' +
+                            '        <table><thead><tr><th ng-repeat="nc in nestCols(item.r[open[item.i]])">{{nc}}</th></tr></thead>' +
+                            '        <tbody><tr ng-repeat="n in item.r[open[item.i]]"><td ng-repeat="nc in nestCols(item.r[open[item.i]])" ng-bind-html="show(n[nc])"></td></tr></tbody></table>' +
+                            '      </td></tr>' +
+                            '    </tbody></table>' +
+                            '  </div>' +
+                            '  <div class="adm-dt-more" ng-if="filtered.length > max">只顯示前 {{max}} 筆，請用搜尋縮小範圍</div>' +
+                            '</div>',
+                        link: function (scope, elem, attrs) {
+                            scope.title = attrs.title;
+                            var index = [];
+                            var nestCache = {};
+                            scope.max = MAX_ROWS;
+                            scope.q = '';
+                            scope.open = {};
+                            scope.sortKey = null;
+                            scope.sortDesc = false;
+
+                            scope.$watch('rows', function (list) {
+                                list = Array.isArray(list) ? list : [];
+                                scope.cols = columnsOf(list);
+                                index = list.map(function (r, i) { return { i: i, r: r, s: toText(r).toLowerCase() }; });
+                                nestCache = {};
+                                scope.open = {};
+                                scope.apply();
+                            });
+
+                            scope.apply = function () {
+                                var q = (scope.q || '').trim().toLowerCase();
+                                var out = q ? index.filter(function (x) { return x.s.indexOf(q) >= 0; }) : index.slice();
+                                if (scope.sortKey) {
+                                    var k = scope.sortKey, d = scope.sortDesc ? -1 : 1;
+                                    out.sort(function (a, b) {
+                                        var x = a.r[k], y = b.r[k];
+                                        if (Array.isArray(x)) x = x.length;
+                                        if (Array.isArray(y)) y = y.length;
+                                        var nx = parseFloat(x), ny = parseFloat(y);
+                                        if (!isNaN(nx) && !isNaN(ny) && String(nx) === String(x).trim() && String(ny) === String(y).trim()) return (nx - ny) * d;
+                                        return toText(x).localeCompare(toText(y), 'zh-Hant') * d;
+                                    });
+                                }
+                                scope.filtered = out;
+                            };
+
+                            scope.sortBy = function (c) {
+                                if (scope.sortKey === c) scope.sortDesc = !scope.sortDesc;
+                                else { scope.sortKey = c; scope.sortDesc = false; }
+                                scope.apply();
+                            };
+
+                            scope.isList = function (v) { return Array.isArray(v); };
+                            scope.text = toText;
+                            scope.cls = function (v) { return v === true ? 'yes' : v === false ? 'no' : ''; };
+                            scope.toggle = function (item, c) { scope.open[item.i] = scope.open[item.i] === c ? null : c; };
+                            scope.nestCols = function (list) {
+                                var key = list;
+                                if (!nestCache.list || nestCache.list !== key) nestCache = { list: key, cols: columnsOf(list) };
+                                return nestCache.cols;
+                            };
+
+                            // 顯示值：布林轉 ✓ / ✗、物件轉 JSON，並標示搜尋關鍵字
+                            scope.show = function (v) {
+                                var t = v === true ? '✓' : v === false ? '✗' : toText(v);
+                                var q = (scope.q || '').trim().toLowerCase();
+                                if (!q || typeof v === 'boolean') return $sce.trustAsHtml(esc(t));
+                                // 先切段再逐段跳脫，避免把 HTML 實體切壞
+                                var h = '', lower = t.toLowerCase(), pos = 0, at;
+                                while ((at = lower.indexOf(q, pos)) >= 0) {
+                                    h += esc(t.substring(pos, at)) + '<mark>' + esc(t.substr(at, q.length)) + '</mark>';
+                                    pos = at + q.length;
+                                }
+                                return $sce.trustAsHtml(h + esc(t.substring(pos)));
+                            };
+                        }
+                    };
+                }]);
+            }
+
+            // ---------- 長按確認（AngularJS directive，掛在既有的 app 模組上）----------
+            if (window.angular) {
+                angular.module('app').directive('holdConfirm', ['$timeout', function ($timeout) {
+                    return {
+                        restrict: 'A',
+                        link: function (scope, elem, attrs) {
+                            var el = elem[0];
+                            var fill = el.querySelector('.fill');
+                            var label = el.querySelector('.label');
+                            var DURATION = 1500, start = 0, raf = 0, done = false;
+                            var defaultText = label.textContent;
+
+                            function reset() {
+                                cancelAnimationFrame(raf);
+                                start = 0;
+                                fill.style.width = '0';
+                                if (!done) label.textContent = defaultText;
+                            }
+
+                            function tick(t) {
+                                if (!start) start = t;
+                                var p = Math.min((t - start) / DURATION, 1);
+                                fill.style.width = (p * 100) + '%';
+                                label.textContent = p < 1 ? '繼續按住… ' + Math.ceil((1 - p) * DURATION / 100) / 10 + 's' : '重置中！';
+                                if (p < 1) { raf = requestAnimationFrame(tick); return; }
+                                done = true;
+                                var name = attrs.holdLabel;
+                                scope.$apply(function () { scope.$eval(attrs.holdConfirm); });
+                                window.admNotify(name, true);
+                                if (window.jQuery) jQuery('#exampleModal').modal('hide');
+                                $timeout(function () { done = false; reset(); }, 400);
+                            }
+
+                            function begin(e) {
+                                if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+                                if (e.type === 'keydown' && e.repeat) return;
+                                e.preventDefault();
+                                done = false;
+                                cancelAnimationFrame(raf);
+                                start = 0;
+                                raf = requestAnimationFrame(tick);
+                            }
+
+                            function end() { if (!done) reset(); }
+
+                            el.addEventListener('pointerdown', begin);
+                            el.addEventListener('keydown', begin);
+                            ['pointerup', 'pointerleave', 'pointercancel', 'keyup', 'blur'].forEach(function (ev) { el.addEventListener(ev, end); });
+                            if (window.jQuery) jQuery('#exampleModal').on('hidden.bs.modal', reset);
+                        }
+                    };
+                }]);
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                // ---------- 問候語與時鐘 ----------
+                var greet = document.getElementById('admGreeting');
+                var h = new Date().getHours();
+                greet.textContent = h < 5 ? '夜深了' : h < 11 ? '早安' : h < 14 ? '午安' : h < 18 ? '下午好' : '晚安';
+                var week = ['日', '一', '二', '三', '四', '五', '六'];
+                function clock() {
+                    var d = new Date();
+                    document.getElementById('admClock').textContent = nowText();
+                    document.getElementById('admDate').textContent = d.getFullYear() + '/' + pad(d.getMonth() + 1) + '/' + pad(d.getDate()) + '（' + week[d.getDay()] + '）';
+                }
+                clock();
+                setInterval(clock, 1000);
+
+                // ---------- 按鈕漣漪 + Toast ----------
+                document.querySelectorAll('.adm-tile').forEach(function (btn) {
+                    btn.addEventListener('click', function (e) {
+                        var r = btn.getBoundingClientRect();
+                        var size = Math.max(r.width, r.height);
+                        var s = document.createElement('span');
+                        s.className = 'adm-ripple';
+                        s.style.width = s.style.height = size + 'px';
+                        s.style.left = (e.clientX - r.left - size / 2) + 'px';
+                        s.style.top = (e.clientY - r.top - size / 2) + 'px';
+                        btn.appendChild(s);
+                        setTimeout(function () { s.remove(); }, 650);
+                        if (btn.dataset.toast) window.admNotify(btn.dataset.toast);
+                    });
+                });
+
+                // ---------- 搜尋與分類篩選 ----------
+                var search = document.getElementById('admSearch');
+                var pills = document.querySelectorAll('.adm-pill');
+                var sections = document.querySelectorAll('#admSections > section');
+                var noResult = document.getElementById('admNoResult');
+                var cat = 'all';
+
+                function applyFilter() {
+                    var q = search.value.trim().toLowerCase();
+                    var shown = 0;
+                    sections.forEach(function (s) {
+                        var okCat = cat === 'all' || s.dataset.cat === cat;
+                        var text = (s.dataset.keywords + ' ' + s.textContent).toLowerCase();
+                        var okQ = !q || text.indexOf(q) >= 0;
+                        var show = okCat && okQ;
+                        s.classList.toggle('hidden-by-filter', !show);
+                        if (show) shown++;
+                    });
+                    noResult.style.display = shown ? 'none' : 'block';
+                }
+
+                search.addEventListener('input', applyFilter);
+                pills.forEach(function (p) {
+                    p.addEventListener('click', function () {
+                        pills.forEach(function (x) { x.classList.remove('active'); });
+                        p.classList.add('active');
+                        cat = p.dataset.cat;
+                        applyFilter();
+                    });
+                });
+                document.addEventListener('keydown', function (e) {
+                    var tag = (e.target.tagName || '').toLowerCase();
+                    if (e.key === '/' && tag !== 'input' && tag !== 'textarea') { e.preventDefault(); search.focus(); }
+                    if (e.key === 'Escape' && e.target === search) { search.value = ''; applyFilter(); search.blur(); }
+                });
+
+                // ---------- 拖放區：顯示檔名、拖曳高亮 ----------
+                document.querySelectorAll('.adm-drop').forEach(function (zone) {
+                    var input = zone.querySelector('input[type=file]');
+                    var fname = zone.querySelector('.fname');
+                    ['dragenter', 'dragover'].forEach(function (ev) { zone.addEventListener(ev, function () { zone.classList.add('dragover'); }); });
+                    ['dragleave', 'drop'].forEach(function (ev) { zone.addEventListener(ev, function () { zone.classList.remove('dragover'); }); });
+                    input.addEventListener('change', function () {
+                        var f = input.files && input.files[0];
+                        zone.classList.toggle('has-file', !!f);
+                        fname.textContent = f ? '📄 ' + f.name : fname.dataset.default;
+                        if (f && input.id === 'input') window.admNotify('匯入組織表（' + f.name + '）');
+                    });
+                });
+
+                // ---------- KPI：今年/明年快速填入 ----------
+                document.querySelectorAll('.adm-mini[data-year]').forEach(function (b) {
+                    b.addEventListener('click', function () {
+                        var y = document.getElementById('kpiyear');
+                        y.value = new Date().getFullYear() + parseInt(b.dataset.year, 10);
+                        y.focus();
+                    });
+                });
+                var kpiForm = document.getElementById('formKpiElem');
+                kpiForm.addEventListener('submit', function () {
+                    var f = document.getElementById('kpifilepicker').files[0];
+                    window.admNotify('上傳 KPI 檔' + (f ? '（' + f.name + '）' : ''));
+                });
+            });
+        })();
+    </script>
 }

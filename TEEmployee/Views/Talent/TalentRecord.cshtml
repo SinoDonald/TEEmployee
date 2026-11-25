@@ -1,332 +1,285 @@
 ﻿@{
     ViewBag.Title = "TalentRecord";
+    // 規劃進程、待發展能力：只有部門主管 (Session["leader"]) 可編輯
+    // 自我發展規劃：員工本人或部門主管可編輯；後端 Talent/SaveResponse 本人只會更新這一欄
+    // 「儲存」按鈕：部門主管，或本人頁面才顯示
+    // 能看哪位員工由後端 Talent/Get 決定（非部門主管一律只回傳自己）
+    bool canEdit = Session["leader"] is true;
+    string selfEmpno = TEEmployee.Models.Permissions.NormalizeEmpno(TEEmployee.Models.Permissions.CurrentEmpno(Session));
 }
 
-<div ng-controller="TalentRecordCtrl" class="container">
+<div ng-controller="TalentRecordCtrl" class="tal-page" ng-init="selfEmpno = '@HttpUtility.JavaScriptStringEncode(selfEmpno)'">
 
-    @*<div class="container p-5 my-5 bg-dark text-white">*@
-    <div class="container p-5 my-5 bg-light">
-        <div class="box">
-            <div class="row">
-                <h2>人才培育資料庫</h2>
+    @* ---------- 個人概覽 ---------- *@
+    <section class="tal-hero">
+        <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+        <div class="tal-profile three">
+            <div class="avatar">
+                <img ng-src="Content/CV/{{user.empno}}.jpg" onerror="this.onerror=null;this.src='Content/CV/0000.jpg'" alt="{{user.name}}">
             </div>
-            <br />
-            <div class="row">
-                <div class="col-3">
-                    <img ng-src="Content/CV/{{user.empno}}.jpg" onerror="this.onerror=null;this.src='Content/CV/0000.jpg'" class="img-thumbnail" alt="{{user.name}}">
+            <div>
+                <div class="tal-eyebrow"><i class="bi bi-person-vcard"></i> 人才培育資料庫</div>
+                <h2>{{user.name}} <small style="font-size:1rem;opacity:.8;font-weight:600">{{user.empno}}</small></h2>
+                <div class="tal-stats">
+                    <div class="tal-stat"><small>年齡</small><b>{{user.age || '—'}}</b></div>
+                    <div class="tal-stat"><small>工作年資</small><b>{{user.workYears || '—'}}</b></div>
+                    <div class="tal-stat"><small>公司年資</small><b>{{user.companyYears || '—'}}</b></div>
                 </div>
-                <div class="col-3">
-                    <h3>姓名：{{user.name}}</h3>
-                    @*<h3>生日：{{user.birthday}}</h3>*@
-                    <h3>年齡：{{user.age}}</h3>
+            </div>
+            <div class="tal-glass">
+                <div class="tal-eyebrow"><i class="bi bi-ladder"></i> 職位經歷</div>
+                <ul class="tal-timeline">
+                    <li ng-repeat="seniority in user.seniority track by $index" ng-if="seniority">{{seniority}}</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    @* ---------- 分頁 ---------- *@
+    <ul class="nav tal-tabs" id="pills-tab" role="tablist">
+        <li role="presentation">
+            <a class="active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" title="學校、近五年考績、能力檢視、自我發展規劃">
+                <i class="bi bi-person-lines-fill"></i> 基本資料
+            </a>
+        </li>
+        <li role="presentation">
+            <a id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" title="職位經歷、專案經歷">
+                <i class="bi bi-briefcase"></i> 專案經歷
+            </a>
+        </li>
+        <li role="presentation">
+            <a id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false" title="規劃進程、專業證照、測評資料、待發展能力">
+                <i class="bi bi-signpost-split"></i> 未來規劃
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="pills-tabContent">
+
+        @* ======================== 基本資料 ======================== *@
+        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+
+            <div class="tal-card">
+                <div class="tal-card-head">
+                    <h5 class="tal-card-title"><span class="dot g-indigo"><i class="bi bi-mortarboard"></i></span>學歷</h5>
                 </div>
-                <div class="col-3">
-                    <h3>工作年資：{{user.workYears}}</h3>
-                    <h3>公司年資：{{user.companyYears}}</h3>
-                    <h3>職位經歷：</h3>
-                    <div ng-repeat="seniority in user.seniority track by $index">
-                        <h5>{{seniority}}</h5>
+                <table class="tal-table">
+                    <thead>
+                        <tr><th style="width:20%">學歷</th><th>學校</th><th>科系</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="educational in user.educational track by $index" ng-if="educational">
+                            <td><span class="tal-tag indigo">{{educational.split('　')[0]}}</span></td>
+                            <td>{{educational.split('　')[1]}}</td>
+                            <td>{{educational.split('　')[2]}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tal-card">
+                <div class="tal-card-head">
+                    <h5 class="tal-card-title"><span class="dot g-amber"><i class="bi bi-graph-up-arrow"></i></span>近五年考績</h5>
+                    <a class="tal-btn tal-btn-light tal-btn-sm" data-toggle="collapse" href="#collapseOne" role="button" aria-expanded="false" aria-controls="collapseOne"><i class="bi bi-eye"></i> 顯示 / 隱藏</a>
+                </div>
+                <div id="collapseOne" class="collapse">
+                    <div class="tal-perf">
+                        <div>{{user.performance[0]}}</div>
+                        <div>{{user.performance[1]}}</div>
+                        <div>{{user.performance[2]}}</div>
+                        <div>{{user.performance[3]}}</div>
+                        <div>{{user.performance[4]}}</div>
                     </div>
                 </div>
             </div>
-            <br />
-            <br />
-            <nav class="navbar navbar-light bg-light">
-                <ul class="nav mb-3 container-fluid justify-content-start" id="pills-tab" role="tablist">
-                    <li class="col text-center" role="presentation">
-                        <a class="btn btn-outline-warning btn-lg active" id="pills-home-tab" data-toggle="pill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="學校、近三年考績、能力檢視、自我發展規劃(由員工自己編輯)" href="#pills-home" role="button" aria-controls="pills-home" aria-selected="true">基本資料</a>
-                    </li>
-                    <li class="col text-center" role="presentation">
-                        <a class="btn btn-outline-warning btn-lg" id="pills-profile-tab" data-toggle="pill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="職位經歷、專案經歷" href="#pills-profile" role="button" aria-controls="pills-profile" aria-selected="false">專案經歷</a>
-                    </li>
-                    <li class="col text-center" role="presentation">
-                        <a class="btn btn-outline-warning btn-lg" id="pills-contact-tab" data-toggle="pill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="規劃進程、專業證照、測評資料、待發展能力" href="#pills-contact" role="button" aria-controls="pills-contact" aria-selected="false">未來規劃</a>
-                    </li>
-                </ul>
-            </nav>
+
+            <div class="tal-card">
+                <div class="tal-card-head">
+                    <h5 class="tal-card-title"><span class="dot g-teal"><i class="bi bi-stars"></i></span>能力檢視</h5>
+                </div>
+                <div class="tal-skill-grid">
+                    <div class="tal-skill-col">
+                        <h6><i class="bi bi-gear-wide-connected text-primary"></i> 領域技能</h6>
+                        <div class="tal-tags">
+                            <span class="tal-tag indigo" ng-repeat="domainSkill in user.domainSkill track by $index" ng-if="domainSkill">{{domainSkill}}</span>
+                        </div>
+                    </div>
+                    <div class="tal-skill-col">
+                        <h6><i class="bi bi-bullseye text-success"></i> 核心技能</h6>
+                        <div class="tal-tags">
+                            <span class="tal-tag teal" ng-repeat="coreSkill in user.coreSkill track by $index" ng-if="coreSkill">{{coreSkill}}</span>
+                        </div>
+                    </div>
+                    <div class="tal-skill-col">
+                        <h6><i class="bi bi-people text-warning"></i> 管理能力</h6>
+                        <div class="tal-tags">
+                            <span class="tal-tag amber" ng-repeat="manageSkill in user.manageSkill track by $index" ng-if="manageSkill">{{manageSkill}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tal-card">
+                <div class="tal-card-head">
+                    <h5 class="tal-card-title"><span class="dot g-rose"><i class="bi bi-pencil-square"></i></span>自我發展規劃</h5>
+                    <span class="tal-badge edit" ng-if="isSelf()"><i class="bi bi-pencil"></i> 由員工自己編輯</span>
+                    <span class="tal-badge" ng-if="!isSelf()"><i class="bi bi-person"></i> 由員工自己編輯</span>
+                </div>
+                @if (canEdit)
+                {
+                    <textarea class="tal-textarea" ng-model="user.future" name="SaveResponse" rows="4" placeholder="寫下你未來想發展的方向、想學的技能…">{{user.future}}</textarea>
+                }
+                else
+                {
+                    <textarea class="tal-textarea" ng-model="user.future" name="SaveResponse" rows="4" ng-readonly="!isSelf()" placeholder="寫下你未來想發展的方向、想學的技能…">{{user.future}}</textarea>
+                }
+            </div>
         </div>
 
-        <div class="tab-content" id="pills-tabContent">
-            <div class="tab-pane fade show active " id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                <div class="row">
-                    <div class="row">
-                        <div class="exp">
-                            <h4 class="inner">
-                                <span>學歷</span>
-                                <span>學校</span>
-                                <span>科系</span>
-                            </h4>
-                            <div class="container">
-                                <div ng-repeat="educational in user.educational track by $index">
-                                    <div class="row align-items-start">
-                                        <div class="col text-center">
-                                            <h5>{{educational.split('　')[0]}}</h5>
-                                        </div>
-                                        <div class="col text-center">
-                                            <h5>{{educational.split('　')[1]}}</h5>
-                                        </div>
-                                        <div class="col text-center">
-                                            <h5>{{educational.split('　')[2]}}</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+        @* ======================== 專案經歷 ======================== *@
+        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="tal-card">
+                        <div class="tal-card-head">
+                            <h5 class="tal-card-title"><span class="dot g-indigo"><i class="bi bi-ladder"></i></span>職位經歷</h5>
                         </div>
+                        <ul class="tal-timeline">
+                            <li ng-repeat="experience in user.experience track by $index" ng-if="experience">{{experience}}</li>
+                        </ul>
                     </div>
-                    <div class="row">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                                        近五年考績
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseOne" class="panel-collapse collapse in">
-                                <div class="panel-body">
-                                    <div class="inner">
-                                        <div class="col text-center">
-                                            <h5>{{user.performance[0]}}</h5>
-                                        </div>
-                                        <div class="col text-center">
-                                            <h5>{{user.performance[1]}}</h5>
-                                        </div>
-                                        <div class="col text-center">
-                                            <h5>{{user.performance[2]}}</h5>
-                                        </div>
-                                        <div class="col text-center">
-                                            <h5>{{user.performance[3]}}</h5>
-                                        </div>
-                                        <div class="col text-center">
-                                            <h5>{{user.performance[4]}}</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="tal-card">
+                        <div class="tal-card-head">
+                            <h5 class="tal-card-title"><span class="dot g-teal"><i class="bi bi-kanban"></i></span>專案經歷</h5>
                         </div>
+                        <ul class="tal-timeline teal">
+                            <li ng-repeat="project in user.project track by $index" ng-if="project">{{project}}</li>
+                        </ul>
                     </div>
-                    <div class="row">
-                        <h4>能力檢視</h4>
-                        <div class="col form-group">
-                            <h4>領域技能</h4>
-                            <div ng-repeat="domainSkill in user.domainSkill track by $index">
-                                <h5>{{domainSkill}}</h5>
-                            </div>
-                        </div>
-                        <div class="col form-group">
-                            <h4>核心技能</h4>
-                            <div ng-repeat="coreSkill in user.coreSkill track by $index">
-                                <h5>{{coreSkill}}</h5>
-                            </div>
-                        </div>
-                        <div class="col form-group">
-                            <h4>管理能力</h4>
-                            <div ng-repeat="manageSkill in user.manageSkill track by $index">
-                                <h5>{{manageSkill}}</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <h4>自我發展規劃(由員工自己編輯)</h4>
-                        <textarea class="form-control" ng-model="user.future" name="SaveResponse" rows="3">{{user.future}}</textarea>
-                    </div>
-                    <br />
                 </div>
             </div>
-            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                <div class="row">
-                    <h4>職位經歷</h4>
-                    <div ng-repeat="experience in user.experience track by $index">
-                        <h5>{{experience}}</h5>
-                    </div>
+        </div>
+
+        @* ======================== 未來規劃 ======================== *@
+        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+
+            <div class="tal-card">
+                <div class="tal-card-head">
+                    <h5 class="tal-card-title"><span class="dot g-indigo"><i class="bi bi-signpost-split"></i></span>規劃進程</h5>
+                    @if (canEdit)
+                    {
+                        <span class="tal-badge edit"><i class="bi bi-pencil"></i> 可編輯</span>
+                    }
+                    else
+                    {
+                        <span class="tal-badge"><i class="bi bi-lock"></i> 唯讀</span>
+                    }
                 </div>
-                <div class="row">
-                    <h4>專案經歷</h4>
-                    <div ng-repeat="project in user.project track by $index">
-                        <h5>{{project}}</h5>
-                    </div>
-                </div>
-                <br />
-            </div>
-            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-                <div class="row">
-                    <h4>規劃進程</h4>
-                    <div class="inner">
-                        <div class="col-2 text-center">
-                            <h5>年份</h5>
-                        </div>
-                        <div ng-if="$index < 3" ng-repeat="item in planning track by $index">
-                            <div class="col text-center">
-                                @if (Session["leader"] is true)
-                                {
-                                    <input class="form-control text-center" ng-model="item.plan" name="SaveResponse" rows="1">
-                                }
-                                else
-                                {
-                                    <input class="form-control text-center" ng-model="item.plan" rows="1" readonly>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div class="inner">
-                        <div class="col-2 text-center">
-                            <h5>職位/職級</h5>
-                        </div>
-                        <div ng-if="$index >= 3" ng-repeat="item in planning track by $index">
-                            <div class="col text-center">
-                                @if (Session["leader"] is true)
-                                {
-                                    <input class="form-control text-center" ng-model="item.plan" name="SaveResponse" rows="1">
-                                }
-                                else
-                                {
-                                    <input class="form-control text-center" ng-model="item.plan" rows="1" readonly>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div><br /></div>
-                    <div class="row">
-                        <div class="form-group">
-                            <h4>專業證照</h4>
-                            <div ng-repeat="license in user.license track by $index">
-                                <h5>{{license}}</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <h4>測評資料</h4>
-                            <div class="row">
-                                <div class="col-sm-2">
-                                    <label for="SelectGroup">請選擇年份</label>
-                                </div>
-                                <div class="col-sm-2">
-                                    <select class="form-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" ng-change="FilterDataByYear(selectedYear)" aria-label="Select the Year">
-                                        <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-4">
-                                    <div class="alert alert-warning" role="alert">
-                                        檔案限定格式為.pdf，檔案大小不超過20MB
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
-                                    <div>
-                                        <form id="formElem">
-                                            <input type="file" id="filepicker" name="file" accept=".pdf" hidden>
-                                        </form>
-                                    </div>
-                                    <input class="form-control" type="file" name="importDDIPDFFile" id="importDDIPDFFile" />
-                                </div>
-                                <div class="col-sm-1">
-                                    <input class="btn btn-primary" id="btnDDIPDFUpload" type="button" value="上傳" />
-                                </div>
-                                <div ng-show="Show == 1">
-                                    <iframe id="framePDF" src="" style="width:100%;min-height:800px;margin:0 auto;" type="application/pdf"></iframe>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--<div class="row">
-                        <div class="form-group">
-                            <div class="row">
-                                <h4>測評資料</h4>
-                                <div class="col-sm-6">
-                                    <div class="alert alert-warning" role="alert" style="width:30%">
-                                        檔案限定格式為.pdf，檔案大小不得超過10MB
-                                    </div>
-                                    <div>
-                                        <form id="formElem">
-                                            <input type="file" id="filepicker" name="file" accept=".pdf" hidden>
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="col-sm-1">-->
-                                    @*<button class="btn-lg" type="button" ng-click="uploadFile()">
-                            <span class="material-icons">upload_file</span>
-                        </button>*@
-                                <!--</div>
-                                <div class="col-sm-4">
-                                    <input class="form-control" type="file" name="importPDFFile" id="importPDFFile" />
-                                </div>
-                                <div class="col-sm-1">
-                                    <input class="btn btn-primary" id="btnPDFUpload" type="button" value="上傳" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <h4>優勢</h4>
-                            @if (Session["leader"] is true)
-                            {
-                                <textarea class="form-control" ng-model="user.advantage" name="SaveResponse" rows="5">{{user.advantage}}</textarea>
-                            }
-                            else
-                            {
-                                <textarea class="form-control" ng-model="user.advantage" rows="5" readonly>{{user.advantage}}</textarea>
-                            }
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <h4>劣勢</h4>
-                            @if (Session["leader"] is true)
-                            {
-                                <textarea class="form-control" ng-model="user.disadvantage" name="SaveResponse" rows="5">{{user.disadvantage}}</textarea>
-                            }
-                            else
-                            {
-                                <textarea class="form-control" ng-model="user.disadvantage" rows="5" readonly>{{user.disadvantage}}</textarea>
-                            }
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <h4>價值觀</h4>
-                            @if (Session["leader"] is true)
-                            {
-                                <textarea class="form-control" ng-model="user.test" name="SaveResponse" rows="5">{{user.test}}</textarea>
-                            }
-                            else
-                            {
-                                <textarea class="form-control" ng-model="user.test" rows="5" readonly>{{user.test}}</textarea>
-                            }
-                        </div>
-                    </div>
-                </div>-->
-                <div class="row">
-                    <div class="form-group">
-                        <h4>待發展能力</h4>
-                        @if (Session["leader"] is true)
+                <div class="tal-plan">
+                    <div class="lbl">年份</div>
+                    <div ng-if="$index < 3" ng-repeat="item in planning track by $index">
+                        @if (canEdit)
                         {
-                            <textarea class="form-control" ng-model="user.developed" name="SaveResponse" rows="3">{{user.developed}}</textarea>
+                            <input class="tal-input" ng-model="item.plan" name="SaveResponse">
                         }
                         else
                         {
-                            <textarea class="form-control" ng-model="user.developed" rows="3" readonly>{{user.developed}}</textarea>
+                            <input class="tal-input" ng-model="item.plan" readonly>
+                        }
+                    </div>
+                    <div class="lbl">職位 / 職級</div>
+                    <div ng-if="$index >= 3" ng-repeat="item in planning track by $index">
+                        @if (canEdit)
+                        {
+                            <input class="tal-input" ng-model="item.plan" name="SaveResponse">
+                        }
+                        else
+                        {
+                            <input class="tal-input" ng-model="item.plan" readonly>
                         }
                     </div>
                 </div>
-                <br />
+            </div>
+
+            <div class="tal-card">
+                <div class="tal-card-head">
+                    <h5 class="tal-card-title"><span class="dot g-amber"><i class="bi bi-patch-check"></i></span>專業證照</h5>
+                </div>
+                <div class="tal-tags">
+                    <span class="tal-tag amber" ng-repeat="license in user.license track by $index" ng-if="license"><i class="bi bi-award"></i> {{license}}</span>
+                </div>
+            </div>
+
+            <div class="tal-card">
+                <div class="tal-card-head">
+                    <h5 class="tal-card-title"><span class="dot g-teal"><i class="bi bi-file-earmark-pdf"></i></span>測評資料</h5>
+                    <span class="tal-note"><i class="bi bi-info-circle"></i> 檔案限定 .pdf，大小不超過 20MB</span>
+                </div>
+                <div class="tal-toolbar" style="margin-top:0">
+                    <div style="flex:0 0 160px">
+                        <label class="tal-label" for="SelectYear">年份</label>
+                        <select class="tal-select" id="SelectYear" name="SelectYear" ng-model="selectedYear" ng-change="FilterDataByYear(selectedYear)" aria-label="Select the Year">
+                            <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+                        </select>
+                    </div>
+                    <div class="grow">
+                        <label class="tal-label" for="importDDIPDFFile">上傳測評 PDF</label>
+                        <form id="formElem">
+                            <input type="file" id="filepicker" name="file" accept=".pdf" hidden>
+                        </form>
+                        <input class="tal-input" type="file" accept=".pdf" name="importDDIPDFFile" id="importDDIPDFFile" />
+                    </div>
+                    <button class="tal-btn tal-btn-primary" id="btnDDIPDFUpload" type="button" ng-click="UploadPDF()"><i class="bi bi-cloud-arrow-up"></i> 上傳</button>
+                </div>
+                <div class="tal-pdf" ng-show="Show == 1">
+                    <iframe id="framePDF" src="" style="width:100%;min-height:800px;border:0;display:block" type="application/pdf"></iframe>
+                </div>
+                <div class="tal-empty" ng-show="Show != 1" style="padding:26px">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                    此年份尚未上傳測評資料
+                </div>
+            </div>
+
+            <div class="tal-card">
+                <div class="tal-card-head">
+                    <h5 class="tal-card-title"><span class="dot g-rose"><i class="bi bi-lightning-charge"></i></span>待發展能力</h5>
+                    @if (canEdit)
+                    {
+                        <span class="tal-badge edit"><i class="bi bi-pencil"></i> 可編輯</span>
+                    }
+                    else
+                    {
+                        <span class="tal-badge"><i class="bi bi-lock"></i> 唯讀</span>
+                    }
+                </div>
+                @if (canEdit)
+                {
+                    <textarea class="tal-textarea" ng-model="user.developed" name="SaveResponse" rows="4">{{user.developed}}</textarea>
+                }
+                else
+                {
+                    <textarea class="tal-textarea" ng-model="user.developed" rows="4" readonly>{{user.developed}}</textarea>
+                }
             </div>
         </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-            </div>
-            <div class="col-md-offset-2 col-md-10">
-                <input class="btn btn-warning btn-lg" type="submit" value="返回" ng-click="ToTalent()" />
-                <input class="btn btn-warning btn-lg" type="submit" value="儲存" ng-click="SaveResponse(user, planning)" />
-            </div>
-            <div class="col-md-offset-2 col-md-10">
-            </div>
-        </div>
-
     </div>
+
+    @* ---------- 固定在下方的操作列 ---------- *@
+    <div class="tal-actionbar">
+        <button type="button" class="tal-btn tal-btn-light" ng-click="ToTalent()"><i class="bi bi-arrow-left"></i> 返回</button>
+        @if (canEdit)
+        {
+            <button type="button" class="tal-btn tal-btn-primary" ng-click="SaveResponse(user, planning)"><i class="bi bi-floppy"></i> 儲存</button>
+        }
+        else
+        {
+            @* 非部門主管：只有本人頁面可儲存 (僅自我發展規劃) *@
+            <button type="button" class="tal-btn tal-btn-primary" ng-if="isSelf()" ng-click="SaveResponse(user, planning)"><i class="bi bi-floppy"></i> 儲存</button>
+        }
+    </div>
+
 </div>
 
 @section Scripts {

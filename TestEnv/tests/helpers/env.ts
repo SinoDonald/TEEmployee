@@ -31,6 +31,7 @@ export interface TestUser {
   isWishHandler?: boolean;
   isAdminPageUser?: boolean;
   isFacilityManager?: boolean;
+  isDbViewer?: boolean;
   roleLabel: string;
 }
 
@@ -38,7 +39,7 @@ export interface TestUser {
  * 測試用的角色。global-setup 會從 User.db 自動挑出每個角色的代表人物，
  * 也可以用環境變數指定，例如 TE_ROLE_EMPLOYEE=1234
  */
-export const ROLE_KEYS = ['admin', 'deptManager', 'groupManager', 'subManager', 'pm', 'employee', 'employee2', 'talentEditor', 'adminPageUser'] as const;
+export const ROLE_KEYS = ['admin', 'deptManager', 'groupManager', 'subManager', 'pm', 'employee', 'employee2', 'talentEditor', 'adminPageUser', 'dbViewer'] as const;
 export type RoleKey = typeof ROLE_KEYS[number];
 
 export const ROLE_LABELS: Record<RoleKey, string> = {
@@ -49,8 +50,9 @@ export const ROLE_LABELS: Record<RoleKey, string> = {
   pm: '計畫經理',
   employee: '一般員工',
   employee2: '一般員工(另一組)',
-  talentEditor: '資協',
+  talentEditor: '部門主管(人才儲存)',
   adminPageUser: '管理頁使用者',
+  dbViewer: '開發者(資料檢視)',
 };
 
 export interface RolesFile {

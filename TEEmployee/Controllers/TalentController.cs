@@ -101,10 +101,18 @@ namespace TEEmployee.Controllers
         /// <param name="year"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult UploadPDFFile(HttpPostedFileBase file, string year)
+        public ActionResult UploadPDFFile(HttpPostedFileBase file, string year, string empno)
         {
-            if (file == null) return Json(new { Status = 0, Message = "No File Selected" });
-            string ret = _service.UploadPDFFile(file, year, Session["empno"].ToString());
+            if (file == null) return Json("Error：未選擇檔案");
+            if (string.IsNullOrEmpty(year) || !IsValidYear(year)) return Json("Error：請先選擇年份");
+
+            // 存到「目前頁面的員工」：部門主管可上傳任何人的；其他人只能上傳自己的 (與 GetPDF 相同規則)
+            // 舊版一律存成上傳者自己的員編，部門主管在別人頁面上傳會蓋掉自己的檔案
+            if (string.IsNullOrWhiteSpace(empno)) empno = Session["empno"].ToString();
+            if (!CanViewOthers() && !Permissions.SameEmpno(empno, Session["empno"].ToString()))
+                return Json("Error：只能上傳自己的測評資料");
+
+            string ret = _service.UploadPDFFile(file, year, empno);
             return Json(ret);
         }
         /// <summary>
@@ -119,6 +127,7 @@ namespace TEEmployee.Controllers
             // 只有部門主管可以看其他人的測評資料
             if (!CanViewOthers() || string.IsNullOrWhiteSpace(empno))
                 empno = Session["empno"].ToString();
+            if (!IsValidYear(year)) return null; // 年份只允許數字，避免路徑穿越 (..\)
 
             string pdfPath = _service.GetPDF(year, empno);
             var fileBytes = _service.DownloadFile(pdfPath);
@@ -242,14 +251,22 @@ namespace TEEmployee.Controllers
         [HttpPost]
         public JsonResult SaveResponse(CV userCV, string planning)
         {
-            // 只有部門主管 (Session["leader"]，與 TalentRecord 頁面顯示編輯欄位的條件相同) 可以儲存
-            if (!Permissions.IsDepartmentManager(Session) || userCV == null)
-                return Json(false);
+            if (userCV == null || string.IsNullOrWhiteSpace(userCV.empno)) return Json(false);
 
-            _service.SaveResponse(userCV, planning ?? "");
-            var ret = true;
+            // 部門主管 (Session["leader"]，與 TalentRecord 頁面顯示編輯欄位的條件相同)：儲存全部欄位
+            if (Permissions.IsDepartmentManager(Session))
+            {
+                _service.SaveResponse(userCV, planning ?? "");
+                return Json(true);
+            }
 
-            return Json(ret);
+            // 員工本人：只能儲存「自我發展規劃」(future)，其他欄位一律不更新
+            if (Permissions.SameEmpno(userCV.empno, Session["empno"].ToString()))
+            {
+                return Json(_service.SaveFuture(Session["empno"].ToString(), userCV.future ?? ""));
+            }
+
+            return Json(false);
         }
         /// <summary>
         /// 刪除人才資料庫
@@ -268,6 +285,12 @@ namespace TEEmployee.Controllers
         private bool CanViewOthers()
         {
             return Permissions.IsDepartmentManager(Session);
+        }
+
+        /// <summary>年份只允許空白 (= 今年) 或 1~4 位數字</summary>
+        private static bool IsValidYear(string year)
+        {
+            return string.IsNullOrEmpty(year) || System.Text.RegularExpressions.Regex.IsMatch(year, @"^\d{1,4}$");
         }
 
         protected override void Dispose(bool disposing)

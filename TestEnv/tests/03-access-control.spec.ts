@@ -31,7 +31,7 @@ test.describe('權限｜管理員專用資料', () => {
     });
   }
 
-  test('一般員工不能下載全體員工資料 Home/DownloadUserDB', async () => {
+  test('一般員工不能下載全體員工資料 Home/DownloadUserDB（下載功能已移除）', async () => {
     const emp = requireRole('employee');
     const api = await apiAs(emp.empno);
     const res = await api.get('Home/DownloadUserDB');
@@ -177,6 +177,31 @@ test.describe('權限｜Web.config 名單', () => {
     const page = await get(api, 'Home/Admin');
     expect(page.status === 200 && /AdminCtrl/.test(page.text), 'AdminPageUsers 名單的人進不了管理頁').toBe(true);
     expect(wasDenied(await post(api, 'Home/ReviewUserDB')), 'AdminPageUsers 不應能讀取全體員工資料').toBe(true);
+    await api.dispose();
+  });
+
+  test('DbViewers (開發者)：可檢視 UserDB / ProfessionDB，但沒有其他管理員權限', async () => {
+    const u = requireRole('dbViewer');
+    const api = await apiAs(u.empno);
+    for (const url of ['Home/ReviewUserDB', 'Home/ReviewProfessionDB']) {
+      const r = await post(api, url);
+      expectOk(r, url);
+      expect(Array.isArray(r.json) && r.json.length > 0, `DbViewers 檢視 ${url} 沒有拿到資料`).toBe(true);
+    }
+    const who = await (await api.get('DevTools/WhoAmI')).json();
+    expect(who.Admin, 'DbViewers 不應因此取得管理員身分').toBeFalsy();
+    await api.dispose();
+  });
+
+  test('下載 UserDB / ProfessionDB 功能已移除（管理員也無法下載）', async () => {
+    const admin = requireRole('admin');
+    const api = await apiAs(admin.empno);
+    for (const url of ['Home/DownloadUserDB', 'Home/DownloadProfessionDB']) {
+      const res = await api.get(url);
+      const body = await res.body();
+      const isXlsx = res.status() === 200 && body.slice(0, 2).toString() === 'PK';
+      expect(isXlsx, `${url} 仍可下載 Excel`).toBe(false);
+    }
     await api.dispose();
   });
 

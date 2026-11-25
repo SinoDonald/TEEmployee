@@ -107,6 +107,16 @@ namespace TEEmployee.Models.Notify
                     }
                 }
 
+                // 重建前先記下每人「我要抱抱」的現況, 重建後沿用 (不再每次重建都讓全員亮起)
+                Dictionary<string, int> oldHug = new Dictionary<string, int>();
+                if (tableExist == true)
+                {
+                    foreach (UserNotify old in _conn.Query<UserNotify>(@"SELECT * FROM userNotify"))
+                    {
+                        if (old.empno != null && !oldHug.ContainsKey(old.empno)) { oldHug.Add(old.empno, old.hug); }
+                    }
+                }
+
                 //// 先確認資料庫中是否已更新當季的資料
                 //using (var tran = _conn.BeginTransaction())
                 //{
@@ -135,7 +145,8 @@ namespace TEEmployee.Models.Notify
                         if (bools[4] == true) userNotify.personPlan = 1; else userNotify.personPlan = 0; // 個人規劃
                         if (bools[5] == true) userNotify.planFreeback = 1; else userNotify.planFreeback = 0; // 個人規劃回饋
                         if (bools[6] == true) userNotify.kpi = 1; else userNotify.kpi = 0; // 填KPI
-                        if (bools[7] == true) userNotify.hug = 1; else userNotify.hug = 0; // 我要抱抱
+                        // 我要抱抱: 沿用重建前狀態 (有新文章/回覆時才由 ForumController 設為1), 新進人員預設0
+                        userNotify.hug = (user.empno != null && oldHug.ContainsKey(user.empno)) ? oldHug[user.empno] : 0;
 
                         userNotifyList.Add(userNotify);
                     }

@@ -15,6 +15,8 @@ namespace TEEmployee.Models
     ///   FacilityManagers 公用裝置管理員 (新增 / 移除裝置、修改 Teams 密碼、代改他人預約)
     ///   ForumAdmin     我要抱抱管理者 (可刪除貼文 / 回文)
     ///   WishHandler    許願池處理人 (可修改需求狀態)
+    ///   DbViewers      開發者：可在管理頁檢視 UserDB / ProfessionDB (除錯用，不含其他管理員權限)
+    ///                  只寫在下方 Defaults，正式機 Web.config 不需要加；若 Web.config 有設定則以 Web.config 為準
     ///
     /// 員編比對會忽略前面補的 0：「4125」與「04125」視為同一人。
     /// Web.config 沒有設定某個名單時，使用下方 Defaults 的預設值 (與舊程式寫死的員編相同)。
@@ -28,6 +30,7 @@ namespace TEEmployee.Models
             { "FacilityManagers", "7291,7596" },
             { "ForumAdmin", "7291" },
             { "WishHandler", "8477" },
+            { "DbViewers", "7291,7596" },
         };
 
         // ------------------------------------------------------------------ 員編與名單
@@ -97,6 +100,15 @@ namespace TEEmployee.Models
         public static bool CanUseAdminPage(HttpSessionStateBase session)
         {
             return IsAdmin(session) || InList("AdminPageUsers", CurrentEmpno(session));
+        }
+
+        /// <summary>
+        /// 可檢視 UserDB / ProfessionDB (管理頁「資料檢視」)：管理員或 DbViewers 開發者名單。
+        /// 與 AdminPageUsers 互相獨立，兩份名單都有的人兩種權限都有。
+        /// </summary>
+        public static bool CanViewDb(HttpSessionStateBase session)
+        {
+            return IsAdmin(session) || InList("DbViewers", CurrentEmpno(session));
         }
 
         /// <summary>公用裝置管理：管理員、部門主管、FacilityManagers 名單</summary>

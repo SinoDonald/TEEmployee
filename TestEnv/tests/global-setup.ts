@@ -72,7 +72,7 @@ function pickRoles(users: TestUser[]): Partial<Record<RoleKey, TestUser>> {
   const anyMgr = (u: TestUser) => u.department_manager || u.group_manager || isSub(u);
   const hasGroup = (u: TestUser) => !!(u.group && u.group_one);
   // 「一般員工」不能帶任何特殊權限
-  const special = (u: TestUser) => u.isAdmin || u.isForumAdmin || !!u.isTalentEditor || !!u.isWishHandler || !!u.isAdminPageUser || !!u.isFacilityManager;
+  const special = (u: TestUser) => u.isAdmin || u.isForumAdmin || !!u.isTalentEditor || !!u.isWishHandler || !!u.isAdminPageUser || !!u.isFacilityManager || !!u.isDbViewer;
   const valid = users.filter((u) => u.empno && u.name);
 
   const roles: Partial<Record<RoleKey, TestUser>> = {};
@@ -87,7 +87,10 @@ function pickRoles(users: TestUser[]): Partial<Record<RoleKey, TestUser>> {
     byEnv('employee2') ||
     valid.find((u) => e && u.empno !== e.empno && !special(u) && !anyMgr(u) && !u.project_manager && hasGroup(u) && u.group_one !== e.group_one) ||
     valid.find((u) => e && u.empno !== e.empno && !special(u) && !anyMgr(u) && hasGroup(u));
+  // 人才培育儲存：TalentEditor 名單已移除，改為部門主管 (DevTools 的 isTalentEditor = department_manager)
   roles.talentEditor = byEnv('talentEditor') || valid.find((u) => !!u.isTalentEditor);
-  roles.adminPageUser = byEnv('adminPageUser') || valid.find((u) => !!u.isAdminPageUser && !u.isAdmin);
+  // 管理頁使用者：挑不在 DbViewers 名單的人，才能測「不能檢視全體員工資料」
+  roles.adminPageUser = byEnv('adminPageUser') || valid.find((u) => !!u.isAdminPageUser && !u.isAdmin && !u.isDbViewer);
+  roles.dbViewer = byEnv('dbViewer') || valid.find((u) => !!u.isDbViewer && !u.isAdmin);
   return roles;
 }

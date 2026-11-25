@@ -3,277 +3,889 @@
 @{
     ViewBag.Title = "部門公用裝置借用";
 }
-<style type="text/css">
 
-    .field-validation-error {
-        color: #ff0000;
-    }
-    /* 目前選取的裝置 */
-    .device-link.active {
-        font-weight: bold;
-        text-decoration: underline;
-    }
-</style>
+@section Styles {
+    @* 本頁用到較新的圖示（bi-pc-display、bi-microsoft-teams…），載入 bootstrap-icons 1.11.3（與版面的 1.5.0 圖示編碼相同，不影響既有圖示） *@
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <style>
+        /* ======================================================
+           部門公用裝置借用 新版樣式（2026-11-25）
+           類別一律以 fac- 開頭，避免影響版面其他元件
+           ====================================================== */
+        .fac-page {
+            --fac-ink: #1e293b;
+            --fac-muted: #64748b;
+            --fac-line: #e5e9f2;
+            --fac-soft: #f5f7fb;
+            --fac-card: #ffffff;
+            --fac-primary: #0ea5e9;
+            --fac-primary-dark: #0369a1;
+            --fac-indigo: #4f46e5;
+            --fac-teal: #0d9488;
+            --fac-amber: #f59e0b;
+            --fac-rose: #e11d48;
+            --fac-radius: 18px;
+            margin-top: 96px;
+            margin-bottom: 80px;
+            color: var(--fac-ink);
+            font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
+        }
 
-<div ng-controller="BorrowCtrl" class="container" style="margin-top: 100px">
-    <div class="container-fluid">
+            .fac-page h1, .fac-page h2, .fac-page h3, .fac-page h4, .fac-page h5, .fac-page h6 {
+                font-family: inherit;
+            }
 
-        <header class="mb-4 d-flex justify-content-between">
-            <h2>部門公用裝置借用</h2>
-            @*<div>
-                    <a class="btn btn-outline-primary btn-lg mr-2" href="~/" role="button">返回</a>
-                </div>*@
-        </header>
+        /* ---------- Hero ---------- */
+        .fac-hero {
+            position: relative;
+            overflow: hidden;
+            border-radius: 26px;
+            padding: 28px 34px 24px;
+            color: #fff;
+            background: linear-gradient(120deg, #0c4a6e, #0284c7, #4f46e5, #0d9488);
+            background-size: 300% 300%;
+            animation: fac-gradient 16s ease infinite;
+            box-shadow: 0 18px 40px -18px rgba(2, 132, 199, .6);
+            margin-bottom: 24px;
+        }
 
-        <div class="row flex-nowrap">
-            <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
-                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-dark min-vh-100">
-                    <a href="" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-                        <span class="fs-5 d-none d-sm-inline">選單</span>
-                    </a>
-                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                        @*<li class="nav-item">
-                            <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
-                                <h6 class="panel-title">
-                                    <i class="fs-4 bi-house"></i> <a href="/">首頁</a>
-                                </h6>
-                            </div>
-                        </li>*@
-                        <li>
-                            @*保持展開*@
-                            <!--<div class="nav-link px-0 align-middle panel-heading">
-                            <h6 class="panel-title">
-                                <i class="fs-4 bi-speedometer2"></i> <a-->
-                            @*href="#collapseOne"*@
-                            <!--ng-click="showContent('calendar'); $('#collapseOne').collapse('show')">公用設備</a>
-                                </h6>
-                            </div>-->
-                            <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
-                                <h6 class="panel-title">
-                                    <i class="fs-4 bi-laptop"></i> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" ng-click="showContent('calendar')">公用設備</a>
-                                </h6>
-                            </div>
-                            <div id="collapseOne" class="collapse show panel-collapse collapse in">
-                                <div class="panel-body">
-                                    <div class="inner" ng-repeat="device in getDevices">
-                                        <a href="" class="d-none d-sm-inline device-link" ng-class="{active: device.deviceID == deviceID && activeTab == 'calendar'}" title="ID：{{device.deviceID}}" ng-click="GetEvents(device.deviceID)">{{device.deviceName}}</a>
+        @@keyframes fac-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .fac-hero .blob {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .10);
+            pointer-events: none;
+        }
+
+            .fac-hero .blob.b1 { width: 260px; height: 260px; right: -60px; top: -90px; }
+            .fac-hero .blob.b2 { width: 150px; height: 150px; right: 180px; bottom: -80px; background: rgba(255, 255, 255, .07); }
+
+        .fac-hero h2 {
+            font-weight: 800;
+            font-size: 1.9rem;
+            margin: 0 0 6px;
+            letter-spacing: .5px;
+        }
+
+        .fac-hero .sub {
+            opacity: .88;
+            margin-bottom: 16px;
+        }
+
+        .fac-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            margin: 0 8px 8px 0;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .16);
+            border: 1px solid rgba(255, 255, 255, .25);
+            backdrop-filter: blur(4px);
+            font-size: .92rem;
+            white-space: nowrap;
+        }
+
+            .fac-chip b { font-size: 1.05rem; }
+
+        /* ---------- 卡片 ---------- */
+        .fac-card {
+            background: var(--fac-card);
+            border: 1px solid var(--fac-line);
+            border-radius: var(--fac-radius);
+            box-shadow: 0 8px 24px -16px rgba(15, 23, 42, .25);
+            margin-bottom: 20px;
+        }
+
+        .fac-card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 16px 20px 10px;
+        }
+
+            .fac-card-head h5 {
+                margin: 0;
+                font-weight: 700;
+                font-size: 1.05rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+        .fac-card-body { padding: 4px 16px 16px; }
+
+        .fac-ico {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            color: #fff;
+            flex: 0 0 auto;
+        }
+
+            .fac-ico.sky { background: linear-gradient(135deg, #38bdf8, #0284c7); }
+            .fac-ico.indigo { background: linear-gradient(135deg, #818cf8, #4f46e5); }
+            .fac-ico.teal { background: linear-gradient(135deg, #2dd4bf, #0d9488); }
+            .fac-ico.amber { background: linear-gradient(135deg, #fbbf24, #d97706); }
+            .fac-ico.slate { background: linear-gradient(135deg, #94a3b8, #475569); }
+
+        /* ---------- 搜尋 ---------- */
+        .fac-search {
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+            .fac-search i {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--fac-muted);
+            }
+
+            .fac-search input {
+                width: 100%;
+                border: 1px solid var(--fac-line);
+                background: var(--fac-soft);
+                border-radius: 12px;
+                padding: 8px 12px 8px 34px;
+                outline: none;
+                transition: border-color .2s, box-shadow .2s, background .2s;
+            }
+
+                .fac-search input:focus {
+                    background: #fff;
+                    border-color: var(--fac-primary);
+                    box-shadow: 0 0 0 3px rgba(14, 165, 233, .18);
+                }
+
+        /* ---------- 裝置清單 ---------- */
+        .fac-device {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border: 1px solid transparent;
+            border-radius: 14px;
+            background: var(--fac-soft);
+            color: var(--fac-ink);
+            text-align: left;
+            cursor: pointer;
+            transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+        }
+
+            .fac-device:hover {
+                transform: translateY(-2px);
+                background: #fff;
+                border-color: var(--fac-line);
+                box-shadow: 0 10px 20px -14px rgba(15, 23, 42, .45);
+                text-decoration: none;
+                color: var(--fac-ink);
+            }
+
+            .fac-device:focus { outline: none; box-shadow: 0 0 0 3px rgba(14, 165, 233, .25); }
+
+            .fac-device .name {
+                font-weight: 700;
+                line-height: 1.2;
+                word-break: break-all;
+            }
+
+            .fac-device .meta {
+                font-size: .78rem;
+                color: var(--fac-muted);
+                word-break: break-all;
+            }
+
+            .fac-device .go {
+                margin-left: auto;
+                color: var(--fac-muted);
+                opacity: 0;
+                transition: opacity .15s, transform .15s;
+            }
+
+            .fac-device:hover .go { opacity: 1; transform: translateX(2px); }
+
+            .fac-device.active {
+                background: linear-gradient(120deg, #e0f2fe, #eef2ff);
+                border-color: #7dd3fc;
+                box-shadow: inset 4px 0 0 var(--fac-primary);
+            }
+
+                .fac-device.active .go { opacity: 1; color: var(--fac-primary-dark); }
+
+            .fac-device.teams.active {
+                background: linear-gradient(120deg, #ede9fe, #e0e7ff);
+                border-color: #a5b4fc;
+                box-shadow: inset 4px 0 0 var(--fac-indigo);
+            }
+
+        .fac-section-label {
+            font-size: .78rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--fac-muted);
+            margin: 14px 4px 8px;
+        }
+
+        .fac-empty {
+            text-align: center;
+            color: var(--fac-muted);
+            padding: 14px 6px;
+            font-size: .9rem;
+        }
+
+        /* ---------- 管理工具 ---------- */
+        .fac-tool {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 9px 12px;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            border: 1px dashed var(--fac-line);
+            background: #fff;
+            color: var(--fac-ink);
+            font-weight: 600;
+            transition: background .15s, border-color .15s, color .15s;
+        }
+
+            .fac-tool:hover { background: var(--fac-soft); border-color: #cbd5e1; }
+            .fac-tool i { font-size: 1.1rem; }
+            .fac-tool.add i { color: var(--fac-teal); }
+            .fac-tool.pwd i { color: var(--fac-indigo); }
+            .fac-tool.del:hover { color: var(--fac-rose); border-color: #fecdd3; background: #fff1f2; }
+            .fac-tool.del i { color: var(--fac-rose); }
+
+        /* ---------- 行事曆 ---------- */
+        .fac-cal-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 18px 22px 6px;
+        }
+
+            .fac-cal-head h4 {
+                margin: 0;
+                font-weight: 800;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+        .fac-badge {
+            display: inline-block;
+            font-size: .75rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: #e0f2fe;
+            color: var(--fac-primary-dark);
+            vertical-align: middle;
+        }
+
+        .fac-tip {
+            color: var(--fac-muted);
+            font-size: .88rem;
+            padding: 0 22px 8px;
+        }
+
+        .fac-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            font-size: .85rem;
+            color: var(--fac-muted);
+        }
+
+            .fac-legend span { display: inline-flex; align-items: center; gap: 6px; }
+            .fac-legend i.dot { width: 12px; height: 12px; border-radius: 4px; display: inline-block; }
+
+        .fac-cal-wrap { padding: 6px 18px 20px; }
+
+        /* FullCalendar 3 外觀覆寫（只影響本頁 #calendar） */
+        #calendar .fc-toolbar { margin-bottom: 14px; }
+
+            #calendar .fc-toolbar h2 {
+                font-size: 1.35rem;
+                font-weight: 800;
+                color: var(--fac-ink);
+                margin-top: 4px;
+            }
+
+        #calendar .fc-button {
+            background: #fff;
+            border: 1px solid var(--fac-line);
+            color: var(--fac-ink);
+            text-shadow: none;
+            box-shadow: none;
+            height: 2.3em;
+            padding: 0 .9em;
+            font-weight: 600;
+            transition: background .15s, color .15s;
+        }
+
+            #calendar .fc-button:hover { background: var(--fac-soft); }
+
+            #calendar .fc-button.fc-state-active,
+            #calendar .fc-button.fc-state-down {
+                background: var(--fac-primary);
+                border-color: var(--fac-primary);
+                color: #fff;
+            }
+
+            #calendar .fc-button.fc-state-disabled { opacity: .5; }
+
+        #calendar .fc-corner-left { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+        #calendar .fc-corner-right { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+
+        #calendar th.fc-day-header {
+            background: var(--fac-soft);
+            color: var(--fac-muted);
+            font-weight: 700;
+            padding: 8px 0;
+            border-color: var(--fac-line);
+        }
+
+        #calendar td, #calendar th, #calendar .fc-row { border-color: var(--fac-line); }
+
+        #calendar .fc-day-number {
+            padding: 4px 8px;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        #calendar .fc-other-month .fc-day-number { color: #cbd5e1; }
+        #calendar .fc-sat .fc-day-number, #calendar .fc-sun .fc-day-number { color: #f43f5e; }
+        #calendar .fc-other-month.fc-sat .fc-day-number, #calendar .fc-other-month.fc-sun .fc-day-number { color: #fecdd3; }
+
+        #calendar .fc-day.fc-today { background: #f0f9ff; }
+
+        #calendar .fc-day-top.fc-today .fc-day-number {
+            display: inline-block;
+            min-width: 26px;
+            text-align: center;
+            margin: 3px;
+            padding: 2px 6px;
+            border-radius: 999px;
+            background: var(--fac-primary);
+            color: #fff;
+        }
+
+        #calendar .fc-day:hover { background: #f8fafc; cursor: pointer; }
+        #calendar .fc-day.fc-today:hover { background: #e0f2fe; }
+
+        #calendar .fc-event {
+            border: none;
+            border-radius: 8px;
+            padding: 2px 6px;
+            margin: 1px 3px 2px;
+            font-size: .82rem;
+            cursor: pointer;
+            transition: transform .12s, box-shadow .12s;
+        }
+
+            #calendar .fc-event:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 12px -6px rgba(15, 23, 42, .5);
+            }
+
+        #calendar .fc-event.fac-ev-mine { background: linear-gradient(120deg, #14b8a6, #0d9488); color: #fff; }
+        #calendar .fc-event.fac-ev-other { background: linear-gradient(120deg, #38bdf8, #0284c7); color: #fff; }
+        #calendar .fc-event.fac-ev-system { background: #e2e8f0; color: #64748b; }
+        #calendar .fc-event .fc-time { font-weight: 700; }
+        #calendar .fc-more { color: var(--fac-primary-dark); font-weight: 700; }
+
+        /* ---------- Teams ---------- */
+        .fac-account {
+            border: 1px solid var(--fac-line);
+            border-radius: 16px;
+            padding: 16px 18px;
+            background: linear-gradient(135deg, #fff, #f5f3ff);
+            height: 100%;
+        }
+
+            .fac-account .row-line {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-top: 10px;
+            }
+
+            .fac-account .lbl {
+                flex: 0 0 44px;
+                font-size: .82rem;
+                color: var(--fac-muted);
+            }
+
+            .fac-account code {
+                flex: 1 1 auto;
+                font-size: .98rem;
+                color: var(--fac-ink);
+                background: #fff;
+                border: 1px solid var(--fac-line);
+                border-radius: 10px;
+                padding: 6px 10px;
+                word-break: break-all;
+            }
+
+        .fac-copy {
+            flex: 0 0 auto;
+            border: 1px solid var(--fac-line);
+            background: #fff;
+            color: var(--fac-indigo);
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: .85rem;
+            transition: background .15s;
+        }
+
+            .fac-copy:hover { background: #eef2ff; }
+
+        .fac-guide img {
+            width: 100%;
+            border-radius: 14px;
+            border: 1px solid var(--fac-line);
+        }
+
+        /* ---------- 彈出視窗 ---------- */
+        .fac-modal .modal-content {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px -20px rgba(15, 23, 42, .45);
+            font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
+        }
+
+        .fac-modal .modal-header {
+            border: none;
+            color: #fff;
+            padding: 18px 22px;
+            background: linear-gradient(120deg, #0284c7, #4f46e5);
+        }
+
+            .fac-modal .modal-header.teal { background: linear-gradient(120deg, #0d9488, #0284c7); }
+            .fac-modal .modal-header.indigo { background: linear-gradient(120deg, #4f46e5, #7c3aed); }
+            .fac-modal .modal-header.rose { background: linear-gradient(120deg, #e11d48, #f97316); }
+
+            .fac-modal .modal-header .modal-title {
+                font-weight: 700;
+                font-size: 1.15rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .fac-modal .modal-header .close {
+                color: #fff;
+                opacity: .85;
+                text-shadow: none;
+            }
+
+        .fac-modal .modal-body { padding: 20px 22px 8px; }
+
+        .fac-modal label {
+            font-weight: 700;
+            font-size: .88rem;
+            color: #475569;
+            margin-bottom: 4px;
+        }
+
+            .fac-modal label i { color: var(--fac-primary); margin-right: 4px; }
+
+        .fac-modal .form-control,
+        .fac-modal .form-select {
+            border-radius: 12px;
+            border-color: var(--fac-line);
+        }
+
+            .fac-modal .form-control:focus,
+            .fac-modal .form-select:focus {
+                border-color: var(--fac-primary);
+                box-shadow: 0 0 0 3px rgba(14, 165, 233, .18);
+            }
+
+            .fac-modal .form-control[readonly],
+            .fac-modal .form-control:disabled {
+                background: var(--fac-soft);
+            }
+
+        .fac-modal .picker-wrap { position: relative; }
+
+        .fac-modal .fac-meta {
+            text-align: right;
+            color: var(--fac-muted);
+            font-size: .8rem;
+            border-top: 1px dashed var(--fac-line);
+            padding-top: 10px;
+        }
+
+        .fac-modal .modal-footer {
+            border: none;
+            padding: 6px 22px 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .fac-btn {
+            border: none;
+            border-radius: 12px;
+            padding: 8px 20px;
+            font-weight: 700;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform .12s, box-shadow .12s, filter .12s;
+        }
+
+            .fac-btn:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 10px 18px -10px rgba(15, 23, 42, .6); }
+            .fac-btn.primary { background: linear-gradient(120deg, #0ea5e9, #4f46e5); }
+            .fac-btn.danger { background: linear-gradient(120deg, #f43f5e, #e11d48); }
+            .fac-btn.ghost { background: #fff; color: #475569; border: 1px solid var(--fac-line); }
+
+        .fac-warn {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #9f1239;
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-size: .88rem;
+        }
+
+        @@media (max-width: 991.98px) {
+            .fac-hero { padding: 22px 22px 18px; }
+            .fac-hero h2 { font-size: 1.5rem; }
+        }
+    </style>
+}
+
+<div ng-controller="BorrowCtrl" class="container-fluid fac-page" style="max-width: 1440px;">
+
+    @* ---------- Hero ---------- *@
+    <div class="fac-hero">
+        <span class="blob b1"></span><span class="blob b2"></span>
+        <h2><i class="bi bi-pc-display-horizontal mr-2"></i>部門公用裝置借用</h2>
+        <div class="sub">選擇左側裝置查看行事曆，點選日期即可預約；Teams 會議帳號請至「線上會議」查看。</div>
+        <div>
+            <span class="fac-chip"><i class="bi bi-hdd-stack"></i>公用設備 <b ng-bind="(getDevices || []).length">0</b> 台</span>
+            <span class="fac-chip"><i class="bi bi-microsoft-teams"></i>Teams 帳號 <b ng-bind="(getTeams || []).length">0</b> 組</span>
+            <span class="fac-chip"><i class="bi bi-calendar-check"></i>我的預約（今日起） <b ng-bind="MyUpcomingCount()">0</b> 筆</span>
+            <span class="fac-chip" ng-if="activeTab=='calendar' && CurrentDevice()"><i class="bi bi-cursor"></i>目前檢視：<b ng-bind="CurrentDevice().deviceName"></b></span>
+        </div>
+    </div>
+
+    <div class="row">
+        @* ---------- 左側：裝置清單 ---------- *@
+        <div class="col-lg-3 col-md-4">
+            <div class="fac-card">
+                <div class="fac-card-head">
+                    <h5><span class="fac-ico sky"><i class="bi bi-pc-display"></i></span>公用設備</h5>
+                    <small class="text-muted" ng-bind="(getDevices || []).length + ' 台'"></small>
+                </div>
+                <div class="fac-card-body">
+                    <div class="fac-search" ng-if="(getDevices || []).length > 5">
+                        <i class="bi bi-search"></i>
+                        <input type="text" ng-model="$parent.deviceKeyword" placeholder="搜尋名稱或 ID" />
+                    </div>
+                    <button type="button" class="fac-device" ng-repeat="device in getDevices | filter:DeviceFilter"
+                            ng-class="{active: device.deviceID == deviceID && activeTab == 'calendar'}"
+                            title="ID：{{device.deviceID}}" ng-click="GetEvents(device.deviceID)">
+                        <span class="fac-ico" ng-class="DeviceColor(device)"><i class="bi" ng-class="DeviceIcon(device)"></i></span>
+                        <span>
+                            <span class="name d-block" ng-bind="device.deviceName"></span>
+                            <span class="meta d-block" ng-if="device.deviceName != device.deviceID">ID：{{device.deviceID}}</span>
+                            <span class="meta d-block" ng-if="device.deviceName == device.deviceID">{{device.type}}</span>
+                        </span>
+                        <i class="bi bi-chevron-right go"></i>
+                    </button>
+                    <div class="fac-empty" ng-if="getDevices && (getDevices | filter:DeviceFilter).length == 0">
+                        <i class="bi bi-inbox d-block mb-1" style="font-size: 1.6rem;"></i>沒有符合的裝置
+                    </div>
+
+                    <div class="fac-section-label">線上會議</div>
+                    <button type="button" class="fac-device teams" ng-class="{active: activeTab == 'teams'}" ng-click="showContent('teams')">
+                        <span class="fac-ico indigo"><i class="bi bi-microsoft-teams"></i></span>
+                        <span>
+                            <span class="name d-block">Teams</span>
+                            <span class="meta d-block">會議帳號與借用須知</span>
+                        </span>
+                        <i class="bi bi-chevron-right go"></i>
+                    </button>
+                </div>
+            </div>
+
+            @if (TEEmployee.Models.Permissions.IsFacilityManager(Session))
+            {
+                <div class="fac-card">
+                    <div class="fac-card-head">
+                        <h5><span class="fac-ico slate"><i class="bi bi-gear"></i></span>管理工具</h5>
+                    </div>
+                    <div class="fac-card-body">
+                        <button type="button" class="fac-tool add" ng-click="CreateDevice()"><i class="bi bi-plus-circle"></i>新增裝置</button>
+                        <button type="button" class="fac-tool pwd" ng-click="ChangePassword()"><i class="bi bi-key"></i>修改 Teams 密碼</button>
+                        <button type="button" class="fac-tool del" ng-click="RemoveDevice()"><i class="bi bi-trash3"></i>移除裝置</button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @* ---------- 右側：內容 ---------- *@
+        <div class="col-lg-9 col-md-8">
+
+            @* 公用設備行事曆 *@
+            <div class="fac-card" ng-show="activeTab=='calendar'">
+                <div class="fac-cal-head">
+                    <h4>
+                        <span class="fac-ico" ng-class="DeviceColor(CurrentDevice())"><i class="bi" ng-class="DeviceIcon(CurrentDevice())"></i></span>
+                        <span ng-bind="CurrentDevice() ? CurrentDevice().deviceName : '請選擇裝置'"></span>
+                        <span class="fac-badge" ng-if="CurrentDevice()" ng-bind="CurrentDevice().type"></span>
+                    </h4>
+                    <div class="fac-legend">
+                        <span><i class="dot" style="background: #0d9488;"></i>我的預約</span>
+                        <span><i class="dot" style="background: #0284c7;"></i>他人預約</span>
+                        <span><i class="dot" style="background: #cbd5e1;"></i>裝置建立紀錄</span>
+                    </div>
+                </div>
+                <div class="fac-tip"><i class="bi bi-lightbulb mr-1" style="color: #f59e0b;"></i>點選日期新增預約；點選預約可查看詳情；自己的預約可直接拖曳調整日期。</div>
+                <div class="fac-cal-wrap">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+
+            @* Teams *@
+            <div ng-show="activeTab=='teams'">
+                <div class="fac-card">
+                    <div class="fac-card-head">
+                        <h5><span class="fac-ico indigo"><i class="bi bi-microsoft-teams"></i></span>Teams 會議帳號</h5>
+                        <small class="text-muted">點「複製」即可貼上登入</small>
+                    </div>
+                    <div class="fac-card-body">
+                        <div class="row">
+                            <div class="col-xl-6 mb-3" ng-repeat="teams in getTeams">
+                                <div class="fac-account">
+                                    <div class="d-flex align-items-center">
+                                        <span class="fac-ico indigo mr-2"><i class="bi bi-person-video3"></i></span>
+                                        <strong ng-bind="teams.deviceName || ('帳號 ' + ($index + 1))"></strong>
+                                    </div>
+                                    <div class="row-line">
+                                        <span class="lbl">帳號</span>
+                                        <code ng-bind="teams.deviceID"></code>
+                                        <button type="button" class="fac-copy" ng-click="CopyText(teams.deviceID, '帳號')"><i class="bi bi-clipboard"></i> 複製</button>
+                                    </div>
+                                    <div class="row-line">
+                                        <span class="lbl">密碼</span>
+                                        <code ng-bind="teams.password"></code>
+                                        <button type="button" class="fac-copy" ng-click="CopyText(teams.password, '密碼')"><i class="bi bi-clipboard"></i> 複製</button>
                                     </div>
                                 </div>
                             </div>
-                        </li>
-                        <li>
-                            <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
-                                <h6 class="panel-title">
-                                    <i class="fs-4 bi-camera-video"></i> <a data-toggle="collapse" data-parent="#accordion" style="cursor: pointer;" ng-click="showContent('teams')">Teams</a>
-                                </h6>
-                            </div>
-                        </li>
-                        @*<li>
-                                <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
-                                    <h6 class="panel-title">
-                                        <i class="fs-4 bi-table"></i> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Teams</a>
-                                    </h6>
-                                </div>
-                                <div id="collapseTwo" class="collapse show panel-collapse collapse in">
-                                    <div class="panel-body">
-                                        <div class="inner" ng-repeat="teams in getTeams">
-                                            <a href="" class="d-none d-sm-inline" value={{teams}} ng-click="GetEvents(teams)">{{teams}}</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>*@
-                    </ul>
-                    <!-- 新增移除裝置放最底部 -->
-                    <div class="mt-auto nav-item w-100">
-                        <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
-                            @if (TEEmployee.Models.Permissions.IsFacilityManager(Session))
-                            {
-                                <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
-                                    <h6 class="panel-title">
-                                        <button type="button" class="btn btn-danger pull-left" ng-click="ChangePassword()">修改Teams密碼</button>
-                                    </h6>
-                                </div>
-                                <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
-                                    <h6 class="panel-title">
-                                        <button type="button" class="btn btn-danger pull-left" ng-click="CreateDevice()">新增裝置</button>
-                                    </h6>
-                                </div>
-                                <div data-bs-toggle="collapse" class="nav-link px-0 align-middle panel-heading">
-                                    <h6 class="panel-title">
-                                        <button type="button" class="btn btn-danger pull-left" ng-click="RemoveDevice()">移除裝置</button>
-                                    </h6>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <!-- 公用設備區塊 -->
-                <div id="calendar" ng-show="activeTab=='calendar'"></div>
-                <!-- Teams 圖片 -->
-                <div ng-show="activeTab=='teams'">
-                    <div id="collapseTwo" class="collapse show panel-collapse collapse in">
-                        <div class="panel-body">
-                            <div class="inner" ng-repeat="teams in getTeams">
-                                <h4 href="" class="d-none d-sm-inline" value={{teams}}>帳號：{{teams.deviceID}}<br>密碼：{{teams.password}}<br></h4>
+                            <div class="col-12" ng-if="getTeams && getTeams.length == 0">
+                                <div class="fac-empty">目前沒有 Teams 帳號</div>
                             </div>
                         </div>
                     </div>
-                    <br>
-                    <img src="~/Content/Facility/Teams借用須知.png" class="img-thumbnail" alt="Teams借用須知">
                 </div>
-            </div>
 
-            @*彈出視窗-檢視事件*@
-            <div class="modal fade" id="reserve-modal">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title"><span ng-bind="(reserve.deviceName || reserve.deviceID) + '：' + reserve.meetingDate + ' 預約'"></span></h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="start">開始時間</label>
+                <div class="fac-card fac-guide">
+                    <div class="fac-card-head">
+                        <h5><span class="fac-ico amber"><i class="bi bi-journal-text"></i></span>Teams 借用須知</h5>
+                        <a href="~/Content/Facility/Teams借用須知.png" target="_blank" class="small"><i class="bi bi-arrows-fullscreen"></i> 開啟原圖</a>
+                    </div>
+                    <div class="fac-card-body">
+                        <img src="~/Content/Facility/Teams借用須知.png" alt="Teams借用須知">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*彈出視窗-檢視事件*@
+    <div class="modal fade fac-modal" id="reserve-modal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" ng-class="{teal: !bEdit}">
+                    <h4 class="modal-title">
+                        <i class="bi" ng-class="bEdit ? 'bi-calendar-event' : 'bi-calendar-plus'"></i>
+                        <span ng-bind="(reserve.deviceName || reserve.deviceID) + '：' + reserve.meetingDate + ' 預約'"></span>
+                    </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label for="start"><i class="bi bi-clock"></i>開始時間</label>
+                            <div class="picker-wrap">
                                 <input ng-disabled="bEdit && !editAuth" id="start" class="form-control" type="text" ng-model="reserve.startTime" datetimepicker />
                             </div>
-                            <div class="form-group">
-                                <label for="end">結束時間</label>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="end"><i class="bi bi-clock-history"></i>結束時間</label>
+                            <div class="picker-wrap">
                                 <input ng-disabled="bEdit && !editAuth" id="end" class="form-control" type="text" ng-model="reserve.endTime" datetimepicker />
                             </div>
-                            <div class="form-group">
-                                <label for="title">名稱</label>
-                                <input ng-disabled="bEdit && !editAuth" id="title" class="form-control" type="text" ng-model="reserve.title" />
-                            </div>
-                            <div class="form-group">
-                                <label for="contact">聯絡人姓名</label>
-                                <input ng-disabled="bEdit && !editAuth" id="name" class="form-control" type="text" ng-model="reserve.name" readonly />
-                            </div>
-                            <div class="form-group">
-                                <label for="contactTel">聯絡人電話</label>
-                                <input ng-disabled="bEdit && !editAuth" id="contactTel" class="form-control" type="text" ng-model="reserve.contactTel" readonly />
-                            </div>
-                            <div class="form-group" style="text-align: right">
-                                <small>建立者:&nbsp;<span ng-bind="reserve.modifiedUser"></span>&nbsp;&nbsp;<span ng-if="reserve.modifiedDate!=null">最後更新時間:</span>&nbsp;<span ng-bind="reserve.modifiedDate"></span></small>
-                            </div>
                         </div>
-                        <div class="modal-footer">
-                            <div class="col-md-12 col-xs-12">
-                                <button ng-if="bEdit && editAuth" type="button" class="btn btn-danger pull-left" ng-click="Delete()">刪除</button>
-                                <button ng-if="bEdit && editAuth" type="button" class="btn btn-primary pull-right" ng-click="Send('edit')">修改</button>
-                                <button ng-if="!bEdit" type="button" class="btn btn-primary pull-right" ng-click="Send('create')">新增</button>
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="title"><i class="bi bi-pencil-square"></i>名稱</label>
+                        <input ng-disabled="bEdit && !editAuth" id="title" class="form-control" type="text" ng-model="reserve.title" placeholder="例：5102Z-模型分析" />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label for="name"><i class="bi bi-person"></i>聯絡人姓名</label>
+                            <input ng-disabled="bEdit && !editAuth" id="name" class="form-control" type="text" ng-model="reserve.name" readonly />
                         </div>
+                        <div class="form-group col-6">
+                            <label for="contactTel"><i class="bi bi-telephone"></i>聯絡人電話</label>
+                            <input ng-disabled="bEdit && !editAuth" id="contactTel" class="form-control" type="text" ng-model="reserve.contactTel" readonly />
+                        </div>
+                    </div>
+                    <div class="fac-meta">
+                        建立者：<span ng-bind="reserve.modifiedUser"></span>
+                        <span ng-if="reserve.modifiedDate!=null">　最後更新：<span ng-bind="reserve.modifiedDate"></span></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div>
+                        <button ng-if="bEdit && editAuth" type="button" class="fac-btn danger" ng-click="Delete()"><i class="bi bi-trash3"></i>刪除</button>
+                    </div>
+                    <div>
+                        <button type="button" class="fac-btn ghost" data-dismiss="modal">關閉</button>
+                        <button ng-if="bEdit && editAuth" type="button" class="fac-btn primary" ng-click="Send('edit')"><i class="bi bi-check2-circle"></i>修改</button>
+                        <button ng-if="!bEdit" type="button" class="fac-btn primary" ng-click="Send('create')"><i class="bi bi-plus-lg"></i>新增</button>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            @*彈出視窗-修改Teams密碼*@
-            <div class="modal fade" id="change-password">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title"><span>更改密碼</span></h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="type">ID</label>
-                                <select class="form-select" id="SelectDeviceID" name="SelectDeviceID" ng-model="teams.deviceID" aria-label="Select the deviceID">
-                                    <option ng-repeat="teams in getTeams">{{teams.deviceID}}</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="password">密碼</label>
-                                <input id="password" class="form-control" type="text" ng-model="teams.password" />
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <div class="col-md-12 col-xs-12">
-                                <button type="button" class="btn btn-primary pull-right" ng-click="Change(teams)">更改密碼</button>
-                            </div>
-                        </div>
+    @*彈出視窗-修改Teams密碼*@
+    <div class="modal fade fac-modal" id="change-password">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header indigo">
+                    <h4 class="modal-title"><i class="bi bi-key"></i><span>更改 Teams 密碼</span></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="SelectTeamsID"><i class="bi bi-person-badge"></i>帳號</label>
+                        <select class="form-select form-control" id="SelectTeamsID" name="SelectDeviceID" ng-model="teams.deviceID" aria-label="Select the deviceID">
+                            <option ng-repeat="teams in getTeams">{{teams.deviceID}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="password"><i class="bi bi-lock"></i>新密碼</label>
+                        <input id="password" class="form-control" type="text" ng-model="teams.password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div></div>
+                    <div>
+                        <button type="button" class="fac-btn ghost" data-dismiss="modal">取消</button>
+                        <button type="button" class="fac-btn primary" ng-click="Change(teams)"><i class="bi bi-check2-circle"></i>更改密碼</button>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            @*彈出視窗-新增裝置*@
-            <div class="modal fade" id="create-device">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title"><span ng-bind="createdevice.meetingDate+' 新增裝置'"></span></h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
+    @*彈出視窗-新增裝置*@
+    <div class="modal fade fac-modal" id="create-device">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header teal">
+                    <h4 class="modal-title"><i class="bi bi-plus-circle"></i><span ng-bind="createdevice.meetingDate+' 新增裝置'"></span></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="SelectType"><i class="bi bi-tags"></i>裝置類型</label>
+                        <select class="form-select form-control" id="SelectType" name="SelectType" ng-model="createdevice.type" aria-label="Select the type">
+                            <option ng-repeat="type in createdevice.types">{{type}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="deviceID"><i class="bi bi-upc-scan"></i>ID</label>
+                        <input id="deviceID" class="form-control" type="text" ng-model="createdevice.deviceID" placeholder="{{createdevice.type == 'Teams' ? '例：mte-dpt2-1@s365.sinotech.com.tw' : (createdevice.type == '電腦' ? '例：50-090（電腦編號）' : '例：SPK-01（財產編號或自訂代碼）')}}" />
+                        <small class="form-text text-muted">唯一識別碼，不可重複</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="deviceName"><i class="bi bi-card-text"></i>名稱</label>
+                        <input id="deviceName" class="form-control" type="text" ng-model="createdevice.deviceName" placeholder="{{createdevice.type == 'Teams' ? '例：Teams帳號1' : (createdevice.type == '電腦' ? '例：50-090' : '例：擴音機')}}" />
+                        <small class="form-text text-muted">左側選單顯示的名稱，未填則顯示ID</small>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label for="createName"><i class="bi bi-person"></i>聯絡人姓名</label>
+                            <input id="createName" class="form-control" type="text" ng-model="createdevice.name" readonly />
                         </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="type">裝置類型</label>
-                                @*<input id="type" class="form-control" type="text" ng-model="createdevice.type" />*@
-                                <select class="form-select" id="SelectType" name="SelectType" ng-model="createdevice.type" aria-label="Select the type">
-                                    <option ng-repeat="type in createdevice.types">{{type}}</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="deviceID">ID</label>
-                                <input id="deviceID" class="form-control" type="text" ng-model="createdevice.deviceID" placeholder="{{createdevice.type == 'Teams' ? '例：mte-dpt2-1@s365.sinotech.com.tw' : (createdevice.type == '電腦' ? '例：50-090（電腦編號）' : '例：SPK-01（財產編號或自訂代碼）')}}" />
-                                <small class="form-text text-muted">唯一識別碼，不可重複</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="deviceName">名稱</label>
-                                <input id="deviceName" class="form-control" type="text" ng-model="createdevice.deviceName" placeholder="{{createdevice.type == 'Teams' ? '例：Teams帳號1' : (createdevice.type == '電腦' ? '例：50-090' : '例：擴音機')}}" />
-                                <small class="form-text text-muted">左側選單顯示的名稱，未填則顯示ID</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="name">聯絡人姓名</label>
-                                <input id="name" class="form-control" type="text" ng-model="createdevice.name" readonly />
-                            </div>
-                            <div class="form-group">
-                                <label for="contactTel">聯絡人電話</label>
-                                <input id="contactTel" class="form-control" type="text" ng-model="createdevice.contactTel" readonly />
-                            </div>
-                            <div class="form-group" style="text-align: right">
-                                <small>建立者:&nbsp;<span ng-bind="createdevice.modifiedUser"></span>&nbsp;&nbsp;<span ng-if="createdevice.modifiedDate!=null">最後更新時間:</span>&nbsp;<span ng-bind="createdevice.modifiedDate"></span></small>
-                            </div>
+                        <div class="form-group col-6">
+                            <label for="createTel"><i class="bi bi-telephone"></i>聯絡人電話</label>
+                            <input id="createTel" class="form-control" type="text" ng-model="createdevice.contactTel" readonly />
                         </div>
-                        <div class="modal-footer">
-                            <div class="col-md-12 col-xs-12">
-                                <button type="button" class="btn btn-primary pull-right" ng-click="Create(createdevice)">新增</button>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="fac-meta">
+                        建立者：<span ng-bind="createdevice.modifiedUser"></span>
+                        <span ng-if="createdevice.modifiedDate!=null">　最後更新：<span ng-bind="createdevice.modifiedDate"></span></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div></div>
+                    <div>
+                        <button type="button" class="fac-btn ghost" data-dismiss="modal">取消</button>
+                        <button type="button" class="fac-btn primary" ng-click="Create(createdevice)"><i class="bi bi-plus-lg"></i>新增</button>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            @*彈出視窗-移除裝置*@
-            <div class="modal fade" id="remove-device">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title"><span ng-bind="removedevice.meetingDate+' 移除裝置'"></span></h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="type">ID</label>
-                                <select class="form-select" id="SelectDeviceID" name="SelectDeviceID" ng-model="removedevice.deviceID" aria-label="Select the deviceID">
-                                    <option ng-repeat="d in removedevice.deviceIDs" value="{{d.deviceID}}">{{d.label}}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <div class="col-md-12 col-xs-12">
-                                <button type="button" class="btn btn-primary pull-right" ng-click="Remove(removedevice)">移除</button>
-                            </div>
-                        </div>
+    @*彈出視窗-移除裝置*@
+    <div class="modal fade fac-modal" id="remove-device">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header rose">
+                    <h4 class="modal-title"><i class="bi bi-trash3"></i><span>移除裝置</span></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="SelectRemoveID"><i class="bi bi-hdd"></i>裝置</label>
+                        <select class="form-select form-control" id="SelectRemoveID" name="SelectDeviceID" ng-model="removedevice.deviceID" aria-label="Select the deviceID">
+                            <option ng-repeat="d in removedevice.deviceIDs" value="{{d.deviceID}}">{{d.label}}</option>
+                        </select>
+                    </div>
+                    <div class="fac-warn mb-3"><i class="bi bi-exclamation-triangle-fill mr-1"></i>移除後，此裝置的所有預約紀錄將一併刪除且無法復原。</div>
+                </div>
+                <div class="modal-footer">
+                    <div></div>
+                    <div>
+                        <button type="button" class="fac-btn ghost" data-dismiss="modal">取消</button>
+                        <button type="button" class="fac-btn danger" ng-click="Remove(removedevice)"><i class="bi bi-trash3"></i>移除</button>
                     </div>
                 </div>
             </div>

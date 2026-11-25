@@ -1,96 +1,106 @@
 ﻿@{
     ViewBag.Title = "TalentHighPerformers";
+    // 本頁資料來自 Talent/HighPerformer（後端限部門主管或 Admin），儲存 Talent/SaveChoice 同樣限部門主管或 Admin
+    // 「儲存」按鈕與後端 SaveChoice 同一判斷：部門主管或 Admin
+    bool canSave = TEEmployee.Models.Permissions.IsDepartmentManager(Session) || TEEmployee.Models.Permissions.IsAdmin(Session);
 }
 
-<div ng-controller="TalentHighPerformersCtrl" class="container" style="margin-top: 100px">
-    <div class="container">
+<div ng-controller="TalentHighPerformersCtrl" class="tal-page">
 
-        <header class="mb-4 d-flex justify-content-between">
-            <h2>High Performers Pool</h2>
+    <section class="tal-hero compact">
+        <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+        <div class="tal-hero-row">
             <div>
-                <a class="btn btn-outline-primary btn-lg mr-2" href="Talent#!/TalentOption" role="button">返回</a>
+                <div class="tal-eyebrow"><i class="bi bi-rocket-takeoff"></i> 人才培育資料庫</div>
+                <h2>High Performers Pool</h2>
+                <p class="sub">勾選 3 項以上特質後，即可指定培養規劃職位。</p>
             </div>
-        </header>
-
-        <div class="row">
-            <div class="col-5">
-                <br />
-                <label for="SelectGroup">請選擇培養規劃</label>
-                <select class="form-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
-                    <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
-                </select>
-            </div>
-            <div class="col-5">
-                <br />
-                <label for="SelectGroup">請選擇年齡區間</label>
-                <select class="form-select" id="SelectAge" name="SelectAge" ng-model="agesRange.selectedRange" aria-label="Select the Age">
-                    <option ng-repeat="age in agesRange.rangeOptions" value="{{age.value}}">{{age.name}}</option>
-                </select>
-            </div>
+            <a class="tal-btn tal-btn-glass" href="Talent#!/TalentOption" role="button"><i class="bi bi-arrow-left"></i> 返回</a>
         </div>
-
-        <div class="row"><br /></div>
-
-        <div class="row container border" ng-repeat="user in data | filter: ageFilter | orderBy:'-age'">
-            <div class="col text-center w-50 p-3 h-50 d-inline-block">
-                <img type="submit" value={{user.name}} ng-click="TalentRecord(user.empno)" ng-src="Content/CV/{{user.empno}}.jpg" onerror="this.onerror=null;this.src='Content/CV/0000.jpg'" class="img-thumbnail" alt="{{user.name}}">
-                <h5>{{user.name}} ({{user.age}})</h5>
-                <h5>{{user.custom_duty}}</h5>
-            </div>
-            <div class="col text-md-left align-items-center">
-                <select class="form-select w-50 p-0" id="selectPosition{{$index}}" name="selectPosition{{$index}}" ng-model="user.position" ng-disabled="user.selectPosition" aria-label="Select the Position">
-                    <option ng-repeat="position in positions">{{position}}</option>
-                </select>
-            </div>
-            <div class="col text-md-left align-items-center w-50 p-3 h-50 d-inline-block">
-                <div class="row">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" ng-model="user.choice1" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox1{{$index}}" value="option1" required>
-                        <label class="form-check-label" for="inlineCheckbox1">專業性 – 專家的潛質</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" ng-model="user.choice2" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox2{{$index}}" value="option2" required>
-                        <label class="form-check-label" for="inlineCheckbox2">格局、視野大 - 舉一反三</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" ng-model="user.choice3" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox3{{$index}}" value="option3" required>
-                        <label class="form-check-label" for="inlineCheckbox3">責任心驅動的主動性 - 捨我其誰</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" ng-model="user.choice4" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox4{{$index}}" value="option4" required>
-                        <label class="form-check-label" for="inlineCheckbox4">建立系統性、計畫性的學習能力 - 學習力具體</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" ng-model="user.choice5" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox5{{$index}}" value="option5" required>
-                        <label class="form-check-label" for="inlineCheckbox5">適應變化的韌性 - 懂得取捨、不放棄</label>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <br />
-            </div>
+        <div class="tal-chips">
+            <span class="tal-chip"><i class="bi bi-people"></i> 目前顯示 <b>{{(data | filter: ageFilter).length || 0}}</b> 位</span>
         </div>
+    </section>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-            </div>
-            <div class="col-md-offset-2 col-md-10">
-                <input class="btn btn-warning btn-lg" type="submit" value="返回" ng-click="ToTalent()" />
-                <input class="btn btn-warning btn-lg" type="submit" value="儲存" ng-click="SaveChoice(data)" />
-            </div>
-            <div class="col-md-offset-2 col-md-10">
-            </div>
+    <div class="tal-toolbar">
+        <div class="grow">
+            <label class="tal-label" for="SelectGroup">培養規劃</label>
+            <select class="tal-select" id="SelectGroup" name="SelectGroup" ng-model="selectedGroup" ng-change="FilterDataByGroup(selectedGroup)" aria-label="Select the Group">
+                <option ng-repeat="group in groups" value="{{group}}">{{group}}</option>
+            </select>
         </div>
-
+        <div class="grow">
+            <label class="tal-label" for="SelectAge">年齡區間</label>
+            <select class="tal-select" id="SelectAge" name="SelectAge" ng-model="agesRange.selectedRange" aria-label="Select the Age">
+                <option ng-repeat="age in agesRange.rangeOptions" value="{{age.value}}">{{age.name}}</option>
+            </select>
+        </div>
     </div>
+
+    <div class="tal-card tal-hp" ng-repeat="user in data | filter: ageFilter | orderBy:'-age'">
+        <div>
+            <div class="photo" ng-click="TalentRecord(user.empno)" title="查看 {{user.name}} 的資料">
+                <img ng-src="Content/CV/{{user.empno}}.jpg" onerror="this.onerror=null;this.src='Content/CV/0000.jpg'" alt="{{user.name}}">
+            </div>
+        </div>
+        <div>
+            <div class="tal-card-head" style="margin-bottom:6px">
+                <div>
+                    <h5 class="tal-card-title" style="font-size:1.2rem">{{user.name}} <span class="tal-badge">{{user.age}} 歲</span></h5>
+                    <div class="tal-muted mt-1" ng-if="user.custom_duty"><i class="bi bi-briefcase"></i> {{user.custom_duty}}</div>
+                </div>
+                <div style="min-width:220px">
+                    <label class="tal-label" for="selectPosition{{$index}}">培養規劃職位</label>
+                    <select class="tal-select" id="selectPosition{{$index}}" name="selectPosition{{$index}}" ng-model="user.position" ng-disabled="user.selectPosition" aria-label="Select the Position">
+                        <option ng-repeat="position in positions">{{position}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center" style="gap:10px">
+                <span class="tal-muted">特質</span>
+                <div class="tal-progress"><span ng-style="{width: ChoiceCount(user) * 20 + '%'}"></span></div>
+                <span class="tal-muted"><b>{{ChoiceCount(user)}}</b> / 5</span>
+            </div>
+
+            <div class="tal-criteria">
+                <label class="tal-check" ng-class="{on: user.choice1}" for="inlineCheckbox1{{$index}}">
+                    <input type="checkbox" ng-model="user.choice1" ng-change="UpdateSelectable(user)" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox1{{$index}}" value="option1">
+                    <span>專業性 – 專家的潛質</span>
+                </label>
+                <label class="tal-check" ng-class="{on: user.choice2}" for="inlineCheckbox2{{$index}}">
+                    <input type="checkbox" ng-model="user.choice2" ng-change="UpdateSelectable(user)" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox2{{$index}}" value="option2">
+                    <span>格局、視野大 - 舉一反三</span>
+                </label>
+                <label class="tal-check" ng-class="{on: user.choice3}" for="inlineCheckbox3{{$index}}">
+                    <input type="checkbox" ng-model="user.choice3" ng-change="UpdateSelectable(user)" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox3{{$index}}" value="option3">
+                    <span>責任心驅動的主動性 - 捨我其誰</span>
+                </label>
+                <label class="tal-check" ng-class="{on: user.choice4}" for="inlineCheckbox4{{$index}}">
+                    <input type="checkbox" ng-model="user.choice4" ng-change="UpdateSelectable(user)" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox4{{$index}}" value="option4">
+                    <span>建立系統性、計畫性的學習能力 - 學習力具體</span>
+                </label>
+                <label class="tal-check" ng-class="{on: user.choice5}" for="inlineCheckbox5{{$index}}">
+                    <input type="checkbox" ng-model="user.choice5" ng-change="UpdateSelectable(user)" name="inlineCheckboxOptions{{$index}}" id="inlineCheckbox5{{$index}}" value="option5">
+                    <span>適應變化的韌性 - 懂得取捨、不放棄</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="tal-empty" ng-if="data && (data | filter: ageFilter).length === 0">
+        <i class="bi bi-person-x"></i>
+        沒有符合條件的人員
+    </div>
+
+    <div class="tal-actionbar">
+        <button type="button" class="tal-btn tal-btn-light" ng-click="ToTalent()"><i class="bi bi-arrow-left"></i> 返回</button>
+        @if (canSave)
+        {
+            <button type="button" class="tal-btn tal-btn-primary" ng-click="SaveChoice(data)"><i class="bi bi-floppy"></i> 儲存</button>
+        }
+    </div>
+
 </div>
 
 @section Scripts {

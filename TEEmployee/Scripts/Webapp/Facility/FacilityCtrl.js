@@ -83,6 +83,63 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
         $scope.activeTab = tab;
     };
 
+    // ---------- 畫面輔助 ----------
+    // 目前選取的裝置
+    $scope.CurrentDevice = function () {
+        return ($scope.getDevices || []).find(x => x.deviceID == $scope.deviceID);
+    };
+    // 依類型/名稱給裝置圖示
+    $scope.DeviceIcon = function (d) {
+        if (!d) return 'bi-hdd';
+        var n = (d.deviceName || '') + ' ' + (d.deviceID || '');
+        if (d.type == 'Teams') return 'bi-microsoft-teams';
+        if (/擴音|喇叭|音響|speaker/i.test(n)) return 'bi-speaker';
+        if (/麥克風|mic/i.test(n)) return 'bi-mic';
+        if (/投影/i.test(n)) return 'bi-projector';
+        if (/相機|攝影|camera/i.test(n)) return 'bi-camera';
+        if (/筆電|notebook|laptop/i.test(n)) return 'bi-laptop';
+        if (d.type == '電腦') return 'bi-pc-display';
+        return 'bi-box-seam';
+    };
+    $scope.DeviceColor = function (d) {
+        if (!d) return 'slate';
+        if (d.type == 'Teams') return 'indigo';
+        if (d.type == '電腦') return 'sky';
+        return 'amber';
+    };
+    // 裝置搜尋(名稱或ID)
+    $scope.deviceKeyword = '';
+    $scope.DeviceFilter = function (d) {
+        var k = ($scope.deviceKeyword || '').trim().toLowerCase();
+        if (!k) return true;
+        return (d.deviceName || '').toLowerCase().indexOf(k) >= 0 || (d.deviceID || '').toLowerCase().indexOf(k) >= 0;
+    };
+    // 我的預約(今日起, 不含建立裝置時產生的紀錄)
+    $scope.MyUpcomingCount = function () {
+        if (!$scope.currentUser || !$scope.devices) return 0;
+        var today = moment().format("YYYY/MM/DD");
+        return $scope.devices.filter(x => x.modifiedUser == $scope.currentUser.empno && x.type != "Teams" && x.title != "新增裝置" && x.meetingDate >= today).length;
+    };
+    // 複製文字(內網 http 沒有 navigator.clipboard 時改用 execCommand)
+    $scope.CopyText = function (text, label) {
+        var done = function () {
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: '已複製' + (label || ''), showConfirmButton: false, timer: 1500 });
+        };
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text || '').then(done);
+        }
+        else {
+            var ta = document.createElement('textarea');
+            ta.value = text || '';
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) { }
+            document.body.removeChild(ta);
+        }
+    };
+
     $(function () {
         $('#startPicker').datetimepicker({
             format: 'HH:mm',     // 只顯示時間
@@ -175,6 +232,11 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                 $scope.device = ret.data[0];
                 $scope.bEdit = !1;
                 $scope.editAuth = !1;
+                // 依預約者標示顏色：我的預約 / 他人預約 / 建立裝置時產生的紀錄
+                var myEmpno = $scope.currentUser ? $scope.currentUser.empno : null;
+                ret.data.forEach(function (e) {
+                    e.className = e.title == "新增裝置" ? "fac-ev-system" : (myEmpno && e.modifiedUser == myEmpno ? "fac-ev-mine" : "fac-ev-other");
+                });
                 // 先清空行事曆後, 重新生成, 即時更新
                 $('#calendar').fullCalendar('destroy');
                 $('#calendar').empty();
@@ -186,7 +248,8 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                     },
                     views: {
                         month: {
-                            buttonText: "月"
+                            buttonText: "月",
+                            titleFormat: "YYYY 年 M 月"
                         },
                         week: {
                             buttonText: "週"
@@ -195,7 +258,9 @@ app.controller('BorrowCtrl', ['$scope', '$location', '$window', 'appService', '$
                             buttonText: "日"
                         }
                     },
-                    aspectRatio: 1.25,
+                    buttonText: { today: "今天" },
+                    dayNamesShort: ["日", "一", "二", "三", "四", "五", "六"],
+                    aspectRatio: 1.45,
                     weekends: !0,
                     eventLimit: !0,
                     timeFormat: "H:mm",

@@ -360,27 +360,18 @@ app.controller('TalentHighPerformersCtrl', ['$scope', '$location', '$window', 'a
     }
     $scope.FilterDataByGroup($scope.selectedGroup); // 預設全選
 
-    // 即時監測checkbox三個勾選後才開放下拉選單
-    function onExpandableCheckBox({ target: elem }) {
-        // 統計checkbox勾選數量
-        var count = 0;
-        if (elem.id.includes('inlineCheckbox')) {
-            var index = elem.id.substr(-1); // 點選checkbox的index
-            for (let i = 1; i <= 5; i++) {
-                var elemId = 'inlineCheckbox' + i + index;
-                var targetElem = document.getElementById(elemId);
-                if (targetElem.checked) {
-                    count = count + 1;
-                }
-            }
-            var selectPositionId = 'selectPosition' + index;
-            var selectPositionElem = document.getElementById(selectPositionId);
-            if (count >= 3) { selectPositionElem.disabled = false; $scope.data[index].selectPosition = false; }
-            else { selectPositionElem.disabled = true; $scope.data[index].selectPosition = true; }
-        }
+    // 勾選數量 (0~5)
+    $scope.ChoiceCount = function (user) {
+        return (user.choice1 ? 1 : 0) + (user.choice2 ? 1 : 0) + (user.choice3 ? 1 : 0) + (user.choice4 ? 1 : 0) + (user.choice5 ? 1 : 0);
     }
-    // 監聽checkbox
-    document.addEventListener('change', onExpandableCheckBox);
+    // 勾選 3 項以上才開放職位下拉選單
+    // 舊版用 document 的 change 事件、以勾選框 id 的「最後一個字元」當索引去改 $scope.data[索引]：
+    //   1. 第 10 位以後 (索引兩位數) 只取到個位數，例如第 11 位 (索引 10) 會被當成第 1 位
+    //   2. 畫面經過年齡篩選與年齡排序，畫面上的順序和 $scope.data 的順序不同，即使前 10 位也可能改到別人
+    // 改為直接傳入該員工物件，不再依賴索引
+    $scope.UpdateSelectable = function (user) {
+        user.selectPosition = $scope.ChoiceCount(user) < 3;
+    }
 
     // 回上頁
     $scope.ToTalent = function () {
@@ -440,6 +431,12 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
         $location.path('/TalentOption');
         return;
     }
+    // 是否為本人頁面 (selfEmpno 由 TalentRecord.cshtml 以 ng-init 帶入，員編忽略前導 0)
+    $scope.isSelf = function () {
+        const norm = (x) => String(x || '').trim().replace(/^0+/, '');
+        return !!$scope.selfEmpno && norm($scope.selfEmpno) === norm($scope.user.empno);
+    }
+
     $scope.planning = []; // 規劃進程
     for (let i = 0; i < $scope.user.planning.length; i++) {
         if ($scope.planning.length < 6) {
@@ -538,15 +535,17 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
     //    });
     //});
 
-    // 上傳測評資料PDF
-    $(document).on("click", "#btnDDIPDFUpload", function () {
+    // 上傳測評資料PDF：存到「目前頁面的員工」(後端：部門主管可上傳任何人，其他人只能上傳自己)
+    // 舊版用 $(document).on 綁定，每進入一次頁面就多綁一次，會重複上傳，且舊的綁定仍指向之前看過的員工；改為 ng-click
+    $scope.UploadPDF = function () {
         var files = $("#importDDIPDFFile").get(0).files;
+        if (!files || files.length === 0) { alert("請先選擇 PDF 檔案"); return; }
+        if (files[0].size > 20 * 1024 * 1024) { alert("檔案超過20MB"); return; }
 
         var formData = new FormData();
         formData.append('file', files[0]);
         formData.append('year', $scope.selectedYear);
-        formData.append('folder', "~/App_Data");
-        //formData.append('folder', "~/Content");
+        formData.append('empno', $scope.user.empno);
 
         $.ajax({
             url: 'Talent/UploadPDFFile',
@@ -556,9 +555,9 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
             contentType: false,
             processData: false,
             success: function (data) {
-                if (!data.includes("Error")) {
+                if (typeof data === 'string' && !data.includes("Error")) {
                     GetPDF(false); // 取得PDF
-                    $('#framePDF').attr('src', $('#framePDF').attr('src')); // 即時更新PDF
+                    $("#importDDIPDFFile").val('');
                     alert("上傳成功");
                 }
                 else {
@@ -569,7 +568,7 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
                 alert(data.responseText);
             }
         });
-    });
+    }
 
     function GetPDF(show) {
         appService.GetPDF({ year: $scope.selectedYear, empno: $scope.user.empno })
@@ -612,7 +611,7 @@ app.controller('TalentRecordCtrl', ['$scope', '$location', '$window', 'appServic
         // 取得員工履歷
         appService.SaveResponse({ userCV: data, planning: planning })
             .then(function (ret) {
-                if (ret.data === false) { alert('僅限資協儲存'); }
+                if (ret.data === false) { alert('儲存失敗：沒有儲存權限'); }
                 else { alert('儲存成功'); }
             })
             .catch(function (ret) {

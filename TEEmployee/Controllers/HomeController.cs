@@ -88,7 +88,17 @@ namespace TEEmployee.Controllers
         {
             if (Permissions.CanSwitchIdentity(Session) && fake != null && !string.IsNullOrWhiteSpace(fake.empno))
             {
-                User user = new UserRepository().Get(fake.empno.Trim());
+                // 員編忽略前導 0：輸入「07291」或「7291」都要找得到 (與登入時相同，依序嘗試)
+                // 舊版直接用輸入值完整比對，User.db 存 7291 時輸入 07291 會找不到
+                string input = fake.empno.Trim();
+                string normalized = Permissions.NormalizeEmpno(input);
+                var repo = new UserRepository();
+                User user = null;
+                foreach (var candidate in new[] { input, normalized, "0" + normalized }.Distinct())
+                {
+                    user = repo.Get(candidate);
+                    if (user != null) break;
+                }
 
                 if (user is null)
                     return RedirectToAction("Unauthorized", "Error");
@@ -164,8 +174,11 @@ namespace TEEmployee.Controllers
         public JsonResult UpdateNotify()
         {
             if (!Permissions.IsAdmin(Session)) return Json(false); // 限系統管理員 (會重建全體員工的通知)
-            var ret = new NotifyService().UpdateNotify(Session["empno"].ToString());
-            return Json(ret);
+            // 僅考核月份(5月、11月)可使用, 其他月份不做任何事
+            int month = System.DateTime.Now.Month;
+            if (month != 5 && month != 11) return Json(new { ok = false, message = "目前非考核月份" });
+            new NotifyService().UpdateNotify(Session["empno"].ToString());
+            return Json(new { ok = true, message = "通知已更新" });
         }
         /// <summary>
         /// 刪除通知Log檔
@@ -179,74 +192,69 @@ namespace TEEmployee.Controllers
             return Json(ret);
         }
         /// <summary>
-        /// 檢視user.db
+        /// 檢視user.db (管理頁「資料檢視」，限系統管理員與 DbViewers 開發者名單)
         /// </summary>
         /// <returns></returns>
         [HttpPost]
         public JsonResult ReviewUserDB()
         {
-            if (!Permissions.IsAdmin(Session)) return Json(new List<User>()); // 限系統管理員
+            if (!Permissions.CanViewDb(Session)) return Json(new List<User>()); // 限管理員與開發者
 
             var ret = new UserRepository().GetAll().OrderBy(x => x.empno).ToList();
-            return Json(ret);
+            LogDbAccess("ReviewUserDB", ret.Count);
+            return LargeJson(ret);
         }
         /// <summary>
-        /// 下載user.db
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult DownloadUserDB()
-        {
-            if (!Permissions.IsAdmin(Session)) return new HttpStatusCodeResult(403); // 限系統管理員
-
-            string filePath = new UserRepository().DownloadUserDB();
-            ProfessionService _service = new ProfessionService();
-            var fileBytes = _service.DownloadFile(filePath);
-            string contentType = "application/octet-stream"; // byte
-            FileContentResult result = null;
-            try
-            {
-                result = File(fileBytes, contentType, "userDB.xlsx");
-            }
-            catch (Exception)
-            {
-                result = null;
-            }
-            return result;
-        }
-        /// <summary>
-        /// 檢視profession.db
+        /// 檢視profession.db (管理頁「資料檢視」，限系統管理員與 DbViewers 開發者名單)
         /// </summary>
         /// <returns></returns>
         [HttpPost]
         public JsonResult ReviewProfessionDB()
         {
-            if (!Permissions.IsAdmin(Session)) return Json(new List<object>()); // 限系統管理員
+            if (!Permissions.CanViewDb(Session)) return Json(new List<object>()); // 限管理員與開發者
 
             var ret = new ProfessionRepository().GetAll().OrderBy(x => x.id).ToList();
-            return Json(ret);
+            LogDbAccess("ReviewProfessionDB", ret.Count);
+            return LargeJson(ret);
         }
-        /// <summary>
-        /// 下載profession.db
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult DownloadProfessionDB()
-        {
-            if (!Permissions.IsAdmin(Session)) return new HttpStatusCodeResult(403); // 限系統管理員
 
-            string filePath = new ProfessionRepository().DownloadProfessionDB();
-            ProfessionService _service = new ProfessionService();
-            var fileBytes = _service.DownloadFile(filePath);
-            string contentType = "application/octet-stream"; // byte
-            FileContentResult result = null;
+        /// <summary>資料量較大時避免超過 JsonResult 預設長度上限</summary>
+        private JsonResult LargeJson(object data)
+        {
+            var result = Json(data);
+            result.MaxJsonLength = int.MaxValue;
+            return result;
+        }
+
+        private static readonly object _dbAccessLogLock = new object();
+
+        /// <summary>
+        /// 存取紀錄：寫到 App_Data/Logs/DbAccess_yyyyMM.log (App_Data 無法從網址直接讀取)。
+        /// 格式：時間、員編、姓名、動作、筆數、IP；寫入失敗不影響功能。
+        /// </summary>
+        private void LogDbAccess(string action, int count)
+        {
             try
             {
-                result = File(fileBytes, contentType, "professionDB.xlsx");
+                string folder = Server.MapPath("~/App_Data/Logs");
+                Directory.CreateDirectory(folder);
+                string file = Path.Combine(folder, "DbAccess_" + DateTime.Now.ToString("yyyyMM") + ".log");
+                string line = string.Join("\t",
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    Permissions.CurrentEmpno(Session),
+                    Session["empname"] as string ?? "",
+                    action,
+                    count + " 筆",
+                    Request.UserHostAddress ?? "") + Environment.NewLine;
+                lock (_dbAccessLogLock)
+                {
+                    System.IO.File.AppendAllText(file, line, System.Text.Encoding.UTF8);
+                }
             }
-            catch (Exception)
+            catch
             {
-                result = null;
+                // 紀錄失敗不影響檢視
             }
-            return result;
         }
 
         [HttpPost]
